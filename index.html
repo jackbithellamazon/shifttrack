@@ -1272,19 +1272,11 @@ function mgr_getLog(){
 async function mgr_syncFromDB(){
   if(!DB_ENABLED) return;
   var rows=await db_loadAll();
-  if(!rows||!rows.length) return;
-  var local=mgr_getLog();
-  var localIds=local.map(function(r){return r.id;});
-  var added=0;
-  rows.forEach(function(r){
-    if(!localIds.includes(r.id)){ local.unshift(r); added++; }
-  });
-  if(added>0){
-    local.sort(function(a,b){return b.id-a.id;});
-    if(local.length>120) local=local.slice(0,120);
-    localStorage.setItem('shifttrack_eod_log',JSON.stringify(local));
-  }
-  mgr_flagBanner(local);
+  if(!rows) return;
+  // Supabase is source of truth — replace localStorage with exactly what's in the DB
+  rows.sort(function(a,b){return b.id-a.id;});
+  localStorage.setItem('shifttrack_eod_log',JSON.stringify(rows));
+  mgr_flagBanner(rows);
   mgr_switchTab(mgr_currentTab);
 }
 function mgr_getReports(){try{return JSON.parse(localStorage.getItem('shifttrack_reports')||'[]');}catch(e){return[];}}
@@ -2616,7 +2608,12 @@ function mgr_renderAll(){
       dbEl.style.color='#555';
     }
   }
-  mgr_injectFakeData();
+  // One-time cleanup — remove fake demo data from localStorage
+  try {
+    var fakeDates=['16/03/2026','17/03/2026','18/03/2026','19/03/2026','20/03/2026'];
+    var cleaned=mgr_getLog().filter(function(r){ return !fakeDates.includes(r.date)||r.id>2000000000000; });
+    localStorage.setItem('shifttrack_eod_log',JSON.stringify(cleaned));
+  } catch(e){}
   mgr_flagBanner(mgr_getLog());
   mgr_renderOverview();
   mgr_syncFromDB();
