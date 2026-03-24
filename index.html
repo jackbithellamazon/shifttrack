@@ -605,16 +605,20 @@
     <button onclick="mgr_switchTab('overview')" id="tab-overview" class="mgr-tab active-tab">&#9733; Overview</button>
     <button onclick="mgr_switchTab('mera')"     id="tab-mera"     class="mgr-tab mera-tab">Mera</button>
     <button onclick="mgr_switchTab('suz')"      id="tab-suz"      class="mgr-tab suz-tab">Suz</button>
+    <button onclick="mgr_switchTab('test')"     id="tab-test"     class="mgr-tab" style="">Test</button>
     <button onclick="mgr_switchTab('today')"    id="tab-today"    class="mgr-tab">Today</button>
     <button onclick="mgr_switchTab('week')"     id="tab-week"     class="mgr-tab">Week</button>
     <button onclick="mgr_switchTab('mtd')"      id="tab-mtd"      class="mgr-tab">MTD</button>
     <button onclick="mgr_switchTab('issues')"   id="tab-issues"   class="mgr-tab issues-tab">&#9888; Issues</button>
+    <button onclick="mgr_switchTab('live')"     id="tab-live"     class="mgr-tab" style="color:#00ffb3;">&#9679; Live</button>
   </div>
   <div id="mgr-tab-overview"><div id="mgr-overview-content"></div></div>
   <div id="mgr-tab-today"    style="display:none;"><div id="mgr-today-content"></div></div>
   <div id="mgr-tab-mera"     style="display:none;"><div id="mgr-mera-content"></div></div>
   <div id="mgr-tab-suz"      style="display:none;"><div id="mgr-suz-content"></div></div>
+  <div id="mgr-tab-test"     style="display:none;"><div id="mgr-test-content"></div></div>
   <div id="mgr-tab-issues"   style="display:none;"><div id="mgr-issues-content"></div></div>
+  <div id="mgr-tab-live"     style="display:none;"><div id="mgr-live-content"></div></div>
   <div id="mgr-tab-week"     style="display:none;"><div id="mgr-week-content"></div></div>
   <div id="mgr-tab-mtd"      style="display:none;"><div id="mgr-mtd-content"></div></div>
   <div id="mgr-ai-panel" style="display:none;"></div>
@@ -686,6 +690,7 @@
 var SUPABASE_URL      = 'https://sjbcmdcbminpprpxxcwh.supabase.co';
 var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqYmNtZGNibWlucHBycHh4Y3doIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMzc3MjEsImV4cCI6MjA4OTcxMzcyMX0.830s0_khKAOlZ-WC-JvgUSZr1ziUyCZsDpfZJtHL5tU';
 var DISCORD_WEBHOOK   = 'https://discord.com/api/webhooks/1485068125052604527/THtYQqLBNG-zQY_fueiTbh5b__SDKT6LZnht20lqiiRnFglgL0pTi1VFbi3Kny-xlP_V';
+var DISCORD_TASKS_WEBHOOK = 'https://discord.com/api/webhooks/1485788180526530691/VZNiu6UBQWEIlIQKgtaHdF1JXgaWQ3jPDUsdoivEA8Ds86N5ZQNEexor7qOAKagi3QKP';
 
 var DB_ENABLED = SUPABASE_URL !== 'YOUR_SUPABASE_URL';
 
@@ -774,6 +779,83 @@ async function discord_notify(rec) {
 }
 
 // ── UK TIME ──────────────────────────────────────────────
+// ── DISCORD TASK NOTIFICATION ────────────────────────────
+async function discord_task_notify(task) {
+  if (!DISCORD_TASKS_WEBHOOK) return;
+  if (!state.currentVA || state.currentVA === 'Test') return;
+  var isMera = state.currentVA === 'Mera';
+  var colour = isMera ? 9699327 : 16775867;
+  var emoji = isMera ? '🟣' : '🟡';
+  var leads = parseInt(task.leads) || 0;
+  var timeStr = task.time || ((task.timeHrs||0) > 0 || (task.timeMins||0) > 0 ? (task.timeHrs||0)+'h '+(task.timeMins||0)+'m' : '');
+  var ms = state.shiftStart ? Date.now() - state.shiftStart - state.totalBreakMs : 0;
+  var shiftHrs = (ms/3600000).toFixed(1);
+  var allTasks = state.tasks.concat(state.extraTasks);
+  var doneSoFar = allTasks.filter(function(t){return t.done;}).length;
+  var totalLeadsSoFar = allTasks.reduce(function(s,t){return s+(parseInt(t.leads)||0);},0);
+  var fields = [
+    {name:'✅ Task', value:task.name, inline:false},
+    {name:'⏱ Shift time', value:shiftHrs+'h in', inline:true},
+    {name:'🎯 Leads this task', value:leads > 0 ? String(leads) : '—', inline:true},
+    {name:'📊 Total leads so far', value:String(totalLeadsSoFar), inline:true},
+    {name:'📋 Tasks done', value:doneSoFar+'/'+allTasks.length, inline:true},
+  ];
+  if(timeStr) fields.push({name:'🕐 Time spent', value:timeStr, inline:true});
+  if(task.tickedAt) fields.push({name:'🕐 Ticked at', value:task.tickedAt+' UK', inline:true});
+  try {
+    await fetch(DISCORD_TASKS_WEBHOOK, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({embeds:[{
+        title: emoji+' '+state.currentVA+' — Task Complete',
+        color: colour,
+        fields: fields,
+        footer: {text:'ShiftTrack live · '+new Date().toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:true})+' UK'}
+      }]})
+    });
+  } catch(e) { console.error('Task notify error:',e); }
+}
+
+// ── LIVE STATUS PUSH ─────────────────────────────────────
+async function db_pushLiveStatus() {
+  if (!DB_ENABLED || !state.currentVA || state.currentVA === 'Test' || !state.shiftStart) return;
+  var ms = Date.now() - state.shiftStart - state.totalBreakMs;
+  var shiftHrs = (ms/3600000).toFixed(1);
+  var allTasks = state.tasks.concat(state.extraTasks);
+  var doneTasks = allTasks.filter(function(t){return t.done;});
+  var totalLeads = allTasks.reduce(function(s,t){return s+(parseInt(t.leads)||0);},0);
+  var currentTask = allTasks.find(function(t){return !t.done&&!t.skipped;});
+  var lastDone = doneTasks.length ? doneTasks[doneTasks.length-1] : null;
+  var status = {
+    va: state.currentVA,
+    shiftStart: new Date(state.shiftStart).toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:true}),
+    hoursWorked: shiftHrs,
+    onBreak: state.onBreak,
+    breakCount: state.breaks.length,
+    totalBreakMins: Math.round(state.totalBreakMs/60000),
+    totalLeads: totalLeads,
+    tasksDone: doneTasks.length,
+    totalTasks: allTasks.length,
+    currentTask: currentTask ? currentTask.name : (state.submitted ? 'Shift submitted' : 'All tasks done'),
+    lastCompletedTask: lastDone ? lastDone.name : '—',
+    lastTickedAt: lastDone ? (lastDone.tickedAt||'') : '',
+    submitted: state.submitted,
+    lastUpdated: new Date().toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:true})
+  };
+  try {
+    await fetch(SUPABASE_URL+'/rest/v1/live_status', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'apikey':SUPABASE_ANON_KEY,
+        'Authorization':'Bearer '+SUPABASE_ANON_KEY,
+        'Prefer':'resolution=merge-duplicates'
+      },
+      body: JSON.stringify({va: state.currentVA, updated_at: new Date().toISOString(), data: status})
+    });
+  } catch(e) { console.error('Live push error:',e); }
+}
+
 function ukNow() { return new Date(new Date().toLocaleString('en-GB',{timeZone:'Europe/London'})); }
 // Suz colour — locked
 var SUZ_COL='#FFEB3B';
@@ -786,7 +868,7 @@ function ukHour() { return ukNow().getHours(); }
 // ── STATE ────────────────────────────────────────────────
 var state = {
   currentVA:null, shiftStart:null, onBreak:false,
-  breakStart:null, totalBreakMs:0, timerInterval:null,
+  breakStart:null, totalBreakMs:0, timerInterval:null, liveInterval:null,
   pendingSkipTask:null, tasks:[], extraTasks:[],
   breaks:[], submitted:false
 };
@@ -805,6 +887,7 @@ var taskTemplates = {
     { id:'storefronts',  name:'Storefronts',                                               mandatory:true,  hint:'Usually late afternoon/evening UK time. If working - do them. If not - log reason and add to tomorrow\'s POA.', hasLinks:true },
     { id:'pp-light',     name:'PP Light Check (Later in Shift)',                           mandatory:true,  hint:'Quick scan for new pings only - do this later in your shift.' },
     { id:'telegram-eod', name:'Telegram - End of Shift Check',                            mandatory:true,  hint:'Quick Telegram check before you finish. Log anything relevant.' },
+    { id:'oos-sheet',    name:'OOS Sheet (if needed)',                                     mandatory:false, hint:'Complete the OOS sheet if there are any out-of-stock items to log. Skip if nothing to report.', hasLinks:false },
     { id:'leadsheet-eod', name:'Lead Sheet - Final Check Before Logging Off',             mandatory:true,  hint:'Last thing before you finish — check the lead sheet one more time. Action any new comments Jack has left. Tick off when done.' }
   ],
   Suz: [
@@ -847,6 +930,10 @@ var taskTemplates = {
     {
       id:'suz-telegram-eod', name:'Telegram - End of Shift Check', mandatory:true,
       hint:'Quick Telegram check before you finish. Log anything relevant.'
+    },
+    {
+      id:'suz-oos-sheet', name:'OOS Sheet (if needed)', mandatory:false,
+      hint:'Complete the OOS sheet if there are any out-of-stock items to log. Skip if nothing to report.'
     },
     {
       id:'suz-leadsheet-eod', name:'Lead Sheet - Final Check Before Logging Off', mandatory:true,
@@ -1092,7 +1179,13 @@ function markDone(i, isExtra) {
   if (state.submitted) { lockedClick(); return; }
   if (task.done) { lockedClick(); return; }
   var tickOnly = (task.id === 'leadsheet' || task.id === 'ht-filters' || task.id === 'telegram-eod' || task.id === 'suz-leadsheet' || task.id === 'suz-telegram-eod' || task.id === 'leadsheet-eod' || task.id === 'suz-leadsheet-eod');
-  if (tickOnly) { task.done = true; task.skipped = false; task.tickedAt = new Date().toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:false}); renderTasks(); showToast('Task marked complete &#10003;'); return; }
+  if (tickOnly) {
+    task.done = true; task.skipped = false;
+    task.tickedAt = new Date().toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:false});
+    renderTasks(); showToast('Task marked complete &#10003;');
+    discord_task_notify(task); db_pushLiveStatus();
+    return;
+  }
   if (!task.timeHrs && !task.timeMins) {
     var bid = 'body-'+(isExtra?'e':'t')+i;
     var el  = document.getElementById(bid);
@@ -1105,6 +1198,7 @@ function markDone(i, isExtra) {
   task.done = true; task.skipped = false;
   task.tickedAt = new Date().toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:false});
   renderTasks(); showToast('Task marked complete &#10003;');
+  discord_task_notify(task); db_pushLiveStatus();
 }
 
 function removeExtra(i) { state.extraTasks.splice(i,1); renderTasks(); }
@@ -1129,6 +1223,7 @@ function confirmSkip() {
 
 function startTimer() {
   clearInterval(state.timerInterval);
+  clearInterval(state.liveInterval);
   state.timerInterval = setInterval(function() {
     if (!state.shiftStart) return;
     var ms = Date.now() - state.shiftStart - state.totalBreakMs;
@@ -1138,6 +1233,9 @@ function startTimer() {
     document.getElementById('shift-timer').textContent = h+':'+m+':'+s;
     updateStats();
   }, 1000);
+  // Push live status to Supabase every 60 seconds
+  db_pushLiveStatus();
+  state.liveInterval = setInterval(function() { db_pushLiveStatus(); }, 60000);
 }
 
 function toggleBreak() {
@@ -1152,6 +1250,7 @@ function toggleBreak() {
     btn.style.color='var(--amber)';
     btn.style.borderColor='rgba(255,184,48,0.6)';
     overlay.style.display='flex';
+    db_pushLiveStatus();
   } else {
     var endMs=Date.now();
     var endTime=new Date().toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:true});
@@ -1169,6 +1268,7 @@ function toggleBreak() {
     btn.style.borderColor='rgba(255,184,48,0.4)';
     overlay.style.display='none';
     showToast('Break ended - back to it!');
+    db_pushLiveStatus();
   }
 }
 
@@ -1252,8 +1352,9 @@ function submitEOD() {
 }
 
 function resetShift() {
-  Object.assign(state,{currentVA:null,shiftStart:null,onBreak:false,breakStart:null,totalBreakMs:0,pendingSkipTask:null,tasks:[],extraTasks:[],breaks:[],submitted:false});
+  Object.assign(state,{currentVA:null,shiftStart:null,onBreak:false,breakStart:null,totalBreakMs:0,pendingSkipTask:null,tasks:[],extraTasks:[],breaks:[],submitted:false,liveInterval:null});
   clearInterval(state.timerInterval);
+  clearInterval(state.liveInterval);
   document.getElementById('eod-notes').value='';
   document.getElementById('shift-screen').style.display='none';
   document.getElementById('report-btn').style.display='none';
@@ -1572,7 +1673,7 @@ function mgr_flagBanner(log){
     if(!log.some(function(r){return r.va==='Mera'&&r.date===today;})) flags.push("Mera hasn't submitted today");
     if(!log.some(function(r){return r.va==='Suz'&&r.date===today;})) flags.push("Suz hasn't submitted today");
   }
-  var tr=log.filter(function(r){return r.date===today&&r.va!=='Test';});
+  var tr=log.filter(function(r){return r.date===today;});
   if(tr.some(function(r){return !parseInt(r.totalLeads);})) flags.push('Zero leads on a shift today');
   if(tr.some(function(r){return r.tasksSkipped>0;})) flags.push('Mandatory task skipped today');
   var issues=mgr_getReports().filter(function(r){return r.time&&r.time.indexOf(today)>=0;});
@@ -2408,7 +2509,7 @@ function mgr_renderMTD(){
 var mgr_currentTab='overview';
 function mgr_switchTab(tab){
   mgr_currentTab=tab;
-  ['overview','today','mera','suz','issues','week','mtd'].forEach(function(t){
+  ['overview','today','mera','suz','test','issues','week','mtd','live'].forEach(function(t){
     var el=document.getElementById('mgr-tab-'+t);if(el) el.style.display='none';
     var b=document.getElementById('tab-'+t);if(b) b.classList.remove('active-tab');
   });
@@ -2418,10 +2519,142 @@ function mgr_switchTab(tab){
   if(tab==='today')    mgr_renderToday();
   if(tab==='mera')     mgr_renderVA('Mera','mgr-mera-content');
   if(tab==='suz')      mgr_renderVA('Suz','mgr-suz-content');
+  if(tab==='test')     mgr_renderTest();
   if(tab==='issues')   mgr_renderIssues();
   if(tab==='week')     mgr_renderWeek();
   if(tab==='mtd')      mgr_renderMTD();
+  if(tab==='live')     mgr_renderLive();
 }
+async function mgr_renderLive(){
+  var el=document.getElementById('mgr-live-content');
+  if(!el) return;
+
+  // Auto-refresh every 60s while on this tab
+  clearInterval(window._liveRefreshInterval);
+  window._liveRefreshInterval=setInterval(function(){
+    if(mgr_currentTab==='live') mgr_renderLive();
+    else clearInterval(window._liveRefreshInterval);
+  },60000);
+
+  el.innerHTML='<div style="color:#555;font-size:12px;padding:20px 0;">Fetching live status...</div>';
+
+  if(!DB_ENABLED){
+    el.innerHTML='<div style="color:#555;font-size:13px;padding:20px 0;">⚠ Supabase not configured — live view unavailable.</div>';
+    return;
+  }
+
+  var rows=null;
+  try{
+    var res=await fetch(SUPABASE_URL+'/rest/v1/live_status?select=*',{
+      headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY}
+    });
+    rows=await res.json();
+  }catch(e){ rows=[]; }
+
+  var vas=['Mera','Suz'];
+  var byVA={};
+  (rows||[]).forEach(function(r){ byVA[r.va]=r.data; });
+
+  var now=new Date();
+  var html='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">'
+    +'<div style="font-size:10px;color:#555;letter-spacing:1px;">Updates every 60s &nbsp;·&nbsp; Last fetched: '+now.toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:true})+' UK</div>'
+    +'<button onclick="mgr_renderLive()" style="background:rgba(0,255,179,0.1);border:1px solid rgba(0,255,179,0.3);color:#00ffb3;font-family:var(--font-mono);font-size:11px;padding:6px 14px;border-radius:8px;cursor:pointer;">↻ Refresh now</button>'
+    +'</div>';
+
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">';
+
+  vas.forEach(function(va){
+    var s=byVA[va];
+    var isMera=va==='Mera';
+    var accentCol=isMera?'#d580ff':SUZ_COL;
+    var cardBg=isMera?'#1a0a2e':'#1a1500';
+    var borderCol=isMera?'#9b40ff':SUZ_COL;
+
+    if(!s){
+      html+='<div style="border-radius:14px;overflow:hidden;background:'+cardBg+';border:1px solid rgba(255,255,255,0.06);border-top:4px solid #222;">'
+        +'<div style="padding:20px 24px;">'
+        +'<div style="font-family:var(--font-head);font-size:22px;font-weight:800;color:'+accentCol+';margin-bottom:8px;">'+va+'</div>'
+        +'<div style="font-size:13px;color:#444;">No active shift data yet.<br>Will appear here once '+va+' starts a shift.</div>'
+        +'</div></div>';
+      return;
+    }
+
+    var isOnBreak=s.onBreak;
+    var isSubmitted=s.submitted;
+    var statusCol=isSubmitted?'#9b8fff':isOnBreak?'#FFD700':'#00ffb3';
+    var statusBg=isSubmitted?'rgba(155,143,255,0.12)':isOnBreak?'rgba(255,215,0,0.1)':'rgba(0,255,179,0.1)';
+    var statusTxt=isSubmitted?'✓ Shift submitted':isOnBreak?'☕ On break':'● Active';
+    var taskPct=s.totalTasks>0?Math.round(s.tasksDone/s.totalTasks*100):0;
+    var lph=s.hoursWorked>0?(s.totalLeads/parseFloat(s.hoursWorked)).toFixed(1):'-';
+
+    html+='<div style="border-radius:14px;overflow:hidden;background:'+cardBg+';border:1px solid rgba(255,255,255,0.07);border-top:4px solid '+borderCol+';">'
+      +'<div style="padding:20px 24px;">'
+      // Header row
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">'
+      +'<div style="font-family:var(--font-head);font-size:22px;font-weight:800;color:'+accentCol+';">'+va+'</div>'
+      +'<div style="background:'+statusBg+';border:1px solid '+statusCol+'44;border-radius:20px;padding:5px 14px;font-size:11px;color:'+statusCol+';font-weight:600;">'+statusTxt+'</div>'
+      +'</div>'
+      // Current task
+      +'<div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px 16px;margin-bottom:14px;border-left:3px solid '+borderCol+';">'
+      +'<div style="font-size:9px;color:#555;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px;">'+(isOnBreak?'On break since':'Current task')+'</div>'
+      +'<div style="font-size:13px;color:#ddd;font-weight:500;">'+s.currentTask+'</div>'
+      +(s.lastCompletedTask&&s.lastCompletedTask!=='—'?'<div style="font-size:10px;color:#444;margin-top:4px;">Last done: '+s.lastCompletedTask+(s.lastTickedAt?' at '+s.lastTickedAt:'')+'</div>':'')
+      +'</div>'
+      // Stats row
+      +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;">'
+      +[
+        {l:'Hours',v:s.hoursWorked+'h',c:parseFloat(s.hoursWorked)>=8?'#00ffb3':'#ff4466'},
+        {l:'Leads',v:String(s.totalLeads),c:'#00ffb3'},
+        {l:'L/Hr',v:lph,c:'#9b8fff'},
+        {l:'Break',v:s.totalBreakMins+'m',c:'#FFD700'}
+      ].map(function(x){
+        return '<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:8px;text-align:center;">'
+          +'<div style="font-size:8px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;">'+x.l+'</div>'
+          +'<div style="font-family:var(--font-mono);font-size:18px;font-weight:700;color:'+x.c+';">'+x.v+'</div>'
+          +'</div>';
+      }).join('')
+      +'</div>'
+      // Task progress bar
+      +'<div>'
+      +'<div style="display:flex;justify-content:space-between;font-size:10px;color:#555;margin-bottom:5px;">'
+      +'<span>Tasks '+s.tasksDone+'/'+s.totalTasks+'</span><span>'+taskPct+'%</span>'
+      +'</div>'
+      +'<div style="height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;">'
+      +'<div style="height:100%;width:'+taskPct+'%;background:'+borderCol+';border-radius:3px;transition:width 0.5s;"></div>'
+      +'</div>'
+      +'</div>'
+      // Footer
+      +'<div style="font-size:9px;color:#333;margin-top:12px;">Started '+s.shiftStart+' · Updated '+s.lastUpdated+' UK</div>'
+      +'</div></div>';
+  });
+
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+function mgr_renderTest(){
+  var log=mgr_getLog();
+  var recs=log.filter(function(r){return r.va==='Test';});
+  var vc={Test:'#00ffb3'};
+  var html='<div style="font-size:12px;color:#555;margin-bottom:16px;">All shifts logged under the Test VA — for Jack\'s testing only.</div>';
+  if(!recs.length){
+    html+='<div style="color:#333;font-size:13px;padding:20px 0;">No test shifts yet. Log in as Test and submit an EOD to see it here.</div>';
+  } else {
+    html+=mgr_section('Test Shifts ('+recs.length+')');
+    html+=mgr_shiftGroup(recs,'Test');
+    var realNotes=recs.filter(function(r){return mgr_isRealNote(r.notes);});
+    if(realNotes.length){
+      html+=mgr_section('💬 Notes');
+      html+=mgr_collapsibleNotes(recs,vc);
+    }
+  }
+  html+='<div style="margin-top:24px;border-top:1px solid rgba(255,255,255,0.05);padding-top:16px;">'
+    +'<button onclick="if(confirm(\'Delete all Test shifts?\')){var l=mgr_getLog().filter(function(r){return r.va!==\'Test\';});localStorage.setItem(\'shifttrack_eod_log\',JSON.stringify(l));mgr_renderTest();showToast(\'Test shifts cleared\');}" '
+    +'style="background:rgba(255,68,102,0.08);border:1px solid rgba(255,68,102,0.2);color:#ff4466;font-family:var(--font-mono);font-size:11px;padding:8px 16px;border-radius:8px;cursor:pointer;">🗑 Clear all test shifts</button>'
+    +'</div>';
+  document.getElementById('mgr-test-content').innerHTML=html;
+}
+
 function renderManagerLog(){mgr_renderAll();}
 
 // ── FAKE DATA INJECTION ──────────────────────────────────
