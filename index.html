@@ -530,6 +530,7 @@
       <div class="shift-controls" style="flex:1;">
         <div class="status-badge"><div class="status-dot"></div>ACTIVE</div>
         <div class="timer" id="shift-timer" style="font-size:22px;letter-spacing:2px;padding:0 12px;">00:00:00</div>
+        <button onclick="saveShiftDraft(true)" id="save-btn" style="padding:10px 18px;font-size:13px;font-weight:700;border-radius:10px;background:rgba(0,255,179,0.1);border:2px solid rgba(0,255,179,0.3);color:#00ffb3;letter-spacing:0.5px;transition:all 0.2s;cursor:pointer;" title="Save progress to cloud — use before restarting your laptop">💾 Save</button>
         <button class="btn" onclick="toggleBreak()" id="break-btn" style="margin-left:auto;padding:14px 32px;font-size:16px;font-weight:700;border-radius:14px;background:rgba(255,184,48,0.15);border:2px solid rgba(255,184,48,0.5);color:var(--amber);letter-spacing:0.5px;min-width:180px;transition:all 0.2s;">&#9749; Take a Break</button>
       </div>
     </div>
@@ -856,6 +857,122 @@ async function db_pushLiveStatus() {
   } catch(e) { console.error('Live push error:',e); }
 }
 
+// ── DRAFT SHIFT SAVE / RESTORE ───────────────────────────
+async function saveShiftDraft(manual) {
+  if (!DB_ENABLED || !state.currentVA || state.currentVA === 'Test' || !state.shiftStart) return;
+  if (state.submitted) return; // Don't save drafts after EOD submitted
+
+  // Capture exact elapsed ms so timer restores perfectly
+  var elapsedMs = Date.now() - state.shiftStart - state.totalBreakMs;
+
+  var draft = {
+    va: state.currentVA,
+    shiftStart: state.shiftStart,         // original epoch ms
+    totalBreakMs: state.totalBreakMs,     // total break ms accumulated
+    elapsedMs: elapsedMs,                 // exact worked ms at save time
+    savedAt: Date.now(),                  // when we saved (to recalculate on restore)
+    onBreak: state.onBreak,
+    breaks: state.breaks,
+    newsletterDay: state._newsletterDay || false,
+    tasks: state.tasks.map(function(t) { return JSON.parse(JSON.stringify(t)); }),
+    extraTasks: state.extraTasks.map(function(t) { return JSON.parse(JSON.stringify(t)); })
+  };
+
+  try {
+    await fetch(SUPABASE_URL + '/rest/v1/draft_shifts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify({
+        va: state.currentVA,
+        date: ukDateShort(),
+        updated_at: new Date().toISOString(),
+        data: draft
+      })
+    });
+    if (manual) {
+      var btn = document.getElementById('save-btn');
+      if (btn) {
+        btn.textContent = '✓ Saved!';
+        btn.style.background = 'rgba(0,255,179,0.25)';
+        btn.style.borderColor = '#00ffb3';
+        setTimeout(function() {
+          btn.textContent = '💾 Save';
+          btn.style.background = 'rgba(0,255,179,0.1)';
+          btn.style.borderColor = 'rgba(0,255,179,0.3)';
+        }, 3000);
+      }
+      showToast('Shift saved to cloud ✓ Safe to restart');
+    }
+  } catch(e) {
+    if (manual) showToast('Save failed — check your connection', true);
+    console.error('Draft save error:', e);
+  }
+}
+
+async function deleteDraft(va) {
+  if (!DB_ENABLED) return;
+  try {
+    await fetch(SUPABASE_URL + '/rest/v1/draft_shifts?va=eq.' + va, {
+      method: 'DELETE',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+      }
+    });
+  } catch(e) { console.error('Draft delete error:', e); }
+}
+
+async function checkAndRestoreDraft(va) {
+  if (!DB_ENABLED) return false;
+  try {
+    var res = await fetch(SUPABASE_URL + '/rest/v1/draft_shifts?va=eq.' + va + '&select=*', {
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+      }
+    });
+    var rows = await res.json();
+    if (!rows || !rows.length) return false;
+
+    var row = rows[0];
+    var draft = row.data;
+
+    // Only restore if draft is from today
+    if (row.date !== ukDateShort()) {
+      await deleteDraft(va);
+      return false;
+    }
+
+    // Recalculate shiftStart so timer is accurate
+    // elapsedMs = how much was worked at save time
+    // savedAt = when it was saved
+    // Time since save = Date.now() - savedAt (minus any new break time, which we can't know)
+    // So shiftStart = Date.now() - elapsedMs - (Date.now() - savedAt) - totalBreakMs
+    // Simplified: shiftStart = savedAt - elapsedMs - totalBreakMs
+    var reconstructedStart = draft.savedAt - draft.elapsedMs - draft.totalBreakMs;
+
+    state.currentVA = va;
+    state.shiftStart = reconstructedStart;
+    state.totalBreakMs = draft.totalBreakMs || 0;
+    state.onBreak = false; // Can't restore mid-break safely
+    state.breaks = draft.breaks || [];
+    state.tasks = draft.tasks || [];
+    state.extraTasks = draft.extraTasks || [];
+    state._newsletterDay = draft.newsletterDay || false;
+    state.submitted = false;
+
+    return true;
+  } catch(e) {
+    console.error('Draft restore error:', e);
+    return false;
+  }
+}
+
 function ukNow() { return new Date(new Date().toLocaleString('en-GB',{timeZone:'Europe/London'})); }
 // Suz colour — locked
 var SUZ_COL='#FFEB3B';
@@ -972,7 +1089,49 @@ function unlockManager() {
   } else if (pin !== null) { showToast('Incorrect PIN', true); }
 }
 function selectVA(va) {
-  if (va === 'Mera') {
+  // Check Supabase for an in-progress draft first
+  if ((va === 'Mera' || va === 'Suz') && DB_ENABLED) {
+    document.getElementById('login-screen').style.display = 'none';
+    // Show a brief loading state
+    var loadDiv = document.createElement('div');
+    loadDiv.id = 'draft-check-loading';
+    loadDiv.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:14px;';
+    loadDiv.innerHTML = '<div style="font-family:var(--font-head);font-size:22px;color:#9b8fff;">Checking for saved shift...</div>'
+      + '<div style="font-size:12px;color:#555;">Restoring your progress if found</div>';
+    document.body.appendChild(loadDiv);
+
+    checkAndRestoreDraft(va).then(function(restored) {
+      var ld = document.getElementById('draft-check-loading');
+      if (ld) ld.remove();
+
+      if (restored) {
+        // Draft found — go straight into shift, skip setup
+        document.getElementById('mera-setup').style.display = 'none';
+        document.getElementById('suz-setup').style.display = 'none';
+        document.getElementById('shift-screen').style.display = 'block';
+        document.getElementById('view-va').classList.remove('setup-active');
+        document.getElementById('report-btn').style.display = 'block';
+        document.getElementById('shift-va-name').textContent = va + "'s Shift";
+        document.getElementById('shift-date').textContent = ukDateString();
+        document.getElementById('eod-form').style.display = 'block';
+        document.getElementById('eod-report').classList.remove('show');
+        renderTasks();
+        startTimer();
+        showToast('✓ Shift restored — picked up where you left off!');
+      } else {
+        // No draft — show normal setup screen
+        document.getElementById('login-screen').style.display = 'none';
+        if (va === 'Mera') {
+          document.getElementById('mera-setup').style.display = 'flex';
+          document.getElementById('suz-setup').style.display = 'none';
+        } else {
+          document.getElementById('suz-setup').style.display = 'flex';
+          document.getElementById('mera-setup').style.display = 'none';
+        }
+        document.getElementById('view-va').classList.add('setup-active');
+      }
+    });
+  } else if (va === 'Mera') {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('mera-setup').style.display = 'flex';
     document.getElementById('suz-setup').style.display = 'none';
@@ -982,7 +1141,9 @@ function selectVA(va) {
     document.getElementById('suz-setup').style.display = 'flex';
     document.getElementById('mera-setup').style.display = 'none';
     document.getElementById('view-va').classList.add('setup-active');
-  } else { startShift(va, false); }
+  } else {
+    startShift(va, false);
+  }
 }
 
 // ── START SHIFT ──────────────────────────────────────────
@@ -991,6 +1152,7 @@ function startShift(va, newsletterDay) {
   state.shiftStart = new Date();
   state.totalBreakMs = 0;
   state.onBreak = false;
+  state._newsletterDay = newsletterDay;
 
   var base  = taskTemplates[va] || [];
   var tasks = base.map(function(t) {
@@ -1183,7 +1345,7 @@ function markDone(i, isExtra) {
     task.done = true; task.skipped = false;
     task.tickedAt = new Date().toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:false});
     renderTasks(); showToast('Task marked complete &#10003;');
-    discord_task_notify(task); db_pushLiveStatus();
+    discord_task_notify(task); db_pushLiveStatus(); saveShiftDraft(false);
     return;
   }
   if (!task.timeHrs && !task.timeMins) {
@@ -1198,7 +1360,7 @@ function markDone(i, isExtra) {
   task.done = true; task.skipped = false;
   task.tickedAt = new Date().toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:false});
   renderTasks(); showToast('Task marked complete &#10003;');
-  discord_task_notify(task); db_pushLiveStatus();
+  discord_task_notify(task); db_pushLiveStatus(); saveShiftDraft(false);
 }
 
 function removeExtra(i) { state.extraTasks.splice(i,1); renderTasks(); }
@@ -1234,8 +1396,13 @@ function startTimer() {
     updateStats();
   }, 1000);
   // Push live status to Supabase every 60 seconds
+  // Auto-save draft every 2 minutes
   db_pushLiveStatus();
-  state.liveInterval = setInterval(function() { db_pushLiveStatus(); }, 60000);
+  saveShiftDraft(false);
+  state.liveInterval = setInterval(function() {
+    db_pushLiveStatus();
+    if(Date.now() % 120000 < 61000) saveShiftDraft(false); // every ~2 mins
+  }, 60000);
 }
 
 function toggleBreak() {
@@ -1250,7 +1417,7 @@ function toggleBreak() {
     btn.style.color='var(--amber)';
     btn.style.borderColor='rgba(255,184,48,0.6)';
     overlay.style.display='flex';
-    db_pushLiveStatus();
+    db_pushLiveStatus(); saveShiftDraft(false);
   } else {
     var endMs=Date.now();
     var endTime=new Date().toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:true});
@@ -1268,7 +1435,7 @@ function toggleBreak() {
     btn.style.borderColor='rgba(255,184,48,0.4)';
     overlay.style.display='none';
     showToast('Break ended - back to it!');
-    db_pushLiveStatus();
+    db_pushLiveStatus(); saveShiftDraft(false);
   }
 }
 
@@ -1322,6 +1489,7 @@ function submitEOD() {
 
   document.getElementById('eod-report-content').innerHTML = html;
   state.submitted = true;
+  deleteDraft(state.currentVA);
   document.getElementById('eod-report').classList.add('show');
   document.getElementById('eod-form').style.display = 'none';
   clearInterval(state.timerInterval);
