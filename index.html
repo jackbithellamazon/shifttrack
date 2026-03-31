@@ -566,20 +566,20 @@
       <h3>Submit EOD Report</h3>
       <!-- Keepa Tracker Count -->
       <div class="eod-field">
-        <label>Keepa Tracker Count &#8212; <strong>Required</strong></label>
+        <label>Keepa Trackers &#8212; <strong>How many ASINs are you tracking in Keepa right now?</strong></label>
         <div style="display:flex;gap:12px;align-items:flex-start;margin-top:4px;">
           <div style="flex:1;">
-            <div style="font-size:10px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">Added today</div>
-            <input type="number" id="keepa-today" min="0" placeholder="e.g. 12" style="width:100%;background:var(--bg);border:2px solid rgba(0,255,179,0.3);border-radius:10px;color:var(--text);font-family:var(--font-mono);font-size:20px;padding:12px 14px;outline:none;transition:border-color 0.2s;" oninput="updateKeepaTotal()" onfocus="this.style.borderColor='#00ffb3'" onblur="this.style.borderColor='rgba(0,255,179,0.3)'">
+            <div style="font-size:10px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">Your current total</div>
+            <input type="number" id="keepa-today" min="0" placeholder="e.g. 114" style="width:100%;background:var(--bg);border:2px solid rgba(0,255,179,0.3);border-radius:10px;color:var(--text);font-family:var(--font-mono);font-size:20px;padding:12px 14px;outline:none;transition:border-color 0.2s;" oninput="updateKeepaTotal()" onfocus="this.style.borderColor='#00ffb3'" onblur="this.style.borderColor='rgba(0,255,179,0.3)'">
           </div>
           <div style="flex:1;">
-            <div style="font-size:10px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">Running total <span id="keepa-first-time-label" style="color:#9b8fff;display:none;">(first time — enter your current total)</span></div>
+            <div style="font-size:10px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">Added today <span id="keepa-first-time-label" style="color:#9b8fff;display:none;">(first entry)</span></div>
             <div id="keepa-total-display" style="background:rgba(0,255,179,0.08);border:2px solid rgba(0,255,179,0.25);border-radius:10px;padding:12px 14px;font-family:var(--font-mono);font-size:20px;font-weight:700;color:#00ffb3;min-height:52px;">
               <span id="keepa-total-val">—</span>
             </div>
           </div>
         </div>
-        <div id="keepa-hint" style="font-size:10px;color:var(--muted);margin-top:8px;">Enter how many Keepa trackers you added today. Running total updates automatically.</div>
+        <div id="keepa-hint" style="font-size:10px;color:var(--muted);margin-top:8px;">Enter your current Keepa tracker total. We'll automatically show you how many you added today by comparing to yesterday.</div>
       </div>
       <div class="eod-field">
         <label>Notes for Jack <span style="color:var(--muted);font-size:10px;">(optional)</span> &#8212; issues, observations, feedback, anything you noticed today</label>
@@ -917,7 +917,7 @@ async function db_pushLiveStatus() {
 }
 
 // ── DRAFT SHIFT SAVE / RESTORE ───────────────────────────
-async function saveShiftDraft(manual) {
+function saveShiftDraft(manual) {
   if (!DB_ENABLED || !state.currentVA || state.currentVA === 'Test' || !state.shiftStart) return;
   if (state.submitted) return; // Don't save drafts after EOD submitted
 
@@ -937,40 +937,43 @@ async function saveShiftDraft(manual) {
     extraTasks: state.extraTasks.map(function(t) { return JSON.parse(JSON.stringify(t)); })
   };
 
-  try {
-    await fetch(SUPABASE_URL + '/rest/v1/draft_shifts', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-        'Prefer': 'resolution=merge-duplicates'
-      },
-      body: JSON.stringify({
-        va: state.currentVA,
-        date: ukDateShort(),
-        updated_at: new Date().toISOString(),
-        data: draft
-      })
-    });
-    if (manual) {
-      var btn = document.getElementById('save-btn');
-      if (btn) {
-        btn.textContent = '✓ Saved!';
-        btn.style.background = 'rgba(0,255,179,0.25)';
-        btn.style.borderColor = '#00ffb3';
-        setTimeout(function() {
-          btn.textContent = '💾 Save';
-          btn.style.background = 'rgba(0,255,179,0.1)';
-          btn.style.borderColor = 'rgba(0,255,179,0.3)';
-        }, 3000);
+  fetch(SUPABASE_URL + '/rest/v1/draft_shifts', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+      'Prefer': 'resolution=merge-duplicates'
+    },
+    body: JSON.stringify({
+      va: state.currentVA,
+      date: ukDateShort(),
+      updated_at: new Date().toISOString(),
+      data: draft
+    })
+  }).then(function(response) {
+    if (response.ok) {
+      if (manual) {
+        var btn = document.getElementById('save-btn');
+        if (btn) {
+          btn.textContent = '✓ Saved!';
+          btn.style.background = 'rgba(0,255,179,0.25)';
+          btn.style.borderColor = '#00ffb3';
+          setTimeout(function() {
+            btn.textContent = '💾 Save';
+            btn.style.background = 'rgba(0,255,179,0.1)';
+            btn.style.borderColor = 'rgba(0,255,179,0.3)';
+          }, 3000);
+        }
+        showToast('Shift saved to cloud ✓ Safe to restart');
       }
-      showToast('Shift saved to cloud ✓ Safe to restart');
+    } else {
+      if (manual) showToast('Save failed — try again', true);
     }
-  } catch(e) {
-    if (manual) showToast('Save failed — check your connection', true);
+  }).catch(function(e) {
+    if (manual) showToast('Save failed — check connection', true);
     console.error('Draft save error:', e);
-  }
+  });
 }
 
 async function deleteDraft(va) {
