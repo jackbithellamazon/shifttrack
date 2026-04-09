@@ -709,7 +709,7 @@
 // ║  SHIFTTRACK CONFIG — paste your values below            ║
 // ╚══════════════════════════════════════════════════════════╝
 var SUPABASE_URL      = 'https://ffbdazepqrsyurhouxif.supabase.co';
-var SUPABASE_ANON_KEY = 'sb_publishable_Yjs2PFVqpPAXsaolv0XOJQ_GM4qmhbX';
+var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmYmRhemVwcXJzeXVyaG91eGlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4OTM5MjIsImV4cCI6MjA5MDQ2OTkyMn0.BAuodLUDGzO9A7IfoRRn0HZ1MgWOXNPeYKPDBNaNWeg';
 var DISCORD_WEBHOOK   = 'https://discord.com/api/webhooks/1485068125052604527/THtYQqLBNG-zQY_fueiTbh5b__SDKT6LZnht20lqiiRnFglgL0pTi1VFbi3Kny-xlP_V';
 var DISCORD_TASKS_WEBHOOK = 'https://discord.com/api/webhooks/1485788180526530691/VZNiu6UBQWEIlIQKgtaHdF1JXgaWQ3jPDUsdoivEA8Ds86N5ZQNEexor7qOAKagi3QKP';
 var DISCORD_BREAK_WEBHOOK = 'https://discord.com/api/webhooks/1486131251373936802/9ULnz729hYGZnA_wths6Rc_bGQcur2fk-OFogOMMOhcguFRXLRyTgNlI9EI6lgyv4Oxb';
@@ -1003,6 +1003,7 @@ async function checkAndRestoreDraft(va) {
 
     var row = rows[0];
     var draft = row.data;
+    if (!draft) return false;
 
     // Only restore if draft is from today
     if (row.date !== ukDateShort()) {
@@ -1010,18 +1011,44 @@ async function checkAndRestoreDraft(va) {
       return false;
     }
 
-    // Recalculate shiftStart so timer is accurate
-    // elapsedMs = how much was worked at save time
-    // savedAt = when it was saved
-    // Time since save = Date.now() - savedAt (minus any new break time, which we can't know)
-    // So shiftStart = Date.now() - elapsedMs - (Date.now() - savedAt) - totalBreakMs
-    // Simplified: shiftStart = savedAt - elapsedMs - totalBreakMs
-    var reconstructedStart = draft.savedAt - draft.elapsedMs - draft.totalBreakMs;
+    // Don't restore if already submitted today
+    if (draft.submitted) {
+      await deleteDraft(va);
+      return false;
+    }
+
+    // Check if EOD already submitted to Supabase today for this VA
+    try {
+      var eodRes = await fetch(SUPABASE_URL + '/rest/v1/shifts?va=eq.'+va+'&date=eq.'+ukDateShort()+'&select=id&limit=1', {
+        headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY}
+      });
+      var eodRows = await eodRes.json();
+      if (eodRows && eodRows.length) {
+        // Already submitted today — delete draft and don't restore
+        await deleteDraft(va);
+        return false;
+      }
+    } catch(e){}
+
+    // Staleness check — if draft is more than 16 hours old, discard it
+    var ageMs = Date.now() - (draft.savedAt || 0);
+    if (ageMs > 16 * 60 * 60 * 1000) {
+      await deleteDraft(va);
+      return false;
+    }
+
+    // ── TIMER FIX ──
+    // Use elapsedMs directly — this is how long she actually worked.
+    // Set shiftStart so that: Date.now() - shiftStart - totalBreakMs = elapsedMs
+    // Therefore: shiftStart = Date.now() - elapsedMs - totalBreakMs
+    var restoredElapsed = draft.elapsedMs || 0;
+    var restoredBreakMs = draft.totalBreakMs || 0;
+    var fakeShiftStart = Date.now() - restoredElapsed - restoredBreakMs;
 
     state.currentVA = va;
-    state.shiftStart = reconstructedStart;
-    state.totalBreakMs = draft.totalBreakMs || 0;
-    state.onBreak = false; // Can't restore mid-break safely
+    state.shiftStart = fakeShiftStart;
+    state.totalBreakMs = restoredBreakMs;
+    state.onBreak = false;
     state.breaks = draft.breaks || [];
     state.tasks = draft.tasks || [];
     state.extraTasks = draft.extraTasks || [];
