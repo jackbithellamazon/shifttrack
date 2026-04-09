@@ -1083,7 +1083,7 @@ var state = {
 var taskTemplates = {
   Mera: [
     { id:'leadsheet',    name:'Lead Sheet - Check Jack\'s comments & action everything',  mandatory:true,  hint:'If you disagree with a comment, message Jack with data.' },
-    { id:'telegram',     name:'Telegram - Keepa Tracker Check',                           mandatory:true,  hint:'Log and action anything relevant from notifications.' },
+    { id:'telegram',     name:'Telegram - Keepa Tracker Check',                           mandatory:true,  hint:'Check your Keepa tracker notifications — you should be getting 1-2 free leads every single day just from this. Items back in stock, price drops, deal alerts. This is easy leads for almost zero effort — do not skip it.' },
     // Newsletter slot A — after Telegram (only if newsletter day — injected in startShift)
     { id:'pp-main',      name:'PP Main Run - Deal Watch Mera + High Ticket A2A',           mandatory:true,  hint:'Run all your PP channels fully. Log all EU brand drops in chat.' },
     { id:'ht-filters',   name:'High Ticket & A2A Filters (Not Active)',                    mandatory:true,  hint:'To be added at a later date by Jack. Just tick off for now.' },
@@ -1092,7 +1092,7 @@ var taskTemplates = {
     { id:'sourcing',     name:'Sourcing Period - Your Own Sourcing Time',                  mandatory:true,  hint:'KPF (brand/category), Manual, Newsletter, Reverse KPF A2A, Arbi. Find a strong lead from a brand sale or promo - dig deep and pull multiple.', hasLinks:true },
     { id:'storefronts',  name:'Storefronts',                                               mandatory:true,  hint:'Usually late afternoon/evening UK time. If working - do them. If not - log reason and add to tomorrow\'s POA.', hasLinks:true },
     { id:'pp-light',     name:'PP Light Check (Later in Shift)',                           mandatory:true,  hint:'Quick scan for new pings only - do this later in your shift.' },
-    { id:'telegram-eod', name:'Telegram - End of Shift Check',                            mandatory:true,  hint:'Quick Telegram check before you finish. Log anything relevant.' },
+    { id:'telegram-eod', name:'Telegram - End of Shift Check',                            mandatory:true,  hint:'Quick Telegram check before you finish. There should be at least 2 leads added to your lead sheet from this — check for back in stock alerts, price drops and deal pings. Log anything relevant.' },
     { id:'oos-sheet',    name:'OOS Sheet (if needed)',                                     mandatory:false, hint:'Complete the OOS sheet if there are any out-of-stock items to log. Skip if nothing to report.', hasLinks:false },
     { id:'leadsheet-eod', name:'Lead Sheet - Final Check Before Logging Off',             mandatory:true,  hint:'Last thing before you finish — check the lead sheet one more time. Action any new comments Jack has left. Tick off when done.' }
   ],
@@ -1103,7 +1103,7 @@ var taskTemplates = {
     },
     {
       id:'suz-telegram', name:'Telegram - Keepa Tracker Check', mandatory:true,
-      hint:'Log and action anything relevant from notifications.'
+      hint:'Check your Keepa tracker notifications — you should be getting 1-2 free leads every single day just from this. Items back in stock, price drops, deal alerts. This is easy leads for almost zero effort — do not skip it.'
     },
     {
       id:'suz-pp', name:'ProfitPath Main Run (50spm-eu-suz / uk-a2a-suz / uk-biz-suz / no-variations-eu-suz / 20spm-eu-suz)', mandatory:true,
@@ -1135,7 +1135,7 @@ var taskTemplates = {
     },
     {
       id:'suz-telegram-eod', name:'Telegram - End of Shift Check', mandatory:true,
-      hint:'Quick Telegram check before you finish. Log anything relevant.'
+      hint:'Quick Telegram check before you finish. There should be at least 2 leads added to your lead sheet from this — check for back in stock alerts, price drops and deal pings. Log anything relevant.'
     },
     {
       id:'suz-oos-sheet', name:'OOS Sheet (if needed)', mandatory:false,
@@ -1360,7 +1360,7 @@ function buildFields(task, i, isExtra) {
     var msg = (task.id === 'ht-filters')
       ? '&#9203; High Ticket & A2A Filters coming soon. Jack will add these. Just tick off for now.'
       : (task.id === 'telegram-eod' || task.id === 'suz-telegram-eod')
-      ? '&#10003; Quick Telegram check before finishing. Log anything relevant. Tick off when done.'
+      ? '&#10003; Quick Telegram check before finishing. There should be at least 2 leads added to your lead sheet from this. Tick off when done.'
       : '&#10003; ' + (task.id === 'leadsheet-eod' || task.id === 'suz-leadsheet-eod'
           ? 'Final lead sheet check — action any new comments Jack has left. Tick off when done.'
           : 'Check Jack\'s comments on the lead sheet and action everything. Tick off when done.');
@@ -2830,40 +2830,39 @@ async function mgr_renderLive(){
 
   var vas=['Mera','Suz'];
   var byVA={};
-  (rows||[]).forEach(function(r){ byVA[r.va]=r.data; });
+  var rowByVA={};
+  (rows||[]).forEach(function(r){ byVA[r.va]=r.data; rowByVA[r.va]=r; });
   var today=mgr_ukToday();
   var now=new Date();
 
   function buildCard(va){
     var s=byVA[va];
+    var row=rowByVA[va]||null;
     var isMera=va==='Mera';
     var accentCol=isMera?'#d580ff':SUZ_COL;
     var borderCol=isMera?'#9b40ff':SUZ_COL;
 
-    // Check if data is from today
-    var isToday=s&&s.shiftStart; // has live data
-    // Check if submitted or stale (updated more than 2hrs ago)
+    // Show grey card if no data, submitted, or stale (not updated in 2+ hours)
     var isSubmitted=s&&s.submitted;
-    var stale=false;
-    if(s&&s.lastUpdated){
-      // crude staleness — if submitted, treat as off shift
-      stale=isSubmitted;
+    var isStale=false;
+    if(s&&row&&row.updated_at){
+      var ageMs=Date.now()-new Date(row.updated_at).getTime();
+      isStale=ageMs>2*60*60*1000;
     }
-
-    if(!s||stale){
+    if(!s||isSubmitted||isStale){
+      var subMsg = isSubmitted ? va+' has submitted their EOD — shift complete.' : va+' is not currently on shift.';
       return '<div style="border-radius:14px;border:1px solid #1a1a1a;border-top:4px solid #222;background:#0d0d0d;padding:20px 24px;">'
         +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">'
         +'<div style="font-family:var(--font-head);font-size:22px;font-weight:800;color:#333;">'+va+'</div>'
-        +'<div style="background:rgba(100,100,100,0.1);border:1px solid #222;border-radius:20px;padding:5px 14px;font-size:11px;color:#444;">⬤ No active shift</div>'
+        +'<div style="background:rgba(100,100,100,0.1);border:1px solid #222;border-radius:20px;padding:5px 14px;font-size:11px;color:#444;">⬤ '+(isSubmitted?'Shift submitted':'No active shift')+'</div>'
         +'</div>'
-        +'<div style="font-size:12px;color:#2a2a2a;margin-top:8px;">'+va+' is not currently on shift.</div>'
+        +'<div style="font-size:12px;color:#2a2a2a;margin-top:8px;">'+subMsg+'</div>'
         +'</div>';
     }
-
     var isOnBreak=s.onBreak;
-    var statusCol=isSubmitted?'#9b8fff':isOnBreak?'#FFD700':'#00ffb3';
-    var statusBg=isSubmitted?'rgba(155,143,255,0.1)':isOnBreak?'rgba(255,215,0,0.1)':'rgba(0,255,179,0.1)';
-    var statusTxt=isSubmitted?'✓ Submitted':isOnBreak?'☕ On break':'● Active';
+    var statusCol=isOnBreak?'#FFD700':'#00ffb3';
+    var statusBg=isOnBreak?'rgba(255,215,0,0.1)':'rgba(0,255,179,0.1)';
+    var statusTxt=isOnBreak?'☕ On break':'● Active';
     var taskPct=s.totalTasks>0?Math.round(s.tasksDone/s.totalTasks*100):0;
     var lph=parseFloat(s.hoursWorked)>0?(s.totalLeads/parseFloat(s.hoursWorked)).toFixed(1):'-';
     var hrsCol=parseFloat(s.hoursWorked)>=8?'#00ffb3':'#ff4466';
