@@ -713,6 +713,7 @@ var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 var DISCORD_WEBHOOK   = 'https://discord.com/api/webhooks/1485068125052604527/THtYQqLBNG-zQY_fueiTbh5b__SDKT6LZnht20lqiiRnFglgL0pTi1VFbi3Kny-xlP_V';
 var DISCORD_TASKS_WEBHOOK = 'https://discord.com/api/webhooks/1485788180526530691/VZNiu6UBQWEIlIQKgtaHdF1JXgaWQ3jPDUsdoivEA8Ds86N5ZQNEexor7qOAKagi3QKP';
 var DISCORD_BREAK_WEBHOOK = 'https://discord.com/api/webhooks/1486131251373936802/9ULnz729hYGZnA_wths6Rc_bGQcur2fk-OFogOMMOhcguFRXLRyTgNlI9EI6lgyv4Oxb';
+var DISCORD_SHIFT_START_WEBHOOK = 'https://discord.com/api/webhooks/1485068125052604527/THtYQqLBNG-zQY_fueiTbh5b__SDKT6LZnht20lqiiRnFglgL0pTi1VFbi3Kny-xlP_V';
 
 var DB_ENABLED = SUPABASE_URL !== 'YOUR_SUPABASE_URL';
 
@@ -874,6 +875,22 @@ async function discord_break_notify(isStart, breakDurationMins) {
       }]})
     });
   } catch(e) { console.error('Break notify error:',e); }
+}
+
+// ── DISCORD SHIFT START NOTIFICATION ────────────────────
+async function discord_shift_start_notify(va) {
+  if (!DISCORD_SHIFT_START_WEBHOOK || DISCORD_SHIFT_START_WEBHOOK === 'YOUR_SHIFT_START_WEBHOOK') return;
+  if (!va || va === 'Test') return;
+  var isMera = va === 'Mera';
+  var emoji = isMera ? '🟣' : '🟡';
+  var startTime = new Date().toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:true});
+  try {
+    await fetch(DISCORD_SHIFT_START_WEBHOOK, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({content: emoji+' **'+va+'** has started their shift · '+startTime+' UK'})
+    });
+  } catch(e) { console.error('Shift start notify error:',e); }
 }
 
 async function db_pushLiveStatus() {
@@ -1207,6 +1224,7 @@ function selectVA(va) {
         renderTasks();
         startTimer();
         showToast('✓ Shift restored — picked up where you left off!');
+        discord_shift_start_notify(va);
       } else {
         // No draft — show normal setup screen
         document.getElementById('login-screen').style.display = 'none';
@@ -1295,6 +1313,7 @@ function startShift(va, newsletterDay) {
   showWelcome(va);
   // Load previous Keepa total for this VA
   if (va !== 'Test') keepaLoadPrevTotal(va);
+  if (va !== 'Test') discord_shift_start_notify(va);
 }
 
 // ── RENDER TASKS ─────────────────────────────────────────
@@ -1982,12 +2001,38 @@ function mgr_hoursColour(weekHrs, weekShifts){
 // Shows leads by task type — sourcing dominates by design (it's the main job)
 // Use this to spot WHICH tasks within sourcing are underperforming
 function mgr_sourcing(recs,va){
-  var tm={sourcing:'Sourcing','suz-sourcing':'Sourcing','kpf-daily':'KPF 7-Day','suz-kpf-daily':'KPF Filters','kpf-tue':'KPF Tue','kpf-thu':'KPF Thu','jack-poa':'Jack POA','suz-jack-poa':'Jack POA','pp-main':'PP Main','suz-pp':'PP Main',storefronts:'Storefronts','suz-storefronts':'Storefronts','newsletter-a':'Newsletter A','newsletter-b':'Newsletter B','pp-light':'PP Light','suz-pp-light':'PP Light',telegram:'Telegram','suz-telegram':'Telegram',eu:'EU Sheet','suz-eu':'EU Sheet'};
+  // Map task IDs to display names — lead sheet / telegram-eod excluded (they never produce leads)
+  var tm={
+    'sourcing':'Own Sourcing (Manual/Brand)',
+    'suz-sourcing':'Own Sourcing (Manual/Brand)',
+    'kpf-daily':'KPF Filters — 7 Day Drops',
+    'suz-kpf-daily':'KPF Filters — Daily',
+    'kpf-tue':'KPF Filters — Tuesday (Laptops & Hoovers)',
+    'kpf-thu':'KPF Filters — Thursday',
+    'jack-poa':'Jack POA / Filters',
+    'suz-jack-poa':'Jack POA / Filters',
+    'pp-main':'PP Main Run',
+    'suz-pp':'PP Main Run',
+    'storefronts':'Storefronts',
+    'suz-storefronts':'Storefronts',
+    'newsletter-a':'Newsletter Check (Morning)',
+    'newsletter-b':'Newsletter Check (Sourcing Block)',
+    'pp-light':'PP Light Check',
+    'suz-pp-light':'PP Light Check',
+    'telegram':'Telegram / Keepa Check',
+    'suz-telegram':'Telegram / Keepa Check',
+    'suz-eu':'EU Sheets',
+    'oos-sheet':'OOS Sheet',
+    'suz-oos-sheet':'OOS Sheet'
+  };
+  // Tasks that are pure admin — never count in sourcing breakdown
+  var excludeIds=['leadsheet','suz-leadsheet','leadsheet-eod','suz-leadsheet-eod','telegram-eod','suz-telegram-eod','ht-filters'];
   var bd={};
   (va?recs.filter(function(r){return r.va===va;}):recs).forEach(function(r){
     (r.tasks||[]).forEach(function(t){
-      var l=parseInt(t.leads)||0;if(!l) return;
-      var k=tm[t.id]||t.name.substring(0,24);
+      var l=parseInt(t.leads)||0; if(!l) return;
+      if(excludeIds.indexOf(t.id)>=0) return; // skip admin tasks
+      var k=tm[t.id]||(t.name.length>32?t.name.substring(0,32)+'…':t.name);
       if(!bd[k]) bd[k]={leads:0,m:0,s:0};
       bd[k].leads+=l;
       if(r.va==='Mera') bd[k].m+=l; else bd[k].s+=l;
@@ -2847,7 +2892,7 @@ async function mgr_renderLive(){
     var isStale=false;
     if(s&&row&&row.updated_at){
       var ageMs=Date.now()-new Date(row.updated_at).getTime();
-      isStale=ageMs>2*60*60*1000;
+      isStale=ageMs>6*60*60*1000;
     }
     if(!s||isSubmitted||isStale){
       var subMsg = isSubmitted ? va+' has submitted their EOD — shift complete.' : va+' is not currently on shift.';
