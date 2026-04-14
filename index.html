@@ -1224,7 +1224,6 @@ function selectVA(va) {
         renderTasks();
         startTimer();
         showToast('✓ Shift restored — picked up where you left off!');
-        discord_shift_start_notify(va);
       } else {
         // No draft — show normal setup screen
         document.getElementById('login-screen').style.display = 'none';
@@ -1833,9 +1832,12 @@ function mgr_shiftCard(r,expanded){
   var leadsCol=parseInt(r.totalLeads)>0?'#fff':'#ff8888';
   var flags='';
   if(r.tasksSkipped>0) flags+='<span style="background:rgba(255,68,102,0.3);border-radius:4px;padding:1px 6px;font-size:9px;color:#ff9999;margin-left:6px;">skipped</span>';
+  var adminTaskIds=['leadsheet','suz-leadsheet','leadsheet-eod','suz-leadsheet-eod','telegram-eod','suz-telegram-eod','ht-filters'];
   var taskRows='';
   (r.tasks||[]).filter(function(t){return t.done||t.skipped;}).forEach(function(t){
+    var isAdmin=adminTaskIds.indexOf(t.id)>=0;
     var ts=t.skipped?'<span style="color:#ff6666;font-size:11px;">SKIPPED</span>'
+      :isAdmin?'<span style="color:#00ffb3;font-size:11px;">✓ done</span>'
       :'<span style="color:#00ffb3;font-size:11px;">✓ '+(t.leads||0)+' leads'+(t.time?' · '+t.time:'')+'</span>';
     taskRows+='<div style="display:flex;justify-content:space-between;padding:5px 0;border-top:1px solid rgba(255,255,255,0.07);font-size:11px;gap:8px;"><span style="color:#aaa;flex:1;">'+t.name+'</span>'+ts+'</div>';
   });
@@ -3105,23 +3107,20 @@ function mgr_renderKeepa(){
   function fmtDate(d){var p=d.split('/');return p[0]+' '+months[parseInt(p[1])-1];}
 
   var mByDate={},sByDate={};
-  mRecs.forEach(function(r){mByDate[r.date]=getKT(r);});
-  sRecs.forEach(function(r){sByDate[r.date]=getKT(r);});
+  mRecs.forEach(function(r){mByDate[r.date]=getKC(r);});
+  sRecs.forEach(function(r){sByDate[r.date]=getKC(r);});
 
-  // Fill forward — carry last known total
+  // Daily additions — only show days with data, no fill-forward
   var mData=[],sData=[];
-  var lastM=0,lastS=0;
   allDates.forEach(function(d){
-    if(mByDate[d]!==undefined) lastM=mByDate[d];
-    if(sByDate[d]!==undefined) lastS=sByDate[d];
-    mData.push(lastM||null);
-    sData.push(lastS||null);
+    mData.push(mByDate[d]!==undefined?mByDate[d]:null);
+    sData.push(sByDate[d]!==undefined?sByDate[d]:null);
   });
 
   var labels=allDates.map(fmtDate);
   var chartId='keepa-chart-'+Date.now();
 
-  html+=mgr_section('📈 Keepa Tracker Growth');
+  html+=mgr_section('📈 Keepa Trackers — Daily Additions');
 
   if(!allDates.length){
     html+='<div style="color:#333;font-size:13px;padding:20px 0;">No Keepa data yet — will appear here once VAs start submitting their counts.</div>';
