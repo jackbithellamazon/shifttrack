@@ -3458,204 +3458,203 @@ function mgr_injectFakeData(){
 
 var mgr_weekOffset=0;
 // ── WEEKLY REVIEW ────────────────────────────────────────
-async function sendWeeklyReview() {
+async function sendWeeklyReview(isAutoSunday) {
   if (!DISCORD_WEEKLY_WEBHOOK) return;
-  var log = mgr_getLog().filter(function(r){ return r.va !== 'Test'; });
-
-  // Work out Mon-Sun of the week just ended
-  var now = ukNow();
-  var day = now.getDay(); // 0=Sun
-  var daysSinceMon = day === 0 ? 6 : day - 1;
-  var mon = new Date(now); mon.setDate(now.getDate() - daysSinceMon);
-  var sun = new Date(mon); sun.setDate(mon.getDate() + 6);
-  function fmtD(d){ return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }
-  function dateStr(d){ return d.toLocaleDateString('en-GB'); }
-
-  var weekDates = [];
-  for(var i=0;i<7;i++){ var d=new Date(mon); d.setDate(mon.getDate()+i); weekDates.push(dateStr(d)); }
-
-  var weekRecs = log.filter(function(r){ return weekDates.indexOf(r.date)>=0; });
-  var prevWeekDates = weekDates.map(function(d){ var x=new Date(d.split('/').reverse().join('-')); x.setDate(x.getDate()-7); return x.toLocaleDateString('en-GB'); });
-  var prevRecs = log.filter(function(r){ return prevWeekDates.indexOf(r.date)>=0; });
-
   var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  var monParts=dateStr(mon).split('/');
-  var sunParts=dateStr(sun).split('/');
-  var weekLabel='Mon '+monParts[0]+' '+months[parseInt(monParts[1])-1]+' → Sun '+sunParts[0]+' '+months[parseInt(sunParts[1])-1]+' '+sunParts[2];
 
-  function sumVA(recs, va){
-    var vr = recs.filter(function(r){ return r.va===va; });
-    var hrs=0,leads=0,tasks=0,skipped=0,days=vr.length,keepaDiff=0,oosHrs=0;
-    var taskLeads={};
-    var taskTimes={};
-    var dayLeads=[];
+  // Date setup — always current Mon → today (pro-rated mid-week)
+  var now = ukNow();
+  var dow = now.getDay();
+  var daysSinceMon = dow === 0 ? 6 : dow - 1;
+  var mon = new Date(now.getFullYear(), now.getMonth(), now.getDate() - daysSinceMon);
+  var sun = new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + 6);
+  var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  function toGB(d){
+    return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();
+  }
+  function fmtShort(d){ return d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear(); }
+
+  var weekDates=[], prevWeekDates=[];
+  for(var i=0;i<7;i++){
+    var wd=new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()+i);
+    var pd=new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()+i-7);
+    if(wd<=today) weekDates.push(toGB(wd));
+    prevWeekDates.push(toGB(pd));
+  }
+  var dip=weekDates.length, isPro=dip<7;
+  var label=isPro?'Mon '+fmtShort(mon)+' \u2192 Today ('+dip+' day'+(dip>1?'s':'')+' \u2014 week in progress)':'Mon '+fmtShort(mon)+' \u2192 Sun '+fmtShort(sun);
+
+  // Load from Supabase
+  var allRecs=[];
+  try {
+    var res=await fetch(SUPABASE_URL+'/rest/v1/shifts?select=*&order=submitted_at.desc&limit=300',{
+      headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY}
+    });
+    var rows=await res.json();
+    if(rows&&rows.length){
+      rows.forEach(function(r){
+        if(r.va==='Test') return;
+        var rec=r.data||{};
+        rec.va=r.va; rec.date=r.date||rec.date;
+        rec.hoursWorked=rec.hoursWorked||0; rec.totalLeads=rec.totalLeads||0;
+        rec.tasksDone=rec.tasksDone||0; rec.tasksSkipped=rec.tasksSkipped||0;
+        rec.keepaCount=r.keepa_count||rec.keepaCount||0; rec.tasks=rec.tasks||[];
+        allRecs.push(rec);
+      });
+    }
+  } catch(e){
+    allRecs=mgr_getLog().filter(function(r){return r.va!=='Test';});
+  }
+
+  var weekRecs=allRecs.filter(function(r){return weekDates.indexOf(r.date)>=0;});
+  var prevRecs=allRecs.filter(function(r){return prevWeekDates.indexOf(r.date)>=0;});
+
+  function sumVA(recs,va){
+    var vr=recs.filter(function(r){return r.va===va;});
+    var hrs=0,leads=0,tasks=0,skipped=0,keepaDiff=0,oosHrs=0,taskLeads={},taskTimes={},dayLeads=[];
     vr.forEach(function(r){
-      hrs+=parseFloat(r.hoursWorked)||0;
-      leads+=parseInt(r.totalLeads)||0;
-      tasks+=parseInt(r.tasksDone)||0;
-      skipped+=parseInt(r.tasksSkipped)||0;
+      hrs+=parseFloat(r.hoursWorked)||0; leads+=parseInt(r.totalLeads)||0;
+      tasks+=parseInt(r.tasksDone)||0; skipped+=parseInt(r.tasksSkipped)||0;
       keepaDiff+=parseInt(r.keepaCount)||0;
       dayLeads.push({date:r.date,leads:parseInt(r.totalLeads)||0});
       (r.tasks||[]).forEach(function(t){
         if(!t.done) return;
         var l=parseInt(t.leads)||0;
-        if(l>0){ taskLeads[t.name]=(taskLeads[t.name]||0)+l; }
+        if(l>0) taskLeads[t.name]=(taskLeads[t.name]||0)+l;
         var th=(parseFloat(t.timeHrs)||0)+(parseFloat(t.timeMins)||0)/60;
-        if(th>0){
-          if(!taskTimes[t.name]) taskTimes[t.name]=[];
-          taskTimes[t.name].push(th);
-        }
-        var isOOS=(t.id==='oos-sheet'||t.id==='suz-oos-sheet');
-        if(isOOS) oosHrs+=th;
+        if(th>0){if(!taskTimes[t.name])taskTimes[t.name]=[];taskTimes[t.name].push(th);}
+        if(t.id==='oos-sheet'||t.id==='suz-oos-sheet') oosHrs+=th;
       });
     });
     var lph=hrs>0?(leads/hrs).toFixed(1):'-';
-    var bestDay=dayLeads.sort(function(a,b){return b.leads-a.leads;})[0];
-    var worstDay=dayLeads[dayLeads.length-1];
-    return {hrs,leads,lph,tasks,skipped,days,keepaDiff,oosHrs,taskLeads,taskTimes,bestDay,worstDay};
+    var sorted=dayLeads.slice().sort(function(a,b){return b.leads-a.leads;});
+    return {hrs:hrs,leads:leads,lph:lph,tasks:tasks,skipped:skipped,days:vr.length,
+            keepaDiff:keepaDiff,oosHrs:oosHrs,taskLeads:taskLeads,taskTimes:taskTimes,
+            bestDay:sorted[0]||null,worstDay:sorted[sorted.length-1]||null};
   }
 
-  var m=sumVA(weekRecs,'Mera'), s=sumVA(weekRecs,'Suz');
-  var pm=sumVA(prevRecs,'Mera'), ps=sumVA(prevRecs,'Suz');
+  var m=sumVA(weekRecs,'Mera'),s=sumVA(weekRecs,'Suz');
+  var pm=sumVA(prevRecs,'Mera'),ps=sumVA(prevRecs,'Suz');
 
-  // Best sourcing methods combined
-  var allTaskLeads={};
-  Object.entries(m.taskLeads).concat(Object.entries(s.taskLeads)).forEach(function(e){
-    allTaskLeads[e[0]]=(allTaskLeads[e[0]]||0)+e[1];
-  });
-  var topMethods=Object.entries(allTaskLeads).sort(function(a,b){return b[1]-a[1];}).slice(0,3);
+  var allTL={};
+  [m,s].forEach(function(v){Object.entries(v.taskLeads).forEach(function(e){allTL[e[0]]=(allTL[e[0]]||0)+e[1];});});
+  var topM=Object.entries(allTL).sort(function(a,b){return b[1]-a[1];}).slice(0,3);
 
-  // Anomalies — task took 3x longer than their own average
-  function getAnomalies(va, data){
-    var anom=[];
+  function getAnom(data){
+    var a=[];
     Object.entries(data.taskTimes).forEach(function(e){
-      var times=e[1]; if(times.length<2) return;
-      var avg=times.reduce(function(a,b){return a+b;},0)/times.length;
-      var max=Math.max.apply(null,times);
-      if(max>avg*3&&max>1){ anom.push('• '+e[0]+': max '+max.toFixed(1)+'h (avg '+avg.toFixed(1)+'h)'); }
+      var t=e[1]; if(t.length<2) return;
+      var avg=t.reduce(function(x,y){return x+y;},0)/t.length;
+      var mx=Math.max.apply(null,t);
+      if(mx>avg*3&&mx>1) a.push('* '+e[0].split('\u2014')[0].trim()+': max '+mx.toFixed(1)+'h (avg '+avg.toFixed(1)+'h)');
     });
-    return anom;
+    return a;
   }
-  var mAnom=getAnomalies('Mera',m), sAnom=getAnomalies('Suz',s);
+  var mAn=getAnom(m),sAn=getAnom(s);
 
-  var arrow=function(n,p){ if(!p) return ''; var d=n-p; return d>0?'↑ +'+d.toFixed(1):d<0?'↓ '+d.toFixed(1):'→'; };
-  var arrowI=function(n,p){ if(!p) return ''; var d=n-p; return d>0?'↑ +'+Math.round(d):d<0?'↓ '+Math.round(d):'→'; };
+  function arr(n,p){
+    var pf=parseFloat(p);
+    if(isNaN(pf)||!p||p==='-') return '';
+    var d=parseFloat(n)-pf;
+    return d>0?'\u2191 +'+Math.abs(d).toFixed(1):d<0?'\u2193 '+d.toFixed(1):'\u2192';
+  }
+  function arrI(n,p){
+    if(!p||isNaN(parseFloat(p))) return '';
+    var d=n-parseFloat(p);
+    return d>0?'\u2191 +'+Math.round(d):d<0?'\u2193 '+Math.round(d):'\u2192';
+  }
 
-  // ── MESSAGE 1 — OVERVIEW ──
-  var hoursTarget=40;
-  var mHrsOk=m.hrs>=hoursTarget?'✓':'⚠';
-  var sHrsOk=s.hrs>=hoursTarget?'✓':'⚠';
-  var msg1 = '📊 **WEEKLY REVIEW — '+weekLabel+'**\n\n'
+  var mOk=m.hrs>=(isPro?dip*7:38)?'\u2713':'\u26a0';
+  var sOk=s.hrs>=(isPro?dip*7:38)?'\u2713':'\u26a0';
+  var ch=m.hrs+s.hrs, cl=m.leads+s.leads;
+  var clph=ch>0?(cl/ch).toFixed(1):'0.0';
+  var pch=pm.hrs+ps.hrs, pcl=pm.leads+ps.leads;
+  var monStr=mon.getDate()+' '+months[mon.getMonth()];
+
+  // Message 1 — Overview
+  var msg1='\ud83d\udcca **WEEKLY REVIEW \u2014 '+label+'**'+(isPro?' *(pro-rated)*':'')+'\n\n'
     +'```\n'
     +'             MERA        SUZ         COMBINED\n'
-    +'⏱ Hours      '+m.hrs.toFixed(1)+'h       '+s.hrs.toFixed(1)+'h       '+(m.hrs+s.hrs).toFixed(1)+'h\n'
-    +'🎯 Leads      '+m.leads+'          '+s.leads+'          '+(m.leads+s.leads)+'\n'
-    +'📊 L/Hr       '+m.lph+'         '+s.lph+'         '+(((m.leads+s.leads)/(m.hrs+s.hrs)||0)).toFixed(1)+'\n'
-    +'📅 Days       '+m.days+'/7         '+s.days+'/7\n'
-    +'✅ Tasks       '+m.tasks+' done, '+m.skipped+' skip  '+s.tasks+' done, '+s.skipped+' skip\n'
-    +'🔍 Keepa      +'+m.keepaDiff+'        +'+s.keepaDiff+'\n'
-    +'📋 OOS        '+m.oosHrs.toFixed(1)+'h '+(m.oosHrs<2.5?'⚠ under':'✓')+'   '+s.oosHrs.toFixed(1)+'h '+(s.oosHrs<2.5?'⚠ under':'✓')+'\n'
-    +'```\n'
-    +'**🏆 TOP SOURCING METHODS**\n'
-    +topMethods.map(function(e,i){ return '#'+(i+1)+' '+e[0]+' — **'+e[1]+' leads**'; }).join('\n')+'\n\n'
-    +'**📈 VS LAST WEEK**\n'
-    +'Leads: '+(m.leads+s.leads)+' '+arrowI(m.leads+s.leads,pm.leads+ps.leads)
-    +' · Hours: '+(m.hrs+s.hrs).toFixed(1)+'h '+arrow(m.hrs+s.hrs,pm.hrs+ps.hrs)
-    +' · L/Hr: '+((m.leads+s.leads)/(m.hrs+s.hrs)||0).toFixed(1)+' '+arrow(parseFloat(((m.leads+s.leads)/(m.hrs+s.hrs)||0).toFixed(1)),parseFloat(((pm.leads+ps.leads)/(pm.hrs+ps.hrs)||0).toFixed(1)));
+    +'\u23f1 Hours     '+m.hrs.toFixed(1)+'h       '+s.hrs.toFixed(1)+'h       '+ch.toFixed(1)+'h\n'
+    +'\ud83c\udfaf Leads     '+m.leads+'          '+s.leads+'          '+cl+'\n'
+    +'\ud83d\udcca L/Hr      '+m.lph+'         '+s.lph+'         '+clph+'\n'
+    +'\ud83d\udcc5 Days      '+m.days+'/'+dip+'        '+s.days+'/'+dip+'\n'
+    +'\u2705 Tasks      '+m.tasks+' done, '+m.skipped+' skip  '+s.tasks+' done, '+s.skipped+' skip\n'
+    +'\ud83d\udd0d Keepa     +'+m.keepaDiff+'        +'+s.keepaDiff+'\n'
+    +'\ud83d\udccb OOS       '+m.oosHrs.toFixed(1)+'h '+(m.oosHrs<2.5?'\u26a0':'\u2713')+'    '+s.oosHrs.toFixed(1)+'h '+(s.oosHrs<2.5?'\u26a0':'\u2713')+'\n'
+    +'```\n';
 
-  // ── MESSAGE 2 — MERA ──
-  var mBestParts=m.bestDay?m.bestDay.date.split('/'):[]; 
-  var mWorstParts=m.worstDay?m.worstDay.date.split('/'):[]; 
-  var mBestStr=mBestParts.length?mBestParts[0]+' '+months[parseInt(mBestParts[1])-1]:'—';
-  var mWorstStr=mWorstParts.length?mWorstParts[0]+' '+months[parseInt(mWorstParts[1])-1]:'—';
-  var mTopTasks=Object.entries(m.taskLeads).sort(function(a,b){return b[1]-a[1];}).slice(0,3);
-  var mAvgTimes=Object.entries(m.taskTimes).map(function(e){ var avg=e[1].reduce(function(a,b){return a+b;},0)/e[1].length; return e[0]+': '+Math.round(avg*60)+'m avg'; }).slice(0,4);
+  if(topM.length){
+    msg1+='**\ud83c\udfc6 TOP SOURCING METHODS**\n'
+      +topM.map(function(e,i){return '#'+(i+1)+' '+e[0].split('\u2014')[0].trim()+' \u2014 **'+e[1]+' leads**';}).join('\n')+'\n\n';
+  }
+  msg1+='**\ud83d\udcc8 VS LAST WEEK** \u2014 Leads: '+cl+' '+arrI(cl,pcl)
+    +' \u00b7 Hours: '+ch.toFixed(1)+'h '+arr(ch,pch)
+    +' \u00b7 L/Hr: '+clph+' '+arr(parseFloat(clph),pch>0?(pcl/pch).toFixed(1):0);
 
-  var msg2 = '🟣 **MERA — Week of '+monParts[0]+' '+months[parseInt(monParts[1])-1]+'**\n\n'
-    +'```\n'
-    +'⏱ '+m.hrs.toFixed(1)+'h total · '+(m.hrs/Math.max(m.days,1)).toFixed(1)+'h avg/day · '+mHrsOk+' target\n'
-    +'🎯 '+m.leads+' leads · best '+m.bestDay.leads+' ('+mBestStr+') · worst '+m.worstDay.leads+' ('+mWorstStr+')\n'
-    +'📊 '+m.lph+' L/Hr · vs last week '+arrow(parseFloat(m.lph),parseFloat(pm.lph))+'\n'
-    +'✅ '+m.tasks+' tasks done · '+m.skipped+' skipped\n'
-    +'🔍 Keepa +'+m.keepaDiff+' this week\n'
-    +'📋 OOS '+m.oosHrs.toFixed(1)+'h '+(m.oosHrs<2.5?'⚠ UNDER 2.5h TARGET':' ✓')+'\n'
-    +'```\n'
-    +'**🏆 Top methods:** '+mTopTasks.map(function(e){ return e[0].split('—')[0].trim()+' ('+e[1]+')'; }).join(' · ')+'\n'
-    +'**⏰ Avg task times:** '+mAvgTimes.join(' · ')+'\n'
-    +(mAnom.length?'\n**⚠ Anomalies:**\n'+mAnom.join('\n')+'\n':'\n')
-    +'\n**🤖 AI insight loading...**';
-
-  // ── MESSAGE 3 — SUZ ──
-  var sBestParts=s.bestDay?s.bestDay.date.split('/'):[]; 
-  var sWorstParts=s.worstDay?s.worstDay.date.split('/'):[]; 
-  var sBestStr=sBestParts.length?sBestParts[0]+' '+months[parseInt(sBestParts[1])-1]:'—';
-  var sWorstStr=sWorstParts.length?sWorstParts[0]+' '+months[parseInt(sWorstParts[1])-1]:'—';
-  var sTopTasks=Object.entries(s.taskLeads).sort(function(a,b){return b[1]-a[1];}).slice(0,3);
-  var sAvgTimes=Object.entries(s.taskTimes).map(function(e){ var avg=e[1].reduce(function(a,b){return a+b;},0)/e[1].length; return e[0]+' '+Math.round(avg*60)+'m avg'; }).slice(0,4);
-
-  var msg3 = '🟡 **SUZ — Week of '+monParts[0]+' '+months[parseInt(monParts[1])-1]+'**\n\n'
-    +'```\n'
-    +'⏱ '+s.hrs.toFixed(1)+'h total · '+(s.hrs/Math.max(s.days,1)).toFixed(1)+'h avg/day · '+sHrsOk+' target\n'
-    +'🎯 '+s.leads+' leads · best '+s.bestDay.leads+' ('+sBestStr+') · worst '+s.worstDay.leads+' ('+sWorstStr+')\n'
-    +'📊 '+s.lph+' L/Hr · vs last week '+arrow(parseFloat(s.lph),parseFloat(ps.lph))+'\n'
-    +'✅ '+s.tasks+' tasks done · '+s.skipped+' skipped\n'
-    +'🔍 Keepa +'+s.keepaDiff+' this week\n'
-    +'📋 OOS '+s.oosHrs.toFixed(1)+'h '+(s.oosHrs<2.5?'⚠ UNDER 2.5h TARGET':'✓')+'\n'
-    +'```\n'
-    +'**🏆 Top methods:** '+sTopTasks.map(function(e){ return e[0].split('—')[0].trim()+' ('+e[1]+')'; }).join(' · ')+'\n'
-    +'**⏰ Avg task times:** '+sAvgTimes.join(' · ')+'\n'
-    +(sAnom.length?'\n**⚠ Anomalies:**\n'+sAnom.join('\n')+'\n':'\n')
-    +'\n**🤖 AI insight loading...**';
-
-  // Generate AI insights via Anthropic API
-  async function getAIInsight(vaName, curr, prev, anomalies) {
-    try {
-      var prompt = 'You are a business analyst reviewing a VA\'s weekly performance for an Amazon sourcing business. '
-        +'Write a sharp 3-4 sentence insight covering: how the week went overall, key highs and lows, any trends, '
-        +'comparison to last week, and anything the manager should know. Be direct and specific. No fluff.\n\n'
-        +'VA: '+vaName+'\n'
-        +'This week: '+curr.hrs.toFixed(1)+'h worked, '+curr.leads+' leads, '+curr.lph+' L/Hr, '+curr.tasks+' tasks, '+curr.skipped+' skipped\n'
-        +'Last week: '+prev.hrs.toFixed(1)+'h worked, '+prev.leads+' leads, '+prev.lph+' L/Hr\n'
-        +'Best day: '+curr.leads+' leads · Worst day: '+(curr.worstDay?curr.worstDay.leads:0)+' leads\n'
-        +'OOS hours: '+curr.oosHrs.toFixed(1)+'h (target 2.5h)\n'
-        +(anomalies.length?'Anomalies flagged: '+anomalies.join(', ')+'\n':'')
-        +'Top sourcing methods by leads: '+Object.entries(curr.taskLeads).sort(function(a,b){return b[1]-a[1];}).slice(0,3).map(function(e){return e[0]+' ('+e[1]+')';}).join(', ');
-
-      var res = await fetch('https://api.anthropic.com/v1/messages', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({
-          model:'claude-sonnet-4-20250514',
-          max_tokens:300,
-          messages:[{role:'user',content:prompt}]
-        })
-      });
-      var data = await res.json();
-      return data.content&&data.content[0]?data.content[0].text:'No insight available.';
-    } catch(e){ return 'AI insight unavailable this week.'; }
+  // Insight generator
+  function insight(va,c,p,an){
+    var out=[];
+    var tm=Object.entries(c.taskLeads).sort(function(a,b){return b[1]-a[1];})[0];
+    var ld=p.leads?c.leads-p.leads:null;
+    if(ld!==null){
+      if(ld>5) out.push(va+' had a strong week \u2014 '+c.leads+' leads, up '+ld+' vs last week ('+c.lph+' L/Hr).');
+      else if(ld<-5) out.push(va+' had a quieter week \u2014 '+c.leads+' leads, down '+Math.abs(ld)+' vs last week ('+c.lph+' L/Hr).');
+      else out.push(va+' was consistent \u2014 '+c.leads+' leads at '+c.lph+' L/Hr, in line with last week.');
+    } else {
+      out.push(va+' logged '+c.leads+' leads at '+c.lph+' L/Hr across '+c.days+' day'+(c.days!==1?'s':'')+'.');
+    }
+    if(c.bestDay&&c.worstDay&&c.bestDay.leads!==c.worstDay.leads){
+      var bp=c.bestDay.date.split('/'),wp=c.worstDay.date.split('/');
+      out.push('Best: '+bp[0]+' '+months[parseInt(bp[1])-1]+' ('+c.bestDay.leads+') \u00b7 Worst: '+wp[0]+' '+months[parseInt(wp[1])-1]+' ('+c.worstDay.leads+').');
+    }
+    if(tm) out.push('Top method: '+tm[0].split('\u2014')[0].trim()+' ('+tm[1]+' leads).');
+    if(c.oosHrs===0) out.push('\u26a0 No OOS hours logged.');
+    else if(c.oosHrs<2.5) out.push('OOS at '+c.oosHrs.toFixed(1)+'h \u2014 under 2.5h target.');
+    if(c.skipped>0) out.push(c.skipped+' mandatory task'+(c.skipped>1?'s':'')+' skipped.');
+    if(c.hrs<(isPro?dip*7:38)) out.push('Hours below target at '+c.hrs.toFixed(1)+'h.');
+    if(an.length) out.push('Anomaly: '+an[0].replace('* ','')+' .');
+    return out.join(' ');
   }
 
-  // Send msg1 first
-  async function sendMsg(content){
-    await fetch(DISCORD_WEEKLY_WEBHOOK,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({content:content})
-    });
+  // Build per-VA message
+  function buildMsg(va,c,p,an,emoji){
+    var top=Object.entries(c.taskLeads).sort(function(a,b){return b[1]-a[1];}).slice(0,3);
+    var avt=Object.entries(c.taskTimes).map(function(e){
+      var a=e[1].reduce(function(x,y){return x+y;},0)/e[1].length;
+      return e[0].split('\u2014')[0].trim()+': '+Math.round(a*60)+'m';
+    }).slice(0,4);
+    var bd=c.bestDay?c.bestDay.date.split('/'):[],wd=c.worstDay?c.worstDay.date.split('/'):[];
+    var bs=bd.length?bd[0]+' '+months[parseInt(bd[1])-1]:'--';
+    var ws=wd.length?wd[0]+' '+months[parseInt(wd[1])-1]:'--';
+    var ok=va==='Mera'?mOk:sOk;
+    var msg=emoji+' **'+va+' \u2014 Week of '+monStr+'**'+(isPro?' *('+dip+' days so far)*':'')+'\n\n'
+      +'```\n'
+      +'\u23f1 '+c.hrs.toFixed(1)+'h total \u00b7 '+(c.days?c.hrs/c.days:0).toFixed(1)+'h/day \u00b7 '+ok+' target\n'
+      +'\ud83c\udfaf '+c.leads+' leads \u00b7 best '+(c.bestDay?c.bestDay.leads:'--')+' ('+bs+') \u00b7 worst '+(c.worstDay?c.worstDay.leads:'--')+' ('+ws+')\n'
+      +'\ud83d\udcca '+c.lph+' L/Hr \u00b7 vs last week '+arr(parseFloat(c.lph),parseFloat(p.lph))+'\n'
+      +'\u2705 '+c.tasks+' tasks done \u00b7 '+c.skipped+' skipped\n'
+      +'\ud83d\udd0d Keepa +'+c.keepaDiff+' this week\n'
+      +'\ud83d\udccb OOS '+c.oosHrs.toFixed(1)+'h '+(c.oosHrs<2.5?'\u26a0 UNDER 2.5h':'\u2713')+'\n'
+      +'```\n'
+      +(top.length?'**\ud83c\udfc6 Top:** '+top.map(function(e){return e[0].split('\u2014')[0].trim()+' ('+e[1]+')';}).join(' \u00b7 ')+'\n':'')
+      +(avt.length?'**\u23f0 Avg:** '+avt.join(' \u00b7 ')+'\n':'')
+      +(an.length?'\n**\u26a0 Anomalies:** '+an.join(' \u00b7 ')+'\n':'')
+      +'\n**\ud83e\udd16 '+insight(va,c,p,an)+'**';
+    return msg;
+  }
+
+  async function sendMsg(txt){
+    if(!txt||!txt.trim()) return;
+    await fetch(DISCORD_WEEKLY_WEBHOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:txt.substring(0,1999)})});
   }
 
   await sendMsg(msg1);
-  await new Promise(function(r){setTimeout(r,1000);});
-
-  // Get AI insights in parallel
-  var [mInsight, sInsight] = await Promise.all([
-    getAIInsight('Mera', m, pm, mAnom),
-    getAIInsight('Suz', s, ps, sAnom)
-  ]);
-
-  await sendMsg(msg2.replace('🤖 AI insight loading...', '🤖 '+mInsight));
-  await new Promise(function(r){setTimeout(r,1000);});
-  await sendMsg(msg3.replace('🤖 AI insight loading...', '🤖 '+sInsight));
+  await new Promise(function(r){setTimeout(r,1200);});
+  await sendMsg(buildMsg('Mera',m,pm,mAn,'\ud83d\udfe3'));
+  await new Promise(function(r){setTimeout(r,1200);});
+  await sendMsg(buildMsg('Suz',s,ps,sAn,'\ud83d\udfe1'));
 }
 
 // ── SUNDAY 6PM SCHEDULER ─────────────────────────────────
