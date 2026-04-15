@@ -570,16 +570,16 @@
         <div style="display:flex;gap:12px;align-items:flex-start;margin-top:4px;">
           <div style="flex:1;">
             <div style="font-size:10px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">Your current total</div>
-            <input type="number" id="keepa-today" min="0" placeholder="e.g. 114" style="width:100%;background:var(--bg);border:2px solid rgba(0,255,179,0.3);border-radius:10px;color:var(--text);font-family:var(--font-mono);font-size:20px;padding:12px 14px;outline:none;transition:border-color 0.2s;" oninput="updateKeepaTotal()" onfocus="this.style.borderColor='#00ffb3'" onblur="this.style.borderColor='rgba(0,255,179,0.3)'">
+            <input type="number" id="keepa-today" min="0" placeholder="e.g. 600" style="width:100%;background:var(--bg);border:2px solid rgba(0,255,179,0.3);border-radius:10px;color:var(--text);font-family:var(--font-mono);font-size:20px;padding:12px 14px;outline:none;transition:border-color 0.2s;" oninput="updateKeepaTotal()" onfocus="this.style.borderColor='#00ffb3'" onblur="this.style.borderColor='rgba(0,255,179,0.3)'">
           </div>
           <div style="flex:1;">
-            <div style="font-size:10px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">Added today <span id="keepa-first-time-label" style="color:#9b8fff;display:none;">(first entry)</span></div>
+            <div style="font-size:10px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">Change vs yesterday</div>
             <div id="keepa-total-display" style="background:rgba(0,255,179,0.08);border:2px solid rgba(0,255,179,0.25);border-radius:10px;padding:12px 14px;font-family:var(--font-mono);font-size:20px;font-weight:700;color:#00ffb3;min-height:52px;">
               <span id="keepa-total-val">—</span>
             </div>
           </div>
         </div>
-        <div id="keepa-hint" style="font-size:10px;color:var(--muted);margin-top:8px;">Enter your current Keepa tracker total. We'll automatically show you how many you added today by comparing to yesterday.</div>
+        <div id="keepa-hint" style="font-size:10px;color:var(--muted);margin-top:8px;">Enter your current Keepa tracker total. The right box shows how many you added or removed today vs yesterday.</div>
       </div>
       <div class="eod-field">
         <label>Notes for Jack <span style="color:var(--muted);font-size:10px;">(optional)</span> &#8212; issues, observations, feedback, anything you noticed today</label>
@@ -1110,7 +1110,7 @@ var taskTemplates = {
     { id:'storefronts',  name:'Storefronts',                                               mandatory:true,  hint:'Usually late afternoon/evening UK time. If working - do them. If not - log reason and add to tomorrow\'s POA.', hasLinks:true },
     { id:'pp-light',     name:'PP Light Check (Later in Shift)',                           mandatory:true,  hint:'Quick scan for new pings only - do this later in your shift.' },
     { id:'telegram-eod', name:'Telegram - End of Shift Check',                            mandatory:true,  hint:'Quick Telegram check before you finish. There should be at least 2 leads added to your lead sheet from this — check for back in stock alerts, price drops and deal pings. Log anything relevant.' },
-    { id:'oos-sheet',    name:'OOS Sheet (if needed)',                                     mandatory:false, hint:'Complete the OOS sheet if there are any out-of-stock items to log. Skip if nothing to report.', hasLinks:false },
+    { id:'oos-sheet', name:'OOS Sheet', mandatory:true, hint:'Log any out-of-stock items to the OOS sheet. Target is 2.5 hours per week minimum — this directly impacts restocking decisions. Time how long you spend and log it.', hasLinks:false },
     { id:'leadsheet-eod', name:'Lead Sheet - Final Check Before Logging Off',             mandatory:true,  hint:'Last thing before you finish — check the lead sheet one more time. Action any new comments Jack has left. Tick off when done.' }
   ],
   Suz: [
@@ -1155,8 +1155,8 @@ var taskTemplates = {
       hint:'Quick Telegram check before you finish. There should be at least 2 leads added to your lead sheet from this — check for back in stock alerts, price drops and deal pings. Log anything relevant.'
     },
     {
-      id:'suz-oos-sheet', name:'OOS Sheet (if needed)', mandatory:false,
-      hint:'Complete the OOS sheet if there are any out-of-stock items to log. Skip if nothing to report.'
+      id:'suz-oos-sheet', name:'OOS Sheet', mandatory:true,
+      hint:'Log any out-of-stock items to the OOS sheet. Target is 2.5 hours per week minimum — this directly impacts restocking decisions. Time how long you spend and log it.'
     },
     {
       id:'suz-leadsheet-eod', name:'Lead Sheet - Final Check Before Logging Off', mandatory:true,
@@ -1977,6 +1977,24 @@ function mgr_flagBanner(log){
   if(tr.some(function(r){return r.tasksSkipped>0;})) flags.push('Mandatory task skipped today');
   var issues=mgr_getReports().filter(function(r){return r.time&&r.time.indexOf(today)>=0;});
   if(issues.length>1) flags.push(issues.length+' issues reported today');
+
+  // OOS Sheet weekly hours warning — flag if under 2.5h for either VA
+  var weekStart=mgr_weekStart();
+  function oosHrsThisWeek(va){
+    var hrs=0;
+    log.filter(function(r){return r.va===va&&r.date>=weekStart;}).forEach(function(r){
+      (r.tasks||[]).forEach(function(t){
+        if((t.id==='oos-sheet'||t.id==='suz-oos-sheet')&&t.done){
+          hrs+=(parseFloat(t.timeHrs)||0)+(parseFloat(t.timeMins)||0)/60;
+        }
+      });
+    });
+    return hrs;
+  }
+  var mOOS=oosHrsThisWeek('Mera'), sOOS=oosHrsThisWeek('Suz');
+  if(mOOS<2.5&&mOOS>0) flags.push('Mera — OOS Sheet under target this week ('+mOOS.toFixed(1)+'h / 2.5h)');
+  if(sOOS<2.5&&sOOS>0) flags.push('Suz — OOS Sheet under target this week ('+sOOS.toFixed(1)+'h / 2.5h)');
+
   var b=document.getElementById('mgr-flag-banner');if(!b) return;
   if(!flags.length){b.innerHTML='';return;}
   b.innerHTML='<div class="flag-banner"><span style="font-size:18px;flex-shrink:0;">⚠</span><div>'
@@ -3140,11 +3158,13 @@ function mgr_renderKeepa(){
     if(!recs.length) return '<div style="color:#333;font-size:12px;">No data yet.</div>';
     return recs.slice().reverse().slice(0,14).map(function(r){
       var kc=getKC(r),kt=getKT(r);
+      var sign=kc>=0?'+':'';
+      var diffCol=kc>0?accentCol:kc<0?'#ff4466':'#555';
       var p=r.date.split('/');
       return '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-top:1px solid rgba(255,255,255,0.04);font-size:12px;">'
         +'<span style="color:#555;">'+p[0]+' '+months[parseInt(p[1])-1]+' '+p[2]+'</span>'
         +'<div style="display:flex;gap:16px;">'
-        +'<span style="color:'+accentCol+';">+'+kc+' today</span>'
+        +'<span style="color:'+diffCol+';">'+sign+kc+' today</span>'
         +'<span style="color:#666;">'+kt.toLocaleString()+' total</span>'
         +'</div></div>';
     }).join('');
@@ -3533,7 +3553,7 @@ function getDailyMotd(va) {
 }
 
 // ── KEEPA TRACKER ────────────────────────────────────────
-var _keepaPrevTotal = null; // cached previous total for this VA
+var _keepaPrevTotal = null; // yesterday's total
 var _keepaIsFirst = false;  // true if no previous record found
 
 async function keepaLoadPrevTotal(va) {
@@ -3541,7 +3561,6 @@ async function keepaLoadPrevTotal(va) {
   _keepaIsFirst = false;
   if (!DB_ENABLED) return;
   try {
-    // Get the most recent shift for this VA that has a keepa_total
     var res = await fetch(SUPABASE_URL+'/rest/v1/shifts?va=eq.'+va+'&keepa_total=gt.0&order=submitted_at.desc&limit=1&select=keepa_total', {
       headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY}
     });
@@ -3550,43 +3569,53 @@ async function keepaLoadPrevTotal(va) {
       _keepaPrevTotal = rows[0].keepa_total;
     } else {
       _keepaIsFirst = true;
-      // Show hint that this is first time
-      var lbl = document.getElementById('keepa-first-time-label');
       var hint = document.getElementById('keepa-hint');
-      var todayInput = document.getElementById('keepa-today');
-      if (lbl) lbl.style.display = 'inline';
-      if (hint) hint.textContent = 'First time entering! Put your current total in "Added today" box — this becomes your starting point.';
-      if (todayInput) todayInput.placeholder = 'Your current total';
+      if (hint) hint.textContent = 'First time entering! Type your current Keepa total — this becomes your baseline for tomorrow.';
     }
     updateKeepaTotal();
   } catch(e) { console.error('Keepa load error:', e); }
 }
 
 function updateKeepaTotal() {
-  var todayVal = parseInt(document.getElementById('keepa-today')&&document.getElementById('keepa-today').value) || 0;
+  var input = document.getElementById('keepa-today');
   var totalEl = document.getElementById('keepa-total-val');
+  var displayEl = document.getElementById('keepa-total-display');
   if (!totalEl) return;
+  var currentVal = input ? parseInt(input.value) : NaN;
+  if (isNaN(currentVal) || input.value === '') {
+    totalEl.textContent = '—';
+    if (displayEl) { displayEl.style.borderColor='rgba(0,255,179,0.25)'; displayEl.style.color='#00ffb3'; }
+    return;
+  }
   if (_keepaIsFirst) {
-    totalEl.textContent = todayVal > 0 ? todayVal.toLocaleString() : '—';
+    // First entry — no comparison possible, just show the total they typed
+    totalEl.textContent = currentVal.toLocaleString()+' (baseline)';
+    if (displayEl) { displayEl.style.color='#9b8fff'; }
   } else if (_keepaPrevTotal !== null) {
-    var newTotal = _keepaPrevTotal + todayVal;
-    totalEl.textContent = todayVal > 0 ? newTotal.toLocaleString() : _keepaPrevTotal.toLocaleString();
+    var diff = currentVal - _keepaPrevTotal;
+    var sign = diff >= 0 ? '+' : '';
+    totalEl.textContent = sign + diff;
+    // Colour: green = added, red = removed, grey = no change
+    var col = diff > 0 ? '#00ffb3' : diff < 0 ? '#ff4466' : '#888';
+    if (displayEl) { displayEl.style.color = col; displayEl.style.borderColor = col+'44'; }
   } else {
-    totalEl.textContent = todayVal > 0 ? todayVal.toLocaleString() : '—';
+    totalEl.textContent = currentVal.toLocaleString();
   }
 }
 
 function keepaGetValues() {
-  var todayVal = parseInt(document.getElementById('keepa-today')&&document.getElementById('keepa-today').value) || 0;
-  var total;
-  if (_keepaIsFirst) {
-    total = todayVal;
-  } else if (_keepaPrevTotal !== null) {
-    total = _keepaPrevTotal + todayVal;
+  var input = document.getElementById('keepa-today');
+  var currentVal = input ? parseInt(input.value) : 0;
+  if (isNaN(currentVal)) currentVal = 0;
+  var diff;
+  if (_keepaIsFirst || _keepaPrevTotal === null) {
+    diff = 0; // no previous — count is 0 change, total is what they typed
   } else {
-    total = todayVal;
+    diff = currentVal - _keepaPrevTotal;
   }
-  return { count: todayVal, total: total };
+  // keepa_count = daily diff (how many added/removed today)
+  // keepa_total = current total (what they typed)
+  return { count: diff, total: currentVal };
 }
 
 function showWelcome(va) {
