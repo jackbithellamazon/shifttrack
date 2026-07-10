@@ -1460,6 +1460,17 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
   </div>
 </div>
 
+<!-- IMPORT SETTINGS MODAL -->
+<div class="modal-overlay" id="import-modal">
+  <div class="modal pin-modal" style="width:min(460px,92vw)!important;text-align:left;">
+    <h3 style="font-size:18px;text-align:left;">Import settings</h3>
+    <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px;text-align:left;">Paste the blob from "Copy settings" on your other device. Brings webhooks, targets, colours, everything.</p>
+    <textarea id="import-blob" style="width:100%;min-height:110px;background:#0b0c12;border:1.5px solid var(--line-2);border-radius:11px;color:var(--text);font-family:var(--font-mono);font-size:11px;padding:11px;outline:none;margin-bottom:12px;" placeholder='{"whMain":"https://discord.com/api/webhooks/..."}'></textarea>
+    <button class="pin-unlock-btn" onclick="confirmImportSettings()">Import &#10003;</button>
+    <button class="pin-cancel" onclick="document.getElementById('import-modal').classList.remove('open')">Cancel</button>
+  </div>
+</div>
+
 <!-- CONFIRM MODAL -->
 <div class="modal-overlay" id="confirm-modal">
   <div class="modal pin-modal" style="width:min(400px,92vw)!important;">
@@ -1567,11 +1578,11 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 // ╚══════════════════════════════════════════════════════════╝
 var SUPABASE_URL      = 'https://ffbdazepqrsyurhouxif.supabase.co';
 var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmYmRhemVwcXJzeXVyaG91eGlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4OTM5MjIsImV4cCI6MjA5MDQ2OTkyMn0.BAuodLUDGzO9A7IfoRRn0HZ1MgWOXNPeYKPDBNaNWeg';
-var DISCORD_WEBHOOK   = 'https://discord.com/api/webhooks/1485068125052604527/THtYQqLBNG-zQY_fueiTbh5b__SDKT6LZnht20lqiiRnFglgL0pTi1VFbi3Kny-xlP_V';
-var DISCORD_WEEKLY_WEBHOOK = 'https://discord.com/api/webhooks/1485068125052604527/THtYQqLBNG-zQY_fueiTbh5b__SDKT6LZnht20lqiiRnFglgL0pTi1VFbi3Kny-xlP_V';
-var DISCORD_TASKS_WEBHOOK = 'https://discord.com/api/webhooks/1485788180526530691/VZNiu6UBQWEIlIQKgtaHdF1JXgaWQ3jPDUsdoivEA8Ds86N5ZQNEexor7qOAKagi3QKP';
-var DISCORD_BREAK_WEBHOOK = 'https://discord.com/api/webhooks/1486131251373936802/9ULnz729hYGZnA_wths6Rc_bGQcur2fk-OFogOMMOhcguFRXLRyTgNlI9EI6lgyv4Oxb';
-var DISCORD_SHIFT_START_WEBHOOK = 'https://discord.com/api/webhooks/1485068125052604527/THtYQqLBNG-zQY_fueiTbh5b__SDKT6LZnht20lqiiRnFglgL0pTi1VFbi3Kny-xlP_V';
+var DISCORD_WEBHOOK   = ''; // set in Jack Settings → Notifications
+var DISCORD_WEEKLY_WEBHOOK = '';
+var DISCORD_TASKS_WEBHOOK = '';
+var DISCORD_BREAK_WEBHOOK = '';
+var DISCORD_SHIFT_START_WEBHOOK = '';
 
 var DB_ENABLED = SUPABASE_URL !== 'YOUR_SUPABASE_URL';
 
@@ -2004,6 +2015,7 @@ function getAppSettings(){
     if(saved.quietTo!==undefined) settings.quietTo=String(saved.quietTo);
     if(saved.colMera) settings.colMera=String(saved.colMera);
     if(saved.colSuz) settings.colSuz=String(saved.colSuz);
+    if(saved.discordUserId!==undefined) settings.discordUserId=String(saved.discordUserId).replace(/[^0-9]/g,'');
   } catch(e){}
   return settings;
 }
@@ -2351,7 +2363,9 @@ function buildWeeklyEmbeds(monX,sunX,log,opts){
     else colour=16098596;
     return { title:va, color:colour, description:lines.join('\n') };
   }
-  return {embeds:[main, vaEmbed('Mera',M), vaEmbed('Suz',S)]};
+  var out={embeds:[main, vaEmbed('Mera',M), vaEmbed('Suz',S)]};
+  if(settings.discordUserId) out.content='<@'+settings.discordUserId+'>';
+  return out;
 }
 function buildWeeklySummaryPayload(monX,sunX,log,isTest){
   return buildWeeklyEmbeds(monX,sunX,log,{label:'Weekly VA Review',current:false,test:!!isTest});
@@ -2768,6 +2782,32 @@ function confirmAddTask(){
   state.extraTasks.push({id:'e'+Date.now(),name:name,mandatory:false,hint:'',hasLinks:false,done:false,skipped:false,skipReason:'',time:'',timeHrs:0,timeMins:0,leads:'',context:'',links:[]});
   renderTasks(); closeAddTask(); showToast('Task added \u2713');
   saveShiftDraft(false);
+}
+function exportSettings(){
+  try{
+    var st=getAppSettings();
+    navigator.clipboard.writeText(JSON.stringify(st)).then(function(){ showToast('Settings copied \u2014 paste into Import on another device \u2713'); });
+  }catch(e){ showToast('Copy failed', true); }
+}
+function openImportSettings(){
+  var m=document.getElementById('import-modal'); if(!m) return;
+  document.getElementById('import-blob').value='';
+  m.classList.add('open');
+  setTimeout(function(){document.getElementById('import-blob').focus();},60);
+}
+function confirmImportSettings(){
+  try{
+    var blob=document.getElementById('import-blob').value.trim();
+    if(!blob){ showToast('Paste the settings blob first', true); return; }
+    var incoming=JSON.parse(blob);
+    var st=getAppSettings();
+    Object.keys(incoming).forEach(function(k){ st[k]=incoming[k]; });
+    saveAppSettings(st);
+    applyWebhookSettings(); try{applyVaColours();}catch(e){}
+    document.getElementById('import-modal').classList.remove('open');
+    try{ mgr_renderSettings(); }catch(e){}
+    showToast('Settings imported \u2713');
+  }catch(e){ showToast('That blob is not valid \u2014 copy it again', true); }
 }
 function stConfirm(msg,onOk){
   var m=document.getElementById('confirm-modal'); if(!m){ if(confirm(msg)) onOk(); return; }
@@ -4924,11 +4964,15 @@ function mgr_renderSettings(){
           return '<div class="wh-lbl-row"><label class="wh-switch"><input type="checkbox" id="setting-n-'+w[0]+'"'+(on?' checked':'')+'><i></i></label><span class="settings-label">'+w[1]+'</span></div>'
             +'<div class="wh-row"><input class="settings-input" id="setting-wh-'+w[0]+'" type="text" placeholder="https://discord.com/api/webhooks/&hellip;" value="'+escHtml(settings[w[2]]||'')+'"><button class="wh-test" onclick="wh_test(\''+w[0]+'\')">Send test</button></div>';
         }).join('')
+      +'<div class="wh-lbl-row" style="margin-top:18px;"><span class="settings-label">@ mention you on weekly review</span></div>'
+      +'<div style="display:flex;align-items:center;gap:9px;"><input class="settings-input" id="setting-discord-id" type="text" style="width:220px;" placeholder="your Discord user ID (numbers)" value="'+escHtml(settings.discordUserId||'')+'"><span style="font-size:11px;color:var(--muted-2);">Discord → Settings → Advanced → Developer Mode on, then right-click your name → Copy User ID</span></div>'
       +'<div class="wh-lbl-row" style="margin-top:18px;"><span class="settings-label">Live idle alert after</span></div>'
       +'<div style="display:flex;align-items:center;gap:9px;"><input class="settings-input" id="setting-idle-mins" type="number" min="15" step="5" style="width:90px;" value="'+(settings.idleMins||60)+'"><span style="font-size:12px;color:var(--muted);">minutes without a task tick</span></div>'
       +'<div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;">'
         +'<button class="btn btn-success" onclick="mgr_saveSettings()">Save Settings</button>'
         +'<button class="btn btn-ghost" onclick="sendWeeklySummaryTest()">Send weekly summary now (test)</button>'
+        +'<button class="btn btn-ghost" onclick="exportSettings()">Copy settings</button>'
+        +'<button class="btn btn-ghost" onclick="openImportSettings()">Import settings</button>'
       +'</div>'
     +'</div>' 
     +'</div>'
@@ -4959,6 +5003,8 @@ function mgr_saveSettings(){
   });
   var idleEl=document.getElementById('setting-idle-mins');
   if(idleEl){ var iv=parseInt(idleEl.value); if(!isNaN(iv)&&iv>=15) settings.idleMins=iv; }
+  var didEl=document.getElementById('setting-discord-id');
+  if(didEl) settings.discordUserId=didEl.value.replace(/[^0-9]/g,'');
   [['setting-goal-mera','goalMera'],['setting-goal-suz','goalSuz']].forEach(function(pp){
     var el=document.getElementById(pp[0]); if(el){ var n=parseInt(el.value); if(!isNaN(n)&&n>0) settings[pp[1]]=n; }
   });
