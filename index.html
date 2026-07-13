@@ -2928,61 +2928,124 @@ function lockJackMode(){
   updateRoleUI(); showVAView(); showToast('Jack mode locked \u2713');
 }
 /* Monday summary: first app open on/after Monday sends last week's recap to Discord */
-function buildWeeklyEmbeds(monX,sunX,log,opts){
+// weekly VA-A/VA-S spend for a GB date range \u2014 same sheet/columns/logic as the Spend Dashboard
+async function spendForRangeGB(fromGB,toGB){
+  try{
+    function pGB(s){var p=String(s).split('/');return new Date(+p[2],+p[1]-1,+p[0]);}
+    var f=pGB(fromGB), t=pGB(toGB);
+    var q=Math.floor(f.getMonth()/3)+1, tab='Q'+q+' AMZ - OA';
+    var ck=fromGB+'|'+toGB;
+    if(window._wkSpendCache&&window._wkSpendCache.k===ck) return window._wkSpendCache.v;
+    var r=await fetch('https://sheets.googleapis.com/v4/spreadsheets/'+SPEND_SHEET_ID+'/values/'+encodeURIComponent(tab+'!A2:O2000')+'?key='+SPEND_API_KEY);
+    if(!r.ok) return null;
+    var vals=(await r.json()).values||[];
+    var st; try{st=getAppSettings();}catch(e){st={};}
+    function plist(v,d){return String(v||d).split(',').map(function(x){return x.trim().toLowerCase();}).filter(Boolean);}
+    var lowA=plist(st.spendProvA,'VA-A'), lowS=plist(st.spendProvS,'VA-S');
+    var A={spend:0,units:0}, S={spend:0,units:0};
+    vals.forEach(function(row){
+      if(!row||row.length<=14) return;
+      var ds=String(row[0]||'').trim(), prov=String(row[12]||'').trim().toLowerCase();
+      var sp=parseFloat(String(row[14]||'').replace(/[\u00a3,\s]/g,'')); var qty=parseInt(String(row[6]||'').replace(/[,\s]/g,''))||1;
+      if(!ds||!prov||isNaN(sp)||sp<=0) return;
+      var p=ds.split('/'); if(p.length!==3) return; var d=new Date(+p[2],+p[1]-1,+p[0]);
+      if(isNaN(d.getTime())||d<f||d>t) return;
+      if(lowA.indexOf(prov)>=0){A.spend+=sp;A.units+=qty;}
+      if(lowS.indexOf(prov)>=0){S.spend+=sp;S.units+=qty;}
+    });
+    var v={A:A,S:S,total:A.spend+S.spend};
+    window._wkSpendCache={k:ck,v:v};
+    return v;
+  }catch(e){ return null; }
+}
+// \u2500\u2500 WEEKLY REVIEW \u2014 fuller field-based embeds, one message per VA + overview \u2500\u2500
+async function buildWeeklyEmbeds(monX,sunX,log,opts){
   opts=opts||{};
   var settings=getAppSettings();
-  var target=settings.weeklyHoursTarget;
+  var target=settings.weeklyHoursTarget||40;
   var today=mgr_ukToday();
-  function vaStats(va){
-    var recs=log.filter(function(r){return r.va===va;});
+  var money=function(n){return '\u00a3'+Math.round(n).toLocaleString();};
+  function hexInt(h){ try{return parseInt(String(h).replace('#',''),16);}catch(e){return 9133311;} }
+  function vaStats(recs){
     var hrs=recs.reduce(function(x,r){return x+(parseFloat(r.hoursWorked)||0);},0);
     var lds=recs.reduce(function(x,r){return x+(parseInt(r.totalLeads)||0);},0);
-    var todayRec=recs.filter(function(r){return r.date===today;})[0]||null;
-    return {recs:recs,hrs:hrs,lds:lds,shifts:recs.length,todayRec:todayRec};
+    var byDay={}; recs.forEach(function(r){ byDay[r.date]=(byDay[r.date]||0)+(parseInt(r.totalLeads)||0); });
+    var bestD=null,bestN=-1; Object.keys(byDay).forEach(function(d){ if(byDay[d]>bestN){bestN=byDay[d];bestD=d;} });
+    return {recs:recs,hrs:hrs,lds:lds,shifts:recs.length,bestD:bestD,bestN:bestN,
+      todayRec:recs.filter(function(r){return r.date===today;})[0]||null};
   }
-  var M=vaStats('Mera'), S=vaStats('Suz');
-  var totH=M.hrs+S.hrs, totL=M.lds+S.lds;
-  var combined=totH>0?(totL/totH).toFixed(1):'0.0';
-  var combinedShort=(target*2)-totH;
+  var M=vaStats(log.filter(function(r){return r.va==='Mera';}));
+  var S=vaStats(log.filter(function(r){return r.va==='Suz';}));
+  // previous week for deltas
+  var pMon=mgr_addDays(monX,-7), pSun=mgr_addDays(monX,-1);
+  var pLog=mgr_getLog().filter(function(r){return r.va!=='Test'&&mgr_dateInRange(r.date,pMon,pSun);});
+  function sumL(rs){return rs.reduce(function(x,r){return x+(parseInt(r.totalLeads)||0);},0);}
+  var pM=sumL(pLog.filter(function(r){return r.va==='Mera';})), pS=sumL(pLog.filter(function(r){return r.va==='Suz';})), pT=pM+pS;
+  function delta(cur,prev){ if(!prev) return 'no last-wk data'; var d=Math.round((cur-prev)/prev*100); return (d>=0?'\u2191 +':'\u2193 ')+d+'% vs last wk'; }
+  // buy-rate from the leads DB (if loaded) \u2014 leads dated within the week
+  function buyStats(vaCode){
+    try{
+      var ls=(window.leads||[]).filter(function(l){ if(vaCode&&l.va!==vaCode) return false; var p=(l.date||'').split('/'); if(p.length!==3) return false; return mgr_dateInRange(l.date,monX,sunX); });
+      var dec=ls.filter(function(l){return l.islead!==null;}), b=ls.filter(function(l){return l.status==='bought';});
+      return dec.length?{rate:Math.round(b.length/dec.length*100),b:b.length,d:dec.length}:null;
+    }catch(e){ return null; }
+  }
+  var wkSpend=await spendForRangeGB(monX,sunX);
+  var totH=M.hrs+S.hrs, totL=M.lds+S.lds, totShifts=M.shifts+S.shifts;
+  var combShort=(target*2)-totH;
+  var bestAll=(M.bestN>=S.bestN)?M:S;
   var issues=[];
-  ['Mera','Suz'].forEach(function(va){
-    var st=va==='Mera'?M:S;
-    if(opts.current){ if(!st.todayRec) issues.push(va+' not submitted yet'); }
-    else { if(st.shifts===0) issues.push(va+' logged no shifts'); }
-  });
-  var statusLine=combinedShort<=0?'Hours target hit':'Behind hours target by '+combinedShort.toFixed(1)+'h';
+  ['Mera','Suz'].forEach(function(va){ var st=va==='Mera'?M:S;
+    if(opts.current){ if(!st.todayRec) issues.push(vaDisp(va)+' not submitted yet'); }
+    else { if(st.shifts===0) issues.push(vaDisp(va)+' logged no shifts'); } });
+  var cBuy=buyStats(null);
+  var mainFields=[
+    {name:'\u{1F4C8} Leads', value:'**'+totL+'**\n'+delta(totL,pT), inline:true},
+    {name:'\u23f1 Hours', value:'**'+totH.toFixed(1)+'h** / '+(target*2)+'h\n'+(combShort<=0?'\u2705 target hit':combShort.toFixed(1)+'h behind'), inline:true},
+    {name:'\u26a1 Rate', value:'**'+(totH>0?(totL/totH).toFixed(1):'0')+'** leads/hr\n'+(totShifts?(totL/totShifts).toFixed(1):'0')+' per shift', inline:true}
+  ];
+  if(wkSpend) mainFields.push({name:'\u{1F4B7} Spend this week', value:'**'+money(wkSpend.total)+'**\n'+vaDisp('Mera')+' '+money(wkSpend.A.spend)+' \u00b7 '+vaDisp('Suz')+' '+money(wkSpend.S.spend), inline:true});
+  if(bestAll.bestD) mainFields.push({name:'\u{1F3C6} Best day', value:'**'+bestAll.bestD.slice(0,5)+'** \u2014 '+bestAll.bestN+' leads ('+(bestAll===M?vaDisp('Mera'):vaDisp('Suz'))+')', inline:true});
+  if(cBuy) mainFields.push({name:'\u{1F3AF} Buy rate', value:'**'+cBuy.rate+'%** \u2014 '+cBuy.b+' of '+cBuy.d+' decided', inline:true});
   var main={
-    title:(opts.label||'Weekly VA Review')+' \u2014 w/c '+monX+(opts.test?' \u00b7 TEST':''),
-    color:9131519,
-    description:'**Combined:**\n'+totL+' leads \u00b7 '+totH.toFixed(1)+'h worked \u00b7 '+combined+' leads/hr\n'
-      +'**Status:** '+statusLine+'\n'
-      +'**Issues:** '+(issues.length?issues.join(' \u00b7 '):'None'),
+    title:'\u{1F4CA} '+(opts.label||'Weekly VA Review')+' \u2014 w/c '+monX+(opts.test?' \u00b7 TEST':''),
+    color:9133311,
+    description:(issues.length?'\u26a0\ufe0f **'+issues.join(' \u00b7 ')+'**':'\u2705 No issues')+'\n'+monX+' \u2192 '+sunX,
+    fields:mainFields,
+    footer:{text:'BDL VA HQ \u00b7 weekly review'},
     timestamp:new Date().toISOString()
   };
-  function vaEmbed(va,st){
-    var lines=[];
-    var colour;
-    if(opts.current){
-      if(st.todayRec){ lines.push('Submitted '+(st.todayRec.submittedAt||'today')); }
-      else { lines.push('Not submitted yet'); }
-    } else if(st.shifts===0){ lines.push('No shifts logged'); }
-    lines.push(st.lds+' leads \u00b7 '+st.hrs.toFixed(1)+'h \u00b7 '+st.shifts+' shift'+(st.shifts===1?'':'s'));
-    if(st.shifts>0){
-      var lps=Math.round(st.lds/st.shifts);
-      var lph=st.hrs>0?(st.lds/st.hrs).toFixed(1):null;
-      lines.push(lps+' leads/shift'+(lph?' \u00b7 '+lph+' leads/hr':''));
-    }
+  function vaMsg(vaName,st,prevL,spendLine){
+    var col=hexInt(vaColour(vaName));
     var short=target-st.hrs;
-    lines.push(short<=0?'Target hit':'Behind target by '+short.toFixed(1)+'h');
-    // colour: red = missing (no submission today in current mode / no shifts in past mode), green = target hit, amber = behind
-    if(opts.current ? !st.todayRec : st.shifts===0) colour=16074079;
-    else if(short<=0) colour=1104282;
-    else colour=16098596;
-    return { title:va, color:colour, description:lines.join('\n') };
+    var fields=[
+      {name:'\u{1F4C8} Leads', value:'**'+st.lds+'**\n'+delta(st.lds,prevL), inline:true},
+      {name:'\u23f1 Hours', value:'**'+st.hrs.toFixed(1)+'h** / '+target+'h\n'+(short<=0?'\u2705 target hit':short.toFixed(1)+'h behind'), inline:true},
+      {name:'\u{1F4CB} Shifts', value:'**'+st.shifts+'**\n'+(st.shifts?Math.round(st.lds/st.shifts)+' leads/shift \u00b7 '+(st.hrs>0?(st.lds/st.hrs).toFixed(1):'0')+'/hr':'\u2014'), inline:true}
+    ];
+    if(st.bestD) fields.push({name:'\u{1F3C6} Best day', value:'**'+st.bestD.slice(0,5)+'** \u2014 '+st.bestN+' leads', inline:true});
+    if(spendLine) fields.push(spendLine);
+    var vb=buyStats(vaName==='Mera'?'VA M':'VA S');
+    if(vb) fields.push({name:'\u{1F3AF} Buy rate', value:'**'+vb.rate+'%** \u2014 '+vb.b+' of '+vb.d, inline:true});
+    var statusTxt = opts.current ? (st.todayRec?'\u2705 Submitted '+(st.todayRec.submittedAt||'today'):'\u274c Not submitted yet')
+                                 : (st.shifts===0?'\u274c No shifts logged this week':(short<=0?'\u2705 Hours target hit':'\u{1F7E1} '+short.toFixed(1)+'h short of target'));
+    return { embeds:[{ title:(vaName==='Mera'?'\u{1F7E3} ':'\u{1F7E1} ')+vaDisp(vaName)+' \u2014 week in review', color:col,
+      description:statusTxt, fields:fields, footer:{text:'w/c '+monX}, timestamp:new Date().toISOString() }] };
   }
-  var out={embeds:[main, vaEmbed('Mera',M), vaEmbed('Suz',S)]};
-  if(settings.discordUserId) out.content='<@'+settings.discordUserId+'>';
-  return out;
+  var mainMsg={embeds:[main]};
+  if(settings.discordUserId) mainMsg.content='<@'+settings.discordUserId+'>';
+  return [ mainMsg,
+    vaMsg('Mera',M,pM, wkSpend?{name:'\u{1F4B7} Spend this week', value:'**'+money(wkSpend.A.spend)+'**'+(wkSpend.A.units?' \u00b7 '+wkSpend.A.units+' units':''), inline:true}:null),
+    vaMsg('Suz',S,pS, wkSpend?{name:'\u{1F4B7} Spend this week', value:'**'+money(wkSpend.S.spend)+'**'+(wkSpend.S.units?' \u00b7 '+wkSpend.S.units+' units':''), inline:true}:null) ];
+}
+// post the 3 weekly messages in order (overview \u2192 Mera \u2192 Suz)
+async function postWeeklyMessages(hook,msgs){
+  var last=null;
+  for(var i=0;i<msgs.length;i++){
+    last=await fetch(hook,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(msgs[i])});
+    await new Promise(function(res){setTimeout(res,450);});
+  }
+  return last;
 }
 function buildWeeklySummaryPayload(monX,sunX,log,isTest){
   return buildWeeklyEmbeds(monX,sunX,log,{label:'Weekly VA Review',current:false,test:!!isTest});
@@ -3003,10 +3066,10 @@ function maybeSendWeeklySummary(){
       .then(function(r){ return r.json(); })
       .then(function(rows){
         if(Array.isArray(rows)&&rows.length===0) return; // another device already sent
-        fetch(DISCORD_WEEKLY_WEBHOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(buildWeeklySummaryPayload(monLast,sunLast,log,false))});
+        buildWeeklySummaryPayload(monLast,sunLast,log,false).then(function(msgs){ postWeeklyMessages(DISCORD_WEEKLY_WEBHOOK,msgs); });
       })
       .catch(function(){ // Supabase unreachable → fall back to local-only guard
-        fetch(DISCORD_WEEKLY_WEBHOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(buildWeeklySummaryPayload(monLast,sunLast,log,false))});
+        buildWeeklySummaryPayload(monLast,sunLast,log,false).then(function(msgs){ postWeeklyMessages(DISCORD_WEEKLY_WEBHOOK,msgs); });
       });
   }catch(e){}
 }
@@ -3022,8 +3085,10 @@ function sendWeeklySummaryTest(){
       log=mgr_getLog().filter(function(r){return r.va!=='Test'&&mgr_dateInRange(r.date,monX,sunX);});
     }
     if(!log.length){ showToast('No shift data to summarise yet', true); return; }
-    fetch(DISCORD_WEEKLY_WEBHOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(buildWeeklySummaryPayload(monX,sunX,log,true))})
-      .then(function(r){ showToast(r.ok?'Test summary sent \u2713 check Discord':'Discord rejected it', !r.ok); });
+    showToast('Building weekly review\u2026');
+    buildWeeklySummaryPayload(monX,sunX,log,true)
+      .then(function(msgs){ return postWeeklyMessages(DISCORD_WEEKLY_WEBHOOK,msgs); })
+      .then(function(r){ showToast(r&&r.ok?'Test review sent (3 messages) \u2713 check Discord':'Discord rejected it', !(r&&r.ok)); });
   }catch(e){}
 }
 setTimeout(function(){ try{ updateRoleUI(); }catch(e){} }, 300);
@@ -6195,12 +6260,31 @@ function mgr_renderSettings(){
   setTimeout(settingsMasonry,60); setTimeout(settingsMasonry,300); setTimeout(settingsMasonry,800);
 }
 
+// Cloud push with CLOBBER PROTECTION: a browser that has never had the webhook URLs
+// (preview, fresh device) must never wipe them from the shared cloud row. For these keys,
+// an EMPTY local value defers to whatever the cloud already has.
+var SETTINGS_PROTECT=['whMain','whWeekly','whLeadsMera','whLeadsSuz','whTasks','whBreaks','whShiftStart','leadMention','discordUserId'];
+async function pushSettingsCloud(s){
+  try{
+    var merged=JSON.parse(JSON.stringify(s));
+    try{
+      var r=await fetch(SUPABASE_URL+'/rest/v1/app_settings?id=eq.global&select=data',
+        {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
+      if(r.ok){ var rows=await r.json(); var cloud=(rows[0]&&rows[0].data)||{};
+        SETTINGS_PROTECT.forEach(function(k){
+          if(!(merged[k]&&String(merged[k]).trim()) && cloud[k]&&String(cloud[k]).trim()) merged[k]=cloud[k];
+        });
+      }
+    }catch(e){}
+    await fetch(SUPABASE_URL+'/rest/v1/app_settings',{method:'POST',
+      headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},
+      body:JSON.stringify({id:'global',data:merged,updated_at:new Date().toISOString()})});
+  }catch(e){}
+}
 // Save the leads start-date on its own (the card has no shared Save button) + reload leads immediately
 function saveLeadsStart(v){
   var s=getAppSettings(); s.leadsStartDate=(v||'').trim(); saveAppSettings(s);
-  try{ fetch(SUPABASE_URL+'/rest/v1/app_settings',{method:'POST',
-    headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},
-    body:JSON.stringify({id:'global',data:s,updated_at:new Date().toISOString()})}).catch(function(){}); }catch(e){}
+  try{ pushSettingsCloud(s); }catch(e){}
   showToast(v?('Showing leads from '+v.split('-').reverse().join('/')+' ✓'):'Start date cleared ✓');
   var st=document.getElementById('leads-start-status');
   if(st){ st.style.color=v?'var(--green)':'var(--muted-2)'; st.textContent=v?('✓ Active — showing from '+v.split('-').reverse().join('/')):'off — showing all history'; }
@@ -6259,11 +6343,7 @@ function mgr_saveSettings(){
   saveAppSettings(settings);
   applyWebhookSettings();
   try{applyVaColours();}catch(e){} try{applyVaLabels();}catch(e){}
-  try{
-    fetch(SUPABASE_URL+'/rest/v1/app_settings',{method:'POST',
-      headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},
-      body:JSON.stringify({id:'global',data:settings,updated_at:new Date().toISOString()})}).catch(function(){});
-  }catch(e){}
+  try{ pushSettingsCloud(settings); }catch(e){}
   renderNewsletterSchedulePanels();
   try{ loadSpend(true); }catch(e){}   // apply spend-settings changes immediately
   mgr_renderSettings();
@@ -6611,8 +6691,8 @@ async function sendWeeklyReview(isAutoSunday) {
   try{
     var monThis=mgr_weekStart(), sunThis=mgr_addDays(monThis,6);
     var log=mgr_getLog().filter(function(r){return r.va!=='Test'&&mgr_dateInRange(r.date,monThis,sunThis);});
-    var payload=buildWeeklyEmbeds(monThis,sunThis,log,{label:'Weekly VA Review',current:true});
-    await fetch(DISCORD_WEEKLY_WEBHOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    var msgs=await buildWeeklyEmbeds(monThis,sunThis,log,{label:'Weekly VA Review',current:true});
+    await postWeeklyMessages(DISCORD_WEEKLY_WEBHOOK,msgs);
   }catch(e){}
 }
 function mgr_startWeeklyScheduler(){
