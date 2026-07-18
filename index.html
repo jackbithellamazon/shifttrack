@@ -276,12 +276,12 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 /* ── SHIFT HEADER ────────────────────────────────────── */
 .shift-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
 /* live momentum banner (shift screen) */
-.momentum-card{display:flex;align-items:center;gap:15px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 11%,var(--panel)),var(--panel) 70%);border:1px solid var(--line-2);border-radius:14px;padding:13px 17px;margin-bottom:15px;}
-.momentum-emoji{font-size:27px;line-height:1;flex-shrink:0;}
-.momentum-msg{font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:8px;letter-spacing:-.01em;}
-.momentum-bar{height:7px;border-radius:4px;background:rgba(255,255,255,.09);overflow:hidden;}
+.momentum-card{display:flex;align-items:center;gap:13px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 11%,var(--panel)),var(--panel) 70%);border:1px solid var(--line-2);border-radius:12px;padding:9px 14px;margin-bottom:9px;}
+.momentum-emoji{font-size:21px;line-height:1;flex-shrink:0;}
+.momentum-msg{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:5px;letter-spacing:-.01em;}
+.momentum-bar{height:6px;border-radius:4px;background:rgba(255,255,255,.09);overflow:hidden;}
 .momentum-bar i{display:block;height:100%;border-radius:4px;transition:width .6s var(--ease);}
-.momentum-pct{font-size:21px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em;flex-shrink:0;}
+.momentum-pct{font-size:18px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em;flex-shrink:0;}
 @keyframes taskPop{0%{transform:scale(.995)}30%{transform:scale(1.025)}65%{transform:scale(.997)}100%{transform:scale(1)}}
 @keyframes greenRing{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--green) 70%,transparent),0 0 32px -6px var(--green)}100%{box-shadow:0 0 0 16px transparent,0 0 32px -6px transparent}}
 @keyframes checkBounce{0%{transform:scale(0) rotate(-25deg);opacity:.2}55%{transform:scale(1.4) rotate(8deg)}100%{transform:scale(1) rotate(0);opacity:1}}
@@ -302,41 +302,41 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 
 /* ── KPI CARDS (shift) — crisp colour, no wash ──────── */
 /* Card-style toggle */
-.cardstyle-toggle{display:inline-flex;gap:3px;background:var(--panel-2);border:1px solid var(--line);border-radius:9px;padding:3px;margin:0 0 12px auto;}
-.cardstyle-toggle button{background:transparent;border:none;color:var(--muted);font-family:var(--font);font-size:11px;font-weight:700;letter-spacing:.2px;padding:6px 13px;border-radius:6px;cursor:pointer;transition:all .15s var(--ease);}
+.cardstyle-toggle{display:inline-flex;gap:3px;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:2px;margin:0 0 7px auto;}
+.cardstyle-toggle button{background:transparent;border:none;color:var(--muted);font-family:var(--font);font-size:10.5px;font-weight:700;letter-spacing:.2px;padding:4px 11px;border-radius:6px;cursor:pointer;transition:all .15s var(--ease);}
 .cardstyle-toggle button:hover{color:var(--text);}
 .cardstyle-toggle button.on{background:var(--accent);color:#0a0b10;}
 .stats-head{display:flex;align-items:center;justify-content:flex-end;}
 
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px;}
 .stat-card{
   --k:var(--accent);
   position:relative;overflow:hidden;display:flex;flex-direction:column;
   background:var(--panel-2);
   border:1px solid var(--line);border-radius:var(--r-lg);
-  padding:16px 18px 17px;min-height:138px;box-shadow:0 1px 2px rgba(0,0,0,.4);
+  padding:10px 13px 11px;min-height:92px;box-shadow:0 1px 2px rgba(0,0,0,.4);
   transition:transform .18s var(--ease),border-color .18s,box-shadow .18s;
 }
 .stat-card::after{display:none;}
 .stat-card:hover{transform:translateY(-2px);}
-.stat-top{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-.kpi-icon{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:9px;background:var(--k);color:#0a0b10;}
-.kpi-icon svg{width:17px;height:17px;stroke-width:2.4;}
+.stat-top{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;}
+.kpi-icon{display:flex;align-items:center;justify-content:center;width:25px;height:25px;border-radius:8px;background:var(--k);color:#0a0b10;}
+.kpi-icon svg{width:14px;height:14px;stroke-width:2.4;}
 .stat-card-leads{--k:#10d99a;}
 .stat-card-tasks{--k:#8b5cff;}
 .stat-card-hrs{--k:#f5a524;}
 .stat-card-lph{--k:#18c8f0;}
 .stat-label{display:flex;align-items:center;gap:6px;font-size:10.5px;letter-spacing:.5px;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:0;position:relative;z-index:1;}
 .stat-label::before{display:none;}
-.stat-val{position:relative;z-index:1;font-family:var(--font-head);font-size:42px;font-weight:700;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;color:var(--k);text-shadow:none!important;}
+.stat-val{position:relative;z-index:1;font-family:var(--font-head);font-size:29px;font-weight:700;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;color:var(--k);text-shadow:none!important;}
 .stat-val-leads{color:#10d99a;}.stat-val-tasks{color:#a48bff;}.stat-val-hrs{color:#f5a524;}.stat-val-lph{color:#18c8f0;}#stat-streak{color:#f356a6;}
-.kpi-extra{margin-top:auto;padding-top:12px;position:relative;z-index:1;}
-.kpi-spark{width:100%;height:32px;display:block;position:relative;z-index:1;}
+.kpi-extra{margin-top:auto;padding-top:7px;position:relative;z-index:1;}
+.kpi-spark{width:100%;height:20px;display:block;position:relative;z-index:1;}
 .kpi-spark path.line{fill:none;stroke:var(--k,var(--accent));stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round;}
 .kpi-spark path.area{fill:var(--k,var(--accent));opacity:.18;stroke:none;}
-.kpi-prog{height:6px;border-radius:3px;background:rgba(255,255,255,0.09);overflow:hidden;}
+.kpi-prog{height:5px;border-radius:3px;background:rgba(255,255,255,0.09);overflow:hidden;}
 .kpi-prog i{display:block;height:100%;border-radius:3px;background:var(--k,var(--accent));transition:width .5s var(--ease);}
-.kpi-meta{display:flex;justify-content:space-between;align-items:center;font-size:10.5px;color:var(--muted-2);margin-top:7px;}
+.kpi-meta{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--muted-2);margin-top:5px;}
 .kpi-meta b{color:var(--muted);font-weight:700;}
 
 /* ══ STYLE: BOLD — rich, fully-saturated solid colour fill ══ */
@@ -912,6 +912,11 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .jb-openrow{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 4px;}
 .jb-open{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,color-mix(in srgb,var(--jbc) 90%,#000),color-mix(in srgb,var(--jbc) 65%,#000));color:#fff;font-size:13.5px;font-weight:800;padding:11px 18px;border-radius:11px;text-decoration:none;box-shadow:0 6px 20px -10px var(--jbc);transition:filter .13s,transform .13s;}
 .jb-open:hover{filter:brightness(1.12);transform:translateY(-1px);}
+.jb-open-mini{flex-shrink:0;display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,color-mix(in srgb,var(--jbc) 88%,#000),color-mix(in srgb,var(--jbc) 62%,#000));color:#fff;font-size:11.5px;font-weight:800;padding:8px 14px;border-radius:9px;text-decoration:none;box-shadow:0 4px 14px -8px var(--jbc);transition:filter .13s;white-space:nowrap;}
+.jb-open-mini:hover{filter:brightness(1.15);}
+.fj-count-bar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;background:color-mix(in srgb,var(--accent) 9%,var(--panel-2));border:1px solid color-mix(in srgb,var(--accent) 26%,var(--line-2));border-radius:11px;padding:10px 14px;font-size:12.5px;color:var(--text);line-height:1.5;}
+.fj-count-bar b{color:var(--accent-2);}
+.fj-count-sub{flex-basis:100%;font-size:11px;color:var(--muted);}
 .jb-open svg{width:15px;height:15px;}
 .jb-asin{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--text);background:rgba(255,255,255,.05);border:1px solid color-mix(in srgb,var(--jbc) 40%,var(--line-2));border-radius:11px;padding:10px 15px;cursor:pointer;}
 .jb-asin:hover{border-color:var(--jbc);background:color-mix(in srgb,var(--jbc) 12%,transparent);}
@@ -1598,12 +1603,74 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
   .va-split{grid-template-columns:1fr;}
 }
 @media(max-width:560px){
-  .stats-grid,.mgr-grid,.mgr-grid-3,.mgr-grid-6,.mgr-grid-2{grid-template-columns:1fr;}
+  .mgr-grid,.mgr-grid-3,.mgr-grid-6,.mgr-grid-2{grid-template-columns:1fr;}
   .task-fields{grid-template-columns:1fr;}
   .schedule-editor{grid-template-columns:1fr;}
   .task-editor-row{grid-template-columns:1fr;}
   .setup-btns{flex-direction:column;}
   .sub-pill{min-width:100%;}
+}
+/* ══ MOBILE POLISH — phone-first pass (VA shift + Jack composer) ══ */
+@media(max-width:640px){
+  /* KPIs: 2-up and tight */
+  .stats-grid{grid-template-columns:repeat(2,1fr)!important;gap:7px;}
+  .stat-card{min-height:76px;padding:9px 11px;}
+  .stat-val{font-size:23px;}
+  .kpi-icon{width:22px;height:22px;}
+  .momentum-card{padding:8px 11px;gap:10px;}
+  .momentum-emoji{font-size:18px;}
+  .momentum-pct{font-size:16px;}
+  /* task rows: header wraps, controls stay big enough to tap */
+  .task-header{flex-wrap:wrap;gap:9px;row-gap:8px;padding:12px 13px;}
+  .task-icon{width:34px;height:34px;font-size:16px;border-radius:10px;}
+  .task-main{flex:1 1 55%;min-width:170px;}
+  .task-name{font-size:14px;}
+  .task-status{margin-left:auto;}
+  .task-check{width:25px;height:25px;}
+  .task-body.open{padding:4px 13px 14px;}
+  .jbcard-head{padding:12px 13px 11px;}
+  .jbcard-title{font-size:15px;}
+  .jbcard-tags{gap:5px;}
+  .jbcard-from,.jbcard-type,.jbcard-carry{white-space:nowrap;}
+  .jb-open-mini{padding:8px 12px;font-size:11px;}
+  .tt-chip{padding:5px 9px;}
+  .jb-openrow{gap:8px;}
+  .jb-open,.jb-asin{width:100%;justify-content:center;}
+  /* From-Jack composer (Jack on his phone) */
+  .jb-typepills{gap:6px;}
+  .jb-typepill{flex:1 1 44%;justify-content:center;padding:10px 8px;}
+  .jb-item-add,.jb-item-add2{flex-direction:column;}
+  .jb-item-add select{width:100%;}
+  .jb-item-add2 .jb-iname{flex:1 1 auto;}
+  .jb-item-opts{gap:8px;}
+  .jb-send-btn{width:100%;justify-content:center;margin-left:0;}
+  .jb-orow .jb-ichip{min-width:0;}
+  .fj-count-bar{font-size:12px;}
+  /* Jack overview */
+  .kpi-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;}
+  .srk-row{grid-template-columns:24px 1fr 44px 58px 40px;gap:7px;font-size:11.5px;}
+  .srk-row span:nth-child(4){display:none;}   /* hide Hours column on phones */
+  /* EOD */
+  .eod-recap-grid{grid-template-columns:repeat(2,1fr);}
+  .eod-section{padding:16px 14px;}
+  .eod-grid{grid-template-columns:1fr;}
+  .eod-grid>*,.eod-block,.eod-blabel{min-width:0;max-width:100%;}
+  .eod-keepa-row{flex-wrap:wrap;}
+  .eod-keepa-row input{flex:1 1 120px;min-width:0;width:auto;}
+  .eod-keepa-delta{width:auto;flex:1 1 110px;}
+  .eod-notes,.eod-tags{max-width:100%;}
+  /* Jack on mobile: tab bar becomes one swipeable row, editor breathes */
+  .mgr-tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:5px;gap:3px;}
+  .mgr-tabs::-webkit-scrollbar{display:none;}
+  .mgr-tab{font-size:12.5px;padding:9px 12px;flex-shrink:0;}
+  .jb-editor{padding:14px 13px;}
+  .mgr-sec2{flex-wrap:wrap;gap:8px;}
+  .ov-out-card{padding:12px 13px;}
+  .jb-orow-top{flex-wrap:wrap;}
+}
+@media(max-width:400px){
+  .stat-val{font-size:20px;}
+  .task-status{display:none;}   /* tiniest phones: the checkbox already shows state */
 }
 </style>
 </head>
@@ -2555,6 +2622,25 @@ var state = {
   breaks:[], submitted:false, storefronts:[]
 };
 
+// Kill browser autofill / search-history dropdowns on every input the app ever renders
+(function(){
+  function stamp(root){
+    try{
+      (root.querySelectorAll?root.querySelectorAll('input,textarea'):[]).forEach(function(el){
+        if(el.getAttribute('autocomplete')!=='off'){ el.setAttribute('autocomplete','off'); el.setAttribute('autocorrect','off'); el.setAttribute('autocapitalize','off'); el.setAttribute('spellcheck','false'); }
+      });
+    }catch(e){}
+  }
+  function boot(){
+    stamp(document);
+    try{
+      new MutationObserver(function(muts){ muts.forEach(function(m){ m.addedNodes&&m.addedNodes.forEach(function(n){ if(n.nodeType===1) stamp(n); }); }); })
+        .observe(document.body,{childList:true,subtree:true});
+    }catch(e){}
+  }
+  if(document.body) boot(); else document.addEventListener('DOMContentLoaded',boot);
+})();
+
 // ── APP SETTINGS ─────────────────────────────────────────
 var APP_SETTINGS_KEY = 'shifttrack_app_settings_v2';
 var DEFAULT_APP_SETTINGS = {
@@ -2871,6 +2957,7 @@ var taskTemplates = {
     { id:'kpf-daily',    name:'KPF Filters - 7 Day Drops (Every Day)',                    mandatory:true,  hint:'Run daily - link changes regularly, check mera-poa-filters-saved on Discord.' },
     { id:'jack-poa',     name:'Missed Yesterday + Jack POA',                               mandatory:true,  hint:'Finish anything missed from yesterday (filters, storefront ASINs etc) then check tasks/filters Jack sent.', hasLinks:true },
     { id:'sourcing',     name:'Sourcing Period - Your Own Sourcing Time',                  mandatory:true,  hint:'KPF (brand/category), Manual, Newsletter, Reverse KPF A2A, Arbi. Find a strong lead from a brand sale or promo - dig deep and pull multiple.', hasLinks:true },
+    { id:'eu-sheets',    name:'EU Sheets (if there is any) → Complete them',               mandatory:true,  hint:'Check if any EU sheets need completing. If brands dropped → complete the EU sheet fully. Log time spent and leads found.' },
     { id:'storefronts',  name:'Storefronts',                                               mandatory:true,  hint:'Usually late afternoon/evening UK time. If working - do them. If not - log reason and add to tomorrow\'s POA.', hasLinks:true },
     { id:'pp-light',     name:'PP Light Check (Later in Shift)',                           mandatory:true,  hint:'Quick scan for new pings only - do this later in your shift.' },
     { id:'telegram-eod', name:'Telegram - End of Shift Check',                            mandatory:true,  hint:'Quick Telegram check before you finish. There should be at least 2 leads added to your lead sheet from this — check for back in stock alerts, price drops and deal pings. Log anything relevant.' },
@@ -3476,7 +3563,7 @@ function jb_cleanLabel(it){
 var JB_ICON_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 7v6c0 5 4 8 9 9 5-1 9-4 9-9V7z"/></svg>';
 // distinct card for items Jack sends into the VA to-do list
 function buildJackTaskEl(task, i, isExtra){
-  var META={sf:['\u{1F3EC}','Storefront','var(--accent-2)'],kpf:['\u{1F3AF}','KPF filter','#18c8f0'],asin:['#','ASIN','#f5a524'],msg:['\u{1F4AC}','Do this','#2dd4a3']};
+  var META={sf:['\u{1F3EC}','Storefront','var(--accent-2)'],kpf:['\u{1F3AF}','KPF filter','#18c8f0'],eu:['\u{1F1EA}\u{1F1FA}','EU sheet','#4c8dff'],asin:['#','ASIN','#f5a524'],msg:['\u{1F4AC}','Do this','#2dd4a3']};
   var m=META[task.jbType]||META.msg;
   var inProg = !task.done && !task.skipped && taskHasProgress(task);
   var cls='task-item jbcard';
@@ -3507,6 +3594,9 @@ function buildJackTaskEl(task, i, isExtra){
     if(task.done){ timerHtml=task.timerSec?'<span class="tt-chip fin"><b>'+sfFmt(task.timerSec)+'</b></span>':''; }
     else timerHtml='<span class="tt-chip'+(task.timerRun?' run':'')+'" onclick="event.stopPropagation();ttToggle('+i+','+isExtra+')"><b id="tt-'+(isExtra?'e':'t')+i+'">'+sfFmt(ttElapsedT(task))+'</b><span>'+(task.timerRun?'&#9632; Stop':'&#9654; Start')+'</span></span>';
   }
+  // one-click Open right on the row — no need to expand the card
+  var openMini='';
+  if(task.jbUrl && !task.done) openMini='<a class="jb-open-mini" href="'+String(task.jbUrl).replace(/"/g,'&quot;')+'" target="_blank" onclick="event.stopPropagation()">Open &#8599;</a>';
 
   // big action row inside the body
   var actionRow='';
@@ -3538,7 +3628,7 @@ function buildJackTaskEl(task, i, isExtra){
       + '<div class="jbcard-title">'+title+skipTag+'</div>'
       + '<div class="'+metaCls+'"><span>'+meta+'</span></div>'
     + '</div>'
-    + timerHtml
+    + openMini + timerHtml
     + ((task.done && task.tickedAt) ? '<div class="task-done-time">&#10003; '+task.tickedAt+'</div>' : '')
     + '<button class="task-expand-btn">&#9662;</button>'
     + '</div>'
@@ -3828,7 +3918,7 @@ function sfSummary(){
 }
 // ── JACK'S SENT ITEMS → REAL TASKS (with Start/Stop timer + leads) ─────────
 function jb_itemTask(it,i){
-  var TY={sf:['\u{1F3EC}','Storefront'],kpf:['\u{1F3AF}','KPF filter'],asin:['#','ASIN'],msg:['\u{1F4AC}','From Jack']};
+  var TY={sf:['\u{1F3EC}','Storefront'],kpf:['\u{1F3AF}','KPF filter'],eu:['\u{1F1EA}\u{1F1FA}','EU sheet'],asin:['#','ASIN'],msg:['\u{1F4AC}','From Jack']};
   var ty=TY[it.t]||TY.msg;
   var isUrl=/^https?:\/\//i.test(it.v);
   var nm=jb_cleanLabel(it);
@@ -4665,8 +4755,6 @@ function mgr_shiftGroup(recs,vaFilter){
   }
   return html;
 }
-function mgr_toggleCard(id){var el=document.getElementById(id);if(el) el.classList.toggle('open');}
-
 // ── SUBMISSION PILLS ──
 function mgr_pills(todayRecs){
   var isWeekend=mgr_isWeekend();
@@ -5938,6 +6026,7 @@ function mgr_renderMTD(){
 var mgr_currentTab='overview';
 function mgr_switchTab(tab){
   mgr_currentTab=tab;
+  window._jbSendPrefs={};   // leaving a VA tab resets the mini-task composer to defaults (sticky within the tab)
   ['overview','today','mera','suz','test','issues','week','mtd','live','keepa','spend','settings','perf'].forEach(function(t){
     var el=document.getElementById('mgr-tab-'+t);if(el) el.style.display='none';
     var b=document.getElementById('tab-'+t);if(b) b.classList.remove('active-tab');
@@ -7796,6 +7885,7 @@ function showToast(msg,isError) {
     var KNOWN=['overview','trends','today','mera','suz','test','issues','week','mtd','live','keepa','spend','settings','perf'];
     window.mgr_switchTab=function(tab){
       window.mgr_currentTab=tab;
+      window._jbSendPrefs={};   // leaving a VA tab resets the mini-task composer to defaults
       KNOWN.forEach(function(t){var el=document.getElementById('mgr-tab-'+t);if(el)el.style.display='none';var b=document.getElementById('tab-'+t);if(b)b.classList.remove('active-tab');});
       var el=document.getElementById('mgr-tab-'+tab);if(el)el.style.display='block';
       var ab=document.getElementById('tab-'+tab);if(ab)ab.classList.add('active-tab');
@@ -8500,22 +8590,27 @@ function jb_editorHTML(va){
     +'<h4>&#9993;&#65039; From Jack &rarr; '+vaDisp(va)+'</h4>'
     +'<div class="jb-sub">Send storefronts, filters, ASINs and tasks below — <b>each one stays on '+vaDisp(va)+'\'s list every day until they tick it off</b>, and their results (leads + time) come back here.</div>'
     +'<div class="jb-composer">'
-    +jb_secLabel('&#10133; Send '+vaDisp(va)+' a mini task &mdash; storefront &middot; filter &middot; ASIN &middot; message','margin:0 0 9px;')
-    +'<input type="hidden" id="jb-itype-'+va+'" value="sf">'
-    +'<div class="jb-typepills">'
-      +'<button type="button" class="jb-typepill active" onclick="jb_pickType(\''+va+'\',\'sf\',this)">&#127978; Storefront</button>'
-      +'<button type="button" class="jb-typepill" onclick="jb_pickType(\''+va+'\',\'kpf\',this)">&#127919; KPF filter</button>'
-      +'<button type="button" class="jb-typepill" onclick="jb_pickType(\''+va+'\',\'asin\',this)"># ASIN</button>'
-      +'<button type="button" class="jb-typepill" onclick="jb_pickType(\''+va+'\',\'msg\',this)">&#128172; Message</button>'
-    +'</div>'
-    +'<input id="jb-ival-'+va+'" class="jb-bigfield" placeholder="Paste the storefront link&hellip;" onkeydown="if(event.key===\'Enter\')jb_addItem(\''+va+'\')">'
-    +'<div class="jb-add-row jb-item-add2">'
-    +'<input id="jb-iname-'+va+'" class="jb-iname" placeholder="&#127991;&#65039; Name it &mdash; e.g. Superdrug, SGT, Simon" onkeydown="if(event.key===\'Enter\')jb_addItem(\''+va+'\')">'
-    +'<input id="jb-inote-'+va+'" class="jb-ireason" placeholder="&#128172; Why / what to focus on (optional)" onkeydown="if(event.key===\'Enter\')jb_addItem(\''+va+'\')">'
-    +'</div>'
-    +'<div class="jb-item-opts"><label class="jb-toggle"><input type="checkbox" id="jb-itimer-'+va+'" checked> &#9201; Time it</label>'
-    +'<label class="jb-toggle"><input type="checkbox" id="jb-ileads-'+va+'" checked> &#128200; Must log leads</label>'
-    +'<button class="jb-send-btn" onclick="jb_addItem(\''+va+'\')">&#10148; Send to '+vaDisp(va)+'</button></div>'
+    +jb_secLabel('&#10133; Send '+vaDisp(va)+' a mini task','margin:0 0 9px;')
+    +(function(){
+      var pref=jb_pref(va);
+      function pill(t,label){ return '<button type="button" class="jb-typepill'+(pref.t===t?' active':'')+'" onclick="jb_pickType(\''+va+'\',\''+t+'\',this)">'+label+'</button>'; }
+      return '<input type="hidden" id="jb-itype-'+va+'" value="'+pref.t+'">'
+      +'<div class="jb-typepills">'
+        +pill('sf','&#127978; Storefront')
+        +pill('kpf','&#127919; KPF filter')
+        +pill('eu','\u{1F1EA}\u{1F1FA} EU sheet')
+        +pill('asin','# ASIN')
+        +pill('msg','&#128172; Message')
+      +'</div>'
+      +'<input id="jb-ival-'+va+'" class="jb-bigfield" placeholder="'+jb_placeholder(pref.t)+'" onkeydown="if(event.key===\'Enter\')jb_addItem(\''+va+'\')">'
+      +'<div class="jb-add-row jb-item-add2">'
+      +'<input id="jb-iname-'+va+'" class="jb-iname" placeholder="&#127991;&#65039; Name it &mdash; e.g. Superdrug, SGT, Simon" onkeydown="if(event.key===\'Enter\')jb_addItem(\''+va+'\')">'
+      +'<input id="jb-inote-'+va+'" class="jb-ireason" placeholder="&#128172; Why / what to focus on (optional)" onkeydown="if(event.key===\'Enter\')jb_addItem(\''+va+'\')">'
+      +'</div>'
+      +'<div class="jb-item-opts"><label class="jb-toggle"><input type="checkbox" id="jb-itimer-'+va+'" '+(pref.timer?'checked':'')+' onchange="jb_prefTgl(\''+va+'\')"> &#9201; Time it</label>'
+      +'<label class="jb-toggle"><input type="checkbox" id="jb-ileads-'+va+'" '+(pref.leads?'checked':'')+' onchange="jb_prefTgl(\''+va+'\')"> &#128200; Must log leads</label>'
+      +'<button class="jb-send-btn" onclick="jb_addItem(\''+va+'\')">&#10148; Send to '+vaDisp(va)+'</button></div>';
+    })()
     +'</div>'
     +jb_secLabel('&#128203; Outstanding &mdash; rolls over until ticked'
         +(carryCount?' <span class="jb-seccount '+(oldestDays>=3?'overdue':'carry')+'">'+(oldestDays>=3?'&#9888; ':'&#8635; ')+carryCount+' carried'+(oldestDays?' · oldest '+oldestDays+'d':'')+'</span>':''),'margin-top:16px;')
@@ -8556,7 +8651,7 @@ function jb_doneRows(va){
   return jb_secLabel('&#128202; Results &mdash; how each one went','margin-top:16px;')
     +'<div class="jb-outstanding jb-done-list">'+rows+'</div>';
 }
-var JB_ITYPES={sf:['\u{1F3EC}','Storefront','var(--accent-2)'],kpf:['\u{1F3AF}','KPF filter','#18c8f0'],asin:['#','ASIN','#f5a524'],msg:['\u{1F4AC}','Do this','#2dd4a3']};
+var JB_ITYPES={sf:['\u{1F3EC}','Storefront','var(--accent-2)'],kpf:['\u{1F3AF}','KPF filter','#18c8f0'],eu:['\u{1F1EA}\u{1F1FA}','EU sheet','#4c8dff'],asin:['#','ASIN','#f5a524'],msg:['\u{1F4AC}','Do this','#2dd4a3']};
 function jb_itemsRows(va){
   var items=(jb_open(va).items||[]).filter(function(it){return !it.done;}).sort(jb_byAge);
   if(!items.length) return '';
@@ -8574,19 +8669,38 @@ function jb_itemsRows(va){
       +'</div>'+reason+'</div>';
   }).join('');
 }
-function jb_typeDefaults(va){
-  var t=(document.getElementById('jb-itype-'+va)||{}).value||'msg';
-  var tm=document.getElementById('jb-itimer-'+va), ld=document.getElementById('jb-ileads-'+va);
-  if(tm) tm.checked=(t==='sf');                      // timer default: storefronts yes, rest no
-  if(ld) ld.checked=(t==='sf'||t==='kpf');           // leads default: storefronts + KPF yes
+/* Sticky send preferences — the chosen type + toggles SURVIVE each send (bulk sending!)
+   and only reset to defaults when Jack leaves the VA tab (mgr_switchTab clears them). */
+function jb_pref(va){
+  window._jbSendPrefs=window._jbSendPrefs||{};
+  if(!window._jbSendPrefs[va]) window._jbSendPrefs[va]={t:'sf',timer:true,leads:true};
+  return window._jbSendPrefs[va];
 }
-// pick a mini-task type from the pill buttons: sets the hidden type, highlights the pill, tunes the placeholder
+function jb_placeholder(t){
+  return t==='sf'?'Paste the storefront link…'
+    : t==='kpf'?'Paste the KPF / SellerAmp filter link…'
+    : t==='eu'?'Paste the EU sheet link / type the brand…'
+    : t==='asin'?'Paste or type the ASIN (B0…)'
+    : 'Type the message / instruction…';
+}
+function jb_prefTgl(va){
+  var p=jb_pref(va);
+  var tm=document.getElementById('jb-itimer-'+va), ld=document.getElementById('jb-ileads-'+va);
+  if(tm) p.timer=tm.checked; if(ld) p.leads=ld.checked;
+}
+function jb_typeDefaults(va){
+  var p=jb_pref(va);
+  var tm=document.getElementById('jb-itimer-'+va), ld=document.getElementById('jb-ileads-'+va);
+  if(tm) tm.checked=p.timer;
+  if(ld) ld.checked=p.leads;
+}
+// pick a mini-task type: remember it (sticky), highlight the pill, tune the placeholder — toggles stay as set
 function jb_pickType(va,t,el){
+  jb_pref(va).t=t;
   var h=document.getElementById('jb-itype-'+va); if(h) h.value=t;
   try{ el.parentElement.querySelectorAll('.jb-typepill').forEach(function(b){ b.classList.toggle('active',b===el); }); }catch(e){}
   var iv=document.getElementById('jb-ival-'+va);
-  if(iv){ iv.placeholder = t==='sf'?'Paste the storefront link…' : t==='kpf'?'Paste the KPF / SellerAmp filter link…' : t==='asin'?'Paste or type the ASIN (B0…)' : 'Type the message / instruction…'; }
-  jb_typeDefaults(va);
+  if(iv) iv.placeholder=jb_placeholder(t);
 }
 function jb_addItem(va){
   var tEl=document.getElementById('jb-itype-'+va), vEl=document.getElementById('jb-ival-'+va), nEl=document.getElementById('jb-iname-'+va), rEl=document.getElementById('jb-inote-'+va);
@@ -8709,21 +8823,19 @@ function renderFromJack(va){
   var poaHtml=hasPoa?'<div class="fromjack-poa">'+String(b.poa).replace(/</g,'&lt;').replace(/(https?:\/\/[^\s]+)/g,'<a href="$1" target="_blank">$1</a>')+'</div>':'';
   var itemsHtml='';
   if(hasItems){
-    // items are injected as real tasks (with timers + leads) — this is just a quick-access list
-    itemsHtml='<div class="fj-items-head"><span>'+items.length+' item'+(items.length===1?'':'s')+' from Jack — in your task list below</span></div>'
-      +items.map(function(it){
-        var ty=JB_ITYPES[it.t]||JB_ITYPES.msg;
-        var isUrl=/^https?:\/\//i.test(it.v), isAsin=it.t==='asin';
-        var lbl=jb_cleanLabel(it);
-        var body;
-        if(isAsin){ body='<code class="fj-asin" onclick="navigator.clipboard.writeText(\''+String(it.v).replace(/[^0-9A-Za-z]/g,'')+'\');showToast(\'ASIN copied ✓\')">'+String(it.v).replace(/</g,'&lt;')+'</code> <a class="fj-open" href="https://www.amazon.co.uk/dp/'+encodeURIComponent(it.v)+'" target="_blank">Amazon ↗</a>'; }
-        else if(isUrl){ body='<b class="fj-lbl">'+String(lbl).replace(/</g,'&lt;')+'</b> <a class="fj-open" href="'+String(it.v).replace(/"/g,'&quot;')+'" target="_blank">Open ↗</a>'; }
-        else { body='<span class="fj-msg">'+String(it.v).replace(/</g,'&lt;')+'</span>'; }
-        var carry=jb_isCarried(it.addedOn)?' <span class="jb-carry-badge">&#8635; carried</span>':'';
-        return '<div class="fj-item slim"><span class="fj-chip" style="color:'+ty[2]+';">'+ty[0]+'</span>'
-          +'<div class="fj-body">'+body+carry+(it.r?'<div class="fj-note">&#128172; '+String(it.r).replace(/</g,'&lt;')+'</div>':'')+'</div>'
-          +'</div>';
-      }).join('');
+    // items are REAL tasks below (own row, Open button, Start/Stop timer that fills time, leads box)
+    // — so up here we just summarise the counts instead of repeating them
+    var counts={sf:0,kpf:0,eu:0,asin:0,msg:0}, carried=0;
+    items.forEach(function(it){ counts[it.t]=(counts[it.t]||0)+1; if(jb_isCarried(it.addedOn)) carried++; });
+    var bits=[];
+    if(counts.sf)  bits.push('<b>'+counts.sf+'</b> storefront'+(counts.sf===1?'':'s')+' \u{1F3EC}');
+    if(counts.kpf) bits.push('<b>'+counts.kpf+'</b> filter'+(counts.kpf===1?'':'s')+' \u{1F3AF}');
+    if(counts.eu)  bits.push('<b>'+counts.eu+'</b> EU sheet'+(counts.eu===1?'':'s')+' \u{1F1EA}\u{1F1FA}');
+    if(counts.asin)bits.push('<b>'+counts.asin+'</b> ASIN'+(counts.asin===1?'':'s')+' #');
+    if(counts.msg) bits.push('<b>'+counts.msg+'</b> message'+(counts.msg===1?'':'s')+' \u{1F4AC}');
+    itemsHtml='<div class="fj-count-bar">\u{1F4E3} You have <b>'+items.length+'</b> item'+(items.length===1?'':'s')+' from Jack — '+bits.join(' · ')
+      +(carried?' <span class="jb-carry-badge">&#8635; '+carried+' carried over</span>':'')
+      +'<span class="fj-count-sub">Each one is a task in your list below — hit Open, Start the timer, log leads, tick off.</span></div>';
   }
   var taskNote=hasTasks?'<div style="font-size:11.5px;color:var(--amber);font-weight:600;margin-top:'+(hasPoa||hasItems?'9px':'0')+';">'+tasks.length+' task'+(tasks.length===1?'':'s')+' from Jack in your Mandatory Tasks below — they stay until ticked.</div>':'';
   host.innerHTML='<div class="fromjack-card"><div class="fromjack-head"><b>From Jack</b><span class="fromjack-badge">Live</span></div>'+wkHtml+poaHtml+itemsHtml+taskNote+'</div>';
