@@ -104,6 +104,7 @@ body{
 .side-brand svg{display:block;flex-shrink:0;}
 .side-brand span{font-size:15px;font-weight:800;letter-spacing:-0.3px;color:#f4f5fb;white-space:nowrap;}
 .side-brand b{font-weight:800;color:var(--accent-2);}
+.app-ver{font-style:normal;font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:.4px;color:var(--muted-2);background:rgba(255,255,255,.05);border:1px solid var(--line-2);border-radius:20px;padding:2px 7px;vertical-align:middle;margin-left:2px;}
 ​.side-collapse-dead{margin-left:auto;width:24px;height:24px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--panel-2);border:1px solid var(--line-2);border-radius:7px;color:var(--muted);font-size:10px;cursor:pointer;transition:all .15s;}
 .side-collapse:hover{color:var(--text);border-color:var(--accent);}
 /* collapsed sidebar */
@@ -422,6 +423,17 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .field-full{grid-column:1/-1;}
 .field-group{display:flex;flex-direction:column;gap:6px;}
 .field-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:600;}
+/* one-tap time chips + leads stepper */
+.qt-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;}
+.qt-chip{background:var(--panel-2);border:1px solid var(--line-2);border-radius:8px;color:var(--muted);font-family:var(--font-mono);font-size:11px;font-weight:700;padding:6px 10px;cursor:pointer;transition:all .13s;}
+.qt-chip:hover{border-color:var(--accent);color:var(--text);transform:translateY(-1px);}
+.qt-chip:active{transform:scale(.95);background:var(--accent-soft);}
+.ld-step{display:flex;align-items:center;gap:6px;}
+.ld-step .field-input{flex:1;min-width:0;text-align:center;}
+.ld-btn{width:38px;height:38px;flex-shrink:0;border-radius:10px;border:1px solid var(--line-2);background:var(--panel-2);color:var(--text);font-size:18px;font-weight:800;cursor:pointer;transition:all .13s;line-height:1;}
+.ld-btn:hover{border-color:var(--red);color:var(--red);}
+.ld-btn.plus:hover{border-color:var(--green);color:var(--green);}
+.ld-btn:active{transform:scale(.92);}
 .task-actions{display:flex;gap:8px;margin-top:16px;}
 .skip-reason-box{margin-top:12px;padding:10px 13px;background:rgba(242,100,127,0.07);border:1px solid rgba(242,100,127,0.25);border-radius:var(--r-xs);font-size:11px;color:var(--red);}
 .add-task-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px;margin-bottom:34px;font-family:var(--font);font-size:13.5px;font-weight:700;letter-spacing:.2px;color:var(--muted);background:transparent;border:1.5px dashed var(--line-2);border-radius:12px;cursor:pointer;transition:all .16s var(--ease);}
@@ -1692,7 +1704,7 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
       <rect x="14" y="12.5" width="4" height="12" rx="2" fill="rgba(255,255,255,.78)"/>
       <rect x="20.5" y="7.5" width="4" height="17" rx="2" fill="#fff"/>
     </svg>
-    <span class="brand-txt">BDL <b>VA HQ</b></span>
+    <span class="brand-txt">BDL <b>VA HQ</b> <i class="app-ver" id="app-ver"></i></span>
     
   </div>
   <div class="side-cap">Workspace</div>
@@ -2617,6 +2629,18 @@ function ukDayOfWeek() { return ukNow().getDay(); }
 function ukHour() { return ukNow().getHours(); }
 
 // ── STATE ────────────────────────────────────────────────
+// bumped on every ship — shown as a badge next to the logo so a screenshot instantly tells us the version
+var APP_VERSION='v71';
+document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
+// EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
+// done in the rollover bucket even if only one person opens the app that day.
+// MUST pull the cloud buckets first, else stale local iids won't match.
+setTimeout(function(){ try{
+  if(typeof mgr_fetchOpenBuckets==='function' && typeof jb_reconcileFromShifts==='function'){
+    mgr_fetchOpenBuckets().then(function(){ jb_reconcileFromShifts(); }).catch(function(){});
+  }
+}catch(e){} }, 2500);
+
 var state = {
   currentVA:null, shiftStart:null, onBreak:false,
   breakStart:null, totalBreakMs:0, timerInterval:null, liveInterval:null,
@@ -2743,6 +2767,28 @@ applyWebhookSettings();
       localStorage.setItem('st_cloud_pulled','1');
       if(rows&&rows[0]&&rows[0].data){ saveAppSettings(rows[0].data); applyWebhookSettings(); try{applyVaColours();}catch(e){} try{applyVaLabels();}catch(e){} }
     }).catch(function(){});
+}catch(e){}})();
+// WEBHOOK SELF-HEAL — runs on EVERY load. For the protected keys (webhook URLs etc):
+// a device that still has a URL restores an empty cloud; a device missing one adopts the
+// cloud's. An empty side can never drain a full side again, in either direction.
+(function(){try{
+  setTimeout(function(){
+    fetch(SUPABASE_URL+'/rest/v1/app_settings?id=eq.global&select=data',
+      {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}})
+      .then(function(r){return r.ok?r.json():[];})
+      .then(function(rows){
+        var cloud=rows&&rows[0]&&rows[0].data; if(!cloud) return;
+        if(typeof SETTINGS_PROTECT==='undefined') return;
+        var st=getAppSettings(); var localFix=false, cloudFix=false;
+        SETTINGS_PROTECT.forEach(function(k){
+          var lv=String(st[k]||'').trim(), cv=String(cloud[k]||'').trim();
+          if(!lv&&cv){ st[k]=cloud[k]; localFix=true; }
+          else if(lv&&!cv){ cloudFix=true; }
+        });
+        if(localFix){ saveAppSettings(st); applyWebhookSettings(); }
+        if(cloudFix && typeof pushSettingsCloud==='function'){ pushSettingsCloud(st); }
+      }).catch(function(){});
+  },1200);
 }catch(e){}})();
 function applyVaColours(){
   try{ var st=getAppSettings(); var r=document.documentElement.style;
@@ -3625,7 +3671,7 @@ function buildJackTaskEl(task, i, isExtra){
     + '<div class="jbcard-main">'
       + '<div class="jbcard-tags"><span class="jbcard-from">'+JB_ICON_SVG+'From Jack</span>'
         + '<span class="jbcard-type">'+m[0]+' '+m[1]+'</span>'
-        + (task.jbCarried?'<span class="jbcard-carry'+(task.jbCarryDays>=3?' overdue':'')+'" title="Sent '+(task.jbAddedOn||'earlier')+' — still open">'+(task.jbCarryDays>=3?'&#9888; '+task.jbCarryDays+'d overdue':'&#8635; Carried'+(task.jbCarryDays?' '+task.jbCarryDays+'d':''))+'</span>':'')
+        + ((task.jbCarried&&!task.done)?'<span class="jbcard-carry'+(task.jbCarryDays>=3?' overdue':'')+'" title="Sent '+(task.jbAddedOn||'earlier')+' — still open">'+(task.jbCarryDays>=3?'&#9888; '+task.jbCarryDays+'d overdue':'&#8635; Carried'+(task.jbCarryDays?' '+task.jbCarryDays+'d':''))+'</span>':'')
         + '</div>'
       + '<div class="jbcard-title">'+title+skipTag+'</div>'
       + '<div class="'+metaCls+'"><span>'+meta+'</span></div>'
@@ -3751,16 +3797,25 @@ function buildFields(task, i, isExtra) {
     return '<div style="margin-top:14px;padding:14px 16px;background:'+bg+';border:1px solid '+bdr+';border-radius:10px;font-size:12px;color:'+col+';">'+msg+'</div>';
   }
 
+  var sfx=(isExtra?'e':'t')+i;
   var tf = '<div class="task-fields">'
     + '<div class="field-group"><div class="field-label">Time Spent</div>'
     + '<div style="display:flex;gap:6px;align-items:center;">'
-    + '<input class="field-input" type="number" placeholder="hrs" min="0" value="'+(task.timeHrs||'')+'" style="width:62px;text-align:center;" oninput="updateTimeField('+i+','+isExtra+',\'timeHrs\',this.value)">'
+    + '<input class="field-input" id="th-'+sfx+'" type="number" placeholder="hrs" min="0" value="'+(task.timeHrs||'')+'" style="width:62px;text-align:center;" oninput="updateTimeField('+i+','+isExtra+',\'timeHrs\',this.value)">'
     + '<span style="color:var(--muted);font-size:11px;">h</span>'
-    + '<input class="field-input" type="number" placeholder="mins" min="0" max="59" value="'+(task.timeMins||'')+'" style="width:62px;text-align:center;" oninput="updateTimeField('+i+','+isExtra+',\'timeMins\',this.value)">'
-    + '<span style="color:var(--muted);font-size:11px;">m</span></div></div>'
+    + '<input class="field-input" id="tm-'+sfx+'" type="number" placeholder="mins" min="0" max="59" value="'+(task.timeMins||'')+'" style="width:62px;text-align:center;" oninput="updateTimeField('+i+','+isExtra+',\'timeMins\',this.value)">'
+    + '<span style="color:var(--muted);font-size:11px;">m</span></div>'
+    + '<div class="qt-row">'
+      + [15,30,60,120].map(function(m){ return '<button type="button" class="qt-chip" onclick="qtAdd('+i+','+isExtra+','+m+')">+'+(m<60?m+'m':(m/60)+'h')+'</button>'; }).join('')
+    + '</div></div>'
     + (task.hasLinks
         ? '<div class="field-group"><div class="field-label">Leads Found (auto)</div><div id="lt-'+i+'-'+(isExtra?'e':'t')+'" style="background:rgba(45,212,163,0.12);border:2px solid rgba(45,212,163,0.4);border-radius:10px;padding:12px 16px;font-family:var(--font-head);font-size:28px;font-weight:800;color:var(--green);text-align:center;text-shadow:0 0 16px rgba(45,212,163,0.4);">'+(task.leads||0)+'</div></div>'
-        : '<div class="field-group"><div class="field-label">Leads Found</div><input class="field-input" type="number" placeholder="0" min="0" value="'+(task.leads||'')+'" oninput="updateField('+i+','+isExtra+',\'leads\',this.value)"></div>')
+        : '<div class="field-group"><div class="field-label">Leads Found</div>'
+          + '<div class="ld-step">'
+          + '<button type="button" class="ld-btn" onclick="ldStep('+i+','+isExtra+',-1)">&#8722;</button>'
+          + '<input class="field-input" id="lf-'+sfx+'" type="number" placeholder="0" min="0" value="'+(task.leads||'')+'" oninput="updateField('+i+','+isExtra+',\'leads\',this.value)">'
+          + '<button type="button" class="ld-btn plus" onclick="ldStep('+i+','+isExtra+',1)">+</button>'
+          + '</div></div>')
     + '<div class="field-group field-full"><div class="field-label">Notes / Context</div><input class="field-input" type="text" placeholder="e.g. Found strong brand on sale, dug deep..." value="'+(task.context||'')+'" oninput="updateField('+i+','+isExtra+',\'context\',this.value)"></div>'
     + '</div>';
 
@@ -3795,6 +3850,25 @@ function updateField(i, isExtra, field, val) {
   var arr = isExtra ? state.extraTasks : state.tasks;
   if (arr[i]) arr[i][field] = val;
   updateStats();
+}
+// one-tap time chips: +15m/+30m/+1h/+2h onto the task's logged time (updates inputs in place, no re-render)
+function qtAdd(i,isExtra,mins){
+  var arr=isExtra?state.extraTasks:state.tasks; var t=arr[i]; if(!t||t.done) return;
+  var tot=(parseInt(t.timeHrs)||0)*60+(parseInt(t.timeMins)||0)+mins;
+  t.timeHrs=Math.floor(tot/60); t.timeMins=tot%60;
+  t.time=(t.timeHrs>0?t.timeHrs+'h ':'')+(t.timeMins>0?t.timeMins+'m':(t.timeHrs?'':'0m'));
+  var sfx=(isExtra?'e':'t')+i;
+  var h=document.getElementById('th-'+sfx), m=document.getElementById('tm-'+sfx);
+  if(h) h.value=t.timeHrs||''; if(m) m.value=t.timeMins||'';
+  updateStats(); try{saveShiftDraft(false);}catch(e){}
+}
+// leads − / + stepper (never below 0)
+function ldStep(i,isExtra,d){
+  var arr=isExtra?state.extraTasks:state.tasks; var t=arr[i]; if(!t||t.done) return;
+  var n=Math.max(0,(parseInt(t.leads)||0)+d);
+  t.leads=String(n);
+  var el=document.getElementById('lf-'+(isExtra?'e':'t')+i); if(el) el.value=n;
+  updateStats(); try{saveShiftDraft(false);}catch(e){}
 }
 function updateTimeField(i, isExtra, field, val) {
   var arr = isExtra ? state.extraTasks : state.tasks;
@@ -5648,9 +5722,46 @@ function mgr_openSummary(va){
   return {va:va,open:open,doneToday:doneTodayArr.length,doneLeads:doneLeads,oldest:oldest,
     overdue:open.filter(function(x){return jb_carryDays(x.addedOn)>=3;})};
 }
+/* SELF-HEAL from EOD submissions — works even if a VA runs an OLD app version whose
+   tick-write is broken: their submitted shifts contain every task with done + results,
+   so any From-Jack item completed in a submitted shift gets marked done in the bucket. */
+async function jb_reconcileFromShifts(){
+  try{
+    var r=await fetch(SUPABASE_URL+'/rest/v1/shifts?select=va,date,data&order=submitted_at.desc&limit=80',
+      {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
+    if(!r.ok) return 0;
+    var recs=await r.json(), healed=0;
+    ['Mera','Suz'].forEach(function(va){
+      var doneMap={};   // iid → {doneOn, res…} from this VA's submitted shifts
+      recs.filter(function(x){return x.va===va&&x.data&&x.data.tasks;}).forEach(function(x){
+        (x.data.tasks||[]).forEach(function(t){
+          if(!t.done||!t.id) return;
+          var m=String(t.id).match(/^(?:jbitem|oneoff)-(.+)$/); if(!m) return;
+          if(!doneMap[m[1]]) doneMap[m[1]]={doneOn:x.data.dateUK||x.date,
+            leads:(t.leads===''||t.leads==null)?null:(parseInt(t.leads)||0),
+            mins:(function(){ var mm=String(t.time||'').match(/(?:(\d+)h)?\s*(?:(\d+)m)?/); var v=(parseInt(mm&&mm[1])||0)*60+(parseInt(mm&&mm[2])||0); return v||null; })(),
+            note:(t.context||'').trim()||null};
+        });
+      });
+      if(!Object.keys(doneMap).length) return;
+      var o=jb_open(va), changed=false;
+      [(o.items||[]),(o.tasks||[])].forEach(function(arr){
+        arr.forEach(function(e){
+          var d=e&&e.iid&&!e.done?doneMap[e.iid]:null;
+          if(d){ e.done=true; e.doneOn=d.doneOn; e.doneBy=va;
+            if(d.leads!=null) e.resLeads=d.leads; if(d.mins) e.resMins=d.mins; if(d.note) e.resNote=d.note;
+            changed=true; healed++; }
+        });
+      });
+      if(changed) jb_setOpen(va,o);
+    });
+    return healed;
+  }catch(e){ return 0; }
+}
 async function mgr_renderOutstanding(){
   var host=document.getElementById('ov-outstanding'); if(!host) return;
   await mgr_fetchOpenBuckets();
+  try{ var _healed=await jb_reconcileFromShifts(); if(_healed) console.log('jb reconcile: healed '+_healed+' items from EOD records'); }catch(e){}
   host=document.getElementById('ov-outstanding'); if(!host) return;   // overview may have re-rendered
   var Ms=mgr_openSummary('Mera'), Ss=mgr_openSummary('Suz');
   var html=mgr_section('Outstanding from Jack — rolls over until ticked');
@@ -6838,7 +6949,9 @@ function mgr_saveSettings(){
   if(pin) settings.managerPin=pin;
   [['setting-wh-main','whMain'],['setting-wh-weekly','whWeekly'],['setting-wh-leadsmera','whLeadsMera'],['setting-wh-leadssuz','whLeadsSuz'],['setting-wh-tasks','whTasks'],['setting-wh-breaks','whBreaks'],['setting-wh-shiftstart','whShiftStart']].forEach(function(p){
     var el=document.getElementById(p[0]);
-    if(el) settings[p[1]]=el.value.trim();
+    // an EMPTY field never wipes a stored webhook URL (a device with blank fields kept
+    // killing notifications on save) — to change one, paste the new URL over it
+    if(el && el.value.trim()) settings[p[1]]=el.value.trim();
   });
   [['setting-n-main','nMain'],['setting-n-weekly','nWeekly'],['setting-n-leadsmera','nLeadsMera'],['setting-n-leadssuz','nLeadsSuz'],['setting-n-tasks','nTasks'],['setting-n-breaks','nBreaks'],['setting-n-shiftstart','nShiftStart']].forEach(function(p){
     var el=document.getElementById(p[0]);
@@ -7888,6 +8001,12 @@ function showToast(msg,isError) {
     window.mgr_switchTab=function(tab){
       window.mgr_currentTab=tab;
       window._jbSendPrefs={};   // leaving a VA tab resets the mini-task composer to defaults
+      // opening a VA tab: pull the freshest bucket from the cloud first, then re-render the
+      // composer — so Jack never pushes a stale copy over the VA's ticked-off items
+      if(tab==='mera'||tab==='suz'){
+        var _pv=tab==='mera'?'Mera':'Suz';
+        try{ jb_cloudPull(_pv).then(function(){ try{ jb_rerender(_pv); }catch(e){} }).catch(function(){}); }catch(e){}
+      }
       KNOWN.forEach(function(t){var el=document.getElementById('mgr-tab-'+t);if(el)el.style.display='none';var b=document.getElementById('tab-'+t);if(b)b.classList.remove('active-tab');});
       var el=document.getElementById('mgr-tab-'+tab);if(el)el.style.display='block';
       var ab=document.getElementById('tab-'+tab);if(ab)ab.classList.add('active-tab');
@@ -8496,7 +8615,37 @@ function jb_open(va){
   o.items=(o.items||[]).map(jb_normItem); o.tasks=(o.tasks||[]).map(jb_normTask);
   return o;
 }
-function jb_setOpen(va,o){ o=o||{items:[],tasks:[]}; var a=jb_all(); a[jb_openKey(va)]=o; jb_saveAll(a); jb_cloudPut(jb_openKey(va),o); }
+function jb_setOpen(va,o,delIid){ o=o||{items:[],tasks:[]}; var a=jb_all(); a[jb_openKey(va)]=o; jb_saveAll(a); jb_mergePush(va,delIid); }
+/* DONE-WINS MERGE PUSH — a stale device can never resurrect ticked items.
+   Before pushing the bucket, pull the cloud copy and: (a) if the cloud says an entry is
+   done, it STAYS done (with its results); (b) entries that exist only in the cloud are
+   kept (another device added them) unless they're the one being deleted right now. */
+async function jb_mergePush(va,delIid){
+  var key=jb_openKey(va);
+  try{
+    var local=jb_all()[key]||{items:[],tasks:[]};
+    var r=await fetch(SUPABASE_URL+'/rest/v1/jack_briefs?k=eq.'+encodeURIComponent(key)+'&select=data',
+      {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
+    if(r.ok){
+      var rows=await r.json(); var cloud=(rows[0]&&rows[0].data)||null;
+      if(cloud){
+        ['items','tasks'].forEach(function(kk){
+          var lmap={}; (local[kk]=local[kk]||[]).forEach(function(e){ if(e&&e.iid) lmap[e.iid]=e; });
+          (cloud[kk]||[]).forEach(function(ce){
+            if(!ce||!ce.iid) return;
+            var le=lmap[ce.iid];
+            if(le){
+              if(ce.done&&!le.done){ le.done=true; le.doneOn=ce.doneOn; le.doneBy=ce.doneBy;
+                le.resLeads=ce.resLeads; le.resMins=ce.resMins; le.resSec=ce.resSec; le.resNote=ce.resNote; }
+            } else if(ce.iid!==delIid){ local[kk].push(ce); }
+          });
+        });
+        var a2=jb_all(); a2[key]=local; jb_saveAll(a2);
+      }
+    }
+    jb_cloudPut(key,jb_all()[key]);
+  }catch(e){ try{ jb_cloudPut(key,jb_all()[key]); }catch(_){} }
+}
 function jb_isCarried(addedOn){ return !!addedOn && addedOn!==ukDateShort(); }
 function jb_carryDays(addedOn){ try{ var p=(addedOn||'').split('/'); if(p.length!==3) return 0; var then=new Date(+p[2],+p[1]-1,+p[0]); var now=new Date(ukDateShort().split('/').reverse().join('-')); return Math.max(0,Math.round((now-then)/86400000)); }catch(e){ return 0; } }
 // mark a rolling item/task done (called when the VA ticks its shift task) — writes back to cloud,
@@ -8525,8 +8674,26 @@ async function jb_cloudPull(va){
     var rows=await res.json();
     if(!rows.length) return;
     var a=jb_all();
-    rows.forEach(function(r){ a[r.k]=r.data; });
+    var pushBack=false;
+    rows.forEach(function(r){
+      if(r.k===jb_openKey(va)){
+        // OPEN bucket: cloud decides WHICH entries exist (Jack adds/deletes),
+        // but done-WINS from either side — a tick can never be lost by a pull
+        var cloud=r.data||{items:[],tasks:[]};
+        var localB=a[r.k]||{items:[],tasks:[]};
+        ['items','tasks'].forEach(function(kk){
+          var lmap={}; (localB[kk]||[]).forEach(function(e){ if(e&&e.iid) lmap[e.iid]=e; });
+          (cloud[kk]=cloud[kk]||[]).forEach(function(ce){
+            var le=ce&&ce.iid?lmap[ce.iid]:null;
+            if(le&&le.done&&!ce.done){ ce.done=true; ce.doneOn=le.doneOn; ce.doneBy=le.doneBy;
+              ce.resLeads=le.resLeads; ce.resMins=le.resMins; ce.resSec=le.resSec; ce.resNote=le.resNote; pushBack=true; }
+          });
+        });
+        a[r.k]=cloud;
+      } else { a[r.k]=r.data; }
+    });
     jb_saveAll(a);
+    if(pushBack){ try{ jb_cloudPut(jb_openKey(va), a[jb_openKey(va)]); }catch(e){} }
     try{ renderFromJack(va); }catch(e){}
     // re-inject any rolling items / one-off tasks that arrived from the cloud after shift start
     try{
@@ -8715,7 +8882,13 @@ function jb_addItem(va){
   var o=jb_open(va); o.items.push({iid:jb_uid(),t:t,v:v,n:(nEl&&nEl.value||'').trim(),r:(rEl&&rEl.value||'').trim(),timer:timer?1:0,leads:wantLeads?1:0,done:false,addedOn:ukDateShort()});
   jb_setOpen(va,o); jb_rerender(va); showToast('Added to '+vaDisp(va)+'\'s task list ✓ (rolls over until ticked)');
 }
-function jb_delItem(va,iid){ var o=jb_open(va); o.items=o.items.filter(function(x){return x.iid!==iid;}); jb_setOpen(va,o); jb_rerender(va); }
+function jb_delItem(va,iid){
+  var o=jb_open(va);
+  var it=(o.items||[]).filter(function(x){return x.iid===iid;})[0];
+  var nm=it?(it.n||jb_cleanLabel(it)):'this item';
+  if(!confirm('Remove "'+String(nm).slice(0,60)+'" from '+vaDisp(va)+'’s list?')) return;
+  o.items=o.items.filter(function(x){return x.iid!==iid;}); jb_setOpen(va,o,iid); jb_rerender(va);
+}
 function jb_rerender(va){var host=document.getElementById('jb-editor-'+va);if(host)host.outerHTML=jb_editorHTML(va);}
 function jb_addTask(va){
   var inp=document.getElementById('jb-task-'+va);if(!inp)return;
@@ -8725,7 +8898,12 @@ function jb_addTask(va){
   var o=jb_open(va); o.tasks.push({iid:jb_uid(),name:name,done:false,addedOn:ukDateShort()});
   jb_setOpen(va,o);jb_rerender(va);showToast('Task added for '+vaDisp(va)+' ✓ (rolls over until ticked)');
 }
-function jb_delTask(va,iid){var o=jb_open(va);o.tasks=o.tasks.filter(function(x){return x.iid!==iid;});jb_setOpen(va,o);jb_rerender(va);}
+function jb_delTask(va,iid){
+  var o=jb_open(va);
+  var t=(o.tasks||[]).filter(function(x){return x.iid===iid;})[0];
+  if(!confirm('Remove task "'+String(t?t.name:'this task').slice(0,60)+'" from '+vaDisp(va)+'’s list?')) return;
+  o.tasks=o.tasks.filter(function(x){return x.iid!==iid;});jb_setOpen(va,o,iid);jb_rerender(va);
+}
 function jb_clearPoa(va){
   var b=jb_get(va); b.poa=''; jb_set(va,b);
   var el=document.getElementById('jb-poa-'+va); if(el) el.value='';
