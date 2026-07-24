@@ -423,6 +423,34 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .field-full{grid-column:1/-1;}
 .field-group{display:flex;flex-direction:column;gap:6px;}
 .field-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:600;}
+/* task fill-in polish: soft panel around the fields */
+.task-body.open .task-fields{background:color-mix(in srgb,var(--accent) 4%,var(--panel-2));border:1px solid var(--line);border-radius:12px;padding:13px;}
+.task-fields .field-input{background:#0b0c12;}
+/* ── Saved Filters — Jack management (Settings) ── */
+.sflt-list{display:flex;flex-direction:column;gap:9px;margin:12px 0;}
+.sflt-row{display:grid;grid-template-columns:26px 1fr auto;gap:11px;align-items:start;background:#12141d;border:1px solid var(--line-2);border-radius:11px;padding:11px;}
+.sflt-ord{width:24px;height:24px;border-radius:7px;background:color-mix(in srgb,var(--accent) 20%,var(--panel-2));color:var(--accent-2);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+.sflt-fields{display:flex;flex-direction:column;gap:7px;min-width:0;}
+.sflt-r1{display:flex;gap:7px;}
+.sflt-r1 .sflt-t{flex:1;}
+.sflt-tag{background:var(--panel-2);border:1px solid var(--line-2);border-radius:8px;color:var(--text);font-family:inherit;font-size:12px;font-weight:600;padding:8px 9px;}
+.sflt-u{font-family:var(--font-mono);font-size:11px;}
+.sflt-acts{display:flex;flex-direction:column;gap:5px;align-items:center;}
+.sflt-add{background:color-mix(in srgb,var(--accent) 6%,var(--panel-2));border:1px dashed color-mix(in srgb,var(--accent) 30%,var(--line-2));border-radius:11px;padding:12px;display:flex;flex-direction:column;gap:8px;}
+.sflt-add .sflt-r1{gap:7px;}
+/* ── Saved Filters — VA panel (shift) ── */
+.vaf-wrap{background:linear-gradient(150deg,color-mix(in srgb,#18c8f0 8%,var(--panel)),var(--panel) 72%);border:1px solid color-mix(in srgb,#18c8f0 26%,var(--line-2));border-radius:13px;margin-bottom:14px;overflow:hidden;}
+.vaf-head{list-style:none;cursor:pointer;padding:13px 16px;font-size:14px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:9px;user-select:none;}
+.vaf-head::-webkit-details-marker{display:none;}
+.vaf-count{font-size:11px;font-weight:800;background:#18c8f0;color:#04141a;border-radius:20px;padding:2px 9px;}
+.vaf-hint{font-size:11.5px;font-weight:500;color:var(--muted-2);margin-left:auto;}
+.vaf-list{padding:2px 12px 12px;display:flex;flex-direction:column;gap:6px;}
+.vaf-row{display:flex;align-items:center;gap:11px;padding:11px 13px;background:var(--panel);border:1px solid var(--line);border-radius:10px;text-decoration:none;transition:border-color .13s,transform .13s;}
+.vaf-row:hover{border-color:#18c8f0;transform:translateY(-1px);}
+.vaf-tag{flex-shrink:0;font-size:9.5px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;color:var(--c);background:color-mix(in srgb,var(--c) 15%,transparent);border:1px solid color-mix(in srgb,var(--c) 34%,transparent);border-radius:20px;padding:4px 9px;min-width:74px;text-align:center;}
+.vaf-name{flex:1;min-width:0;font-size:13.5px;font-weight:700;color:var(--text);display:flex;flex-direction:column;gap:2px;}
+.vaf-note{font-size:11.5px;font-weight:500;color:var(--muted);}
+.vaf-open{flex-shrink:0;font-size:12px;font-weight:800;color:#18c8f0;}
 /* one-tap time chips + leads stepper */
 .qt-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;}
 .qt-chip{background:var(--panel-2);border:1px solid var(--line-2);border-radius:8px;color:var(--muted);font-family:var(--font-mono);font-size:11px;font-weight:700;padding:6px 10px;cursor:pointer;transition:all .13s;}
@@ -579,8 +607,8 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
   & .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 
   /* ── horizontal views/filter bar (single-sidebar layout) ── */
-  & .ld-viewsbar{display:flex;flex-wrap:wrap;align-items:center;gap:5px;padding:9px 20px;border-bottom:1px solid var(--b1);background:var(--bg)}
-  & .nav{display:inline-flex;align-items:center;gap:6px;width:auto;padding:6px 12px;border-radius:999px;border:1px solid var(--b1);background:var(--s2);color:var(--t3);font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;transition:all .14s;text-align:left;white-space:nowrap}
+  & .ld-viewsbar{display:flex;flex-wrap:wrap;align-items:center;gap:5px;padding:6px 16px;border-bottom:1px solid var(--b1);background:var(--bg)}
+  & .nav{display:inline-flex;align-items:center;gap:5px;width:auto;padding:5px 11px;border-radius:999px;border:1px solid var(--b1);background:var(--s2);color:var(--t3);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all .14s;text-align:left;white-space:nowrap}
   & .nav:hover{border-color:var(--b3);color:var(--t1)}
   & .nav.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
   & .nav.on .nb{background:rgba(0,0,0,.25);color:#fff}
@@ -593,8 +621,8 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
   & .ldv-demo-dot{width:6px;height:6px;border-radius:50%;background:var(--amber);animation:ldblink 2.5s infinite}
 
   /* ── topbar ── */
-  & .topbar-ld{background:var(--bg);border-bottom:1px solid var(--b1);padding:0 20px;display:flex;align-items:center;gap:10px;height:64px;flex-shrink:0}
-  & .topbar-title{font-size:20px;font-weight:800;letter-spacing:-.4px;white-space:nowrap}
+  & .topbar-ld{background:var(--bg);border-bottom:1px solid var(--b1);padding:0 16px;display:flex;align-items:center;gap:10px;height:50px;flex-shrink:0}
+  & .topbar-title{font-size:16px;font-weight:800;letter-spacing:-.4px;white-space:nowrap}
   & .tt-count{font-size:12.5px;color:var(--t3);font-weight:600;margin-left:2px;white-space:nowrap}
   & .filters{display:flex;gap:6px;align-items:center;margin-left:auto}
   & .ld-clocks{display:flex;gap:7px;margin-left:10px;padding-left:12px;border-left:1px solid var(--b1);flex-shrink:0}
@@ -608,17 +636,20 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
   & select:focus{border-color:var(--accent)}
 
   /* ── stats ribbon — vivid AVM tiles ── */
-  & .ribbon{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;background:var(--bg);border-bottom:1px solid var(--b1);flex-shrink:0;padding:7px 16px}
-  & .rc{--k:var(--accent);position:relative;background:var(--s2);border:1px solid var(--b2);border-left:3px solid var(--k);border-radius:9px;padding:6px 12px;display:flex;flex-direction:column;gap:1px;cursor:default;transition:border-color .14s}
+  & .ribbon{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;background:var(--bg);border-bottom:1px solid var(--b1);flex-shrink:0;padding:6px 14px}
+  & .rc{--k:var(--accent);position:relative;background:var(--s2);border:1px solid var(--b2);border-left:3px solid var(--k);border-radius:9px;padding:5px 11px;display:flex;flex-direction:column;gap:0;cursor:default;transition:border-color .14s}
   & .rc:hover{border-color:color-mix(in srgb,var(--k) 55%,var(--b2))}
-  & .rv{font-size:18px;font-weight:700;font-family:var(--font-head);line-height:1.15;letter-spacing:-.02em;color:var(--k)}
-  & .rl{font-size:9px;text-transform:uppercase;letter-spacing:.7px;color:var(--t3);font-weight:700}
-  & .rsub{font-size:10px;font-weight:600;color:var(--t4);margin-top:1px}
+  & .rv{font-size:16px;font-weight:700;font-family:var(--font-head);line-height:1.1;letter-spacing:-.02em;color:var(--k)}
+  & .rl{font-size:8.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--t3);font-weight:700}
+  & .rsub{font-size:9.5px;font-weight:600;color:var(--t4);margin-top:0}
   & .rc-amber{--k:#f5a524}
   & .rc-green{--k:#10d99a}
   & .rc-red{--k:#f5455f}
   & .rc-cyan{--k:#18c8f0}
   & .rc-purple{--k:#8b5cff}
+  & .rc-click{cursor:pointer;}
+  & .rc-click:hover{border-color:color-mix(in srgb,var(--k) 65%,var(--line-2));transform:translateY(-1px);}
+  & .rc-active{border-color:var(--k)!important;box-shadow:0 0 0 1px var(--k),0 0 20px -8px var(--k);}
   & .rc-off{--k:#525a68}
   & .rc-off .rv{color:var(--t3)}   /* quiet zero-state — no loud colour when nothing's wrong */
 
@@ -651,7 +682,10 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
   & .litem:hover{background:var(--s2)}
   & .litem.va-m{border-left-color:var(--mera)}
   & .litem.va-s{border-left-color:var(--suz)}
-  & .litem.sel{background:var(--s3)}
+  & .litem.decided{opacity:.5}
+  & .litem.decided:hover{opacity:.8}
+  & .litem.decided .litem-thumb{filter:grayscale(.4)}
+  & .litem.sel{background:var(--s3);opacity:1}
   & .litem.sel::after{content:"";position:absolute;right:0;top:0;bottom:0;width:2px;background:var(--accent)}
   & .litem-top{display:flex;align-items:center;gap:8px;margin-bottom:5px}
   & .litem-score{font-size:12px;font-weight:800;font-family:var(--font-mono);letter-spacing:-.5px;padding:2px 8px;border-radius:7px;color:#0a0b10!important}
@@ -717,7 +751,10 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
   & .tag-pri-mid{background:var(--amber);color:#241a00}
   & .tag-pri-low{background:var(--s4);color:var(--t3)}
   & .tag-store{background:var(--s4);color:var(--t2)}
-  & .tag-src{background:var(--va);color:#0a0b10}
+  & .tag-src{background:var(--va);color:#0a0b10;font-weight:800}
+  & .tag-src.tag-empty{background:var(--s4);color:var(--t4);font-weight:600}
+  & .tag-sup{background:color-mix(in srgb,#f5a524 16%,var(--s2));color:#ffcf6b;border:1px solid color-mix(in srgb,#f5a524 34%,transparent);text-decoration:none}
+  & .tag-sup:hover{border-color:#f5a524;color:#ffd98a}
   & .tag-cat{background:var(--s4);color:var(--t3)}
   & .d-sec{margin-bottom:7px}
   & .d-sec-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.9px;color:var(--t3);margin-bottom:6px}
@@ -737,6 +774,10 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
   & .d-links{display:flex;gap:7px;flex-wrap:wrap}
   & .d-link{flex:1 1 130px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--t2);padding:10px 8px;border-radius:10px;border:1px solid var(--b2);background:var(--s2);cursor:pointer;text-decoration:none;transition:all .14s;font-family:inherit}
   & .d-link:hover{border-color:var(--va);color:var(--t1);background:var(--s3);transform:translateY(-1px)}
+  & .d-link-off{opacity:.4;cursor:not-allowed;color:var(--t4)}
+  & .d-link-off:hover{border-color:var(--b2);transform:none;background:var(--s2)}
+  & .d-link-shot{color:#f5a524;border-color:color-mix(in srgb,#f5a524 34%,var(--b2));background:color-mix(in srgb,#f5a524 8%,var(--s2))}
+  & .d-link-shot:hover{border-color:#f5a524;color:#ffcf6b}
   & .d-link svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0}
   & .d-asin-row{display:flex;align-items:center;gap:10px;margin-top:7px}
   & .d-asin{font-family:var(--font-mono);font-size:12.5px;font-weight:600;color:var(--t2);background:var(--s2);border:1px solid var(--b2);padding:8px 13px;border-radius:9px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .12s}
@@ -1146,6 +1187,19 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 #view-leads .nb-save:hover{filter:brightness(1.1);}
 #view-leads .nb-skip{background:none;border:1px solid #2a2e3f;border-radius:10px;color:#8b93a8;font-family:inherit;font-size:12px;font-weight:700;padding:11px 15px;cursor:pointer;}
 #view-leads .nb-skip:hover{color:#fff;border-color:#8b93a8;}
+#view-leads .rail-note{width:100%;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:7px;background:none;border:1px dashed #2a2e3f;border-radius:10px;color:#8b93a8;font-family:inherit;font-size:12.5px;font-weight:700;padding:10px;cursor:pointer;transition:all .14s;}
+#view-leads .rail-note:hover{border-color:var(--va);color:#eef1f8;background:rgba(255,255,255,.02);}
+#view-leads .rail-note-dot{color:#2dd4a3;font-size:10px;}
+#view-leads .nb-wrap.nb-buy{border-left-color:#10d99a;border-color:rgba(16,217,154,.35);}
+#view-leads .nb-qty{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:11px;padding-bottom:11px;border-bottom:1px solid var(--b2);}
+#view-leads .nb-qty-lbl{font-size:11.5px;font-weight:800;color:#2dd4a3;margin-right:auto;}
+#view-leads .qty-btn{width:34px;height:34px;flex-shrink:0;border-radius:9px;border:1px solid var(--b2);background:var(--s2);color:var(--t1);font-size:17px;font-weight:800;cursor:pointer;line-height:1;}
+#view-leads .qty-btn:hover{border-color:#10d99a;color:#10d99a;}
+#view-leads #qty-in{width:64px;text-align:center;background:#0b0c12;border:1px solid var(--b2);border-radius:9px;color:#eef1f8;font-family:inherit;font-size:15px;font-weight:800;padding:8px;outline:none;}
+#view-leads #qty-in:focus{border-color:#10d99a;}
+#view-leads .qty-na{background:var(--s2);border:1px solid var(--b2);border-radius:9px;color:var(--t3);font-family:inherit;font-size:12px;font-weight:800;padding:8px 12px;cursor:pointer;}
+#view-leads .qty-na.on,#view-leads .qty-na:hover{border-color:#f5a524;color:#f5a524;}
+#view-leads .d-code{background:color-mix(in srgb,#f5a524 12%,var(--s2));border-color:color-mix(in srgb,#f5a524 34%,var(--b2));color:#ffcf6b;}
 #view-leads .rail-copy:hover{filter:brightness(1.18);}
 #view-leads .qr-chips{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
 #view-leads .qr-chip{background:var(--s3);border:1px solid var(--b2);border-radius:8px;padding:9px 8px;font-size:11.5px;font-weight:600;color:var(--t2);cursor:pointer;text-align:center;transition:all .14s;font-family:inherit;}
@@ -1153,6 +1207,13 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 #view-leads .d-dec-stack{flex-direction:column;}
 #view-leads .d-dec-stack .d-dec-btn{width:100%;}
 #view-leads .d-score-rubric{background:var(--s2);border:1px solid var(--b1);border-radius:13px;padding:2px 15px 9px;}
+#view-leads .smart-badge{font-size:9px;font-weight:800;letter-spacing:.4px;background:color-mix(in srgb,#8b5cff 22%,transparent);color:#c3b5ff;border:1px solid color-mix(in srgb,#8b5cff 40%,transparent);border-radius:20px;padding:2px 8px;margin-left:7px;vertical-align:middle;}
+#view-leads .smart-why{background:linear-gradient(150deg,color-mix(in srgb,#8b5cff 11%,var(--s2)),var(--s2) 74%);border:1px solid color-mix(in srgb,#8b5cff 28%,var(--b2));border-radius:11px;padding:11px 14px;margin-bottom:10px;font-size:12.5px;line-height:1.55;color:var(--t2);}
+#view-leads .smart-why b{color:var(--t1);}
+#view-leads .sw-help{color:#10d99a;font-weight:700;}
+#view-leads .sw-hurt{color:#f5a524;font-weight:700;}
+#view-leads .smart-near{margin-top:7px;font-size:11.5px;color:var(--t3);}
+#view-leads .smart-near b{color:#c3b5ff;}
 #view-leads .d-sbar-row{padding:6.5px 0;border-top:1px solid var(--b1);}
 #view-leads .d-sbar-row:first-child{border-top:none;}
 #view-leads .d-sbar-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
@@ -1490,6 +1551,8 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .ai-q-input{flex:1;}
 .issue-card{background:var(--panel);border:1px solid rgba(242,100,127,0.2);border-radius:var(--r-md);padding:14px 16px;margin-bottom:9px;box-shadow:none;}
 .flag-banner{background:color-mix(in srgb,var(--red) 12%,#0b0c12);border:1px solid color-mix(in srgb,var(--red) 40%,var(--line));border-left:3px solid var(--red);border-radius:var(--r-md);padding:13px 17px;margin-bottom:18px;display:flex;gap:12px;align-items:flex-start;}
+.onshift-banner{background:color-mix(in srgb,var(--green) 11%,#0b0c12);border:1px solid color-mix(in srgb,var(--green) 38%,var(--line));border-left:3px solid var(--green);border-radius:var(--r-md);padding:13px 17px;margin-bottom:12px;display:flex;gap:12px;align-items:flex-start;}
+.onshift-banner b{color:#fff;}
 /* solid manager alert helpers */
 .mgr-alert{display:flex;align-items:center;gap:10px;border-radius:12px;padding:14px 18px;margin-bottom:16px;font-size:13px;font-weight:600;}
 .mgr-alert.red{background:color-mix(in srgb,var(--red) 12%,#0b0c12);border:1px solid color-mix(in srgb,var(--red) 38%,var(--line));border-left:3px solid var(--red);color:var(--red);}
@@ -1578,6 +1641,70 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .teach-band .bar{flex:1;height:9px;border-radius:5px;background:rgba(255,255,255,.07);overflow:hidden;}
 .teach-band .bar i{display:block;height:100%;border-radius:5px;background:var(--green);}
 .teach-band .val{width:78px;text-align:right;font-family:var(--font-mono);font-weight:700;color:var(--text);}
+/* modern scoring sliders */
+.sw-grid{display:flex;flex-direction:column;gap:11px;}
+.sw-row{display:grid;grid-template-columns:132px 1fr 46px;gap:12px;align-items:center;}
+.sw-name{font-size:12.5px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:7px;}
+.sw-dot{width:9px;height:9px;border-radius:50%;background:var(--swc,var(--accent));flex-shrink:0;}
+.sw-row input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:7px;border-radius:5px;background:linear-gradient(90deg,var(--swc,var(--accent)) 0%,var(--swc,var(--accent)) var(--fill,50%),rgba(255,255,255,.09) var(--fill,50%),rgba(255,255,255,.09) 100%);outline:none;cursor:pointer;}
+.sw-row input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#fff;border:3px solid var(--swc,var(--accent));cursor:pointer;box-shadow:0 2px 8px -2px rgba(0,0,0,.6);transition:transform .1s;}
+.sw-row input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.18);}
+.sw-row input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid var(--swc,var(--accent));cursor:pointer;}
+.sw-val{font-family:var(--font-mono);font-size:13px;font-weight:800;color:var(--swc,var(--accent-2));text-align:right;}
+.sw-val.up{color:var(--green);} .sw-val.down{color:var(--red);}
+/* live weights bars in the teach panel */
+.wbars{display:flex;flex-direction:column;gap:6px;margin:10px 0;}
+.wbar-row{display:flex;align-items:center;gap:9px;font-size:11.5px;}
+.wbar-n{width:64px;flex-shrink:0;font-weight:700;color:var(--text);}
+.wbar-track{flex:1;height:9px;border-radius:5px;background:rgba(255,255,255,.06);overflow:hidden;}
+.wbar-track i{display:block;height:100%;border-radius:5px;transition:width .4s var(--ease);}
+.wbar-v{width:38px;text-align:right;font-family:var(--font-mono);font-weight:800;color:var(--muted);}
+/* scoring mode toggle + learning panel */
+.sc-mode{display:inline-flex;gap:3px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:10px;padding:3px;margin-bottom:12px;}
+.sc-mode button{background:transparent;border:none;color:var(--muted);font-family:inherit;font-size:12px;font-weight:700;padding:7px 13px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .13s;}
+.sc-mode button.on{background:var(--accent);color:#fff;}
+.sc-mode .beta{font-size:8.5px;font-weight:800;padding:1px 5px;border-radius:10px;background:rgba(255,255,255,.18);letter-spacing:.5px;}
+.learn-box{background:linear-gradient(150deg,color-mix(in srgb,#8b5cff 10%,var(--panel)),var(--panel) 74%);border:1px solid color-mix(in srgb,#8b5cff 30%,var(--line-2));border-radius:12px;padding:14px 15px;margin-bottom:6px;font-size:12.5px;line-height:1.55;color:var(--muted);}
+.learn-box b{color:var(--text);}
+.learn-hd{display:flex;align-items:center;gap:13px;margin-bottom:12px;}
+.learn-acc{font-family:var(--font-head);font-size:34px;font-weight:800;line-height:1;color:#10d99a;}
+.learn-acc-l{font-size:12px;color:var(--text);font-weight:600;line-height:1.4;}
+.learn-acc-l small{color:var(--muted-2);font-weight:500;}
+.learn-drv-t{font-size:10.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin:4px 0 7px;}
+.ld-drv{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:rgba(255,255,255,.03);border-radius:8px;margin-bottom:5px;font-size:12px;}
+.ld-drv span:first-child{font-weight:700;color:var(--text);}
+.ld-drv .up{color:#10d99a;font-weight:700;}
+.ld-drv .down{color:#f5a524;font-weight:700;}
+.learn-note{font-size:11px;color:var(--muted-2);margin-top:10px;line-height:1.5;}
+/* auto-tune "why you bought" explainer */
+.why-box{background:color-mix(in srgb,var(--accent) 6%,#0d0f16);border:1px solid var(--line-2);border-radius:11px;padding:12px 14px;margin-top:12px;}
+.why-title{font-size:12px;font-weight:800;color:var(--text);margin-bottom:9px;}
+.why-row{display:flex;align-items:center;gap:9px;font-size:12px;margin-bottom:6px;}
+.why-name{width:64px;flex-shrink:0;font-weight:800;color:var(--text);}
+.why-vals{flex:1;color:var(--muted);}
+.why-vals b{color:var(--text);}
+.why-gap{font-family:var(--font-mono);font-weight:800;padding:2px 8px;border-radius:20px;flex-shrink:0;}
+.why-gap.up{color:var(--green);background:color-mix(in srgb,var(--green) 13%,transparent);}
+.why-gap.down{color:var(--red);background:color-mix(in srgb,var(--red) 13%,transparent);}
+.why-gap.strong{outline:1px solid currentColor;}
+.why-verdict{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:9px;padding-top:9px;border-top:1px solid var(--line);}
+.why-verdict b{color:var(--accent-2);}
+/* Jack Insights */
+.ji-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.ji-stat{--k:var(--accent);background:linear-gradient(150deg,color-mix(in srgb,var(--k) 14%,var(--panel)),var(--panel) 74%);border:1px solid color-mix(in srgb,var(--k) 30%,var(--line-2));border-left:3px solid var(--k);border-radius:10px;padding:8px 11px;}
+.ji-v{font-family:var(--font-head);font-size:20px;font-weight:800;line-height:1.05;color:var(--k);}
+.ji-l{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--muted-2);margin-top:2px;}
+.ji-note{font-size:12px;line-height:1.55;color:var(--muted);background:#0d0f16;border:1px solid var(--line-2);border-radius:10px;padding:11px 13px;margin-bottom:12px;}
+.ji-note b{color:var(--text);}
+.ji-rank{margin-bottom:12px;}
+.ji-rank-t{font-size:10.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
+.ji-rank-row{display:flex;align-items:center;gap:9px;margin-bottom:5px;font-size:12px;}
+.ji-rank-n{width:110px;flex-shrink:0;color:var(--text);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ji-rank-bar{flex:1;height:8px;border-radius:5px;background:rgba(255,255,255,.06);overflow:hidden;}
+.ji-rank-bar i{display:block;height:100%;border-radius:5px;}
+.ji-rank-v{width:82px;text-align:right;font-family:var(--font-mono);font-weight:800;font-size:11px;}
+.ji-rank-v small{color:var(--muted-2);font-weight:600;}
+@media(max-width:560px){.ji-stats{grid-template-columns:repeat(2,1fr);}}
 .jack-callout{display:flex;gap:9px;background:color-mix(in srgb,var(--accent) 10%,#0d0f16);border:1px solid var(--accent-line);border-left:3px solid var(--accent);border-radius:11px;padding:12px 15px;margin-bottom:14px;font-size:12.5px;line-height:1.55;color:var(--text);}
 .jack-callout b{color:var(--accent-2);flex-shrink:0;}
 .jack-callout em{color:var(--accent-2);font-style:normal;font-weight:700;}
@@ -1876,6 +2003,7 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 
     <div id="jack-adds"></div>
     <div id="from-jack"></div>
+    <div id="va-filters"></div>
     <div id="shift-momentum"></div>
     <div class="stats-head">
       <div class="cardstyle-toggle" id="cardstyle-toggle">
@@ -2058,7 +2186,8 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
       <div class="topbar-title" id="view-title">New Leads</div>
       <span class="tt-count" id="tt-count"></span>
       <div class="filters">
-        <select id="f-date" onchange="renderList()"><option value="month" selected>This month</option><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="48h">Last 48h</option><option value="7d">Last 7 days</option><option value="all">All dates</option></select>
+        <select id="f-date" onchange="fDateChange()"><option value="month" selected>This month</option><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="48h">Last 48h</option><option value="7d">Last 7 days</option><option value="day">Pick a day…</option><option value="all">All dates</option></select>
+        <input type="date" id="f-day" style="display:none" onchange="fDaySet(this.value)">
         <select id="f-store" onchange="renderList()"><option value="all">All stores</option><option>Argos</option><option>Amazon.UK</option><option>Amazon.FR</option><option>Currys</option><option>John Lewis</option><option>scan</option></select>
         <select id="f-cat" onchange="renderList()"><option value="all">All categories</option><option>Beauty</option><option>Computers &amp; Acc.</option><option>Electronics</option><option>Home &amp; Garden</option></select>
         <select id="f-source" onchange="renderList()"><option value="all">All sources</option><option>JKPF</option><option>KPF Storefront</option><option>KPF Brand</option><option>A2A Storefront</option><option>PP Pings</option><option>Manual</option><option>Keepa Tracker</option><option>Arbi</option></select>
@@ -2666,7 +2795,7 @@ function ukHour() { return ukNow().getHours(); }
 
 // ── STATE ────────────────────────────────────────────────
 // bumped on every ship — shown as a badge next to the logo so a screenshot instantly tells us the version
-var APP_VERSION='v76';
+var APP_VERSION='v88';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -2755,6 +2884,9 @@ function getAppSettings(){
     if(saved.idleMins){ var im=parseInt(saved.idleMins); if(!isNaN(im)&&im>=15) settings.idleMins=im; }
     ['goalMera','goalSuz'].forEach(function(k){ var n=parseInt(saved[k]); if(!isNaN(n)&&n>0) settings[k]=n; });
     ['swRoi','swProfit','swDemand','swMargin'].forEach(function(k){ var n=parseFloat(saved[k]); if(!isNaN(n)&&n>=0&&n<=2) settings[k]=n; });
+    if(saved.scoreMode==='smart'||saved.scoreMode==='manual') settings.scoreMode=saved.scoreMode;
+    if(Array.isArray(saved.savedFilters)) settings.savedFilters=saved.savedFilters;
+    if(saved.leadsStartDate!==undefined) settings.leadsStartDate=String(saved.leadsStartDate);
     if(saved.quietFrom!==undefined) settings.quietFrom=String(saved.quietFrom);
     if(saved.quietTo!==undefined) settings.quietTo=String(saved.quietTo);
     if(saved.colMera) settings.colMera=String(saved.colMera);
@@ -2801,7 +2933,12 @@ applyWebhookSettings();
     .then(function(r){return r.ok?r.json():[];})
     .then(function(rows){
       localStorage.setItem('st_cloud_pulled','1');
-      if(rows&&rows[0]&&rows[0].data){ saveAppSettings(rows[0].data); applyWebhookSettings(); try{applyVaColours();}catch(e){} try{applyVaLabels();}catch(e){} }
+      if(rows&&rows[0]&&rows[0].data){
+        var cloud=rows[0].data, cur=getAppSettings();
+        // never let an empty cloud value wipe a set local one for protected keys (leadsStartDate, webhooks…)
+        try{ if(typeof SETTINGS_PROTECT!=='undefined'){ SETTINGS_PROTECT.forEach(function(k){ if((!cloud[k]||!String(cloud[k]).trim()) && cur[k]&&String(cur[k]).trim()) cloud[k]=cur[k]; }); } }catch(e){}
+        saveAppSettings(cloud); applyWebhookSettings(); try{applyVaColours();}catch(e){} try{applyVaLabels();}catch(e){}
+      }
     }).catch(function(){});
 }catch(e){}})();
 // WEBHOOK SELF-HEAL — runs on EVERY load. For the protected keys (webhook URLs etc):
@@ -3228,8 +3365,11 @@ function updateRoleUI(){
 }
 function lockJackMode(){
   window._mgrUnlocked=false; window._pinTarget=null;
+  try{ localStorage.removeItem('bdl_jack_unlocked'); }catch(e){}   // forget the login
   updateRoleUI(); showVAView(); showToast('Jack mode locked \u2713');
 }
+// stay-logged-in: restore Jack mode on load if he unlocked before and never locked
+try{ if(localStorage.getItem('bdl_jack_unlocked')==='1'){ window._mgrUnlocked=true; } }catch(e){}
 /* Monday summary: first app open on/after Monday sends last week's recap to Discord */
 // weekly VA-A/VA-S spend for a GB date range \u2014 same sheet/columns/logic as the Spend Dashboard
 async function spendForRangeGB(fromGB,toGB){
@@ -3395,6 +3535,8 @@ function sendWeeklySummaryTest(){
   }catch(e){}
 }
 setTimeout(function(){ try{ updateRoleUI(); }catch(e){} }, 300);
+// remembered Jack login → open straight into Jack view (no PIN), unless a shift is already running
+setTimeout(function(){ try{ if(window._mgrUnlocked && (!window.state||!state.shiftStart) && typeof _openManager==='function'){ _openManager(); } }catch(e){} }, 350);
 setTimeout(maybeSendWeeklySummary, 12000);
 function openTestPicker(){ var m=document.getElementById('test-modal'); if(m) m.classList.add('open'); }
 function startTestPreview(previewVA){
@@ -3428,6 +3570,7 @@ function attemptManagerUnlock(){
   var pin=input?input.value.trim():'';
   if (pin === getAppSettings().managerPin) {
     window._mgrUnlocked=true;
+    try{ localStorage.setItem('bdl_jack_unlocked','1'); }catch(e){}   // stay logged in as Jack (until he taps lock)
     try{ updateRoleUI(); }catch(e){}
     closeManagerPinModal();
     if(window._pinTarget==='leads'){ window._pinTarget=null; _openLeads(); return; }
@@ -3545,19 +3688,26 @@ function startShift(va, newsletterDay, previewVA) {
     }
   }
 
-  // Inject Jack's rolling items + one-off tasks — they persist day-to-day until ticked off
+  // Inject Jack's rolling items + one-off tasks — they persist day-to-day until ticked off.
+  // Slot them RIGHT AFTER the "Jack POA" task so everything from Jack sits together.
   try {
     var _op = (typeof jb_open==='function') ? jb_open(tmplVA) : null;
+    var _jbTasks=[];
     if (_op && _op.tasks && _op.tasks.length) {
       _op.tasks.filter(function(t){return !t.done;}).sort(jb_byAge).forEach(function(t){
         var carried=jb_isCarried(t.addedOn);
-        tasks.push({id:'oneoff-'+t.iid, jbOneoffIid:t.iid, name:'Task · '+t.name, jbCarried:carried, jbAddedOn:t.addedOn,
+        _jbTasks.push({id:'oneoff-'+t.iid, jbOneoffIid:t.iid, name:'Task · '+t.name, jbCarried:carried, jbAddedOn:t.addedOn,
           mandatory:true, hint:(carried?'Carried over from '+t.addedOn+' — still needs doing.':'Task from Jack.'), hasLinks:false, done:false, skipped:false, skipReason:'', time:'', timeHrs:0, timeMins:0, leads:'', context:'', links:[]});
       });
     }
     var _openItems = (_op && _op.items) ? _op.items.filter(function(it){return !it.done;}).sort(jb_byAge) : [];
-    _openItems.forEach(function(it){ tasks.push(jb_itemTask(it)); });
+    _openItems.forEach(function(it){ _jbTasks.push(jb_itemTask(it)); });
     state._jbItemCount=_openItems.length;
+    if(_jbTasks.length){
+      var poaIdx=tasks.findIndex(function(t){return t.id==='jack-poa'||t.id==='suz-jack-poa';});
+      if(poaIdx>=0) tasks.splice.apply(tasks,[poaIdx+1,0].concat(_jbTasks));   // right after the POA task
+      else tasks=tasks.concat(_jbTasks);                                        // no POA task → append
+    }
   } catch(e){}
 
   state.tasks = tasks;
@@ -3580,6 +3730,8 @@ function startShift(va, newsletterDay, previewVA) {
   try{ renderStorefronts(); }catch(e){}
   try{ jb_addsBanner(tmplVA); }catch(e){}
   try{ if(typeof renderFromJack==='function') renderFromJack(tmplVA); }catch(e){}
+  try{ if(typeof renderSavedFiltersVA==='function') renderSavedFiltersVA(); }catch(e){}
+  try{ if(typeof refreshSavedFiltersFromCloud==='function') refreshSavedFiltersFromCloud(); }catch(e){}   // fetch newest filters
   try{ applyVaExperience(); }catch(e){}
   try{ if(typeof jb_cloudPull==='function') jb_cloudPull(tmplVA); }catch(e){}
   startTimer();
@@ -4508,6 +4660,11 @@ async function mgr_syncFromDB(){
   localStorage.setItem('shifttrack_eod_log',JSON.stringify(rows));
   mgr_flagBanner(rows);
   mgr_switchTab(mgr_currentTab);
+  // pull live status so the banner can show "on shift · Xh" instead of "hasn't submitted"
+  try{
+    var lr=await fetch(SUPABASE_URL+'/rest/v1/live_status?select=*',{headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
+    if(lr.ok){ var lrows=await lr.json(); window._liveCache={}; (lrows||[]).forEach(function(r){ window._liveCache[r.va]=r; }); mgr_flagBanner(rows); }
+  }catch(e){}
 }
 function mgr_getReports(){try{return JSON.parse(localStorage.getItem('shifttrack_reports')||'[]');}catch(e){return[];}}
 function mgr_ukToday(){return new Date().toLocaleDateString('en-GB',{timeZone:'Europe/London'});}
@@ -4895,11 +5052,26 @@ function mgr_isWeekend(){
   return d===0||d===6;
 }
 function mgr_flagBanner(log){
-  var today=mgr_ukToday(),flags=[];
+  var today=mgr_ukToday(),flags=[],onShift=[];
   var isWeekend=mgr_isWeekend();
+  var live=window._liveCache||{};
+  var tgt=getAppSettings().dailyHoursTarget||8;
   if(!isWeekend){
-    if(!log.some(function(r){return r.va==='Mera'&&r.date===today;})) flags.push(vaDisp('Mera')+" hasn't submitted today");
-    if(!log.some(function(r){return r.va==='Suz'&&r.date===today;})) flags.push(vaDisp('Suz')+" hasn't submitted today");
+    ['Mera','Suz'].forEach(function(va){
+      if(log.some(function(r){return r.va===va&&r.date===today;})) return;   // submitted → all good
+      var r=live[va];
+      var active=false;
+      if(r&&r.data&&r.data.submitted!==true){
+        var upd=r.updated_at?new Date(r.updated_at):null;
+        var freshMin=upd?((Date.now()-upd.getTime())/60000):999;
+        if(freshMin<45){ active=true;   // updated within 45 min = genuinely on shift now
+          var d=r.data, pct=Math.min(100,Math.round((parseFloat(d.hoursWorked)||0)/tgt*100));
+          onShift.push('<b>'+vaDisp(va)+'</b> is on shift'+(d.onBreak?' <span style="color:#f5a524">(on break ☕)</span>':'')
+            +' — <b>'+(d.hoursWorked||'0')+'h</b> of '+tgt+'h · '+(d.tasksDone||0)+'/'+(d.totalTasks||0)+' tasks · '+(d.totalLeads||0)+' leads');
+        }
+      }
+      if(!active) flags.push(vaDisp(va)+" hasn't submitted today");
+    });
   }
   var tr=log.filter(function(r){return r.date===today;});
   if(tr.some(function(r){return !parseInt(r.totalLeads);})) flags.push('Zero leads on a shift today');
@@ -4926,11 +5098,20 @@ function mgr_flagBanner(log){
   if(sOOS<oosTarget&&sOOS>0) flags.push('Suz — OOS Sheet under target this week ('+sOOS.toFixed(1)+'h / '+oosTarget+'h)');
 
   var b=document.getElementById('mgr-flag-banner');if(!b) return;
-  if(!flags.length){b.innerHTML='';return;}
-  b.innerHTML='<div class="flag-banner"><span style="font-size:18px;flex-shrink:0;">⚠</span><div>'
-    +'<div style="font-size:10px;color:#f2647f;text-transform:uppercase;letter-spacing:2px;font-weight:700;margin-bottom:5px;">Action needed</div>'
-    +flags.map(function(f){return '<div style="font-size:13px;color:#ccc;padding:1px 0;">› '+f+'</div>';}).join('')
-    +'</div></div>';
+  var html='';
+  if(onShift.length){
+    html+='<div class="onshift-banner"><span style="font-size:17px;flex-shrink:0;">🟢</span><div>'
+      +'<div style="font-size:10px;color:#2dd4a3;text-transform:uppercase;letter-spacing:2px;font-weight:700;margin-bottom:5px;">On shift now</div>'
+      +onShift.map(function(f){return '<div style="font-size:13px;color:#dfe4ee;padding:1px 0;">› '+f+'</div>';}).join('')
+      +'</div></div>';
+  }
+  if(flags.length){
+    html+='<div class="flag-banner"><span style="font-size:18px;flex-shrink:0;">⚠</span><div>'
+      +'<div style="font-size:10px;color:#f2647f;text-transform:uppercase;letter-spacing:2px;font-weight:700;margin-bottom:5px;">Action needed</div>'
+      +flags.map(function(f){return '<div style="font-size:13px;color:#ccc;padding:1px 0;">› '+f+'</div>';}).join('')
+      +'</div></div>';
+  }
+  b.innerHTML=html;
 }
 
 // ── HOURS COLOUR LOGIC ──
@@ -6839,16 +7020,18 @@ function mgr_renderSettings(){
         +'<div class="settings-field"><label class="settings-label">Quiet hours until (UK)</label><input class="settings-input" id="setting-quiet-to" type="time" value="'+(settings.quietTo||'')+'"></div>'
       +'</div>'
       +'<div style="font-size:10.5px;color:var(--muted-2);margin-top:8px;">Quiet hours pause task/break/shift-start pings (EOD + weekly still send). Leave blank to disable.</div>'
-      +'<div style="font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin:16px 0 8px;">Lead score weighting</div>'
-      +[['swRoi','ROI'],['swProfit','Net profit'],['swDemand','Demand vs competition'],['swMargin','Margin']].map(function(w){
+      +'<div style="font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin:16px 0 10px;">Lead score weighting</div>'
+      +'<div class="sw-grid">'
+      +[['swRoi','ROI','#10d99a'],['swProfit','Net profit','#8b5cff'],['swDemand','Demand vs comp.','#18c8f0'],['swMargin','Margin','#f5a524']].map(function(w){
           var v=settings[w[0]]===undefined?1:settings[w[0]];
-          return '<div style="display:grid;grid-template-columns:150px 1fr 42px;gap:10px;align-items:center;margin-bottom:7px;">'
-            +'<span style="font-size:12px;color:var(--muted);font-weight:600;">'+w[1]+'</span>'
-            +'<input type="range" id="setting-'+w[0]+'" min="0" max="2" step="0.1" value="'+v+'" oninput="document.getElementById(\'out-'+w[0]+'\').textContent=this.value+\'\u00d7\'">'
-            +'<span id="out-'+w[0]+'" style="font-family:var(--font-mono);font-size:12px;color:var(--accent-2);font-weight:700;">'+v+'\u00d7</span>'
+          return '<div class="sw-row" style="--swc:'+w[2]+'">'
+            +'<span class="sw-name"><span class="sw-dot"></span>'+w[1]+'</span>'
+            +'<input type="range" id="setting-'+w[0]+'" min="0" max="2" step="0.1" value="'+v+'" style="--fill:'+(v/2*100)+'%" oninput="swSlide(this)">'
+            +'<span class="sw-val'+(v>1?' up':v<1?' down':'')+'" id="out-'+w[0]+'">'+(+v).toFixed(1)+'\u00d7</span>'
             +'</div>';
         }).join('')
-      +'<div style="font-size:10.5px;color:var(--muted-2);margin-top:6px;">1.0&times; = current behaviour. Crank what matters to you; scores rebalance automatically.</div>'
+      +'</div>'
+      +'<div style="font-size:10.5px;color:var(--muted-2);margin-top:9px;">1.0&times; = neutral. Drag what matters most to you, or hit <b style="color:var(--accent-2);">Auto-tune</b> below to learn it from your buys.</div>'
       +'<div style="display:flex;gap:10px;margin-top:16px;"><button class="btn btn-success" onclick="mgr_saveSettings()">Save Settings</button></div>'
     +'</div>'
     +'<div class="settings-card" data-sg="leads">'
@@ -6864,6 +7047,11 @@ function mgr_renderSettings(){
         +'<b style="color:var(--text);">How this works:</b> every lead gets a 0&ndash;10 score from ROI, profit, demand and margin. The bars below group the leads <b style="color:var(--text);">you\'ve already decided</b> into score bands and show what % of each band you actually bought. If the score is doing its job, <b style="color:var(--text);">higher bands should have higher buy-rates</b>. If a low band is buying more than a high band, the scoring weights don\'t match your taste &mdash; hit <b style="color:var(--text);">Auto-tune</b> and it compares your bought leads vs your rejected ones, shifts the four weight sliders (in Targets, Scoring &amp; VAs) toward what actually predicts your buys, then re-scores everything. Sliders can always be reset to 1.0&times;.'
       +'</div>'
       +'<div id="score-teach" style="margin-top:14px;"></div>'
+    +'</div>'
+    +'<div class="settings-card" data-sg="leads">'
+      +'<div class="settings-title">📈 Jack\'s Insights &mdash; your buying data</div>'
+      +'<div class="settings-sub">Everything the app has learned from your decisions &mdash; what you buy, where it comes from, and how much you\'re spending.</div>'
+      +'<div id="jack-insights"></div>'
     +'</div>'
     +'<div class="settings-card" data-sg="leads">'
       +'<div class="settings-title">Lead warning badges</div>'
@@ -6928,9 +7116,11 @@ function mgr_renderSettings(){
       +'</div>'
     +'</div>'
     +'</div>'
+    +sfltManageHTML()
     +mgr_taskSettingsHTML(settings);
   try{ renderTabPicker(); }catch(e){}
   try{ renderScoreTeach(); }catch(e){}
+  try{ renderJackInsights(); }catch(e){}
   try{ renderBadgeRules(); }catch(e){}
   // auto-run the image diagnostic once so the actual problem shows without a click
   try{ if((window.leads||[]).length && !window._imgScanned){ window._imgScanned=1; scanLeadImages(); } }catch(e){}
@@ -6942,7 +7132,7 @@ function mgr_renderSettings(){
 // Cloud push with CLOBBER PROTECTION: a browser that has never had the webhook URLs
 // (preview, fresh device) must never wipe them from the shared cloud row. For these keys,
 // an EMPTY local value defers to whatever the cloud already has.
-var SETTINGS_PROTECT=['whMain','whWeekly','whLeadsMera','whLeadsSuz','whTasks','whBreaks','whShiftStart','leadMention','discordUserId'];
+var SETTINGS_PROTECT=['whMain','whWeekly','whLeadsMera','whLeadsSuz','whTasks','whBreaks','whShiftStart','leadMention','discordUserId','leadsStartDate'];
 async function pushSettingsCloud(s){
   try{
     var merged=JSON.parse(JSON.stringify(s));
@@ -7072,6 +7262,70 @@ function settingsMasonry(){
   shell.style.height=Math.max.apply(null,colH)+'px';
 }
 window.addEventListener('resize',function(){ if(document.querySelector('.settings-shell')) settingsMasonry(); });
+// ── One analysis engine feeding both the Auto-tune explainer and the Insights page ──
+function computeBuyAnalysis(){
+  var leadsAll=window.leads||[];
+  var isBuy=function(l){return l.status==='bought'||l.status==='atbq'||l.status==='atba2a';};
+  var decided=leadsAll.filter(function(l){return l.islead!==null;});
+  var bought=decided.filter(isBuy);
+  var passed=decided.filter(function(l){return !isBuy(l);});
+  function mean(arr,f){ return arr.length?arr.reduce(function(a,l){return a+(+f(l)||0);},0)/arr.length:0; }
+  var demand=function(l){return l.fba>0?l.spm/l.fba:l.spm;};
+  var factors=[
+    {k:'roi',   name:'ROI',    f:function(l){return l.roi;},    fmt:function(v){return v.toFixed(0)+'%';}},
+    {k:'profit',name:'Profit', f:function(l){return l.profit;}, fmt:function(v){return '£'+v.toFixed(0);}},
+    {k:'margin',name:'Margin', f:function(l){return l.margin;}, fmt:function(v){return v.toFixed(0)+'%';}},
+    {k:'demand',name:'Demand', f:demand,                        fmt:function(v){return v.toFixed(1)+' spm/seller';}}
+  ];
+  var cmp=factors.map(function(fc){ var b=mean(bought,fc.f), p=mean(passed,fc.f)||0.0001;
+    return {name:fc.name, bought:b, passed:p, lift:b/p, gapPct:Math.round((b/p-1)*100)}; });
+  var topDisc=cmp.slice().sort(function(a,b){return Math.abs(b.gapPct)-Math.abs(a.gapPct);})[0];
+  // group buy-rate by a field
+  function byField(f){ var g={}; decided.forEach(function(l){ var k=(f(l)||'—').toString().trim()||'—'; (g[k]=g[k]||{n:0,b:0}); g[k].n++; if(isBuy(l))g[k].b++; });
+    return Object.keys(g).map(function(k){return {k:k,n:g[k].n,b:g[k].b,rate:Math.round(g[k].b/g[k].n*100)};}).filter(function(x){return x.n>=2;}).sort(function(a,b){return b.rate-a.rate;}); }
+  // units + spend from Jack's qty meta
+  var units=0, spend=0;
+  bought.forEach(function(l){ var m=ldMeta(l); var q=m.na?0:(parseInt(m.qty)||0); units+=q; spend+=q*(+l.buy||0); });
+  return { decided:decided, bought:bought, passed:passed,
+    buyRate:decided.length?Math.round(bought.length/decided.length*100):0,
+    cmp:cmp, topDisc:topDisc, bySource:byField(function(l){return l.src;}), byStore:byField(function(l){return l.store;}),
+    byCat:byField(function(l){return l.cat;}), units:units, spend:spend,
+    avgBoughtScore:bought.length?(bought.reduce(function(a,l){return a+(l._sc?l._sc.total:0);},0)/bought.length):0 };
+}
+// live slider: update the coloured fill + value chip while dragging
+function swSlide(el){
+  var v=parseFloat(el.value); el.style.setProperty('--fill',(v/2*100)+'%');
+  var out=document.getElementById('out-'+el.id.replace('setting-',''));
+  if(out){ out.textContent=v.toFixed(1)+'×'; out.className='sw-val'+(v>1?' up':v<1?' down':''); }
+}
+function renderJackInsights(){
+  var host=document.getElementById('jack-insights'); if(!host) return;
+  var A=computeBuyAnalysis();
+  if(A.decided.length<3){ host.innerHTML='<div style="font-size:12px;color:var(--muted-2);padding:8px 0;">Decide a few more leads (Bought / Not) and your buying insights build here automatically.</div>'; return; }
+  function stat(v,l,k){ return '<div class="ji-stat" style="--k:'+(k||'#8b5cff')+'"><div class="ji-v">'+v+'</div><div class="ji-l">'+l+'</div></div>'; }
+  var top=A.bought.length?'£'+A.spend.toLocaleString():'£0';
+  var kpis='<div class="ji-stats">'
+    +stat(A.decided.length,'decided','#8b5cff')
+    +stat(A.bought.length,'bought','#10d99a')
+    +stat(A.buyRate+'%','buy rate','#18c8f0')
+    +stat(A.units||'—','units bought','#f5a524')
+    +stat(top,'est. spend','#10d99a')
+    +stat(A.avgBoughtScore?A.avgBoughtScore.toFixed(1):'—','avg buy score','#8b5cff')
+    +'</div>';
+  function rank(title,arr,icon){ if(!arr.length) return '';
+    return '<div class="ji-rank"><div class="ji-rank-t">'+icon+' '+title+'</div>'
+      +arr.slice(0,5).map(function(x){ var tone=x.rate>=50?'#10d99a':x.rate>=25?'#f5a524':'#f5455f';
+        return '<div class="ji-rank-row"><span class="ji-rank-n">'+String(x.k).replace(/</g,'&lt;').slice(0,26)+'</span>'
+          +'<span class="ji-rank-bar"><i style="width:'+x.rate+'%;background:'+tone+'"></i></span>'
+          +'<span class="ji-rank-v" style="color:'+tone+'">'+x.rate+'% <small>('+x.b+'/'+x.n+')</small></span></div>'; }).join('')
+      +'</div>'; }
+  host.innerHTML=kpis
+    +'<div class="ji-note">💡 <b>What your buys look like:</b> '+(A.topDisc?('driven most by <b>'+A.topDisc.name+'</b> — '+(A.topDisc.gapPct>=0?'+':'')+A.topDisc.gapPct+'% vs the ones you pass. '):'')
+      +'Bought leads average ROI <b>'+A.cmp[0].bought.toFixed(0)+'%</b>, profit <b>£'+A.cmp[1].bought.toFixed(0)+'</b>, margin <b>'+A.cmp[2].bought.toFixed(0)+'%</b>.</div>'
+    +rank('Best sources (by buy-rate)',A.bySource,'🔎')
+    +rank('Best stores',A.byStore,'🏬')
+    +rank('Best categories',A.byCat,'🗂️');
+}
 function renderScoreTeach(){
   var host=document.getElementById('score-teach'); if(!host) return;
   var decided=(window.leads||[]).filter(function(l){return l.islead!==null;});
@@ -7088,13 +7342,76 @@ function renderScoreTeach(){
     var rate=inB.length?Math.round(bt.length/inB.length*100):0;
     return '<div class="teach-band"><span class="lbl">Score '+b[0]+'</span><span class="bar"><i style="width:'+rate+'%"></i></span><span class="val">'+rate+'% ('+inB.length+')</span></div>';
   }).join('');
+  // "why you bought" — what your buys look like vs your passes, and what the score under-weights
+  var A=computeBuyAnalysis();
+  var whyRows=A.cmp.map(function(c){
+    var up=c.gapPct>=0; var strong=Math.abs(c.gapPct)>=25;
+    return '<div class="why-row"><span class="why-name">'+c.name+'</span>'
+      +'<span class="why-vals">buys <b>'+ (c.name==='Profit'?'£'+c.bought.toFixed(0):c.name==='Demand'?c.bought.toFixed(1):c.bought.toFixed(0)+'%') +'</b> vs passes '+ (c.name==='Profit'?'£'+c.passed.toFixed(0):c.name==='Demand'?c.passed.toFixed(1):c.passed.toFixed(0)+'%') +'</span>'
+      +'<span class="why-gap '+(up?'up':'down')+(strong?' strong':'')+'">'+(up?'+':'')+c.gapPct+'%</span></div>';
+  }).join('');
+  var td=A.topDisc;
+  var verdict= td?('Your buys are driven most by <b>'+td.name+'</b> ('+(td.gapPct>=0?'+':'')+td.gapPct+'% vs passes). '
+    +(Math.abs(td.gapPct)>=25?'Auto-tune will lean the score toward '+td.name+'.':'Your buys and passes look similar — the score is roughly matched.')):'';
+  var mode=(getAppSettings().scoreMode==='smart')?'smart':'manual';
+  var sm=getSmartModel();
+  var modeToggle='<div class="sc-mode"><button class="'+(mode==='manual'?'on':'')+'" onclick="setScoreMode(\'manual\')">Manual weights</button>'
+    +'<button class="'+(mode==='smart'?'on':'')+'" onclick="setScoreMode(\'smart\')">🧠 Learning score <span class="beta">beta</span></button></div>';
+  var learnPanel='';
+  if(mode==='smart'){
+    var mAcc=(function(){ var isBuy=function(l){return l.status==='bought'||l.status==='atbq'||l.status==='atba2a';};
+      var dd=(window.leads||[]).filter(function(l){return l.islead!==null;}); var c=0; dd.forEach(function(l){ var man=calcScore({roi:l.roi,profit:l.profit,spm:l.spm,fba:l.fba,margin:l.margin},true); if(((man.total>=5)?1:0)===(isBuy(l)?1:0))c++; }); return dd.length?Math.round(c/dd.length*100):0; })();
+    if(!sm){ learnPanel='<div class="learn-box"><b>Not trained yet.</b> Decide at least 6 buys and 6 passes, then hit <b>Train</b> — the model learns which combinations you actually buy (e.g. a fast seller justifying a lower ROI).<div style="margin-top:10px;"><button class="btn btn-success" onclick="trainAndApply()">🧠 Train the model</button></div></div>'; }
+    else{
+      var drivers='';
+      try{ var d=SMART_FEATS.map(function(n,i){return {n:n,w:sm.w[i+1]};}).sort(function(a,b){return Math.abs(b.w)-Math.abs(a.w);}).slice(0,4);
+        drivers=d.map(function(x){ var pos=x.w>=0; return '<div class="ld-drv"><span>'+x.n+'</span><span class="'+(pos?'up':'down')+'">'+(pos?'higher → buy':'lower → buy')+'</span></div>'; }).join(''); }catch(e){}
+      learnPanel='<div class="learn-box">'
+        +'<div class="learn-hd"><span class="learn-acc">'+sm.acc+'%</span><span class="learn-acc-l">predicts your '+sm.buys+' buys correctly<br><small>the basic score only manages '+mAcc+'%</small></span></div>'
+        +'<div class="learn-drv-t">What it learned drives your buys:</div>'+drivers
+        +'<div class="learn-note">Every lead is judged in its own context — velocity, ROI and profit together, not flat weights. Keep deciding and hit Retrain to sharpen it.</div>'
+        +'<div style="display:flex;gap:8px;margin-top:11px;flex-wrap:wrap;"><button class="btn btn-success" onclick="trainAndApply()">🔄 Retrain from my latest decisions</button></div>'
+        +'</div>';
+    }
+  }
   host.innerHTML='<div style="border-top:1px solid var(--line);padding-top:12px;">'
-    +'<div style="font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin-bottom:9px;">Teach the score &mdash; your buy-rate by band</div>'
+    +modeToggle+learnPanel
+    +'<div style="font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin:14px 0 9px;">Teach the score &mdash; your buy-rate by band</div>'
     +rows
     +'<div style="font-size:11px;color:var(--muted-2);margin:10px 0 12px;">Higher bands should buy more. If they don\'t, auto-tune nudges the weight sliders toward what your bought leads actually look like.</div>'
-    +'<button class="btn btn-success" onclick="autoTuneWeights()">Auto-tune weights from my '+bought.length+' buys</button>'
+    +'<div class="why-box"><div class="why-title">📊 What your '+bought.length+' buys have in common (vs your passes)</div>'
+      +whyRows
+      +(verdict?'<div class="why-verdict">'+verdict+'</div>':'')
+    +'</div>'
+    +(mode==='manual'?((function(){
+      var st=getAppSettings();
+      var W=[['ROI',st.swRoi,'#10d99a'],['Profit',st.swProfit,'#8b5cff'],['Demand',st.swDemand,'#18c8f0'],['Margin',st.swMargin,'#f5a524']];
+      return '<div class="why-title" style="margin:14px 0 4px;">⚖️ Current score weights</div><div class="wbars">'
+        +W.map(function(w){ var v=w[1]===undefined?1:+w[1];
+          return '<div class="wbar-row"><span class="wbar-n">'+w[0]+'</span>'
+            +'<span class="wbar-track"><i style="width:'+(v/2*100)+'%;background:'+w[2]+'"></i></span>'
+            +'<span class="wbar-v">'+v.toFixed(1)+'×</span></div>'; }).join('')
+      +'</div>';
+    })()
+    +'<div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">'
+      +'<button class="btn btn-success" onclick="autoTuneWeights()">⚡ Auto-tune from my '+bought.length+' buys</button>'
+      +'<button class="btn btn-ghost" onclick="resetWeights()">Reset to 1.0×</button>'
+    +'</div>'):'')
     +'</div>';
 }
+function setScoreMode(m){ var st=getAppSettings(); st.scoreMode=m; saveAppSettings(st);
+  if(m==='smart'&&!getSmartModel()){ var r=trainSmartModel(); if(r&&r.err){ showToast(r.err,true); } }
+  try{ leads.forEach(function(l){ l._sc=calcScore({roi:l.roi,profit:l.profit,spm:l.spm,fba:l.fba,margin:l.margin,status:l.status,islead:l.islead}); }); }catch(e){}
+  mgr_renderSettings(); try{renderList&&renderList();}catch(e){}
+  showToast(m==='smart'?'Learning score ON — leads rescored by the model':'Manual weights ON');
+}
+function trainAndApply(){ var r=trainSmartModel(); if(r&&r.err){ showToast(r.err,true); return; }
+  try{ leads.forEach(function(l){ l._sc=calcScore({roi:l.roi,profit:l.profit,spm:l.spm,fba:l.fba,margin:l.margin,status:l.status,islead:l.islead}); }); }catch(e){}
+  mgr_renderSettings(); try{renderList&&renderList();}catch(e){}
+  showToast('Model trained ✓ '+(r.acc||'')+'% accurate on your buys — leads rescored'); }
+function resetWeights(){ var st=getAppSettings(); st.swRoi=1;st.swProfit=1;st.swDemand=1;st.swMargin=1; saveAppSettings(st);
+  try{ leads.forEach(function(l){ l._sc=calcScore({roi:l.roi,profit:l.profit,spm:l.spm,fba:l.fba,margin:l.margin}); }); }catch(e){}
+  mgr_renderSettings(); showToast('Weights reset to neutral (1.0×) — scores rebalanced'); }
 function autoTuneWeights(){
   var decided=(window.leads||[]).filter(function(l){return l.islead!==null;});
   var bought=decided.filter(function(l){return l.status==='bought'||l.status==='atbq'||l.status==='atba2a';});
@@ -7116,8 +7433,10 @@ function autoTuneWeights(){
   });
   saveAppSettings(st);
   try{ leads.forEach(function(l){ l._sc=calcScore({roi:l.roi,profit:l.profit,spm:l.spm,fba:l.fba,margin:l.margin}); }); }catch(e){}
+  var nm={swRoi:'ROI',swProfit:'Profit',swDemand:'Demand',swMargin:'Margin'};
+  var top=lifts.slice().sort(function(a,b){return b.lift-a.lift;})[0];
   mgr_renderSettings();
-  showToast('Weights tuned to your buys \u2713 \u2014 scores rebalanced');
+  showToast('Tuned to your buys \u2713 \u2014 now leaning hardest on '+(nm[top.k]||'ROI')+' (what your buys have most in common). Scores rebalanced.');
 }
 async function renderTabPicker(){
   var host=document.getElementById('tabpicker'); if(!host) return;
@@ -8123,7 +8442,116 @@ const ICO={
 const STORE_LBL={'Argos':'#f5455f','Amazon.UK':'#f5a524','Amazon.FR':'#f5a524','Currys':'#18c8f0','John Lewis':'#4a86ff','scan':'#b23bff'};
 function storeCol(s){return STORE_LBL[s]||'#847a94'}
 const RAW=[]; // demo data removed — real leads arrive via the Sheets wiring
-function calcScore(l){
+/* ══════════ SMART SCORE — a model that LEARNS from Jack's actual buys ══════════
+   Flat weights can't say "a fast seller justifies a lower ROI". This does, via
+   interaction features (ROI×Velocity, Profit×Velocity): logistic regression trained
+   on bought(1) vs passed(0), so each lead is judged in its OWN context. ── */
+var SMART_FEATS=['ROI','Profit','Margin','Velocity','ROI×Velocity','Profit×Velocity','Competition'];
+function smartFeatVec(l){
+  var d=l.fba>0?l.spm/l.fba:l.spm;           // velocity = sales/mo per competing seller
+  return [ +l.roi||0, +l.profit||0, +l.margin||0, d, (+l.roi||0)*d/100, (+l.profit||0)*d/100, +l.fba||0 ];
+}
+/* ── Cross-device learning: every decision is logged to the cloud `lead_decisions`
+   table so the model trains on FULL history from any device, even after old leads
+   drop off the Leads page. Falls back to the current leads if the table isn't there. ── */
+try{ window._decisionCache=JSON.parse(localStorage.getItem('bdl_decisions')||'[]'); }catch(e){ window._decisionCache=[]; }
+function loadDecisions(){
+  if(typeof SUPABASE_URL==='undefined'||!DB_ENABLED) return Promise.resolve();
+  return fetch(SUPABASE_URL+'/rest/v1/lead_decisions?select=*&limit=5000',{headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}})
+    .then(function(r){ return r.ok?r.json():null; })
+    .then(function(rows){ if(Array.isArray(rows)){ window._decisionCache=rows; try{localStorage.setItem('bdl_decisions',JSON.stringify(rows));}catch(e){} } })
+    .catch(function(){});
+}
+function logDecision(l){
+  try{ if(!l||!l._sid) return;
+    var isBuy=(l.status==='bought'||l.status==='atbq'||l.status==='atba2a');
+    var m=(typeof ldMeta==='function')?ldMeta(l):{};
+    var rec={ id:l._sid, asin:l.asin||'', title:String(l.title||'').slice(0,300),
+      decision:l.status||(l.islead===true?'lead':l.islead===false?'passed':null),
+      is_buy:isBuy, qty:(m.na?null:(m.qty!=null?parseInt(m.qty):null)), na:!!m.na,
+      roi:+l.roi||0, profit:+l.profit||0, margin:+l.margin||0, spm:parseInt(l.spm)||0, fba:parseInt(l.fba)||0,
+      src:l.src||'', store:l.store||'', cat:l.cat||'', note:String(l.notes||'').slice(0,500), va:l.va||'',
+      updated_at:new Date().toISOString() };
+    if(!rec.decision) return;
+    var c=window._decisionCache||[]; var i=c.findIndex(function(x){return x.id===rec.id;});
+    if(i>=0) c[i]=Object.assign(c[i]||{},rec); else c.push(rec);
+    window._decisionCache=c; try{localStorage.setItem('bdl_decisions',JSON.stringify(c));}catch(e){}
+    if(typeof SUPABASE_URL!=='undefined'&&DB_ENABLED){
+      fetch(SUPABASE_URL+'/rest/v1/lead_decisions',{method:'POST',
+        headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},
+        body:JSON.stringify(rec)}).catch(function(){});
+    }
+  }catch(e){}
+}
+function trainingRows(){
+  var c=window._decisionCache||[];
+  if(c.length>=12){ return c.filter(function(r){return r.decision;}).map(function(r){
+    return {_sid:r.id, roi:+r.roi||0, profit:+r.profit||0, margin:+r.margin||0, spm:+r.spm||0, fba:+r.fba||0,
+      status:r.is_buy?(r.decision||'bought'):r.decision, islead:(r.decision==='lead'||r.is_buy)?true:(r.decision==='passed'?false:null),
+      _decQty:r.na?1:(r.qty!=null?+r.qty:1), title:r.title}; }); }
+  return (window.leads||[]).filter(function(l){return l.islead!==null;});
+}
+function recQty(l){ if(l._decQty!=null) return Math.max(1,Math.min(20,l._decQty)); var m=(typeof ldMeta==='function')?ldMeta(l):{}; return Math.max(1,Math.min(20,m.na?1:(parseInt(m.qty)||1))); }
+function trainSmartModel(){
+  var isBuy=function(l){return l.status==='bought'||l.status==='atbq'||l.status==='atba2a';};
+  var decided=trainingRows().filter(function(l){return l.islead!==null;});
+  var buys=decided.filter(isBuy), passes=decided.filter(function(l){return !isBuy(l);});
+  if(buys.length<6||passes.length<6) return {err:'need ≥6 buys and ≥6 passes (have '+buys.length+' / '+passes.length+')'};
+  var X=decided.map(smartFeatVec), y=decided.map(function(l){return isBuy(l)?1:0;});
+  // sample weight: a lead you bought 10 of is a 10× stronger signal than one you bought 1 of.
+  // (N/A or blank qty = weight 1; passes = weight 1.)
+  var sw=decided.map(function(l){ return isBuy(l)?recQty(l):1; });
+  var k=X[0].length, mean=[], std=[];
+  for(var j=0;j<k;j++){ var col=X.map(function(r){return r[j];}); var m=col.reduce(function(a,b){return a+b;},0)/col.length;
+    var v=col.reduce(function(a,b){return a+(b-m)*(b-m);},0)/col.length; mean[j]=m; std[j]=Math.sqrt(v)||1; }
+  var Xs=X.map(function(r){return r.map(function(v,j){return (v-mean[j])/std[j];});});
+  var swSum=sw.reduce(function(a,b){return a+b;},0)||1;
+  var w=new Array(k+1).fill(0), lr=0.3, lambda=0.08, iters=500;
+  function sig(z){return 1/(1+Math.exp(-Math.max(-30,Math.min(30,z))));}
+  for(var it=0;it<iters;it++){
+    var grad=new Array(k+1).fill(0);
+    for(var i=0;i<Xs.length;i++){ var z=w[0]; for(var a=0;a<k;a++) z+=w[a+1]*Xs[i][a];
+      var e=(sig(z)-y[i])*sw[i]; grad[0]+=e; for(var b=0;b<k;b++) grad[b+1]+=e*Xs[i][b]; }
+    for(var g=0;g<w.length;g++){ w[g]-=lr*(grad[g]/swSum+(g===0?0:lambda*w[g])); }
+  }
+  var correct=0; for(var i2=0;i2<Xs.length;i2++){ var z2=w[0]; for(var c=0;c<k;c++) z2+=w[c+1]*Xs[i2][c]; if((sig(z2)>=0.5?1:0)===y[i2]) correct++; }
+  var model={w:w,mean:mean,std:std,acc:Math.round(correct/Xs.length*100),n:decided.length,buys:buys.length,trained:ukDateShort()};
+  try{ localStorage.setItem('bdl_smart_model',JSON.stringify(model)); }catch(e){}
+  return model;
+}
+function getSmartModel(){ try{return JSON.parse(localStorage.getItem('bdl_smart_model')||'null');}catch(e){return null;} }
+function smartScore(l,model){
+  model=model||getSmartModel(); if(!model||!model.w) return null;
+  var x=smartFeatVec(l), xs=x.map(function(v,j){return (v-model.mean[j])/(model.std[j]||1);});
+  var z=model.w[0]; for(var j=0;j<x.length;j++) z+=model.w[j+1]*xs[j];
+  var p=1/(1+Math.exp(-Math.max(-30,Math.min(30,z))));
+  var contrib=xs.map(function(v,j){return {n:SMART_FEATS[j], c:model.w[j+1]*v};}).sort(function(a,b){return Math.abs(b.c)-Math.abs(a.c);});
+  var bd=contrib.slice(0,4).map(function(cc){ return {n:cc.n+(cc.c>=0?' ↑ helps':' ↓ hurts'), p:Math.round(Math.min(10,Math.abs(cc.c)*3)), m:10}; });
+  return {total:Math.round(p*100)/10, prob:p, bd:bd, smart:true};
+}
+// plain-English "why the model scores this lead like this", using its learned drivers
+function smartWhy(l,s){
+  var model=getSmartModel(); if(!model) return '';
+  try{
+    var x=smartFeatVec(l), xs=x.map(function(v,j){return (v-model.mean[j])/(model.std[j]||1);});
+    var contrib=xs.map(function(v,j){return {n:SMART_FEATS[j], c:model.w[j+1]*v};}).sort(function(a,b){return b.c-a.c;});
+    var help=contrib.filter(function(c){return c.c>0.15;}).slice(0,2).map(function(c){return c.n;});
+    var hurt=contrib.filter(function(c){return c.c<-0.15;}).slice(-2).map(function(c){return c.n;});
+    var prob=Math.round((s.prob||0)*100);
+    // nearest lead Jack bought, for context
+    var isBuy=function(x2){return x2.status==='bought'||x2.status==='atbq'||x2.status==='atba2a';};
+    var buys=(window.leads||[]).filter(isBuy);
+    var near=null,nd=1e9; buys.forEach(function(b){ if(b.id===l.id)return; var bx=smartFeatVec(b).map(function(v,j){return (v-model.mean[j])/(model.std[j]||1);});
+      var d=0; for(var j=0;j<xs.length;j++){d+=(xs[j]-bx[j])*(xs[j]-bx[j]);} if(d<nd){nd=d;near=b;} });
+    var msg='<b>'+prob+'% match</b> to your buys.';
+    if(help.length) msg+=' In its favour: <span class="sw-help">'+help.join(', ')+'</span>.';
+    if(hurt.length) msg+=' Against it: <span class="sw-hurt">'+hurt.join(', ')+'</span>.';
+    var nearTxt=(near&&nd<6)?'<div class="smart-near">Most like a lead you bought: <b>'+String(near.title||'').slice(0,46)+'…</b></div>':'';
+    return '<div class="smart-why">🧠 '+msg+nearTxt+'</div>';
+  }catch(e){ return ''; }
+}
+function calcScore(l,forceManual){
+  try{ if(!forceManual && getAppSettings().scoreMode==='smart'){ var sm=smartScore(l); if(sm) return sm; } }catch(e){}
   var W={r:1,p:1,d:1,m:1};
   try{ var st=getAppSettings(); W={r:st.swRoi===undefined?1:st.swRoi, p:st.swProfit===undefined?1:st.swProfit, d:st.swDemand===undefined?1:st.swDemand, m:st.swMargin===undefined?1:st.swMargin}; }catch(e){}
   const roi=(l.roi>=30?25:l.roi>=25?22:l.roi>=20?18:l.roi>=15?14:l.roi>=10?8:2)*W.r;
@@ -8206,7 +8634,7 @@ async function loadLeadsFromDB(){
       return { id:n++, _sid:r.id, va:r.va==='Mera'?'VA M':'VA S', date:fmtGB(leadDateFix(r.date,r.created_at,r.id)),
         store:r.store||'', title:r.title||'(untitled)', asin:r.asin||'', cat:r.category||'', src:r.source_method||'',
         buy:parseFloat(r.buy)||0, sell:parseFloat(r.sell)||0, spm:spm, profit:profit, roi:roi, margin:margin, fba:fba,
-        sup:r.supplier_url||'#', amz:r.amazon_url||'#', screenshot:r.screenshot||'',
+        sup:r.supplier_url||'#', amz:r.amazon_url||'#', screenshot:r.screenshot||'', discount:r.discount_code||'',
         notes:r.jack_comment||'', vanote:r.va_note||'',
         status:mapStatusIn(r.status), islead:r.islead==='LEAD'?true:(r.islead==='NOT LEAD'?false:null),
         seen:!!_seenIds[r.id], hrs:hrs,
@@ -8234,6 +8662,7 @@ function db_leadPatch(l,fields){
   }catch(e){}
 }
 setTimeout(loadLeadsFromDB,800);
+setTimeout(function(){ try{ loadDecisions(); }catch(e){} },1000);   // pull full decision history for the learning model
 setInterval(function(){ var lv=document.getElementById('view-leads'); var onShift=window.state&&state.shiftStart&&!state.submitted; if((lv&&lv.classList.contains('active'))||onShift) loadLeadsFromDB(); },60000);
 // prefetch spend in the background on startup so the overview shows instantly (no "loading" wait)
 setTimeout(function(){ try{ loadSpend(); }catch(e){} },1500);
@@ -8251,6 +8680,9 @@ function fbaC(f){return f<=3?'vg':f<=6?'va-c':'vr'}
 function marC(m){return m>=6?'vg':'vr'}
 function f2(n){return(+n).toFixed(2)}
 function spml(s){return s>=1000?'>1000':s>=500?'>500':s>=300?'>300':s>=100?'>100':s>=50?'>50':s}
+// OA vs A2A from the source method text (A2A/reverse/arbi = A2A, else Online Arbitrage)
+function sourceType(src){ var s=String(src||'').toLowerCase(); return (s.indexOf('a2a')>=0||s.indexOf('reverse')>=0||s.indexOf('arbi')>=0)?'A2A':'OA'; }
+function supHost(u){ try{ var h=(String(u).match(/^https?:\/\/(www\.)?([^\/]+)/i)||[])[2]||String(u); return h.replace(/\.(com|co\.uk|net|org|de|fr)$/i,'').slice(0,22); }catch(e){ return 'Supplier'; } }
 function priority(l){return l.roi>=20&&l.profit>=30?'High':l.roi>=12?'Mid':'Low'}
 function priCls(l){const p=priority(l);return p==='High'?'tag-pri-high':p==='Mid'?'tag-pri-mid':'tag-pri-low'}
 function vaShort(l){return vaInitial(l.va)}
@@ -8282,7 +8714,7 @@ function populateMonthFilter(){
   var months=Object.keys(seen).sort().reverse();
   sel.innerHTML='<option value="month">This month</option>'
     +months.map(function(k){ var y=k.split('-')[0], m=+k.split('-')[1]; return '<option value="m:'+k+'">'+MN[m-1]+' '+y+'</option>'; }).join('')
-    +'<option value="today">Today</option><option value="yesterday">Yesterday</option><option value="48h">Last 48h</option><option value="7d">Last 7 days</option><option value="all">All dates</option>';
+    +'<option value="today">Today</option><option value="yesterday">Yesterday</option><option value="48h">Last 48h</option><option value="7d">Last 7 days</option><option value="day">Pick a day…</option><option value="all">All dates</option>';
   sel.value=[].some.call(sel.options,function(o){return o.value===keep;})?keep:'month';
 }
 function getF(){
@@ -8290,14 +8722,16 @@ function getF(){
   const fc=document.getElementById('f-cat')?.value||'all';
   const fsrc=document.getElementById('f-source')?.value||'all';
   const q=(document.getElementById('search')?.value||'').trim().toLowerCase();
-  const fd=document.getElementById('f-date')?.value||'all';
+  let fd=document.getElementById('f-date')?.value||'all'; if(fd==='day') fd=window._fDay?('d:'+window._fDay):'all';
   function _pGB(s){var p=String(s||'').split('/');return p.length===3?new Date(+p[2],+p[1]-1,+p[0]):null;}
   const _now=new Date(), _t0=new Date(_now.getFullYear(),_now.getMonth(),_now.getDate());
   return leads.filter(l=>{
     if(view==='new'&&(l.status||l.islead!==null))return false;   // New = anything Jack hasn't decided yet (seen or not); deciding drops it out
+    if(window._staleFilter&&(view==='new'||view==='all')&&!isStale(l))return false;   // "Going stale" ribbon filter
     if(fd!=='all'){ var _d=_pGB(l.date); if(!_d)return false; var _dd=Math.round((_t0-_d)/86400000);
       if(fd==='month'&&(_d.getMonth()!==_now.getMonth()||_d.getFullYear()!==_now.getFullYear()))return false;
       if(fd.slice(0,2)==='m:'){ var _ym=fd.slice(2).split('-'); if(_d.getFullYear()!==+_ym[0]||(_d.getMonth()+1)!==+_ym[1])return false; }
+      if(fd.slice(0,2)==='d:'){ var _iso=_d.getFullYear()+'-'+('0'+(_d.getMonth()+1)).slice(-2)+'-'+('0'+_d.getDate()).slice(-2); if(_iso!==fd.slice(2))return false; }
       if(fd==='today'&&_dd!==0)return false;
       if(fd==='yesterday'&&_dd!==1)return false;
       if(fd==='48h'&&(_dd<0||_dd>1))return false;
@@ -8328,11 +8762,12 @@ function _leadCtx(l, useView, useVa){
   const fc=document.getElementById('f-cat')?.value||'all';
   const fsrc=document.getElementById('f-source')?.value||'all';
   const q=(document.getElementById('search')?.value||'').trim().toLowerCase();
-  const fd=document.getElementById('f-date')?.value||'all';
+  let fd=document.getElementById('f-date')?.value||'all'; if(fd==='day') fd=window._fDay?('d:'+window._fDay):'all';
   if(fd!=='all'){ var p=String(l.date||'').split('/'); var d=p.length===3?new Date(+p[2],+p[1]-1,+p[0]):null; if(!d)return false;
     var now=new Date(), t0=new Date(now.getFullYear(),now.getMonth(),now.getDate()); var dd=Math.round((t0-d)/86400000);
     if(fd==='month'&&(d.getMonth()!==now.getMonth()||d.getFullYear()!==now.getFullYear()))return false;
     if(fd.slice(0,2)==='m:'){ var ym=fd.slice(2).split('-'); if(d.getFullYear()!==+ym[0]||(d.getMonth()+1)!==+ym[1])return false; }
+    if(fd.slice(0,2)==='d:'){ var iso=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2); if(iso!==fd.slice(2))return false; }
     if(fd==='today'&&dd!==0)return false; if(fd==='yesterday'&&dd!==1)return false; if(fd==='48h'&&(dd<0||dd>1))return false; if(fd==='7d'&&(dd<0||dd>6))return false; }
   if(fs!=='all'&&l.store!==fs)return false;
   if(fc!=='all'&&l.cat!==fc)return false;
@@ -8376,10 +8811,10 @@ function updateCounts(){
   const bkVal=ctx.filter(isBasketish).reduce((a,b)=>a+(+b.buy||0),0);
   function avgVa(v){var a=ctx.filter(l=>l.va===v);return a.length?(a.reduce((x,b)=>x+b._sc.total,0)/a.length).toFixed(1):'-';}
   document.getElementById('ribbon').innerHTML=`
-    <div class="rc ${unAll.length?'rc-purple':'rc-off'}"><div class="rv">${unAll.length}</div><div class="rl">Unseen</div><div class="rsub">Mera ${unM} · Suz ${unS}</div></div>
-    <div class="rc ${stale?'rc-red':'rc-off'}"><div class="rv">${stale}</div><div class="rl">Going stale</div><div class="rsub">${stale?'decide these first':'all clear'}</div></div>
-    <div class="rc rc-green"><div class="rv">${bought.length}</div><div class="rl">Bought</div><div class="rsub">Mera ${bM} · Suz ${bS}</div></div>
-    <div class="rc ${bk?'rc-amber':'rc-off'}"><div class="rv">${bk}</div><div class="rl">ATB / Waiting</div><div class="rsub">${bk?'£'+bkVal.toFixed(0)+' to spend':'nothing waiting'}</div></div>
+    <div class="rc rc-click ${unAll.length?'rc-purple':'rc-off'}" onclick="gotoView('new')" title="Show new / undecided leads"><div class="rv">${unAll.length}</div><div class="rl">Unseen</div><div class="rsub">Mera ${unM} · Suz ${unS}</div></div>
+    <div class="rc rc-click ${window._staleFilter?'rc-active ':''}${stale?'rc-red':'rc-off'}" onclick="toggleStale()" title="Only leads going stale (36h+ undecided)"><div class="rv">${stale}</div><div class="rl">Going stale ${window._staleFilter?'✓':''}</div><div class="rsub">${window._staleFilter?'filtering — click to clear':(stale?'decide these first':'all clear')}</div></div>
+    <div class="rc rc-click rc-green" onclick="gotoView('bought')" title="Show bought leads"><div class="rv">${bought.length}</div><div class="rl">Bought</div><div class="rsub">Mera ${bM} · Suz ${bS}</div></div>
+    <div class="rc rc-click ${bk?'rc-amber':'rc-off'}" onclick="gotoView('basket')" title="Show ATB / waiting leads"><div class="rv">${bk}</div><div class="rl">ATB / Waiting</div><div class="rsub">${bk?'£'+bkVal.toFixed(0)+' to spend':'nothing waiting'}</div></div>
     <div class="rc rc-cyan"><div class="rv">${buyRate}%</div><div class="rl">Buy rate</div><div class="rsub">${bought.length} of ${decided} decided</div></div>
     <div class="rc rc-cyan"><div class="rv">${avg}</div><div class="rl">Avg Score</div><div class="rsub">M ${avgVa('VA M')} · S ${avgVa('VA S')}</div></div>`;
   // sidebar nav badge = total undecided backlog (unfiltered) — Jack's real workload
@@ -8439,7 +8874,7 @@ function litemH(l){
         <button class="lq-btn lq-yes" title="Mark as Lead (L)" onclick="event.stopPropagation();setL(${l.id},true)">✓</button>
         <button class="lq-btn lq-no" title="Not a Lead (N)" onclick="event.stopPropagation();setL(${l.id},false)">✕</button>
       </div>`:'';
-  return`<div class="litem ${vc}${l.id===selId?' sel':''}${stale?' stale':''}" data-lid="${l.id}" onclick="selectLead(${l.id},true)">
+  return`<div class="litem ${vc}${l.id===selId?' sel':''}${stale?' stale':''}${(l.status||l.islead!==null)?' decided':''}" data-lid="${l.id}" onclick="selectLead(${l.id},true)">
     ${leadThumb(l.asin,'litem-thumb',l.image)}
     <div class="litem-body">
     <div class="litem-top">
@@ -8484,8 +8919,8 @@ function detailH(l){
     (function(){var r=l.fba>0?l.spm/l.fba:l.spm;return r>=20?['Sells fast, low competition','var(--green)']:r>=8?['Balanced demand vs competition','var(--amber)']:['Weak demand / crowded','var(--red)'];})(),
     l.margin>=12?['Good margin','var(--green)']:l.margin>=6?['Slim margin','var(--amber)']:['Low margin','var(--red)']
   ];
-  const bars=s.bd.map((b,i)=>{const pct=Math.round((b.p/b.m)*100),bc=pct>=80?'var(--green)':pct>=55?'var(--amber)':'var(--red)';const rz=reasonList[i]||['',''];
-    return`<div class="d-sbar-row"><div class="d-sbar-top"><span class="d-sbar-nm">${b.n}</span><span class="d-sbar-pts">${b.p} / ${b.m}</span></div><div class="d-sbar-why" style="color:${rz[1]}">${rz[0]}</div><div class="d-sbar-track"><div class="d-sbar-fill" style="width:${pct}%;background:${bc}"></div></div></div>`;}).join('');
+  const bars=s.bd.map((b,i)=>{const pct=Math.round((b.p/Math.max(1,b.m))*100),bc=pct>=80?'var(--green)':pct>=55?'var(--amber)':'var(--red)';const rz=reasonList[i]||['',''];const out10=Math.round(pct/10);
+    return`<div class="d-sbar-row"><div class="d-sbar-top"><span class="d-sbar-nm">${b.n}</span><span class="d-sbar-pts">${out10}/10</span></div><div class="d-sbar-why" style="color:${rz[1]}">${rz[0]}</div><div class="d-sbar-track"><div class="d-sbar-fill" style="width:${pct}%;background:${bc}"></div></div></div>`;}).join('');
   let decH='';
   if(l.islead===null){
     decH=`<div class="d-dec-row d-dec-stack"><button class="d-dec-btn dec-lead" onclick="setL(${l.id},true)">✓ Approve Lead</button><button class="d-dec-btn dec-notlead" onclick="setL(${l.id},false)">✕ Reject Lead</button></div>`;
@@ -8495,18 +8930,28 @@ function detailH(l){
     decH=syncNote+`<div class="d-dec-row" style="flex-wrap:wrap"><button class="d-dec-btn dec-buy" onclick="setSt(${l.id},'bought')">BOUGHT</button><button class="d-dec-btn dec-basket" onclick="setSt(${l.id},'atbq')">ATB (Q)</button><button class="d-dec-btn dec-basket" onclick="setSt(${l.id},'atba2a')">ATB (A2A)</button><button class="d-dec-btn dec-basket" onclick="setSt(${l.id},'waiting')">Waiting</button><button class="d-dec-btn dec-pass" onclick="setSt(${l.id},'passed')">NOT</button><button class="d-dec-btn dec-undo" onclick="undoA(${l.id})">↩ Undo</button></div>`;
   }else{
     const vaNm2=l.va==='VA M'?vaDisp('Mera'):vaDisp('Suz');
-    decH=`<div class="d-sync-note bad">✕ You marked this <b>NOT A LEAD</b> — written back to ${vaNm2}'s sheet</div><div class="d-dec-row"><button class="d-dec-btn dec-undo" onclick="undoA(${l.id})">↩ Reassess this lead</button></div>`;
+    decH=`<div class="d-sync-note bad">✕ Marked <b>NOT A LEAD</b> + <b>NOT BOUGHT</b> — both columns written to ${vaNm2}'s sheet</div><div class="d-dec-row"><button class="d-dec-btn dec-undo" onclick="undoA(${l.id})">↩ Reassess this lead</button></div>`;
   }
   // note bar: appears right under the decision the moment one is clicked — write the
   // why/note here (goes to the sheet's Jack Comment column), then Next jumps on
   if(window._noteFor&&window._noteFor.id===l.id){
     const isNo=(l.islead===false||l.status==='passed');
+    const isBuy=(l.status==='bought'||l.status==='atbq'||l.status==='atba2a');
     const nbChips=isNo?NOT_QR.map(r=>`<button type="button" class="qr-chip" onclick="nbChip(this)">${r}</button>`).join(''):'';
-    decH+=`<div class="nb-wrap${isNo?' nb-no':''}">
+    const mq=ldMeta(l); const qv=mq.na?'':(mq.qty!=null?mq.qty:'');
+    const qtyRow=isBuy?`<div class="nb-qty">
+        <span class="nb-qty-lbl">How many did you buy?</span>
+        <button type="button" class="qty-btn" onclick="qtyStep(${l.id},-1)">−</button>
+        <input id="qty-in" type="number" min="0" placeholder="qty" value="${qv}" oninput="setQtyLive(${l.id},this.value)">
+        <button type="button" class="qty-btn plus" onclick="qtyStep(${l.id},1)">+</button>
+        <button type="button" class="qty-na${mq.na?' on':''}" onclick="qtyNA(${l.id})">N/A</button>
+      </div>`:'';
+    decH+=`<div class="nb-wrap${isNo?' nb-no':isBuy?' nb-buy':''}">
+      ${qtyRow}
       <div class="nb-lbl">${isNo?'Why is it a no? — saved to the sheet':'Add a note (optional) — saved to the sheet'}</div>
       ${nbChips?`<div class="nb-chips">${nbChips}</div>`:''}
       <input id="nb-in" placeholder="type a quick note… (Enter = save & next)" value="${String(l.notes||'').replace(/"/g,'&quot;')}" onkeydown="if(event.key==='Enter'){nbSave();}">
-      <div class="nb-row"><button class="nb-save" onclick="nbSave()">Save note · next ➜</button><button class="nb-skip" onclick="nbSkip()">skip · next ➜</button></div>
+      <div class="nb-row"><button class="nb-save" onclick="nbSave()">Save · next ➜</button><button class="nb-skip" onclick="nbSkip()">skip · next ➜</button></div>
     </div>`;
   }
   const QR=['Low ROI','Low Profit','High Competition','Low Demand','Poor Listing','Other Reason'];
@@ -8529,20 +8974,23 @@ function detailH(l){
       <div class="d-title-row">${leadThumb(l.asin,'d-thumb-lg',l.image)}<div class="d-title">${l.title}</div></div>
       <div class="d-tags">
         <span class="d-tag ${priCls(l)}">${priority(l)} priority</span>
-        <span class="d-tag tag-store">${l.store}</span>
-        <span class="d-tag tag-src">${l.src}</span>
-        <span class="d-tag tag-cat">${l.cat}</span>
+        ${l.src&&l.src.trim()?`<span class="d-tag tag-src">🔎 ${sourceType(l.src)} · ${l.src}</span>`:'<span class="d-tag tag-src tag-empty">🔎 source not set</span>'}
+        ${l.sup&&l.sup!=='#'?`<a class="d-tag tag-sup" href="${String(l.sup).replace(/"/g,'&quot;')}" target="_blank">🏭 ${supHost(l.sup)} ↗</a>`:''}
+        ${l.store&&l.store.trim()?`<span class="d-tag tag-store">${l.store}</span>`:''}
+        ${l.cat&&l.cat.trim()?`<span class="d-tag tag-cat">${l.cat}</span>`:''}
       </div>
       ${(function(){var b=leadBadges(l);return b.length?'<div class="d-badges">'+b.map(function(x){return '<span class="d-badge">⚠ '+x+'</span>';}).join('')+'</div>':'';})()}
       <div class="d-sec d-links-sec">
         <div class="d-links">
-          <a class="d-link" href="${l.amz}" target="_blank">${ICO.ext} Amazon</a>
+          <a class="d-link" href="${l.amz&&l.amz!=='#'?l.amz:('https://www.amazon.co.uk/dp/'+encodeURIComponent(l.asin||''))}" target="_blank">${ICO.ext} Amazon</a>
           <a class="d-link" href="https://sas.selleramp.com/sas/lookup?asin=${l.asin}" target="_blank">${ICO.ext} SAS</a>
           <a class="d-link" href="https://keepa.com/#!product/2-${l.asin}" target="_blank">${ICO.ext} Keepa</a>
-          <a class="d-link" href="${l.sup}" target="_blank">${ICO.ext} Supplier</a>
+          ${l.sup&&l.sup!=='#'?`<a class="d-link" href="${l.sup}" target="_blank">${ICO.ext} Supplier</a>`:`<span class="d-link d-link-off" title="No supplier link on the sheet for this lead">${ICO.ext} No supplier link</span>`}
+          ${l.screenshot?`<a class="d-link d-link-shot" href="${String(l.screenshot).replace(/"/g,'&quot;')}" target="_blank">${ICO.ext} 📸 Screenshot</a>`:''}
         </div>
         <div class="d-asin-row">
           <button class="d-asin" onclick="cpA('${l.asin}',event)">${ICO.copy} ${l.asin}</button>
+          ${l.discount&&l.discount.trim()?`<button class="d-asin d-code" onclick="cpA('${String(l.discount).replace(/'/g,'').replace(/"/g,'')}',event)" title="Copy discount / code">🏷️ ${String(l.discount).replace(/</g,'&lt;').slice(0,28)}</button>`:''}
           <span class="d-asin-hint">Click to copy ASIN</span>
           <span class="d-asin-hint" style="margin-left:auto">Sourced via <b style="color:var(--va)">${l.src}</b></span>
         </div>
@@ -8562,7 +9010,8 @@ function detailH(l){
         </div>
       </div>
       <div class="d-sec">
-        <div class="d-sec-lbl">Why this score — ${s.total.toFixed(1)}/10</div>
+        <div class="d-sec-lbl">Why this score — ${s.total.toFixed(1)}/10${s.smart?' <span class="smart-badge">🧠 learned</span>':''}</div>
+        ${s.smart?smartWhy(l,s):''}
         <div class="d-score-rubric">${bars}</div>
       </div>
       <div class="d-sec" style="margin-bottom:0">
@@ -8584,6 +9033,7 @@ function detailH(l){
       <div class="rail-card">
         <div class="rail-lbl">Decision</div>
         <div class="d-decision">${decH}</div>
+        ${(window._noteFor&&window._noteFor.id===l.id)?'':`<button class="rail-note" onclick="openNote(${l.id})">✎ ${l.notes&&l.notes.trim()?'Edit note':'Add a note'}${l.notes&&l.notes.trim()?` <span class="rail-note-dot">●</span>`:''}</button>`}
       </div>
       ${l.islead===null?`<div class="rail-card"><div class="rail-lbl">Quick reject <span class="rail-opt">optional</span></div><div class="qr-chips">${qrChips}</div></div>`:''}
       <button class="rail-copy" onclick="cpDiscord(${l.id})">${ICO.msg} Copy for Discord</button>
@@ -8621,22 +9071,103 @@ function ncConfirm(skip){
   ncClose();
   if(p.kind==='lead') setL(p.id,false,true); else setSt(p.id,'passed',true);
 }
+/* ── Jack's per-lead meta (bought quantity + N/A) — stored locally, keyed by lead sheet id.
+   Powers his Insights + Auto-tune. Cloud-synced too when the bought_qty column exists. ── */
+function ldMetaAll(){ try{return JSON.parse(localStorage.getItem('bdl_lead_meta')||'{}');}catch(e){return{};} }
+function ldMeta(l){ if(!l||!l._sid) return {}; return ldMetaAll()[l._sid]||{}; }
+function ldMetaSet(l,patch){ if(!l||!l._sid) return; var a=ldMetaAll(); a[l._sid]=Object.assign({},a[l._sid]||{},patch); localStorage.setItem('bdl_lead_meta',JSON.stringify(a)); }
+function ldQty(l){ var m=ldMeta(l); return m.na?'na':(m.qty!=null?m.qty:null); }
+function setQty(id,q){ var l=leads.find(function(x){return x.id===id;}); if(!l)return; ldMetaSet(l,{qty:Math.max(0,parseInt(q)||0),na:false}); try{logDecision(l);}catch(e){} selectLead(id,true); }
+function setQtyLive(id,q){ var l=leads.find(function(x){return x.id===id;}); if(!l)return; ldMetaSet(l,{qty:Math.max(0,parseInt(q)||0),na:false}); }   // store while typing, no re-render
+function qtyStep(id,d){ var l=leads.find(function(x){return x.id===id;}); if(!l)return; var m=ldMeta(l); var n=Math.max(0,(m.na?0:(parseInt(m.qty)||0))+d); ldMetaSet(l,{qty:n,na:false}); var el=document.getElementById('qty-in'); if(el)el.value=n; }
+function qtyNA(id){ var l=leads.find(function(x){return x.id===id;}); if(!l)return; ldMetaSet(l,{na:true}); try{logDecision(l);}catch(e){} selectLead(id,true); ldToast('Marked N/A — excluded from spend/analysis'); }
+// open the note box on ANY lead, any time (not tied to a decision) — Jack can comment whenever
+function openNote(id){ window._noteFor={id:id,manual:true}; try{selectLead(id,true);}catch(e){renderList();} nbFocus(); }
+/* ══════════ SAVED FILTERS — Jack's KPF/Keepa filter library (replaces the Discord channel) ══════════
+   Jack adds/renames them in Settings; VAs open them from a panel on their shift. Synced via app_settings. */
+function getSavedFilters(){ try{ var s=getAppSettings().savedFilters; return Array.isArray(s)?s:[]; }catch(e){ return []; } }
+function saveSavedFilters(arr){ var s=getAppSettings(); s.savedFilters=arr; saveAppSettings(s); try{ pushSettingsCloud(s); }catch(e){} }
+function sfltUid(){ return 'f'+Date.now().toString(36)+Math.floor(Math.random()*4096).toString(36); }
+function sfltAdd(){
+  var t=(document.getElementById('sflt-title')||{}).value||''; var u=(document.getElementById('sflt-url')||{}).value||''; var n=(document.getElementById('sflt-note')||{}).value||'';
+  t=t.trim(); u=u.trim(); if(!t||!u){ showToast('Add a title and a link',true); return; }
+  var arr=getSavedFilters(); arr.push({id:sfltUid(),title:t.slice(0,80),url:u,note:n.trim().slice(0,160),tag:(document.getElementById('sflt-tag')||{}).value||'KPF'});
+  saveSavedFilters(arr); mgr_renderSettings(); showToast('Filter saved ✓ — VAs can open it on shift');
+}
+function sfltDel(id){ if(!confirm('Delete this saved filter?')) return; saveSavedFilters(getSavedFilters().filter(function(f){return f.id!==id;})); mgr_renderSettings(); }
+function sfltEdit(id,field,val){ var arr=getSavedFilters(); var f=arr.filter(function(x){return x.id===id;})[0]; if(f){ f[field]=val; saveSavedFilters(arr); } }
+function sfltMove(id,dir){ var arr=getSavedFilters(); var i=arr.findIndex(function(f){return f.id===id;}); var j=i+dir; if(i<0||j<0||j>=arr.length)return; var t=arr[i];arr[i]=arr[j];arr[j]=t; saveSavedFilters(arr); mgr_renderSettings(); }
+function sfltManageHTML(){
+  var arr=getSavedFilters();
+  var TAGS=['KPF','Keepa','A2A','Storefront','Other'];
+  var rows=arr.map(function(f,i){
+    return '<div class="sflt-row" data-id="'+f.id+'">'
+      +'<div class="sflt-ord">'+(i+1)+'</div>'
+      +'<div class="sflt-fields">'
+        +'<div class="sflt-r1"><input class="settings-input sflt-t" value="'+escHtml(f.title||'')+'" placeholder="Filter name — e.g. 7-day drop £50+" oninput="sfltEdit(\''+f.id+'\',\'title\',this.value)">'
+          +'<select class="sflt-tag" onchange="sfltEdit(\''+f.id+'\',\'tag\',this.value)">'+TAGS.map(function(t){return '<option'+((f.tag||'KPF')===t?' selected':'')+'>'+t+'</option>';}).join('')+'</select></div>'
+        +'<input class="settings-input sflt-u" value="'+escHtml(f.url||'')+'" placeholder="Paste the filter link" oninput="sfltEdit(\''+f.id+'\',\'url\',this.value)">'
+        +'<input class="settings-input sflt-n" value="'+escHtml(f.note||'')+'" placeholder="Note for the VA (optional) — e.g. all great sellers" oninput="sfltEdit(\''+f.id+'\',\'note\',this.value)">'
+      +'</div>'
+      +'<div class="sflt-acts"><button class="icon-btn" onclick="sfltMove(\''+f.id+'\',-1)">↑</button><button class="icon-btn" onclick="sfltMove(\''+f.id+'\',1)">↓</button>'
+        +'<a class="icon-btn" href="'+String(f.url||'#').replace(/"/g,'&quot;')+'" target="_blank" title="Open">↗</a>'
+        +'<button class="icon-btn" style="color:#ff6680" onclick="sfltDel(\''+f.id+'\')">Del</button></div>'
+      +'</div>';
+  }).join('')||'<div style="font-size:12px;color:var(--muted-2);padding:8px 2px;">No saved filters yet. Add your KPF / Keepa filters below — they replace the Discord channel.</div>';
+  return '<div class="settings-card" data-sg="leads">'
+    +'<div class="settings-title">🔎 Saved Filters</div>'
+    +'<div class="settings-sub">Your KPF / Keepa filter library — VAs open these from a panel on their shift, and you can reference one in a POA ("run the 7-day drop filter"). Rename anytime; changes sync instantly.</div>'
+    +'<div class="sflt-list">'+rows+'</div>'
+    +'<div class="sflt-add">'
+      +'<div class="sflt-r1"><input class="settings-input" id="sflt-title" placeholder="Filter name — e.g. 7-day drop £50+">'
+        +'<select class="sflt-tag" id="sflt-tag">'+TAGS.map(function(t){return '<option>'+t+'</option>';}).join('')+'</select></div>'
+      +'<input class="settings-input" id="sflt-url" placeholder="Paste the filter link (Keepa / SellerAmp / KPF)">'
+      +'<input class="settings-input" id="sflt-note" placeholder="Note for the VA (optional)">'
+      +'<button class="btn btn-success" style="margin-top:10px;" onclick="sfltAdd()">+ Add filter</button>'
+    +'</div>'
+    +'</div>';
+}
+// pull the freshest saved filters from the cloud (so VAs get renames/additions mid-shift)
+function refreshSavedFiltersFromCloud(){
+  if(typeof SUPABASE_URL==='undefined'||!DB_ENABLED) return Promise.resolve();
+  return fetch(SUPABASE_URL+'/rest/v1/app_settings?id=eq.global&select=data',{headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}})
+    .then(function(r){ return r.ok?r.json():null; })
+    .then(function(rows){ var d=rows&&rows[0]&&rows[0].data; if(d&&Array.isArray(d.savedFilters)){ var s=getAppSettings(); s.savedFilters=d.savedFilters; saveAppSettings(s); try{renderSavedFiltersVA();}catch(e){} } })
+    .catch(function(){});
+}
+// VA-side panel on the shift
+function renderSavedFiltersVA(){
+  var host=document.getElementById('va-filters'); if(!host) return;
+  var arr=getSavedFilters();
+  if(!arr.length){ host.innerHTML=''; return; }
+  var TAGC={KPF:'#18c8f0',Keepa:'#8b5cff','A2A':'#f5a524',Storefront:'#2dd4a3',Other:'#7c8598'};
+  host.innerHTML='<details class="vaf-wrap"><summary class="vaf-head">🔎 Saved Filters <span class="vaf-count">'+arr.length+'</span><span class="vaf-hint">Jack\'s KPF / Keepa filters — tap to open</span></summary>'
+    +'<div class="vaf-list">'+arr.map(function(f){
+      var c=TAGC[f.tag||'KPF']||'#18c8f0';
+      return '<a class="vaf-row" href="'+String(f.url||'#').replace(/"/g,'&quot;')+'" target="_blank">'
+        +'<span class="vaf-tag" style="--c:'+c+'">'+(f.tag||'KPF')+'</span>'
+        +'<span class="vaf-name">'+escHtml(f.title||'Filter')+(f.note?'<span class="vaf-note">'+escHtml(f.note)+'</span>':'')+'</span>'
+        +'<span class="vaf-open">Open ↗</span></a>';
+    }).join('')+'</div></details>';
+}
 function nbChip(el){ var i=document.getElementById('nb-in'); if(!i) return; i.value=(i.value.trim()?i.value.trim()+' · ':'')+el.textContent; i.focus(); }
 function nbSave(){
   var p=window._noteFor; if(!p) return;
   var l=leads.find(function(x){return x.id===p.id;});
   var i=document.getElementById('nb-in'); var txt=i?i.value.trim():'';
-  if(l&&txt){ l.notes=txt; db_leadPatch(l,{jack_comment:txt}); ldToast('Note saved — writing to sheet'); }
-  window._noteFor=null; advanceAfter(p.id);
+  if(l){ l.notes=txt; db_leadPatch(l,{jack_comment:txt}); ldToast(txt?'Note saved — writing to sheet':'Note cleared'); }
+  window._noteFor=null;
+  if(p.manual){ try{selectLead(p.id,true);}catch(e){renderList();} }   // manual: save & stay on this lead
+  else advanceAfter(p.id);                                             // after a decision: save & next
 }
-function nbSkip(){ var p=window._noteFor; window._noteFor=null; if(p) advanceAfter(p.id); }
+function nbSkip(){ var p=window._noteFor; window._noteFor=null; if(!p) return; if(p.manual){ try{selectLead(p.id,true);}catch(e){renderList();} } else advanceAfter(p.id); }
 function nbFocus(){ setTimeout(function(){ var i=document.getElementById('nb-in'); if(i){ i.focus(); i.selectionStart=i.value.length; } },90); }
 function setL(id,v){
   const l=leads.find(x=>x.id===id);
   if(l){l.islead=v;l.seen=true;markSeen(l._sid);
     if(v){db_leadPatch(l,{islead:'LEAD'});}
     else{l.status='passed';var patch={islead:'NOT LEAD',status:'NOT'};if(l.notes&&l.notes.trim())patch.jack_comment=l.notes.trim();db_leadPatch(l,patch);}}
-  ldToast(v?'LEAD ✓ — writing to sheet':'NOT LEAD ✕ — written to sheet');
+  ldToast(v?'LEAD ✓ — writing to sheet':'NOT LEAD + NOT BOUGHT ✕ — both written to sheet');
   if(v){ try{selectLead(id,true);}catch(e){renderList();} }          // stay: pick BOUGHT/ATB next
   else { window._noteFor={id:id}; try{selectLead(id,true);}catch(e){renderList();} nbFocus(); }  // note box appears
 }
@@ -8665,10 +9196,20 @@ function cpDiscord(id){
 }
 function cpA(a,e){navigator.clipboard?.writeText(a).catch(()=>{});ldToast('Copied ASIN: '+a);const btn=e&&e.currentTarget||document.querySelector('#view-leads .d-asin');if(btn){const orig=btn.innerHTML;btn.classList.add('copied');btn.innerHTML=ICO.check+' Copied!';setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=orig;},1400);}}
 function setView(b,v){view=v;selId=null;document.querySelectorAll('#view-leads [data-view]').forEach(x=>x.classList.remove('on'));b.classList.add('on');const t={new:'New Leads',all:'All Leads',lead:'Leads',bought:'Bought',basket:'In Basket',passed:'Passed',notlead:'Not a Lead'};document.getElementById('view-title').textContent=t[v]||v;renderList()}
+// clickable stat ribbon → jump to a view / toggle the stale-only filter
+function gotoView(v){ window._staleFilter=false; var b=document.querySelector('#view-leads [data-view="'+v+'"]'); if(b) setView(b,v); else renderList(); }
+function toggleStale(){ window._staleFilter=!window._staleFilter; if(window._staleFilter){ var nb=document.querySelector('#view-leads [data-view="new"]'); if(nb&&view!=='new'&&view!=='all') setView(nb,'new'); } renderList(); }
 function setVA(b,v){va=v;selId=null;document.querySelectorAll('#view-leads [data-va]').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderList()}
 function setScore(b,m){scoreMin=m;selId=null;document.querySelectorAll('#view-leads [data-sc]').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderList()}
 function setSort(b,s){sortBy=s;document.querySelectorAll('#view-leads [data-sort]').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderList()}
-function clearFilters(){document.getElementById('f-store').value='all';document.getElementById('f-cat').value='all';document.getElementById('f-source').value='all';document.getElementById('search').value='';renderList()}
+// "Pick a day…" reveals a native date input; choosing a date filters to that exact day
+function fDateChange(){ var s=document.getElementById('f-date'), dp=document.getElementById('f-day');
+  if(s.value==='day'){ if(dp){ dp.style.display=''; if(!dp.value){ dp.value=new Date().toISOString().slice(0,10); } window._fDay=dp.value; dp.focus(); } }
+  else { if(dp) dp.style.display='none'; window._fDay=null; }
+  renderList();
+}
+function fDaySet(v){ window._fDay=v; var s=document.getElementById('f-date'); if(s&&v) s.value='day'; renderList(); }
+function clearFilters(){document.getElementById('f-store').value='all';document.getElementById('f-cat').value='all';document.getElementById('f-source').value='all';document.getElementById('search').value='';var s=document.getElementById('f-date');if(s)s.value='month';var dp=document.getElementById('f-day');if(dp)dp.style.display='none';window._fDay=null;window._staleFilter=false;renderList()}
 let _ldtt;function ldToast(msg){const el=document.getElementById('ld-toast');if(!el)return;el.textContent=msg;el.classList.add('show');clearTimeout(_ldtt);_ldtt=setTimeout(()=>el.classList.remove('show'),2400)}
 function moveSel(dir){
   const fl=getF();if(!fl.length)return;
@@ -8681,6 +9222,11 @@ function moveSel(dir){
    next undecided lead in the current view — Jack grinds the pile without touching the mouse */
 function advanceAfter(id){
   window._sessDecided=(window._sessDecided||0)+1;
+  try{ var _dl=leads.find(function(x){return x.id===id;}); if(_dl) logDecision(_dl); }catch(e){}   // log to cloud history
+  // CONTINUOUS LEARNING: in smart mode, every decision retrains the model + rescores,
+  // so it keeps up with how your criteria shift lead to lead.
+  try{ if(getAppSettings().scoreMode==='smart'){ var m=trainSmartModel();
+    if(m&&!m.err){ leads.forEach(function(l){ l._sc=calcScore({roi:l.roi,profit:l.profit,spm:l.spm,fba:l.fba,margin:l.margin}); }); } } }catch(e){}
   renderList();
   try{
     var fl=getF(); var i=fl.findIndex(function(l){return l.id===id;});
