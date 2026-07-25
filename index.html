@@ -341,8 +341,8 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .kpi-meta b{color:var(--muted);font-weight:700;}
 
 /* ══ STYLE: BOLD — rich, fully-saturated solid colour fill ══ */
-#shift-kpis[data-cs="bold"] .stat-card{background:color-mix(in srgb,var(--k) 90%,#0b0b12);border:1.5px solid color-mix(in srgb,var(--k) 40%,#fff);box-shadow:0 0 40px -8px color-mix(in srgb,var(--k) 55%,transparent),inset 0 1px 0 rgba(255,255,255,.25);}
-#shift-kpis[data-cs="bold"] .stat-card:hover{border-color:#fff;box-shadow:0 0 56px -6px color-mix(in srgb,var(--k) 75%,transparent),0 18px 40px -20px rgba(0,0,0,.7);}
+#shift-kpis[data-cs="bold"] .stat-card{background:color-mix(in srgb,var(--k) 68%,#080a10);border:1.5px solid color-mix(in srgb,var(--k) 52%,#0b0b12);box-shadow:0 0 34px -12px color-mix(in srgb,var(--k) 42%,transparent),inset 0 1px 0 rgba(255,255,255,.14);}
+#shift-kpis[data-cs="bold"] .stat-card:hover{border-color:color-mix(in srgb,var(--k) 75%,#fff);box-shadow:0 0 46px -10px color-mix(in srgb,var(--k) 58%,transparent),0 18px 40px -20px rgba(0,0,0,.7);}
 #shift-kpis[data-cs="bold"] .stat-val{color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.35),0 1px 2px rgba(0,0,0,.3);}
 #shift-kpis[data-cs="bold"] .stat-label{color:rgba(255,255,255,.85);}
 #shift-kpis[data-cs="bold"] .kpi-icon{background:rgba(0,0,0,.2);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.2);}
@@ -482,6 +482,284 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .sflt-row.is-arch{opacity:.55;}
 .wh-notwired{font-size:9px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--amber,#f2c200);background:color-mix(in srgb,var(--amber,#f2c200) 15%,transparent);border:1px solid color-mix(in srgb,var(--amber,#f2c200) 38%,transparent);border-radius:20px;padding:2px 7px;margin-left:7px;vertical-align:middle;}
 .wh-warn{margin-top:14px;background:color-mix(in srgb,var(--amber,#f2c200) 9%,var(--panel-2));border:1px solid color-mix(in srgb,var(--amber,#f2c200) 34%,transparent);border-radius:10px;padding:10px 13px;font-size:11.5px;line-height:1.6;color:var(--muted);}
+
+/* ── Saved-filter manager: compact one-line rows, click to edit, paged ── */
+/* ── Lead intelligence ── */
+.li-verdicts{display:flex;flex-direction:column;gap:7px;margin-bottom:12px;}
+.li-vd{font-size:12.5px;line-height:1.6;color:var(--muted);background:var(--panel);border:1px solid var(--line-2);border-left:3px solid var(--line-2);border-radius:9px;padding:9px 13px;}
+.li-vd b{color:var(--text);}
+.li-vd.good{border-left-color:#10d99a;background:color-mix(in srgb,#10d99a 6%,var(--panel));}
+.li-vd.bad{border-left-color:#f5455f;background:color-mix(in srgb,#f5455f 6%,var(--panel));}
+.li-vd.warn{border-left-color:#f5b544;background:color-mix(in srgb,#f5b544 6%,var(--panel));}
+.li-two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.li-card{background:var(--panel);border:1px solid var(--line-2);border-radius:14px;padding:13px 16px;min-width:0;}
+.li-h{font-size:11px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;color:var(--muted-2);margin-bottom:11px;display:flex;align-items:center;gap:8px;}
+.li-key{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:9.5px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--muted-2);}
+.li-key i{width:9px;height:9px;border-radius:2px;display:inline-block;}
+.li-key i.k-all{background:#3a3f52;} .li-key i.k-buy{background:#10d99a;}
+.li-funnel{display:flex;flex-direction:column;gap:11px;}
+.li-fstage{display:flex;flex-direction:column;gap:4px;}
+.li-fbar{height:9px;border-radius:5px;background:rgba(255,255,255,.06);overflow:hidden;}
+.li-fbar i{display:block;height:100%;border-radius:5px;}
+.li-fmeta{display:flex;align-items:baseline;gap:8px;}
+.li-flabel{font-size:12px;font-weight:650;color:var(--text);}
+.li-fval{font-family:var(--font-mono);font-size:14px;font-weight:800;margin-left:auto;}
+.li-fpct{font-family:var(--font-mono);font-size:11px;color:var(--muted-2);min-width:34px;text-align:right;}
+.li-fsub{font-size:11px;color:var(--muted-2);}
+.li-fsub b{color:var(--text);}
+.li-flow{display:flex;align-items:flex-end;gap:5px;height:132px;}
+.li-fcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;}
+.li-fstack{flex:1;width:100%;display:flex;align-items:flex-end;}
+.li-fall{width:100%;background:#3a3f52;border-radius:4px 4px 0 0;display:flex;align-items:flex-end;position:relative;min-height:2px;}
+.li-fall b{position:absolute;bottom:0;left:0;right:0;background:#10d99a;border-radius:3px 3px 0 0;}
+.li-flab{font-family:var(--font-mono);font-size:9px;color:var(--muted-2);}
+.li-prow{display:grid;grid-template-columns:118px 1fr 76px;grid-template-areas:"n b m" "s s s";gap:4px 10px;align-items:center;padding:7px 0;border-top:1px solid var(--line);}
+.li-prow:first-child{border-top:none;}
+.li-pname{grid-area:n;font-size:12.5px;font-weight:650;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.li-pbar{grid-area:b;height:8px;border-radius:4px;background:rgba(255,255,255,.06);overflow:hidden;}
+.li-pbar i{display:block;height:100%;border-radius:4px;}
+.li-pmoney{grid-area:m;font-family:var(--font-mono);font-size:12.5px;font-weight:800;text-align:right;}
+.li-pmeta{grid-area:s;font-size:10.5px;color:var(--muted-2);}
+.li-none{font-size:12px;color:var(--muted-2);padding:6px 0;}
+@media(max-width:900px){ .li-two{grid-template-columns:1fr;} .li-prow{grid-template-columns:96px 1fr 66px;} }
+.jbf-wrap{margin:9px 0 0;}
+.jbf-wrap.open{background:color-mix(in srgb,#4fc3f7 6%,var(--panel-2));border:1px dashed color-mix(in srgb,#4fc3f7 30%,var(--line-2));border-radius:10px;padding:9px 11px;}
+.jbf-toggle{background:none;border:none;color:var(--muted-2);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;padding:2px 0;display:inline-flex;align-items:center;gap:5px;}
+.jbf-toggle:hover{color:#4fc3f7;}
+.jbf-toggle b{color:var(--muted);font-weight:800;}
+.jbf-wrap.open .jbf-toggle{color:#4fc3f7;margin-bottom:7px;}
+.jbf-wrap.open .jbf-toggle b{color:#fff;}
+.jbf-caret{font-size:9px;}
+.jbf-clear{margin-left:auto;background:transparent;border:none;color:var(--muted-2);font-family:inherit;font-size:10.5px;font-weight:700;cursor:pointer;}
+.jbf-search{width:100%;background:var(--panel-2);border:1px solid var(--line-2);border-radius:8px;color:var(--text);font-family:inherit;font-size:12px;padding:7px 10px;outline:none;margin-bottom:7px;}
+.jbf-search:focus{border-color:rgba(79,195,247,.5);}
+.jbf-opts{display:flex;flex-wrap:wrap;gap:5px;align-items:center;}
+.jbf-opt{display:inline-flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line-2);border-radius:999px;padding:4px 11px 4px 5px;cursor:pointer;font-family:inherit;max-width:100%;}
+.jbf-opt:hover{border-color:#4fc3f7;background:color-mix(in srgb,#4fc3f7 10%,var(--panel));}
+.jbf-tag{font-size:8.5px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;padding:2px 6px;border-radius:999px;background:var(--panel-2);color:var(--muted-2);}
+.jbf-tag.t-KPF{color:#4fc3f7;background:rgba(79,195,247,.14);}
+.jbf-tag.t-Keepa{color:#c98bff;background:rgba(201,139,255,.14);}
+.jbf-tag.t-A2A{color:#f5b544;background:rgba(245,181,68,.14);}
+.jbf-tag.t-Storefront{color:#2dd4a3;background:rgba(45,212,163,.14);}
+.jbf-name{font-size:11.5px;font-weight:650;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px;}
+.jbf-none,.jbf-more{font-size:11px;color:var(--muted-2);}
+.sflt-newpoa{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:11px;padding-top:11px;border-top:1px solid var(--line);}
+.sflt-newlbl{font-size:11.5px;font-weight:800;color:var(--muted);letter-spacing:.2px;}
+.sflt-newhint{font-size:11px;color:var(--muted-2);}
+.sflt-newva{width:28px;height:26px;}
+.sflt-slot{background:var(--panel-2);border:1px solid var(--line-2);border-radius:7px;color:var(--muted);font-family:inherit;font-size:10.5px;font-weight:700;padding:4px 5px;cursor:pointer;max-width:104px;}
+.pf-link{display:flex;align-items:center;gap:9px;margin-bottom:8px;background:color-mix(in srgb,var(--accent,#7c5cff) 7%,transparent);border:1px solid color-mix(in srgb,var(--accent,#7c5cff) 22%,transparent);border-radius:9px;padding:7px 10px;}
+.pf-n{font-size:10px;color:var(--muted);min-width:16px;text-align:right;font-family:var(--font-mono);}
+.pf-link .pf-name{flex:1 1 auto;min-width:0;font-size:12.5px;font-weight:650;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pf-open{background:rgba(79,195,247,.12);border:1px solid rgba(79,195,247,.3);color:#4fc3f7;font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:7px;text-decoration:none;flex-shrink:0;}
+.pf-link input.pf-leads{width:62px;flex:0 0 62px;text-align:center;}
+.pf-link .pf-open{flex:0 0 auto;}
+.pf-link .pf-n{flex:0 0 16px;}
+.sflt-poa{display:flex;gap:4px;flex-shrink:0;}
+.sflt-va{width:26px;height:24px;border-radius:7px;background:var(--panel-2);border:1px solid var(--line-2);color:var(--muted-2);font-family:inherit;font-size:11px;font-weight:800;cursor:pointer;padding:0;line-height:1;}
+.sflt-va:hover{color:var(--text);border-color:var(--line);}
+.sflt-va.on.v-Mera{background:color-mix(in srgb,#b23bff 30%,var(--panel-2));border-color:#b23bff;color:#fff;}
+.sflt-va.on.v-Suz{background:color-mix(in srgb,#f2c200 28%,var(--panel-2));border-color:#f2c200;color:#fff;}
+.sflt-chip.poa.on.v-Mera{background:color-mix(in srgb,#b23bff 24%,var(--panel-2));border-color:#b23bff;color:#fff;}
+.sflt-chip.poa.on.v-Suz{background:color-mix(in srgb,#f2c200 22%,var(--panel-2));border-color:#f2c200;color:#fff;}
+/* ── Shift history cards ── */
+/* From-Jack rows now match the standard task row: icon · title(+badges) · meta line */
+.jbcard-icon{display:flex;align-items:center;justify-content:center;font-size:15px;}
+.jbcard-head .jbcard-title{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.jbcard-head .jbcard-from,.jbcard-head .jbcard-type,.jbcard-head .jbcard-carry{font-size:9px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;padding:2px 7px;border-radius:999px;display:inline-flex;align-items:center;gap:4px;line-height:1.5;}
+.jbcard-head .jbcard-from{background:color-mix(in srgb,var(--accent,#7c5cff) 20%,transparent);color:#c9beff;}
+.jbcard-head .jbcard-from svg{width:9px;height:9px;}
+.jbcard-head .jbcard-type{background:color-mix(in srgb,var(--jbc) 18%,transparent);color:var(--jbc);}
+.jbcard-head .jbcard-carry{background:color-mix(in srgb,var(--amber,#f2c200) 16%,transparent);color:var(--amber,#f2c200);}
+.jbcard-head .jbcard-carry.overdue{background:rgba(242,100,127,.16);color:#ff8fa3;}
+.jbcard-head .jbcard-meta{margin-top:2px;}
+.shcard{background:var(--panel);border:1px solid var(--line-2);border-top:3px solid var(--sc);border-radius:13px;padding:11px 13px 12px;cursor:pointer;min-width:0;transition:border-color .15s,transform .15s;}
+.shcard:hover{border-color:color-mix(in srgb,var(--sc) 55%,var(--line-2));transform:translateY(-1px);}
+.shcard-top{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+.shcard-when{display:flex;flex-direction:column;line-height:1.15;min-width:0;}
+.shcard-when b{font-size:13px;font-weight:800;color:var(--text);}
+.shcard-when span{font-size:9.5px;color:var(--muted-2);}
+.shcard-va{margin-left:auto;font-size:9.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--sc);background:color-mix(in srgb,var(--sc) 15%,transparent);border-radius:999px;padding:3px 9px;white-space:nowrap;}
+.shcard-del{background:none;border:none;color:var(--muted-2);font-size:12px;cursor:pointer;padding:2px 3px;opacity:0;transition:opacity .15s,color .15s;}
+.shcard:hover .shcard-del{opacity:1;}
+.shcard-del:hover{color:#ff6680;}
+.shcard-hero{display:flex;align-items:baseline;gap:5px;margin-bottom:8px;}
+.shcard-hero b{font-family:var(--font-mono);font-size:26px;font-weight:800;line-height:1;}
+.shcard-hero span{font-size:10px;color:var(--muted-2);}
+.shcard-stats{display:flex;flex-wrap:wrap;gap:4px;}
+.shcard-stats span{font-size:10px;color:var(--muted-2);background:var(--panel-2);border-radius:6px;padding:3px 7px;white-space:nowrap;}
+.shcard-stats b{color:var(--text);font-weight:700;font-family:var(--font-mono);}
+.shcard-time{margin-top:7px;font-family:var(--font-mono);font-size:9.5px;color:var(--muted-2);}
+.shcard-sec{font-size:8.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted-2);margin:10px 0 4px;}
+.shcard-note{margin-top:9px;font-size:11px;color:var(--muted);line-height:1.6;}
+/* ── Sourcing roll-up ── */
+.pay-actions{display:flex;align-items:center;gap:9px;margin-top:14px;padding-top:13px;border-top:1px solid var(--line);flex-wrap:wrap;}
+.pay-hint{font-size:11.5px;color:var(--muted-2);font-weight:700;}
+.pay-hint.ok{color:#10d99a;}
+.payr-head{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted-2);margin:12px 0 8px;}
+.payr-list{display:flex;flex-direction:column;gap:9px;}
+.payr-row{background:var(--panel-2);border:1px solid var(--line-2);border-radius:11px;padding:10px 11px;}
+.payr-top{display:grid;grid-template-columns:64px minmax(0,1fr) 168px auto;gap:7px;align-items:center;}
+.payr-icon{background:var(--panel);border:1px solid var(--line-2);border-radius:8px;color:var(--text);font-size:15px;padding:6px;cursor:pointer;text-align:center;}
+.payr-sched{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:9px;}
+.payr-lbl{font-size:11.5px;color:var(--muted-2);font-weight:600;}
+.payr-note{font-size:11.5px;color:var(--muted-2);}
+.payr-sched .settings-input{width:auto;flex:0 0 auto;}
+.payr-sched input.payr-n{width:64px;text-align:center;}
+.payr-sched select.payr-wd{width:136px;}
+.payr-sched input.payr-anchor{width:162px;}
+.payr-sched input.payr-days{width:124px;}
+.payr-top .settings-input{width:100%;}
+.payr-next{margin-top:9px;padding-top:8px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted-2);}
+.payr-next b{color:var(--text);}
+.payr-add{margin-top:9px;}
+@media(max-width:900px){ .payr-top{grid-template-columns:56px 1fr;} .payr-type{grid-column:1/-1;} }
+.payp-row{display:grid;grid-template-columns:1fr 150px auto;gap:8px;margin-bottom:7px;align-items:center;}
+.payp-list{margin-top:10px;}
+.payp-nexts{margin-top:11px;padding-top:10px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:5px;}
+.payp-next{font-size:11.5px;color:var(--muted-2);}
+.payp-next b{color:var(--text);}
+.wh-ok{font-size:11px;font-weight:800;color:#10d99a;margin-top:5px;}
+.wh-ok:empty{display:none;}
+.wh-bad{font-size:11px;line-height:1.55;color:#ff8fa3;margin-top:6px;}
+.wh-bad:empty{display:none;}
+.wh-bad b{color:#fff;}
+.wh-item.wh-pay{background:color-mix(in srgb,var(--amber,#f2c200) 8%,var(--panel-2));border:1px solid color-mix(in srgb,var(--amber,#f2c200) 45%,transparent);border-radius:11px;padding:11px 12px;}
+.wh-item.wh-pay .settings-label{color:var(--amber,#f2c200);}
+.pay-bar{display:flex;align-items:center;gap:11px;border-radius:12px;padding:11px 14px;margin-bottom:12px;font-size:13px;}
+.pay-bar.due{background:color-mix(in srgb,var(--amber,#f2c200) 12%,var(--panel));border:1px solid color-mix(in srgb,var(--amber,#f2c200) 42%,transparent);color:var(--text);}
+.pay-bar.due.late{background:color-mix(in srgb,#f5455f 12%,var(--panel));border-color:color-mix(in srgb,#f5455f 45%,transparent);}
+.pay-bar.done{background:color-mix(in srgb,#10d99a 9%,var(--panel));border:1px solid color-mix(in srgb,#10d99a 32%,transparent);color:var(--muted);font-size:12.5px;}
+.pay-ic{font-size:17px;}
+.pay-txt{flex:1;min-width:0;line-height:1.5;}
+.pay-btn{background:#10d99a;border:none;color:#04231a;font-family:inherit;font-size:12.5px;font-weight:800;padding:9px 16px;border-radius:9px;cursor:pointer;white-space:nowrap;}
+.pay-btn:hover{filter:brightness(1.08);}
+.src-range{display:inline-flex;gap:2px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:9px;padding:2px;}
+.src-range button{background:none;border:none;color:var(--muted-2);font-family:inherit;font-size:11px;font-weight:700;padding:5px 11px;border-radius:7px;cursor:pointer;white-space:nowrap;}
+.src-range button:hover{color:var(--text);}
+.src-range button.on{background:color-mix(in srgb,var(--accent,#7c5cff) 26%,var(--panel-2));color:#fff;}
+/* ── Week grid: Mon→Fri across, Mera above Suz ── */
+.wg-wrap{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+.wg-row{display:grid;grid-template-columns:76px repeat(5,1fr) 148px;gap:8px;align-items:stretch;}
+.wg-head{align-items:end;}
+.wg-lbl{display:flex;align-items:center;}
+.wg-va{font-size:11.5px;font-weight:800;color:var(--wc);text-transform:uppercase;letter-spacing:.5px;}
+.wg-totlbl{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted-2);justify-content:flex-end;}
+.wg-day{display:flex;flex-direction:column;gap:1px;padding:0 2px 4px;}
+.wg-day b{font-size:12px;font-weight:800;color:var(--text);}
+.wg-day span{font-family:var(--font-mono);font-size:9.5px;color:var(--muted-2);}
+.wg-day.today b{color:var(--accent,#7c5cff);}
+.wg-cell{background:var(--panel);border:1px solid var(--line-2);border-top:3px solid var(--wc);border-radius:11px;padding:9px 10px 10px;cursor:pointer;min-width:0;transition:border-color .15s;}
+.wg-cell:hover{border-color:color-mix(in srgb,var(--wc) 55%,var(--line-2));}
+.wg-cell.today{box-shadow:0 0 0 1px color-mix(in srgb,var(--accent,#7c5cff) 45%,transparent);}
+.wg-cell.empty{background:transparent;border:1px dashed var(--line-2);border-top:1px dashed var(--line-2);display:flex;align-items:center;justify-content:center;cursor:default;}
+.wg-none{font-size:10.5px;color:var(--muted-2);}
+.wg-hero{display:flex;align-items:baseline;gap:4px;margin-bottom:7px;}
+.wg-hero b{font-family:var(--font-mono);font-size:23px;font-weight:800;color:var(--text);line-height:1;}
+.wg-hero span{font-size:9.5px;color:var(--muted-2);}
+.wg-skip{margin-left:auto;font-style:normal;font-size:9px;font-weight:800;color:#ff8fa3;background:rgba(242,100,127,.16);border-radius:5px;padding:1px 6px;}
+.wg-chips{display:flex;flex-wrap:wrap;gap:3px;}
+.wg-chips span{font-size:9.5px;color:var(--muted-2);background:var(--panel-2);border-radius:5px;padding:2px 6px;white-space:nowrap;}
+.wg-chips b{color:var(--text);font-family:var(--font-mono);font-weight:700;}
+.wg-time{margin-top:6px;font-family:var(--font-mono);font-size:9px;color:var(--muted-2);}
+.wg-body{border-top:1px solid var(--line);margin-top:8px;padding-top:0;}
+.wg-note{font-size:11px;color:var(--muted);line-height:1.55;padding-top:8px;}
+.wg-note.dim{color:var(--muted-2);font-style:italic;}
+.wg-tot{background:color-mix(in srgb,var(--wc) 10%,var(--panel));border:1px solid color-mix(in srgb,var(--wc) 28%,var(--line-2));border-radius:11px;padding:9px 11px;display:flex;flex-direction:column;justify-content:center;gap:1px;}
+.wg-tot b{font-family:var(--font-mono);font-size:22px;font-weight:800;color:var(--wc);line-height:1;}
+.wg-tot span{font-size:9.5px;color:var(--muted-2);}
+.wg-tot em{font-style:normal;font-size:10px;color:var(--muted);margin-top:3px;line-height:1.45;}
+@media(max-width:1150px){
+  .wg-row{grid-template-columns:60px repeat(5,1fr) 118px;gap:6px;}
+  .wg-chips span:nth-child(n+4){display:none;}
+}
+.src-wrap{display:flex;flex-direction:column;gap:2px;}
+.src-row{padding:9px 2px 10px;border-top:1px solid var(--line);}
+.src-row:first-child{border-top:none;}
+.src-row.has-kids{cursor:pointer;}
+.src-row.has-kids:hover .src-name{color:#fff;}
+.src-head{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;}
+.src-name{font-size:13px;font-weight:650;color:var(--text);display:flex;align-items:center;gap:6px;min-width:0;}
+.src-ic{font-size:12px;}
+.src-count{font-size:9px;font-weight:800;color:var(--accent,#7c5cff);background:color-mix(in srgb,var(--accent,#7c5cff) 18%,transparent);border-radius:999px;padding:1px 6px;}
+.src-caret{font-size:9px;color:var(--muted-2);}
+.src-meta{margin-left:auto;font-size:10.5px;color:var(--muted-2);white-space:nowrap;}
+.src-m{color:#c98bff;font-weight:700;} .src-s{color:#f2c200;font-weight:700;}
+.src-val{font-family:var(--font-mono);font-size:19px;font-weight:800;color:#2dd4a3;display:flex;align-items:baseline;gap:6px;min-width:74px;justify-content:flex-end;}
+.src-val i{font-style:normal;font-size:11px;color:var(--muted-2);font-weight:600;min-width:30px;text-align:right;}
+.src-bar{height:7px;background:rgba(255,255,255,.05);border-radius:4px;overflow:hidden;}
+.src-bar i{display:block;height:100%;border-radius:4px;}
+.src-kids{display:none;margin:9px 0 2px 14px;border-left:2px solid var(--line-2);padding-left:11px;}
+.src-kids.open{display:block;}
+.src-kid{display:flex;align-items:baseline;gap:9px;padding:4px 0;font-size:11.5px;}
+.src-kid-n{flex:1;min-width:0;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.src-kid-v{font-family:var(--font-mono);font-weight:700;color:#2dd4a3;}
+.src-kid-v span{font-size:9px;color:var(--muted-2);font-weight:500;margin-left:3px;}
+.src-kid-r{font-size:10px;color:var(--muted-2);min-width:26px;text-align:right;}
+.src-more{width:100%;background:transparent;border:1px dashed var(--line-2);color:var(--muted);font-family:inherit;font-size:11.5px;font-weight:700;padding:9px;border-radius:9px;cursor:pointer;margin-top:8px;}
+.src-empty{color:var(--muted-2);font-size:12.5px;padding:12px 0;line-height:1.6;}
+.sflt-tools{display:flex;gap:9px;align-items:center;margin:2px 0 9px;}
+.sflt-search2{flex:1;min-width:0;background:var(--panel-2);border:1px solid var(--line-2);border-radius:10px;color:var(--text);font-family:inherit;font-size:13px;padding:10px 13px;outline:none;}
+.sflt-search2:focus{border-color:color-mix(in srgb,var(--accent,#7c5cff) 55%,var(--line-2));}
+.sflt-sort{background:var(--panel-2);border:1px solid var(--line-2);border-radius:10px;color:var(--text);font-family:inherit;font-size:12px;padding:10px 9px;cursor:pointer;}
+.sflt-chips{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:11px;}
+.sflt-chip{background:var(--panel-2);border:1px solid var(--line-2);color:var(--muted);font-family:inherit;font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:999px;cursor:pointer;}
+.sflt-chip b{color:var(--text);font-weight:800;margin-left:2px;}
+.sflt-chip:hover{border-color:var(--line);color:var(--text);}
+.sflt-chip.on{background:color-mix(in srgb,var(--accent,#7c5cff) 22%,var(--panel-2));border-color:color-mix(in srgb,var(--accent,#7c5cff) 55%,transparent);color:#fff;}
+.sflt-chip.arch.on{background:color-mix(in srgb,var(--amber,#f2c200) 20%,var(--panel-2));border-color:color-mix(in srgb,var(--amber,#f2c200) 50%,transparent);color:var(--amber,#f2c200);}
+.sflt-count{margin-left:auto;font-size:11.5px;color:var(--muted-2);font-weight:600;}
+.sflt-rows{border:1px solid var(--line-2);border-radius:11px;overflow:hidden;}
+.sflt-row2{border-bottom:1px solid var(--line);background:var(--panel);}
+.sflt-row2:last-child{border-bottom:none;}
+.sflt-row2:hover{background:color-mix(in srgb,#fff 3%,var(--panel));}
+.sflt-row2.open{background:color-mix(in srgb,var(--accent,#7c5cff) 7%,var(--panel));}
+.sflt-row2.is-arch{opacity:.55;}
+.sflt-line{display:grid;grid-template-columns:32px 74px minmax(0,1fr) max-content 92px max-content max-content;gap:10px;align-items:center;padding:7px 12px;cursor:pointer;min-height:0;}
+.sflt-num{font-family:var(--font-mono);font-size:11px;color:var(--muted-2);text-align:right;}
+.sflt-tagp{font-size:9.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;text-align:center;padding:3px 0;border-radius:6px;background:var(--panel-2);border:1px solid var(--line-2);color:var(--muted);}
+.sflt-tagp.t-KPF{color:#4fc3f7;border-color:rgba(79,195,247,.35);background:rgba(79,195,247,.1);}
+.sflt-tagp.t-Keepa{color:#c98bff;border-color:rgba(201,139,255,.35);background:rgba(201,139,255,.1);}
+.sflt-tagp.t-A2A{color:#f5b544;border-color:rgba(245,181,68,.35);background:rgba(245,181,68,.1);}
+.sflt-tagp.t-Storefront{color:#2dd4a3;border-color:rgba(45,212,163,.35);background:rgba(45,212,163,.1);}
+.sflt-name{min-width:0;font-size:13px;font-weight:650;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sflt-note{margin-left:8px;font-size:11.5px;font-weight:500;color:var(--muted-2);}
+.sflt-archtag{margin-left:7px;font-size:9px;font-weight:800;text-transform:uppercase;color:var(--amber,#f2c200);background:color-mix(in srgb,var(--amber,#f2c200) 15%,transparent);border-radius:5px;padding:2px 6px;}
+.sflt-pill{font-family:var(--font-mono);font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap;justify-self:end;}
+.sflt-pill.warm{color:#10d99a;background:rgba(16,217,154,.12);}
+.sflt-pill.cold{color:#f5455f;background:rgba(245,69,95,.12);}
+.sflt-pill.none{color:var(--muted-2);background:rgba(255,255,255,.05);}
+.sflt-host{font-size:10.5px;color:var(--muted-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sflt-acts{display:flex;flex-direction:row;flex-wrap:nowrap;gap:5px;align-items:center;justify-content:flex-end;flex-shrink:0;white-space:nowrap;}
+.sflt-ico{background:var(--panel-2);border:1px solid var(--line-2);color:var(--muted);font-family:inherit;font-size:11px;font-weight:700;padding:4px 9px;border-radius:7px;cursor:pointer;text-decoration:none;white-space:nowrap;flex-shrink:0;line-height:1.5;}
+.sflt-ico:hover{color:var(--text);border-color:var(--line);}
+.sflt-ico.open{color:#4fc3f7;border-color:rgba(79,195,247,.3);background:rgba(79,195,247,.08);}
+.sflt-ico.danger{color:#ff6680;border-color:rgba(255,102,128,.3);}
+.sflt-edit{padding:0 12px 12px 46px;display:flex;flex-direction:column;gap:7px;}
+.sflt-er1{display:flex;gap:8px;}
+.sflt-er1 .settings-input{flex:1;}
+.sflt-erow{display:flex;gap:6px;align-items:center;margin-top:2px;}
+.sflt-empty{font-size:12.5px;color:var(--muted-2);padding:16px 4px;line-height:1.6;}
+.sflt-pager{display:flex;gap:5px;align-items:center;flex-wrap:wrap;padding:8px 0;}
+.sflt-pg{background:var(--panel-2);border:1px solid var(--line-2);color:var(--muted);font-family:inherit;font-size:11.5px;font-weight:700;padding:6px 11px;border-radius:8px;cursor:pointer;}
+.sflt-pg:hover:not(.dis){color:var(--text);border-color:var(--line);}
+.sflt-pg.dis{opacity:.35;cursor:default;}
+.sflt-pg.num{min-width:32px;}
+.sflt-pg.num.on{background:color-mix(in srgb,var(--accent,#7c5cff) 26%,var(--panel-2));border-color:color-mix(in srgb,var(--accent,#7c5cff) 60%,transparent);color:#fff;}
+.sflt-pgi{margin-left:auto;font-size:11px;color:var(--muted-2);font-weight:600;}
+@media(max-width:900px){
+  /* narrow: drop the host + usage columns and give the buttons a real fixed width,
+     otherwise the actions column collapses and the three buttons stack vertically */
+  .sflt-line{grid-template-columns:24px 58px minmax(0,1fr) max-content max-content;gap:8px;}
+  .sflt-host{display:none;}
+  .sflt-pill{display:none;}
+  .sflt-note{display:none;}
+  .sflt-acts{gap:4px;}
+  .sflt-ico{padding:4px 7px;font-size:10.5px;}
+  .sflt-edit{padding-left:12px;}
+  .sflt-tools{flex-wrap:wrap;}
+  .sflt-sort{width:100%;}
+}
 .filters-shell{margin-bottom:10px;}
 .filters-shell .settings-card{width:100%;max-width:none;position:static;margin:0;}
 .filters-shell .sflt-row{grid-template-columns:26px 1fr auto;}
@@ -1567,7 +1845,10 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .shift-card-face:hover .shift-expand-hint{opacity:1;}
 .shift-notes-box{background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 14px;font-size:13px;line-height:1.6;color:var(--muted);margin-bottom:12px;}
 .shift-notes-lbl{font-size:9px;color:var(--accent-2);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;font-weight:600;}
-.va-split{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;align-items:start;}
+.va-split{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;align-items:stretch;}
+.va-split .va-col{background:var(--panel);border:1px solid var(--line-2);border-radius:14px;padding:13px 16px 6px;min-width:0;}
+.va-split .va-col-head{font-size:12px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;margin-bottom:4px;}
+@media(max-width:900px){.va-split{grid-template-columns:1fr;}}
 /* spend loading skeleton (shimmer) */
 .sk{background:linear-gradient(90deg,rgba(255,255,255,.045) 25%,rgba(255,255,255,.10) 37%,rgba(255,255,255,.045) 63%);background-size:400% 100%;animation:skShimmer 1.3s ease infinite;border-radius:6px;height:13px;}
 @keyframes skShimmer{0%{background-position:100% 0;}100%{background-position:0 0;}}
@@ -1645,7 +1926,40 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .task-editor-toggle button{background:transparent;border:none;color:var(--muted-2);font-family:var(--font);font-size:11px;font-weight:600;padding:7px 12px;border-radius:var(--r-xs);cursor:pointer;transition:all .16s;}
 .task-editor-toggle button.active{background:var(--accent-soft);color:#fff;}
 .task-editor-list{display:flex;flex-direction:column;gap:9px;}
-.task-editor-row{display:grid;grid-template-columns:34px minmax(200px,1.2fr) minmax(220px,1fr) 150px 96px;gap:12px;align-items:start;background:#12141d;border:1px solid var(--line-2);border-radius:12px;padding:14px;}
+.task-editor-row{display:grid;grid-template-columns:28px minmax(190px,1.15fr) minmax(210px,1fr) 128px 82px;grid-template-areas:"n name hint checks acts" ". filters filters filters filters";gap:8px 11px;align-items:start;background:#12141d;border:1px solid var(--line-2);border-radius:12px;padding:11px 12px;}
+.task-editor-row .task-editor-index{grid-area:n;}
+/* divs in the row are: index(1) name(2) hint(3) checks(4) actions(5) — nth-of-type
+   counts element type, not class, so these must be 2 and 3 */
+.task-editor-row .settings-field:nth-of-type(2){grid-area:name;}
+.task-editor-row .settings-field:nth-of-type(3){grid-area:hint;}
+.task-editor-row .task-editor-checks{grid-area:checks;}
+.task-editor-row .task-editor-actions{grid-area:acts;}
+.task-editor-row .task-edit-hint{min-height:52px!important;font-size:12px;}
+.task-editor-row .settings-label{font-size:9px;letter-spacing:.7px;margin-bottom:3px;}
+.task-editor-row .settings-input{padding:7px 10px;font-size:12.5px;}
+/* filters linked to this task */
+.tf-strip{grid-area:filters;margin-top:2px;padding-top:9px;border-top:1px dashed var(--line-2);}
+.tf-head{font-size:10px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted-2);margin-bottom:6px;}
+.tf-head b{color:var(--accent,#7c5cff);}
+.tf-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:7px;}
+.tf-chip{display:inline-flex;align-items:center;gap:6px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:999px;padding:3px 5px 3px 5px;}
+.tf-tag{font-size:8px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;padding:2px 6px;border-radius:999px;background:rgba(255,255,255,.06);color:var(--muted-2);}
+.tf-tag.t-KPF{color:#4fc3f7;background:rgba(79,195,247,.14);}
+.tf-tag.t-Keepa{color:#c98bff;background:rgba(201,139,255,.14);}
+.tf-tag.t-A2A{color:#f5b544;background:rgba(245,181,68,.14);}
+.tf-tag.t-Storefront{color:#2dd4a3;background:rgba(45,212,163,.14);}
+.tf-name{font-size:11.5px;font-weight:650;color:var(--text);max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.tf-x{background:none;border:none;color:var(--muted-2);font-size:11px;cursor:pointer;padding:0 3px;}
+.tf-x:hover{color:#ff6680;}
+.tf-none{font-size:11px;color:var(--muted-2);margin-bottom:7px;}
+.tf-add{display:flex;gap:6px;align-items:center;}
+.tf-input{flex:1;max-width:340px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:8px;color:var(--text);font-family:inherit;font-size:12px;padding:6px 10px;outline:none;}
+.tf-input:focus{border-color:color-mix(in srgb,var(--accent,#7c5cff) 55%,var(--line-2));}
+.tf-btn{background:color-mix(in srgb,var(--accent,#7c5cff) 20%,var(--panel-2));border:1px solid color-mix(in srgb,var(--accent,#7c5cff) 45%,transparent);color:#fff;font-family:inherit;font-size:11.5px;font-weight:700;padding:6px 13px;border-radius:8px;cursor:pointer;}
+@media(max-width:1100px){
+  .task-editor-row{grid-template-columns:28px 1fr;grid-template-areas:"n name" ". hint" ". checks" ". acts" ". filters";}
+  .task-editor-actions{justify-content:flex-start;}
+}
 .task-editor-index{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:var(--accent);color:#fff;font-size:13px;font-weight:800;}
 .task-editor-checks{display:flex;flex-direction:column;gap:7px;padding-top:3px;}
 .task-editor-checks label{display:flex;align-items:center;gap:7px;font-size:11.5px;color:#c6ccdb;font-weight:500;}
@@ -2205,8 +2519,8 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
   <div id="mgr-tab-trends" style="display:none;"><div id="mgr-trends-content"></div></div>
   <div id="mgr-tab-perf" style="display:none;">
     <div class="perf-seg" id="perf-seg">
-      <button data-p="today" class="on" onclick="perfShow('today')">Today</button>
-      <button data-p="week" onclick="perfShow('week')">This Week</button>
+      <button data-p="today" onclick="perfShow('today')">Today</button>
+      <button data-p="week" class="on" onclick="perfShow('week')">This Week</button>
       <button data-p="mtd" onclick="perfShow('mtd')">Month</button>
     </div>
     <div id="mgr-today-content"></div>
@@ -2454,6 +2768,12 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 // ╔══════════════════════════════════════════════════════════╗
 // ║  SHIFTTRACK CONFIG — paste your values below            ║
 // ╚══════════════════════════════════════════════════════════╝
+// A copy served from localhost is a PREVIEW/dev copy — it may read the live data but it
+// must never WRITE to it. The real app runs from a file:// or a hosted domain, so this
+// only ever silences a dev server. (Test writes from a preview have polluted the shared
+// settings row before; this makes that structurally impossible.)
+var IS_PREVIEW = (function(){ try{ var h=location.hostname; return h==='localhost'||h==='127.0.0.1'||h==='0.0.0.0'; }catch(e){ return false; } })();
+var DISCORD_PAY_WEBHOOK = '';
 var SUPABASE_URL      = 'https://ffbdazepqrsyurhouxif.supabase.co';
 var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmYmRhemVwcXJzeXVyaG91eGlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4OTM5MjIsImV4cCI6MjA5MDQ2OTkyMn0.BAuodLUDGzO9A7IfoRRn0HZ1MgWOXNPeYKPDBNaNWeg';
 var DISCORD_WEBHOOK   = ''; // set in Jack Settings → Notifications
@@ -2466,6 +2786,7 @@ var DB_ENABLED = SUPABASE_URL !== 'YOUR_SUPABASE_URL';
 
 // ── SUPABASE HELPERS ─────────────────────────────────────
 async function db_insert(table, record) {
+  if(IS_PREVIEW) return null;
   if (!DB_ENABLED) return null;
   try {
     var res = await fetch(SUPABASE_URL + '/rest/v1/' + table, {
@@ -2518,23 +2839,46 @@ async function db_loadAll() {
 
 // ── DISCORD NOTIFICATION ─────────────────────────────────
 async function discord_notify(rec) {
+  if (IS_PREVIEW) return;
   if (!DISCORD_WEBHOOK || DISCORD_WEBHOOK === 'YOUR_DISCORD_WEBHOOK_URL') return;
   var lph = rec.leadsPerHr && rec.leadsPerHr !== '-' ? rec.leadsPerHr : '-';
   var skips = parseInt(rec.tasksSkipped) || 0;
   var colour = rec.va === 'Mera' ? 9699327 : 16775867; // purple / yellow
+  // leads vs their daily goal, and vs the same VA's previous shift
+  var goal=12, prevLeads=null;
+  try{ goal=vaGoal(rec.va)||12; }catch(e){}
+  try{
+    var hist=JSON.parse(localStorage.getItem('shifttrack_eod_log')||'[]')
+      .filter(function(r){ return r.va===rec.va && r.date!==rec.date; });
+    if(hist.length) prevLeads=parseInt(hist[0].totalLeads)||0;
+  }catch(e){}
+  var leadsN=parseInt(rec.totalLeads)||0;
+  var hrsN=parseFloat(rec.hoursWorked)||0;
+  var hitGoal=leadsN>=goal;
+  var totalTasks=(rec.tasks||[]).length||(parseInt(rec.tasksDone)||0);
+  var delta=dcDelta(leadsN,prevLeads,'');
+  var headline=hitGoal
+    ? '🔥 **'+leadsN+' leads** — goal smashed ('+goal+')'
+    : leadsN>=goal*0.75 ? '🟢 **'+leadsN+' leads** — just short of '+goal
+    : '🟠 **'+leadsN+' leads** — under the '+goal+' goal';
+  var desc=headline+(delta?'   '+delta+' vs last shift':'')
+    +'\n\n'+dcBar(leadsN,goal)+'  ·  leads vs goal'
+    +'\n'+dcBar(rec.tasksDone,totalTasks)+'  ·  '+rec.tasksDone+'/'+totalTasks+' tasks'
+      +(skips>0?'  ⚠️ '+skips+' skipped':'')
+    +'\n\n⏱ **'+rec.hoursWorked+'h** worked'+(rec.breakMins?' (☕'+rec.breakMins+'m break)':'')
+      +'  ·  📈 **'+lph+'**/hr  ·  🕐 '+rec.shiftStart+' → '+rec.shiftEnd;
+  if(typeof rec.jbOutstanding==='number'){
+    desc+='\n\n📌 **From Jack:** '+(rec.jbOutstanding>0
+      ? rec.jbOutstanding+' still open'+(rec.jbOldest>0?' · oldest **'+rec.jbOldest+'d**':'')+' → rolls to tomorrow'
+      : '✓ all clear');
+  }
+  if(rec.notes && rec.notes.trim()) desc+='\n\n💬 '+rec.notes.trim().slice(0,400);
   var embed = {
     embeds: [{
-      title: (rec.va === 'Mera' ? '🟣' : '🟡') + ' ' + rec.va + ' — EOD Submitted',
-      color: colour,
-      fields: [
-        { name: '📅 Date', value: rec.date, inline: true },
-        { name: '⏱ Hours', value: rec.hoursWorked + 'h', inline: true },
-        { name: '🎯 Leads', value: String(rec.totalLeads), inline: true },
-        { name: '📈 L/Hr', value: String(lph), inline: true },
-        { name: '✅ Tasks', value: rec.tasksDone + ' done' + (skips > 0 ? ' · ⚠️ ' + skips + ' skipped' : ''), inline: true },
-        { name: '🕐 Shift', value: rec.shiftStart + ' → ' + rec.shiftEnd, inline: true },
-      ].concat(typeof rec.jbOutstanding==='number' ? [{ name: '📌 From Jack', value: rec.jbOutstanding>0 ? (rec.jbOutstanding+' still open'+(rec.jbOldest>0?' · oldest '+rec.jbOldest+'d':'')+' → rolls to tomorrow') : '✓ all clear', inline: true }] : []),
-      description: rec.notes && rec.notes.trim() ? '💬 **Note:** ' + rec.notes : '',
+      author: { name: rec.va+' · end of day' },
+      title: (rec.va === 'Mera' ? '🟣' : '🟡') + ' ' + rec.va + ' — ' + rec.date,
+      color: hitGoal ? 3066993 : colour,
+      description: desc,
       footer: { text: 'BDL VA HQ · submitted ' + rec.submittedAt + ' UK' },
       timestamp: new Date().toISOString()
     }]
@@ -2550,7 +2894,22 @@ async function discord_notify(rec) {
 
 // ── UK TIME ──────────────────────────────────────────────
 // ── DISCORD TASK NOTIFICATION ────────────────────────────
+/* ── Discord embed helpers — a consistent visual language across every message ── */
+function dcBar(done,total,width){
+  width=width||12; total=+total||0; done=Math.max(0,+done||0);
+  var pct=total>0?Math.min(1,done/total):0;
+  var full=Math.round(pct*width);
+  return '`'+new Array(full+1).join('█')+new Array(width-full+1).join('░')+'` **'+Math.round(pct*100)+'%**';
+}
+function dcVA(va){ return va==='Mera'?{e:'🟣',c:9699327}:{e:'🟡',c:16775867}; }
+function dcUK(){ return new Date().toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:true})+' UK'; }
+function dcDelta(cur,prev,unit){
+  if(prev==null||!isFinite(prev)||prev===0) return '';
+  var d=cur-prev, pc=Math.round(d/prev*100);
+  return (d>=0?'▲ +':'▼ ')+Math.abs(d)+(unit||'')+' ('+(d>=0?'+':'')+pc+'%)';
+}
 async function discord_task_notify(task) {
+  if (IS_PREVIEW) return;
   try{ if(inQuietHours()) return; }catch(e){}
   if (!DISCORD_TASKS_WEBHOOK) return;
   if (!state.currentVA || state.currentVA === 'Test') return;
@@ -2564,24 +2923,26 @@ async function discord_task_notify(task) {
   var allTasks = state.tasks.concat(state.extraTasks);
   var doneSoFar = allTasks.filter(function(t){return t.done;}).length;
   var totalLeadsSoFar = allTasks.reduce(function(s,t){return s+(parseInt(t.leads)||0);},0);
-  var fields = [
-    {name:'✅ Task', value:task.name, inline:false},
-    {name:'⏱ Shift time', value:shiftHrs+'h in', inline:true},
-    {name:'🎯 Leads this task', value:leads > 0 ? String(leads) : '—', inline:true},
-    {name:'📊 Total leads so far', value:String(totalLeadsSoFar), inline:true},
-    {name:'📋 Tasks done', value:doneSoFar+'/'+allTasks.length, inline:true},
-  ];
-  if(timeStr) fields.push({name:'🕐 Time spent', value:timeStr, inline:true});
-  if(task.tickedAt) fields.push({name:'🕐 Ticked at', value:task.tickedAt+' UK', inline:true});
+  var goal=(function(){ try{ return vaGoal(state.currentVA)||12; }catch(e){ return 12; } })();
+  var bits=[];
+  if(leads>0) bits.push('**+'+leads+'** lead'+(leads===1?'':'s'));
+  if(timeStr) bits.push('⏱ '+timeStr);
+  if(task.tickedAt) bits.push('at '+task.tickedAt);
+  var desc='**'+task.name+'**'
+    +(bits.length?'\n'+bits.join('  ·  '):'')
+    +'\n\n'+dcBar(doneSoFar,allTasks.length)+'  ·  '+doneSoFar+'/'+allTasks.length+' tasks'
+    +'\n🎯 **'+totalLeadsSoFar+'**/'+goal+' leads today  ·  ⏱ '+shiftHrs+'h in';
+  var fields = [];
   try {
     await fetch(DISCORD_TASKS_WEBHOOK, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({embeds:[{
-        title: emoji+' '+state.currentVA+' — Task Complete',
+        author: {name: state.currentVA+' · task done'},
+        title: (leads>0?'✅ ':'☑️ ')+task.name.slice(0,120),
         color: colour,
-        fields: fields,
-        footer: {text:'BDL VA HQ live · '+new Date().toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:true})+' UK'}
+        description: desc,
+        footer: {text:'BDL VA HQ · '+dcUK()}
       }]})
     });
   } catch(e) { console.error('Task notify error:',e); }
@@ -2590,6 +2951,7 @@ async function discord_task_notify(task) {
 // ── LIVE STATUS PUSH ─────────────────────────────────────
 // ── DISCORD BREAK NOTIFICATION ───────────────────────────
 async function discord_break_notify(isStart, breakDurationMins) {
+  if (IS_PREVIEW) return;
   try{ if(inQuietHours()) return; }catch(e){}
   if (!DISCORD_BREAK_WEBHOOK) return;
   if (!state.currentVA || state.currentVA === 'Test') return;
@@ -2628,6 +2990,7 @@ async function discord_break_notify(isStart, breakDurationMins) {
 
 // ── DISCORD SHIFT START NOTIFICATION ────────────────────
 async function discord_shift_start_notify(va) {
+  if (IS_PREVIEW) return;
   try{ if(inQuietHours()) return; }catch(e){}
   if (!DISCORD_SHIFT_START_WEBHOOK || DISCORD_SHIFT_START_WEBHOOK === 'YOUR_SHIFT_START_WEBHOOK') return;
   if (!va || va === 'Test') return;
@@ -2644,6 +3007,7 @@ async function discord_shift_start_notify(va) {
 }
 
 async function db_pushLiveStatus() {
+  if (IS_PREVIEW) return;
   if (!DB_ENABLED || !state.currentVA || state.currentVA === 'Test' || !state.shiftStart) return;
   var ms = Date.now() - state.shiftStart - state.totalBreakMs;
   var shiftHrs = (ms/3600000).toFixed(1);
@@ -2688,6 +3052,7 @@ async function db_pushLiveStatus() {
 
 // ── DRAFT SHIFT SAVE / RESTORE ───────────────────────────
 function saveShiftDraft(manual) {
+  if (IS_PREVIEW) return;
   if (!DB_ENABLED || !state.currentVA || state.currentVA === 'Test' || !state.shiftStart) return;
   if (state.submitted) return; // Don't save drafts after EOD submitted
 
@@ -2847,7 +3212,7 @@ function ukHour() { return ukNow().getHours(); }
 
 // ── STATE ────────────────────────────────────────────────
 // bumped on every ship — shown as a badge next to the logo so a screenshot instantly tells us the version
-var APP_VERSION='v93';
+var APP_VERSION='v135';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -2918,7 +3283,7 @@ function getAppSettings(){
       settings.poaNotes.Suz = String(saved.poaNotes.Suz||'');
     }
     if(saved.managerPin !== undefined && String(saved.managerPin).trim()) settings.managerPin = String(saved.managerPin).trim();
-    ['whMain','whWeekly','whTasks','whBreaks','whShiftStart'].forEach(function(k){
+    ['whMain','whWeekly','whTasks','whBreaks','whShiftStart','whPay','whLeadsMera','whLeadsSuz'].forEach(function(k){
       if(saved[k] !== undefined) settings[k] = String(saved[k]).trim();
     });
     ['nMain','nWeekly','nTasks','nBreaks','nShiftStart','nLeadsMera','nLeadsSuz'].forEach(function(k){
@@ -2937,6 +3302,11 @@ function getAppSettings(){
     ['goalMera','goalSuz'].forEach(function(k){ var n=parseInt(saved[k]); if(!isNaN(n)&&n>0) settings[k]=n; });
     // min leads/week were saved but never copied back here, so they snapped back to 60 on every read
     ['minLeadsMera','minLeadsSuz'].forEach(function(k){ var n=parseInt(saved[k]); if(!isNaN(n)&&n>=0) settings[k]=n; });
+    // who's on which pay run — same trap: written by the settings card, dropped on read
+    if(Array.isArray(saved.payPeople)) settings.payPeople=saved.payPeople;
+    if(Array.isArray(saved.payRuns)) settings.payRuns=saved.payRuns;
+    if(typeof saved.appUrl==='string') settings.appUrl=saved.appUrl;
+    if(Array.isArray(saved.savedFilters)) settings.savedFilters=saved.savedFilters;
     ['swRoi','swProfit','swDemand','swMargin'].forEach(function(k){ var n=parseFloat(saved[k]); if(!isNaN(n)&&n>=0&&n<=2) settings[k]=n; });
     if(saved.scoreMode==='smart'||saved.scoreMode==='manual') settings.scoreMode=saved.scoreMode;
     if(Array.isArray(saved.savedFilters)) settings.savedFilters=saved.savedFilters;
@@ -2958,12 +3328,52 @@ function applyWebhookSettings(){
     if(s.whTasks) DISCORD_TASKS_WEBHOOK=s.whTasks;
     if(s.whBreaks) DISCORD_BREAK_WEBHOOK=s.whBreaks;
     if(s.whShiftStart) DISCORD_SHIFT_START_WEBHOOK=s.whShiftStart; else if(s.whMain) DISCORD_SHIFT_START_WEBHOOK=s.whMain;
+    if(s.whPay) DISCORD_PAY_WEBHOOK=s.whPay; else if(s.whMain) DISCORD_PAY_WEBHOOK=s.whMain;
     // toggles: off → blank the runtime URL so every sender's guard skips it
     if(s.nMain===0) DISCORD_WEBHOOK='';
     if(s.nWeekly===0) DISCORD_WEEKLY_WEBHOOK='';
     if(s.nTasks===0) DISCORD_TASKS_WEBHOOK='';
     if(s.nBreaks===0) DISCORD_BREAK_WEBHOOK='';
     if(s.nShiftStart===0) DISCORD_SHIFT_START_WEBHOOK='';
+    if(s.nPay===0) DISCORD_PAY_WEBHOOK='';
+  }catch(e){}
+}
+/* A Discord CHANNEL link and a WEBHOOK url look similar but do completely different
+   things — pasting the channel link is the easiest mistake to make here, so say so
+   plainly at the point of entry rather than failing silently later. */
+function whBadMsg(v){
+  v=String(v||'').trim();
+  if(!v) return '';
+  if(/^https?:\/\/(www\.)?discord(app)?\.com\/api\/webhooks\/\d+\/[\w-]+/i.test(v)) return '';
+  if(/discord(app)?\.com\/channels\//i.test(v))
+    return '⚠️ That\'s the <b>channel link</b>, not a webhook. In Discord: right-click the channel → <b>Edit Channel</b> → <b>Integrations</b> → <b>Webhooks</b> → <b>New Webhook</b> → <b>Copy Webhook URL</b>. It contains <b>/api/webhooks/</b>.';
+  if(/^\d{10,}$/.test(v))
+    return '⚠️ That\'s just the channel <b>ID</b>. You need the full webhook URL — Edit Channel → Integrations → Webhooks → Copy Webhook URL.';
+  return '⚠️ Doesn\'t look like a Discord webhook URL. It should start <b>https://discord.com/api/webhooks/</b>';
+}
+var WH_NAMES={main:'Main \u2014 EOD reports',weekly:'Weekly Monday summary',tasks:'Task ticks',breaks:'Breaks',
+  shiftstart:'Shift start',pay:'\u{1F4B7} Important \u2014 pay & admin',leadsmera:'New lead ping \u2014 Mera',leadssuz:'New lead ping \u2014 Suz'};
+var WH_KEY={main:'whMain',weekly:'whWeekly',tasks:'whTasks',breaks:'whBreaks',shiftstart:'whShiftStart',
+  pay:'whPay',leadsmera:'whLeadsMera',leadssuz:'whLeadsSuz'};
+/* Webhook fields now save AS YOU TYPE. Requiring a separate Save press meant a valid URL
+   could sit in the box, test fine (the test reads the box directly) and still never be
+   stored — which is exactly what kept happening. */
+function whValidate(el){
+  try{
+    var kind=el.id.replace('setting-wh-','');
+    var box=document.getElementById('wh-bad-'+kind);
+    var val=String(el.value||'').trim();
+    if(box) box.innerHTML=whBadMsg(val);
+    var key=WH_KEY[kind]; if(!key) return;
+    clearTimeout(window['_whT_'+kind]);
+    window['_whT_'+kind]=setTimeout(function(){
+      if(val && whBadMsg(val)) return;                 // don't store something invalid
+      var st=getAppSettings(); st[key]=val; saveAppSettings(st);
+      try{ applyWebhookSettings(); }catch(e){}
+      try{ pushSettingsCloud(st); }catch(e){}
+      var ok=document.getElementById('wh-ok-'+kind);
+      if(ok){ ok.textContent=val?'Saved \u2713':''; setTimeout(function(){ if(ok) ok.textContent=''; },2200); }
+    },500);
   }catch(e){}
 }
 function wh_test(kind){
@@ -2972,9 +3382,31 @@ function wh_test(kind){
     var inp=document.getElementById('setting-wh-'+kind);
     var url=(inp&&inp.value.trim())||map[kind];
     if(!url){ showToast('No URL set for this webhook', true); return; }
-    var notWired=(kind==='leadsmera'||kind==='leadssuz');
-    fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({embeds:[{title:'Test ping \u2014 '+kind,description:'BDL VA HQ webhook test. If you can read this, the URL works.'+(notWired?'\n\n\u26a0\ufe0f Note: new-lead pings are NOT wired yet \u2014 this URL is saved but nothing sends to it automatically.':''),color:notWired?15881515:9131519}]})})
-      .then(function(r){ showToast(r.ok?(notWired?'URL works \u2713 \u2014 but lead pings aren\'t wired yet':'Test sent \u2713 check Discord'):'Discord rejected it \u2014 check the URL', !r.ok); })
+    var bad=whBadMsg(url);
+    if(bad){ showToast(bad.replace(/<[^>]+>/g,''), true); return; }
+    showToast('Testing '+(WH_NAMES[kind]||kind)+'\u2026');
+    // the pay channel gets the ACTUAL reminder as a demo — "this channel is connected"
+    // tells him nothing about how the thing works
+    if(kind==='pay' && typeof payTestPing==='function'){ payTestPing(url); return; }
+    if(IS_PREVIEW){ showToast('Preview copy — test pings are blocked so they can\'t hit your real channels', true); return; }
+    var notWired=false;
+    var LBL={main:'Main \u2014 EOD reports',weekly:'Weekly Monday summary',tasks:'Task ticks',breaks:'Breaks',
+             shiftstart:'Shift start',pay:'\u{1F4B7} Important \u2014 pay & admin',leadsmera:'New lead ping \u2014 Mera',leadssuz:'New lead ping \u2014 Suz'};
+    var _uid=''; try{ _uid=(getAppSettings().discordUserId||'').trim(); }catch(e){}
+    var body={
+      content:_uid?('<@'+_uid+'> \u2014 checking this mention reaches you'):undefined,
+      allowed_mentions:_uid?{parse:[],users:[_uid]}:undefined,
+      embeds:[{
+      author:{name:'BDL VA HQ \u00b7 webhook test'},
+      title:'\u2705 This channel is connected',
+      color:3066993,
+      description:'**'+(LBL[kind]||kind)+'** will post here from now on.'
+        +(_uid?'\n\nThe @ above confirms mentions reach you in this channel.':'\n\n\u26a0\ufe0f No Discord user ID set, so messages won\'t @ you \u2014 add it lower down in Notifications.')
+        +(notWired?'\n\n\u26a0\ufe0f Note: new-lead pings aren\'t wired yet, so this URL is saved but nothing posts automatically.':''),
+      footer:{text:'Sent from Settings \u2192 Notifications \u00b7 '+dcUK()},
+      timestamp:new Date().toISOString()}]};
+    fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+      .then(function(r){ showToast(r.ok?(notWired?'URL works \u2713 \u2014 but lead pings aren\'t wired yet':'Sent \u2713 \u2014 that was \u201c'+(WH_NAMES[kind]||kind)+'\u201d'):'Discord rejected it \u2014 check the URL', !r.ok); })
       .catch(function(){ showToast('Could not reach Discord', true); });
   }catch(e){}
 }
@@ -2993,8 +3425,35 @@ applyWebhookSettings();
         // never let an empty cloud value wipe a set local one for protected keys (leadsStartDate, webhooks…)
         try{ if(typeof SETTINGS_PROTECT!=='undefined'){ SETTINGS_PROTECT.forEach(function(k){ if((!cloud[k]||!String(cloud[k]).trim()) && cur[k]&&String(cur[k]).trim()) cloud[k]=cur[k]; }); } }catch(e){}
         saveAppSettings(cloud); applyWebhookSettings(); try{applyVaColours();}catch(e){} try{applyVaLabels();}catch(e){}
+        // the filter library has its OWN cache which getSavedFilters() reads FIRST — without
+        // this it survives the cloud pull, so a device keeps showing filters the cloud no
+        // longer has. Cloud is the source of truth for the library.
+        try{ if(typeof sfltCacheSet==='function') sfltCacheSet(Array.isArray(cloud.savedFilters)?cloud.savedFilters:[]); }catch(e){}
+        try{ if(typeof mgr_currentTab!=='undefined' && mgr_currentTab==='filters' && typeof mgr_renderFilters==='function') mgr_renderFilters(); }catch(e){}
       }
     }).catch(function(){});
+}catch(e){}})();
+// FILTER LIBRARY SYNC — runs on EVERY load. The one-shot settings pull above is skipped
+// on any device that already has webhooks, and the library keeps its own cache that
+// getSavedFilters() reads FIRST — so a device could sit on filters the cloud no longer
+// has, forever. The cloud row is the single source of truth for the library.
+(function(){try{
+  setTimeout(function(){
+    if(typeof DB_ENABLED==='undefined'||!DB_ENABLED) return;
+    fetch(SUPABASE_URL+'/rest/v1/app_settings?id=eq.global&select=data',
+      {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}})
+      .then(function(r){return r.ok?r.json():[];})
+      .then(function(rows){
+        var cloud=rows&&rows[0]&&rows[0].data; if(!cloud) return;
+        if(!Array.isArray(cloud.savedFilters)) return;          // key absent → leave local alone
+        var local=[]; try{ local=sfltCacheGet()||[]; }catch(e){}
+        if(JSON.stringify(local)===JSON.stringify(cloud.savedFilters)) return;
+        try{ sfltCacheSet(cloud.savedFilters); }catch(e){}
+        try{ var st=getAppSettings(); st.savedFilters=cloud.savedFilters; saveAppSettings(st); }catch(e){}
+        try{ if(typeof mgr_currentTab!=='undefined'&&mgr_currentTab==='filters'&&typeof mgr_renderFilters==='function') mgr_renderFilters(); }catch(e){}
+        try{ if(typeof renderSavedFiltersVA==='function') renderSavedFiltersVA(); }catch(e){}
+      }).catch(function(){});
+  },1500);
 }catch(e){}})();
 // WEBHOOK SELF-HEAL — runs on EVERY load. For the protected keys (webhook URLs etc):
 // a device that still has a URL restores an empty cloud; a device missing one adopts the
@@ -3513,17 +3972,46 @@ async function buildWeeklyEmbeds(monX,sunX,log,opts){
   if(wkSpend) mainFields.push({name:'\u{1F4B7} Spend this week', value:'**'+money(wkSpend.total)+'**\n'+vaDisp('Mera')+' '+money(wkSpend.A.spend)+' \u00b7 '+vaDisp('Suz')+' '+money(wkSpend.S.spend), inline:true});
   if(bestAll.bestD) mainFields.push({name:'\u{1F3C6} Best day', value:'**'+bestAll.bestD.slice(0,5)+'** \u2014 '+bestAll.bestN+' leads ('+(bestAll===M?vaDisp('Mera'):vaDisp('Suz'))+')', inline:true});
   if(cBuy) mainFields.push({name:'\u{1F3AF} Buy rate', value:'**'+cBuy.rate+'%** \u2014 '+cBuy.b+' of '+cBuy.d+' decided', inline:true});
+  // headline the thing that matters, then show the shape of the week at a glance
+  var hoursTarget=target*2, onTrack=combShort<=0;
+  var lead=onTrack
+    ? '\u2705 **'+totL+' leads** this week \u2014 hours target hit'
+    : '\u{1F7E0} **'+totL+' leads** this week \u2014 **'+combShort.toFixed(1)+'h** behind on hours';
+  // Mon→Sun lead totals for the sparkline, both VAs combined
+  var dayTot=(function(){
+    var out=[];
+    for(var i=0;i<7;i++){
+      var d=mgr_addDays(monX,i);
+      out.push(log.filter(function(r){ return r.date===d; })
+                  .reduce(function(a,r){ return a+(parseInt(r.totalLeads)||0); },0));
+    }
+    return out;
+  })();
+  var mDay=Math.max.apply(null,dayTot.concat([1]));
+  var spark=dayTot.map(function(n){ var lv=Math.round((n/mDay)*7); return '\u2581\u2582\u2583\u2584\u2585\u2586\u2587\u2588'.charAt(Math.max(0,Math.min(7,lv))); }).join('');
+  var mainDesc=lead
+    +'   '+delta(totL,pT)
+    +'\n\n'+dcBar(totH,hoursTarget)+'  \u00b7  **'+totH.toFixed(1)+'h** / '+hoursTarget+'h'
+    +'\n\u26a1 **'+(totH>0?(totL/totH).toFixed(1):'0')+'** leads/hr  \u00b7  '+(totShifts?(totL/totShifts).toFixed(1):'0')+' per shift  \u00b7  '+totShifts+' shifts'
+    +(spark?'\n\n`'+spark+'`  Mon \u2192 Sun':'')
+    +'\n\n'+(vaDisp('Mera')+': **'+M.lds+'**  \u00b7  '+vaDisp('Suz')+': **'+S.lds+'**')
+    +(wkSpend?'\n\u{1F4B7} Spend **'+money(wkSpend.total)+'**  ('+vaDisp('Mera')+' '+money(wkSpend.A.spend)+' \u00b7 '+vaDisp('Suz')+' '+money(wkSpend.S.spend)+')':'')
+    +(cBuy?'\n\u{1F3AF} Buy rate **'+cBuy.rate+'%** \u2014 '+cBuy.b+' of '+cBuy.d+' decided':'')
+    +(bestAll.bestD?'\n\u{1F3C6} Best day **'+bestAll.bestD.slice(0,5)+'** \u2014 '+bestAll.bestN+' leads ('+(bestAll===M?vaDisp('Mera'):vaDisp('Suz'))+')':'')
+    +(issues.length?'\n\n\u26a0\ufe0f **'+issues.join(' \u00b7 ')+'**':'');
   var main={
-    title:'\u{1F4CA} '+(opts.label||'Weekly VA Review')+' \u2014 w/c '+monX+(opts.test?' \u00b7 TEST':''),
-    color:9133311,
-    description:(issues.length?'\u26a0\ufe0f **'+issues.join(' \u00b7 ')+'**':'\u2705 No issues')+'\n'+monX+' \u2192 '+sunX,
-    fields:mainFields,
+    author:{name:(opts.label||'Weekly VA Review')},
+    title:'\u{1F4CA} '+monX+' \u2192 '+sunX+(opts.test?'  \u00b7 TEST':''),
+    color: onTrack?3066993:9133311,
+    description:mainDesc,
     footer:{text:'BDL VA HQ \u00b7 weekly review'},
     timestamp:new Date().toISOString()
   };
   function vaMsg(vaName,st,prevL,spendLine){
     var col=hexInt(vaColour(vaName));
     var short=target-st.hrs;
+    var goalWk=(function(){ try{ return (vaGoal(vaName)||12)*5; }catch(e){ return 60; } })();
+    var vb=buyStats(vaName==='Mera'?'VA M':'VA S');
     var fields=[
       {name:'\u{1F4C8} Leads', value:'**'+st.lds+'**\n'+delta(st.lds,prevL), inline:true},
       {name:'\u23f1 Hours', value:'**'+st.hrs.toFixed(1)+'h** / '+target+'h\n'+(short<=0?'\u2705 target hit':short.toFixed(1)+'h behind'), inline:true},
@@ -3531,12 +4019,19 @@ async function buildWeeklyEmbeds(monX,sunX,log,opts){
     ];
     if(st.bestD) fields.push({name:'\u{1F3C6} Best day', value:'**'+st.bestD.slice(0,5)+'** \u2014 '+st.bestN+' leads', inline:true});
     if(spendLine) fields.push(spendLine);
-    var vb=buyStats(vaName==='Mera'?'VA M':'VA S');
     if(vb) fields.push({name:'\u{1F3AF} Buy rate', value:'**'+vb.rate+'%** \u2014 '+vb.b+' of '+vb.d, inline:true});
     var statusTxt = opts.current ? (st.todayRec?'\u2705 Submitted '+(st.todayRec.submittedAt||'today'):'\u274c Not submitted yet')
                                  : (st.shifts===0?'\u274c No shifts logged this week':(short<=0?'\u2705 Hours target hit':'\u{1F7E1} '+short.toFixed(1)+'h short of target'));
-    return { embeds:[{ title:(vaName==='Mera'?'\u{1F7E3} ':'\u{1F7E1} ')+vaDisp(vaName)+' \u2014 week in review', color:col,
-      description:statusTxt, fields:fields, footer:{text:'w/c '+monX}, timestamp:new Date().toISOString() }] };
+    var vaDesc=statusTxt
+      +'\n\n'+dcBar(st.lds,goalWk)+'  \u00b7  **'+st.lds+'**/'+goalWk+' leads   '+delta(st.lds,prevL)
+      +'\n'+dcBar(st.hrs,target)+'  \u00b7  **'+st.hrs.toFixed(1)+'h**/'+target+'h'
+      +'\n\n\u{1F4CB} **'+st.shifts+'** shifts  \u00b7  '+(st.shifts?Math.round(st.lds/st.shifts):0)+' leads/shift  \u00b7  '+(st.hrs>0?(st.lds/st.hrs).toFixed(1):'0')+'/hr'
+      +(st.bestD?'\n\u{1F3C6} Best day **'+st.bestD.slice(0,5)+'** \u2014 '+st.bestN+' leads':'')
+      +(spendLine?'\n\u{1F4B7} Spend **'+money(vaName==='Mera'?wkSpend.A.spend:wkSpend.S.spend)+'**':'')
+      +(vb?'\n\u{1F3AF} Buy rate **'+vb.rate+'%** \u2014 '+vb.b+' of '+vb.d:'');
+    return { embeds:[{ author:{name:vaDisp(vaName)+' \u00b7 week in review'},
+      title:(vaName==='Mera'?'\u{1F7E3} ':'\u{1F7E1} ')+vaDisp(vaName)+' \u2014 '+st.lds+' leads',
+      color:col, description:vaDesc, footer:{text:'w/c '+monX}, timestamp:new Date().toISOString() }] };
   }
   var mainMsg={embeds:[main]};
   if(settings.discordUserId) mainMsg.content='<@'+settings.discordUserId+'>';
@@ -3546,6 +4041,7 @@ async function buildWeeklyEmbeds(monX,sunX,log,opts){
 }
 // post the 3 weekly messages in order (overview \u2192 Mera \u2192 Suz)
 async function postWeeklyMessages(hook,msgs){
+  if(IS_PREVIEW) return;
   var last=null;
   for(var i=0;i<msgs.length;i++){
     last=await fetch(hook,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(msgs[i])});
@@ -3779,8 +4275,33 @@ function startShift(va, newsletterDay, previewVA) {
       });
     }
     var _openItems = (_op && _op.items) ? _op.items.filter(function(it){return !it.done;}).sort(jb_byAge) : [];
-    _openItems.forEach(function(it){ _jbTasks.push(jb_itemTask(it)); });
+    // Send eight storefronts and the VA used to get eight near-identical rows. Bundle each
+    // type into ONE row with the individual links inside it; a lone item stays a normal card.
+    (function(){
+      var TYPE_ORDER=['sf','kpf','eu','asin','msg'], groups={};
+      _openItems.forEach(function(it){ (groups[it.t]=groups[it.t]||[]).push(it); });
+      TYPE_ORDER.forEach(function(ty){
+        var g=groups[ty]; if(!g||!g.length) return;
+        if(g.length===1){ _jbTasks.push(jb_itemTask(g[0])); return; }
+        _jbTasks.push(jb_groupTask(ty,g));
+      });
+      Object.keys(groups).forEach(function(ty){
+        if(TYPE_ORDER.indexOf(ty)>=0) return;                 // anything unexpected still shows
+        groups[ty].forEach(function(it){ _jbTasks.push(jb_itemTask(it)); });
+      });
+    })();
     state._jbItemCount=_openItems.length;
+    // saved filters Jack linked to this VA's POA slots get attached INTO the matching
+    // POA task (kpf-daily / kpf-tue / kpf-thu), so they inherit that task's frequency
+    // and don't duplicate it with a second row.
+    try{
+      var _attached=sfltAttachToPoa(tasks,va);
+      // e.g. a Suz filter set to "Tuesdays" — Suz has no Tuesday POA task, so it would
+      // vanish. Give those their own row rather than silently dropping them.
+      sfltForVA(va).forEach(function(f){
+        if(_attached.indexOf(f.id)<0) _jbTasks.push(sfltPoaTask(f));
+      });
+    }catch(e){}
     if(_jbTasks.length){
       var poaIdx=tasks.findIndex(function(t){return t.id==='jack-poa'||t.id==='suz-jack-poa';});
       if(poaIdx>=0) tasks.splice.apply(tasks,[poaIdx+1,0].concat(_jbTasks));   // right after the POA task
@@ -3884,7 +4405,17 @@ function jb_cleanHost(u){
 function jb_cleanLabel(it){
   if(it.n&&String(it.n).trim()) return String(it.n).trim();
   if(it.t==='asin') return String(it.v).trim().toUpperCase();
-  if(/^https?:\/\//i.test(it.v)) return jb_cleanHost(it.v);
+  if(/^https?:\/\//i.test(it.v)){
+    // Unnamed Keepa links all collapsed to the same word ("Keepa storefront"), so a VA
+    // sent eight of them saw eight identical rows. Pull the ASIN out of the link so each
+    // one is telling apart at a glance.
+    try{
+      var dec=decodeURIComponent(String(it.v));
+      var m=dec.match(/\b(B0[A-Z0-9]{8})\b/i);
+      if(m) return jb_cleanHost(it.v)+' · '+m[1].toUpperCase();
+    }catch(e){}
+    return jb_cleanHost(it.v);
+  }
   return String(it.v).slice(0,90);
 }
 var JB_ICON_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 7v6c0 5 4 8 9 9 5-1 9-4 9-9V7z"/></svg>';
@@ -3917,7 +4448,9 @@ function buildJackTaskEl(task, i, isExtra){
   }
 
   var timerHtml='';
-  if(task.jbTimer && !task.skipped){
+  // timer on EVERY task that logs time, not just the From-Jack ones. Tick-only tasks
+  // (confirm-and-move-on) still don't get one — there's no time to log.
+  if(!task.skipped && (task.jbTimer || !taskIsTickOnly(task))){
     if(task.done){ timerHtml=task.timerSec?'<span class="tt-chip fin"><b>'+sfFmt(task.timerSec)+'</b></span>':''; }
     else timerHtml='<span class="tt-chip'+(task.timerRun?' run':'')+'" onclick="event.stopPropagation();ttToggle('+i+','+isExtra+')"><b id="tt-'+(isExtra?'e':'t')+i+'">'+sfFmt(ttElapsedT(task))+'</b><span>'+(task.timerRun?'&#9632; Stop':'&#9654; Start')+'</span></span>';
   }
@@ -3945,15 +4478,18 @@ function buildJackTaskEl(task, i, isExtra){
   var skipTag=task.skipped?' <span style="color:var(--red);font-size:11px;">[SKIPPED]</span>':'';
 
   d.innerHTML=
+    // same shape as every other task row — icon, title, one meta line — so the list reads
+    // consistently; the From-Jack badges ride alongside the title instead of above it
     '<div class="task-header jbcard-head" onclick="toggleBody(\''+bodyId+'\')">'
     + '<div class="'+checkCls+'" onclick="event.stopPropagation();'+checkClick+'">'+checkTick+'</div>'
-    + '<div class="jbcard-main">'
-      + '<div class="jbcard-tags"><span class="jbcard-from">'+JB_ICON_SVG+'From Jack</span>'
-        + '<span class="jbcard-type">'+m[0]+' '+m[1]+'</span>'
-        + ((task.jbCarried&&!task.done)?'<span class="jbcard-carry'+(task.jbCarryDays>=3?' overdue':'')+'" title="Sent '+(task.jbAddedOn||'earlier')+' — still open">'+(task.jbCarryDays>=3?'&#9888; '+task.jbCarryDays+'d overdue':'&#8635; Carried'+(task.jbCarryDays?' '+task.jbCarryDays+'d':''))+'</span>':'')
+    + '<div class="task-icon jbcard-icon" style="--tc:'+m[2]+'">'+m[0]+'</div>'
+    + '<div class="task-main jbcard-main">'
+      + '<div class="task-name jbcard-title">'+title+skipTag
+        + '<span class="jbcard-from" title="Sent by Jack">'+JB_ICON_SVG+'Jack</span>'
+        + '<span class="jbcard-type">'+m[1]+'</span>'
+        + ((task.jbCarried&&!task.done)?'<span class="jbcard-carry'+(task.jbCarryDays>=3?' overdue':'')+'" title="Sent '+(task.jbAddedOn||'earlier')+' — still open">'+(task.jbCarryDays>=3?'&#9888; '+task.jbCarryDays+'d':'&#8635; '+(task.jbCarryDays?task.jbCarryDays+'d':'carried'))+'</span>':'')
         + '</div>'
-      + '<div class="jbcard-title">'+title+skipTag+'</div>'
-      + '<div class="'+metaCls+'"><span>'+meta+'</span></div>'
+      + '<div class="'+metaCls+' task-sub"><span>'+meta+'</span></div>'
     + '</div>'
     + openMini + timerHtml
     + ((task.done && task.tickedAt) ? '<div class="task-done-time">&#10003; '+task.tickedAt+'</div>' : '')
@@ -4040,7 +4576,9 @@ function buildTaskEl(task, i, isExtra) {
 
   // Jack-sent items: Start/Stop timer chip on the row + link/ASIN buttons in the body
   var timerHtml='';
-  if (task.jbTimer && !task.skipped) {
+  // timer on EVERY task that logs time, not just the From-Jack ones. Tick-only tasks
+  // (confirm-and-move-on) still don't get one — there's no time to log.
+  if (!task.skipped && (task.jbTimer || !taskIsTickOnly(task))) {
     if (task.done) { timerHtml = task.timerSec ? '<span class="tt-chip fin"><b>'+sfFmt(task.timerSec)+'</b></span>' : ''; }
     else timerHtml='<span class="tt-chip'+(task.timerRun?' run':'')+'" onclick="event.stopPropagation();ttToggle('+i+','+isExtra+')"><b id="tt-'+(isExtra?'e':'t')+i+'">'+sfFmt(ttElapsedT(task))+'</b><span>'+(task.timerRun?'&#9632; Stop':'&#9654; Start')+'</span></span>';
   }
@@ -4109,7 +4647,18 @@ function buildFields(task, i, isExtra) {
     var lv = task.links     || ['','',''];
     var ll = task.linkLeads || [0,0,0];
     var linkRows = '';
+    var lnames = task.linkNames || [];
     for (var li = 0; li < lv.length; li++) {
+      // a link that came from a saved filter gets its name + a one-click Open
+      if(lnames[li]){
+        linkRows += '<div class="pf-link">'
+          + '<span class="pf-n">'+(li+1)+'</span>'
+          + '<span class="pf-name" title="'+String(lnames[li]).replace(/"/g,'&quot;')+'">'+lnames[li]+'</span>'
+          + (lv[li]?'<a class="pf-open" href="'+String(lv[li]).replace(/"/g,'&quot;')+'" target="_blank" onclick="event.stopPropagation()">Open &#8599;</a>':'')
+          + '<input class="field-input pf-leads" type="number" placeholder="0" min="0" value="'+(ll[li]||'')+'" data-ti="'+i+'" data-li="'+li+'" data-ie="'+(isExtra?1:0)+'" data-tot="'+totId+'" oninput="handleLeadInput(this)">'
+          + '</div>';
+        continue;
+      }
       linkRows += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">'
         + '<span style="font-size:10px;color:var(--muted);min-width:18px;text-align:right;font-family:var(--font-mono);">'+(li+1)+'</span>'
         + '<input class="field-input" type="text" placeholder="Paste link here..." value="'+(lv[li]||'')+'" style="flex:1;" data-ti="'+i+'" data-li="'+li+'" data-ie="'+(isExtra?1:0)+'" oninput="handleLinkInput(this)">'
@@ -4194,14 +4743,14 @@ function markDone(i, isExtra) {
   // jb_taskTicked was ONLY on the tick-only path above — but every From-Jack item and
   // one-off task takes THIS path, so none of them were ever marked done in the rolling
   // cloud bucket. That's why they kept coming back the next day as "carried / overdue".
-  jb_taskTicked(task); discord_task_notify(task); db_pushLiveStatus(); saveShiftDraft(false);
+  jb_taskTicked(task); sfltPoaTicked(task); sfltPoaLinksTicked(task); discord_task_notify(task); db_pushLiveStatus(); saveShiftDraft(false);
 }
 
 // A rolling From-Jack task was ticked → mark it done in the open bucket so it stops rolling over.
 // Only writes for a real live VA shift (never during a Test/preview, to protect the real cloud bucket).
 function jb_taskTicked(task){
   try{
-    if(!task||(!task.jbIid&&!task.jbOneoffIid)) return;
+    if(!task||(!task.jbIid&&!task.jbOneoffIid&&!task.jbGroup)) return;   // bundles carry jbIids instead
     var va=state.currentVA;
     if((va!=='Mera'&&va!=='Suz')||state._previewAs) return;
     var results={
@@ -4210,10 +4759,27 @@ function jb_taskTicked(task){
       sec:Math.round(task.timerSec||0)||null,
       note:(task.context||'').trim()||null
     };
+    if(task.jbGroup && task.jbIids && task.jbIids.length){
+      var mins=results.mins, per=mins?Math.round(mins/task.jbIids.length):null;
+      task.jbIids.forEach(function(iid,n){
+        var ld=parseInt((task.linkLeads||[])[n]);
+        jb_markDoneItem(va,iid,false,{ leads:isNaN(ld)?null:ld, mins:per, sec:null,
+          note:(task.context||'').trim()||null });
+      });
+    }
     if(task.jbIid) jb_markDoneItem(va,task.jbIid,false,results);
     if(task.jbOneoffIid) jb_markDoneItem(va,task.jbOneoffIid,true,results);
     // Jack-sent storefronts count toward the storefront league too
-    if(task.jbType==='sf' && typeof db_insert==='function'){
+    if(task.jbGroup && task.jbType==='sf' && typeof db_insert==='function'){
+      (task.jbIids||[]).forEach(function(iid,n){
+        var ld=parseInt((task.linkLeads||[])[n])||0;
+        var nm=String((task.linkNames||[])[n]||'Storefront').split(' — ')[0];
+        if(!ld) return;
+        db_insert('storefront_sessions',{ va:va, name:nm.slice(0,120), date:ukDateShort(),
+          seconds:0, leads:ld, source:'jack' }).catch(function(){});
+      });
+    }
+    if(task.jbType==='sf' && !task.jbGroup && typeof db_insert==='function'){
       var secs=results.sec||((results.mins||0)*60);
       if((results.leads||0)>0 || secs>0){
         db_insert('storefront_sessions',{ va:va, name:String(task.jbLabel||'Storefront').slice(0,120), date:ukDateShort(),
@@ -4279,6 +4845,33 @@ function sfSummary(){
   return { count:list.length, leads:totLeads, mins:Math.round(totSec/60), list:list.map(function(s){return {name:s.name,leads:parseInt(s.leads)||0,mins:Math.round(sfElapsed(s)/60)};}) };
 }
 // ── JACK'S SENT ITEMS → REAL TASKS (with Start/Stop timer + leads) ─────────
+/* One row for a batch of same-type items from Jack, with each link inside it so the VA
+   can work down them and log leads per link. Ticking the row completes all of them. */
+function jb_groupTask(ty,items){
+  var TY={sf:['\u{1F3EC}','Storefronts'],kpf:['\u{1F3AF}','KPF filters'],eu:['\u{1F1EA}\u{1F1FA}','EU sheets'],
+          asin:['#','ASINs'],msg:['\u{1F4AC}','From Jack']};
+  var t=TY[ty]||TY.msg;
+  var carried=items.filter(function(it){ return jb_isCarried(it.addedOn); }).length;
+  var oldest=0; items.forEach(function(it){ if(jb_isCarried(it.addedOn)){ var d=jb_carryDays(it.addedOn); if(d>oldest) oldest=d; } });
+  var links=[], names=[], leads=[], iids=[];
+  items.forEach(function(it,n){
+    var isUrl=/^https?:\/\//i.test(it.v);
+    links.push(isUrl?it.v:'');
+    names.push(jb_cleanLabel(it)+(it.r?' — '+String(it.r).slice(0,40):''));
+    leads.push(0);
+    iids.push(it.iid||('x'+n));
+  });
+  return { id:'jbgrp-'+ty, jbGroup:true, jbIids:iids, jbType:ty,
+    name:'From Jack · '+items.length+' '+t[1].toLowerCase(),
+    jbLabel:items.length+' '+t[1].toLowerCase(),
+    jbReason:'', jbCarried:carried>0, jbCarryDays:oldest, mandatory:true,
+    hint:'Jack sent '+items.length+' '+t[1].toLowerCase()+'. Work down the list below, log the leads each one gave you, then tick this off.'
+      +(carried?' '+carried+' carried over from a previous day.':''),
+    hasLinks:true, links:links, linkNames:names, linkLeads:leads,
+    done:false, skipped:false, skipReason:'', time:'', timeHrs:0, timeMins:0, leads:'', context:'',
+    jbUrl:'', jbAsin:'', jbTimer:true, jbLeads:true,
+    timerSec:0, timerRun:false, timerStart:null };
+}
 function jb_itemTask(it,i){
   var TY={sf:['\u{1F3EC}','Storefront'],kpf:['\u{1F3AF}','KPF filter'],eu:['\u{1F1EA}\u{1F1FA}','EU sheet'],asin:['#','ASIN'],msg:['\u{1F4AC}','From Jack']};
   var ty=TY[it.t]||TY.msg;
@@ -4298,8 +4891,16 @@ function ttToggle(i,isExtra){
   var t=isExtra?state.extraTasks[i]:state.tasks[i]; if(!t) return;
   if(t.timerRun){
     t.timerSec=ttElapsedT(t); t.timerRun=false; t.timerStart=null;
-    var mins=Math.round(t.timerSec/60); t.timeHrs=Math.floor(mins/60); t.timeMins=mins%60;
-    try{ t.time=fmtDur(t.timeHrs,t.timeMins); }catch(e){ t.time=t.timeHrs+'h '+t.timeMins+'m'; }
+    var mins=Math.round(t.timerSec/60);
+    var typed=(parseInt(t.timeHrs)||0)*60+(parseInt(t.timeMins)||0);
+    // only auto-fill Time Spent if they haven't typed their own figure over it
+    if(!typed || t._timeFromTimer){
+      t.timeHrs=Math.floor(mins/60); t.timeMins=mins%60; t._timeFromTimer=true;
+      try{ t.time=fmtDur(t.timeHrs,t.timeMins); }catch(e){ t.time=t.timeHrs+'h '+t.timeMins+'m'; }
+      if(mins>0) showToast('Timer stopped \u2014 '+mins+' min logged \u2713');
+    } else if(mins>0){
+      showToast('Timer stopped \u2014 '+mins+'m timed, kept your '+typed+'m');
+    }
   } else {
     t.timerRun=true; t.timerStart=Date.now();
     if(!window._ttTick) window._ttTick=setInterval(ttTickAll,1000);
@@ -4308,7 +4909,7 @@ function ttToggle(i,isExtra){
 }
 function ttTickAll(){
   var any=false;
-  function upd(t,i,ex){ if(t&&t.jbTimer&&t.timerRun){ any=true; var el=document.getElementById('tt-'+(ex?'e':'t')+i); if(el) el.textContent=sfFmt(ttElapsedT(t)); } }
+  function upd(t,i,ex){ if(t&&t.timerRun){ any=true; var el=document.getElementById('tt-'+(ex?'e':'t')+i); if(el) el.textContent=sfFmt(ttElapsedT(t)); } }
   (state.tasks||[]).forEach(function(t,i){upd(t,i,false);});
   (state.extraTasks||[]).forEach(function(t,i){upd(t,i,true);});
   if(!any&&window._ttTick){ clearInterval(window._ttTick); window._ttTick=null; }
@@ -5093,25 +5694,24 @@ function mgr_shiftGroup(recs,vaFilter){
     });
     var hasNote=mgr_isRealNote(r.notes);
     var delBtn='<button onclick="event.stopPropagation();mgr_del('+r.id+');" style="background:#c0392b;border:2px solid #e74c3c;color:#fff;font-family:var(--font-mono);font-size:9px;font-weight:700;padding:3px 9px;border-radius:5px;cursor:pointer;flex-shrink:0;">✕ DEL</button>';
-    return '<div class="va-shift-block" style="border-radius:10px;overflow:hidden;background:'+cardBg+';cursor:pointer;border-top:4px solid '+borderCol+';min-width:0;" onclick="mgr_toggleCard(\''+ bodyId +'\')">'+
-      '<div style="padding:9px 11px 7px;">'+
-      '<div style="font-size:8px;color:rgba(255,255,255,0.35);margin-bottom:4px;"><span style="font-size:12px;font-weight:800;color:rgba(255,255,255,0.8);">'+dateStr.split(' ')[0]+' <span style="font-size:14px;">'+dateStr.split(' ')[1]+'</span></span><span style="font-size:8px;font-weight:400;color:rgba(255,255,255,0.35);"> '+dateStr.split(' ').slice(2).join(' ')+'</span></div>'+
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">'+
-      '<div style="display:flex;align-items:baseline;gap:4px;">'+
-      '<span style="font-family:var(--font-head);font-size:13px;font-weight:800;color:'+accentCol+';"> '+r.va+'</span>'+
-      '<span style="font-size:8px;color:rgba(255,255,255,0.35);">'+r.submittedAt+'</span>'+
-      flags+'</div>'+delBtn+'</div>'+
-      '<div style="font-family:var(--font-mono);font-size:20px;font-weight:700;color:'+leadsCol+';line-height:1;margin-bottom:6px;">'+r.totalLeads+'<span style="font-size:9px;color:rgba(255,255,255,0.3);margin-left:2px;">leads</span></div>'+
-      '<div style="display:flex;flex-wrap:wrap;gap:2px;">'+
-      (r.shiftStart?'<div style="background:rgba(255,255,255,0.1);border-radius:3px;padding:1px 5px;font-size:7px;font-family:var(--font-mono);color:rgba(255,255,255,0.6);">'+r.shiftStart+'→'+r.shiftEnd+'</div>':'')+
-      (r.breakMins?'<div style="background:rgba(255,255,255,0.08);border-radius:3px;padding:1px 5px;font-size:7px;font-family:var(--font-mono);color:rgba(255,255,255,0.5);">☕'+r.breakMins+'m</div>':'')+
-      '<div style="background:rgba(255,255,255,0.1);border-radius:3px;padding:1px 5px;font-size:7px;font-family:var(--font-mono);color:rgba(255,255,255,0.6);">⏱'+r.hoursWorked+'h</div>'+
-      (r.tasksDone?'<div style="background:rgba(255,255,255,0.06);border-radius:3px;padding:1px 5px;font-size:7px;font-family:var(--font-mono);color:rgba(255,255,255,0.4);">✓'+r.tasksDone+'t</div>':'')+
-      '</div></div>'+
-      '<div class="shift-card-body" id="'+bodyId+'" style="border-top:1px solid rgba(255,255,255,0.08);padding:0 13px 11px;" onclick="event.stopPropagation();">'+
-      (taskRows?'<div style="font-size:8px;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:1px;margin:9px 0 3px;">Tasks</div>'+taskRows:'')+
-      (hasNote?'<div style="margin-top:9px;font-size:11px;color:rgba(255,255,255,0.55);line-height:1.6;">'+r.notes+'</div>':'')+
-      '</div></div>';
+    return '<div class="shcard" style="--sc:'+accentCol+';" onclick="mgr_toggleCard(\''+ bodyId +'\')">'
+      +'<div class="shcard-top">'
+        +'<div class="shcard-when"><b>'+dateStr.split(' ')[0]+'</b><span>'+dateStr.split(' ')[1]+' '+dateStr.split(' ').slice(2).join(' ')+'</span></div>'
+        +'<span class="shcard-va">'+r.va+'</span>'
+        +'<button class="shcard-del" title="Delete this shift" onclick="event.stopPropagation();mgr_del('+r.id+');">✕</button>'
+      +'</div>'
+      +'<div class="shcard-hero"><b style="color:'+leadsCol+'">'+r.totalLeads+'</b><span>leads</span>'+flags+'</div>'
+      +'<div class="shcard-stats">'
+        +'<span title="Hours worked">⏱ <b>'+r.hoursWorked+'h</b></span>'
+        +(r.tasksDone?'<span title="Tasks completed">✓ <b>'+r.tasksDone+'</b></span>':'')
+        +(r.breakMins?'<span title="Break">☕ <b>'+r.breakMins+'m</b></span>':'')
+        +(parseFloat(r.hoursWorked)>0?'<span title="Leads per hour">⚡ <b>'+(r.totalLeads/parseFloat(r.hoursWorked)).toFixed(1)+'</b></span>':'')
+      +'</div>'
+      +(r.shiftStart?'<div class="shcard-time">'+r.shiftStart+' → '+r.shiftEnd+'</div>':'')
+      +'<div class="shift-card-body" id="'+bodyId+'" onclick="event.stopPropagation();">'
+      +(taskRows?'<div class="shcard-sec">Tasks</div>'+taskRows:'')
+      +(hasNote?'<div class="shcard-note">'+r.notes+'</div>':'')
+      +'</div></div>';
   }
 
   var visible=sorted.slice(0,PER_PAGE),hidden=sorted.slice(PER_PAGE);
@@ -5234,7 +5834,26 @@ function mgr_hoursColour(weekHrs, weekShifts){
 // ── SOURCING BREAKDOWN ──
 // Shows leads by task type — sourcing dominates by design (it's the main job)
 // Use this to spot WHICH tasks within sourcing are underperforming
-function mgr_sourcing(recs,va){
+var SRC_RANGES=[{k:'30d',label:'Last 30 days',days:30},{k:'90d',label:'Last 90 days',days:90},{k:'all',label:'All time',days:0}];
+var mgr_srcRange='30d';
+function mgr_setSrcRange(k){ mgr_srcRange=k; try{ mgr_switchTab(mgr_currentTab); }catch(e){} }
+function mgr_srcToggleHTML(){
+  return '<div class="src-range">'+SRC_RANGES.map(function(r){
+    return '<button class="'+(mgr_srcRange===r.k?'on':'')+'" onclick="mgr_setSrcRange(\''+r.k+'\')">'+r.label+'</button>';
+  }).join('')+'</div>';
+}
+function mgr_srcLabel(){ var r=SRC_RANGES.filter(function(x){return x.k===mgr_srcRange;})[0]; return r?r.label:'All time'; }
+function mgr_srcFilter(recs){
+  var r=SRC_RANGES.filter(function(x){return x.k===mgr_srcRange;})[0];
+  if(!r||!r.days) return recs;
+  var cut=new Date(); cut.setDate(cut.getDate()-r.days);
+  return recs.filter(function(x){
+    var p=String(x.date||'').split('/'); if(p.length!==3) return true;
+    return new Date(+p[2],+p[1]-1,+p[0])>=cut;
+  });
+}
+function mgr_sourcing(recs,va,useRange){
+  if(useRange) recs=mgr_srcFilter(recs);
   // Map task IDs to display names — lead sheet / telegram-eod excluded (they never produce leads)
   var tm={
     'sourcing':'Own Sourcing (Manual/Brand)',
@@ -5261,37 +5880,135 @@ function mgr_sourcing(recs,va){
   };
   // Tasks that are pure admin — never count in sourcing breakdown
   var excludeIds=['leadsheet','suz-leadsheet','leadsheet-eod','suz-leadsheet-eod','telegram-eod','suz-telegram-eod','ht-filters'];
+  // Everything Jack sends one-off used to get its own row here, so this list grew forever
+  // ("KPF filter · GoPro", "KPF filter · jbl", "Storefront · 21st"…). One-offs now roll up
+  // into a parent per type that you can open to see the individual ones.
+  var ONEOFF={ 'KPF filter':{k:'oneoff-kpf', label:'Jack one-offs · KPF filters', icon:'🎯'},
+               'Storefront':{k:'oneoff-sf',  label:'Jack one-offs · Storefronts',  icon:'🏬'},
+               'From Jack': {k:'oneoff-msg', label:'Jack one-offs · Other',        icon:'💬'},
+               'ASIN':      {k:'oneoff-asin',label:'Jack one-offs · ASINs',        icon:'#'},
+               'EU sheet':  {k:'oneoff-eu',  label:'Jack one-offs · EU sheets',    icon:'🇪🇺'} };
+  function bucketFor(t){
+    if(tm[t.id]) return {k:t.id, label:tm[t.id], child:null};
+    var nm=String(t.name||'');
+    var pre=nm.split(' · ')[0].trim();
+    var o=ONEOFF[pre];
+    if(o) return {k:o.k, label:o.label, icon:o.icon, child:nm.slice(pre.length+3)||nm};
+    if(/^From Jack/i.test(nm)) return {k:'oneoff-msg', label:ONEOFF['From Jack'].label, icon:'💬', child:nm.replace(/^From Jack\s*·?\s*/i,'')||nm};
+    return {k:'t:'+nm, label:(nm.length>34?nm.slice(0,34)+'…':nm), child:null};
+  }
   var bd={};
   (va?recs.filter(function(r){return r.va===va;}):recs).forEach(function(r){
     (r.tasks||[]).forEach(function(t){
       var l=parseInt(t.leads)||0; if(!l) return;
-      if(excludeIds.indexOf(t.id)>=0) return; // skip admin tasks
-      var k=tm[t.id]||(t.name.length>32?t.name.substring(0,32)+'…':t.name);
-      if(!bd[k]) bd[k]={leads:0,m:0,s:0};
-      bd[k].leads+=l;
-      if(r.va==='Mera') bd[k].m+=l; else bd[k].s+=l;
+      if(excludeIds.indexOf(t.id)>=0) return;
+      var b=bucketFor(t);
+      var o=bd[b.k]||(bd[b.k]={label:b.label,icon:b.icon||'',leads:0,m:0,s:0,runs:0,kids:{}});
+      o.leads+=l; o.runs++;
+      if(r.va==='Mera') o.m+=l; else o.s+=l;
+      if(b.child){ var c=o.kids[b.child]||(o.kids[b.child]={leads:0,runs:0}); c.leads+=l; c.runs++; }
     });
   });
-  var entries=Object.entries(bd).sort(function(a,b){return b[1].leads-a[1].leads;});
-  if(!entries.length) return '<div style="color:var(--muted-2);font-size:13px;padding:12px 0;">No task-level data yet.</div>';
-  var total=entries.reduce(function(s,e){return s+e[1].leads;},0);
-  return entries.map(function(e){
-    var pct=total?Math.round(e[1].leads/total*100):0;
-    var barCol=va==='Mera'?'#b23bff':va==='Suz'?'#f2c200':'#2dd4a3';
-    var vaBreakdown=!va&&(e[1].m||e[1].s)?'<span style="font-size:11px;color:#555;margin-left:8px;">'+(e[1].m?'<span style="color:#b23bff88;">M '+e[1].m+'</span> ':'')+( e[1].s?'<span style="color:#FFEB3B88;">S '+e[1].s+'</span>':'')+'</span>':'';
-    return '<div style="margin-bottom:18px;">'
-      +'<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">'
-      +'<div><span style="font-size:13px;color:#ccc;font-weight:500;">'+e[0]+'</span>'+vaBreakdown+'</div>'
-      +'<div style="display:flex;align-items:baseline;gap:6px;">'
-      +'<span style="font-family:var(--font-mono);font-size:24px;font-weight:700;color:#2dd4a3;">'+e[1].leads+'</span>'
-      +'<span style="font-size:12px;color:#444;min-width:32px;text-align:right;">'+pct+'%</span>'
-      +'</div></div>'
-      +'<div style="height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;">'
-      +'<div style="height:100%;width:'+pct+'%;background:'+barCol+';border-radius:4px;box-shadow:0 0 8px '+( va==='Mera'?'#b23bff66':va==='Suz'?'#FFEB3B66':'#2dd4a366')+';"></div>'
-      +'</div></div>';
-  }).join('');
+  var entries=Object.keys(bd).map(function(k){ return bd[k]; }).sort(function(a,b){return b.leads-a.leads;});
+  if(!entries.length) return '<div class="src-empty">No task-level data yet — it fills in as your VAs log leads against each task.</div>';
+  var total=entries.reduce(function(s,e){return s+e.leads;},0);
+  var top=entries.slice(0,10), rest=entries.slice(10);
+  var restLeads=rest.reduce(function(s,e){return s+e.leads;},0);
+  var barCol=va==='Mera'?'#b23bff':va==='Suz'?'#f2c200':'#2dd4a3';
+
+  function row(e,i){
+    var pct=total?Math.round(e.leads/total*100):0;
+    var kidKeys=Object.keys(e.kids).sort(function(a,b){ return e.kids[b].leads-e.kids[a].leads; });
+    var rid='src'+i+'-'+Math.abs(String(e.label).split('').reduce(function(a,c){return a+c.charCodeAt(0);},0));
+    var kidHtml=kidKeys.length?('<div class="src-kids" id="'+rid+'">'
+      +kidKeys.map(function(k){
+          var c=e.kids[k];
+          return '<div class="src-kid"><span class="src-kid-n">'+escHtml(k)+'</span>'
+            +'<span class="src-kid-v">'+c.leads+'<span>leads</span></span>'
+            +'<span class="src-kid-r">'+c.runs+'×</span></div>';
+        }).join('')+'</div>'):'';
+    var perRun=e.runs?(e.leads/e.runs).toFixed(1):'0';
+    return '<div class="src-row'+(kidKeys.length?' has-kids':'')+'"'+(kidKeys.length?' onclick="srcToggle(\''+rid+'\',this)"':'')+'>'
+      +'<div class="src-head">'
+        +'<span class="src-name">'+(e.icon?'<span class="src-ic">'+e.icon+'</span>':'')+escHtml(e.label)
+          +(kidKeys.length?'<span class="src-count">'+kidKeys.length+'</span><span class="src-caret">▸</span>':'')+'</span>'
+        +'<span class="src-meta">'+e.runs+' runs · '+perRun+'/run'
+          +(!va&&(e.m||e.s)?'  <b class="src-m">M '+e.m+'</b> <b class="src-s">S '+e.s+'</b>':'')+'</span>'
+        +'<span class="src-val">'+e.leads+'<i>'+pct+'%</i></span>'
+      +'</div>'
+      +'<div class="src-bar"><i style="width:'+Math.max(1,pct)+'%;background:'+barCol+';"></i></div>'
+      +kidHtml+'</div>';
+  }
+  var html='<div class="src-wrap">'+top.map(row).join('');
+  if(rest.length){
+    html+='<div class="src-rest" id="src-rest" style="display:none;">'+rest.map(function(e,i){return row(e,100+i);}).join('')+'</div>'
+      +'<button class="src-more" onclick="var e=document.getElementById(\'src-rest\');var o=e.style.display===\'none\';e.style.display=o?\'block\':\'none\';this.textContent=o?\'Show less ▴\':\'Show '+rest.length+' more sources · '+restLeads+' leads ▾\';">Show '+rest.length+' more sources · '+restLeads+' leads ▾</button>';
+  }
+  return html+'</div>';
+}
+function srcToggle(id,el){
+  var k=document.getElementById(id); if(!k) return;
+  var open=k.classList.toggle('open');
+  var c=el.querySelector('.src-caret'); if(c) c.textContent=open?'▾':'▸';
 }
 
+/* Mon→Fri across, Mera on the top row and Suz beneath — same day always lines up in the
+   same column, so comparing the two of them is just reading down. */
+function mgr_weekGrid(recs,monStr){
+  var DAYS=['Mon','Tue','Wed','Thu','Fri'];
+  var byKey={};
+  recs.forEach(function(r){ byKey[r.va+'|'+r.date]=r; });
+  var today=mgr_ukToday();
+  function cell(va,di){
+    var date=mgr_addDays(monStr,di);
+    var r=byKey[va+'|'+date];
+    var col=va==='Mera'?'#b23bff':'#f2c200';
+    var isToday=date===today;
+    if(!r){
+      return '<div class="wg-cell empty'+(isToday?' today':'')+'">'
+        +'<span class="wg-none">'+(isToday?'in progress':'no shift')+'</span></div>';
+    }
+    var hrs=parseFloat(r.hoursWorked)||0, lds=parseInt(r.totalLeads)||0;
+    var lph=hrs>0?(lds/hrs):0;
+    var minsPer=lds>0?Math.round(hrs*60/lds):0;
+    return '<div class="wg-cell'+(isToday?' today':'')+'" style="--wc:'+col+';" onclick="mgr_toggleCard(\'wg-'+r.id+'\')">'
+      +'<div class="wg-hero"><b>'+lds+'</b><span>leads</span>'
+        +(r.tasksSkipped>0?'<i class="wg-skip" title="'+r.tasksSkipped+' skipped">!</i>':'')+'</div>'
+      +'<div class="wg-chips">'
+        +'<span>⏱ <b>'+r.hoursWorked+'h</b></span>'
+        +'<span>⚡ <b>'+lph.toFixed(1)+'</b>/hr</span>'
+        +(minsPer?'<span title="Time per lead">🕐 <b>'+minsPer+'m</b>/lead</span>':'')
+        +(r.tasksDone?'<span>✓ <b>'+r.tasksDone+'</b></span>':'')
+        +(r.breakMins?'<span>☕ <b>'+r.breakMins+'m</b></span>':'')
+      +'</div>'
+      +'<div class="wg-time">'+(r.shiftStart||'')+(r.shiftEnd?' → '+r.shiftEnd:'')+'</div>'
+      +'<div class="shift-card-body wg-body" id="wg-'+r.id+'" onclick="event.stopPropagation();">'
+        +(mgr_isRealNote(r.notes)?'<div class="wg-note">'+r.notes+'</div>':'<div class="wg-note dim">No note left.</div>')
+      +'</div></div>';
+  }
+  function totalsRow(va){
+    var lds=0,hrs=0,n=0;
+    for(var i=0;i<5;i++){ var r=byKey[va+'|'+mgr_addDays(monStr,i)]; if(!r) continue;
+      lds+=parseInt(r.totalLeads)||0; hrs+=parseFloat(r.hoursWorked)||0; n++; }
+    var lph=hrs>0?(lds/hrs).toFixed(1):'0.0';
+    var mins=lds>0?Math.round(hrs*60/lds):0;
+    return '<div class="wg-tot"><b>'+lds+'</b><span>leads</span>'
+      +'<em>'+hrs.toFixed(1)+'h · '+lph+'/hr'+(mins?' · '+mins+'m/lead':'')+' · '+n+' shifts</em></div>';
+  }
+  var head='<div class="wg-row wg-head"><div class="wg-lbl"></div>'
+    +DAYS.map(function(d,i){
+        var date=mgr_addDays(monStr,i);
+        return '<div class="wg-day'+(date===today?' today':'')+'"><b>'+d+'</b><span>'+date.slice(0,5)+'</span></div>';
+      }).join('')+'<div class="wg-lbl wg-totlbl">Week</div></div>';
+  var rows=['Mera','Suz'].map(function(va){
+    var col=va==='Mera'?'#b23bff':'#f2c200';
+    return '<div class="wg-row" style="--wc:'+col+';">'
+      +'<div class="wg-lbl"><span class="wg-va">'+vaDisp(va)+'</span></div>'
+      +[0,1,2,3,4].map(function(i){ return cell(va,i); }).join('')
+      +totalsRow(va)+'</div>';
+  }).join('');
+  return '<div class="wg-wrap">'+head+rows+'</div>';
+}
 // ── WEEK TABLE ──
 function mgr_weekTable(recs,from,to){
   var settings=getAppSettings();
@@ -5937,7 +6654,8 @@ function mgr_renderOverview(){
     +'<button onclick="mgr_changeWeek(1)"'+(mgr_weekOffset>=0?' disabled':'')+'>Next ›</button>'
     +(mgr_weekOffset!==0?'<button onclick="mgr_weekOffset=0;mgr_changeWeek(0)">This week</button>':'')+'</div>';
 
-  var html='<div id="spend-tile">'+(_spendCache?'':spendSkeleton(true))+'</div>';
+  var html=payBannerHTML();
+  html+='<div id="spend-tile">'+(_spendCache?'':spendSkeleton(true))+'</div>';
 
   // ── Weekly performance (neutral cards, colour = status, direct actions) ──
   var pMon=mgr_addDays(monStr,-7), pSun=mgr_addDays(monStr,-1);
@@ -6316,8 +7034,10 @@ function mgr_renderVA(va,containerId){
     }
   }
 
-  html+=mgr_section('📈 Sourcing — All Time');
-  html+=mgr_sourcing(recs,va);
+  html+='<div class="mgr-sec2"><div><div class="s-ttl">📈 Sourcing — '+mgr_srcLabel()+'</div>'
+    +'<div class="s-sub">Which tasks actually produce leads, and how many each run is worth.</div></div>'
+    +'<div class="s-right">'+mgr_srcToggleHTML()+'</div></div>';
+  html+=mgr_sourcing(recs,va,true);
 
   html+=mgr_section('All Shifts ('+recs.length+')');
   html+=mgr_shiftGroup(recs,va);
@@ -6412,17 +7132,21 @@ function mgr_renderWeek(){
     +hoursCard('Mera hours','purple',mH)
     +hoursCard('Suz hours','amber',sH)
     +'</div>';
+  // top band: the day-by-day table next to the split + summary, which are about the same
+  // height. The sourcing columns used to sit in the LEFT column here, so the right side ran
+  // out and left a big empty gap — they're full width below now.
   html+='<div class="perf-2col">'
-    +'<div class="perf-main">'+mgr_weekTable(recs,monStr,sunStr)
-      +'<div class="va-split" style="margin-top:14px;">'
-        +'<div class="va-col"><div class="va-col-head" style="color:var(--mera);">'+vaDisp('Mera')+' — Sourcing</div>'+mgr_sourcing(recs,'Mera')+'</div>'
-        +'<div class="va-col"><div class="va-col-head" style="color:var(--suz);">'+vaDisp('Suz')+' — Sourcing</div>'+mgr_sourcing(recs,'Suz')+'</div>'
-      +'</div>'
-    +'</div>'
+    +'<div class="perf-main">'+mgr_weekTable(recs,monStr,sunStr)+'</div>'
     +'<div class="perf-side">'+mgr_leadsSplitDonut(mL,sL)+mgr_weekSummary(recs)+'</div>'
   +'</div>';
-  html+=mgr_section('All Shifts This Week');
-  html+=mgr_shiftGroup(recs);
+  html+=mgr_section('Shifts — Mon to Fri');
+  html+=mgr_weekGrid(recs,monStr);
+  html+='<div class="mgr-sec2"><div><div class="s-ttl">Sourcing this week</div>'
+    +'<div class="s-sub">Where each of them actually found leads, and what a run is worth.</div></div></div>';
+  html+='<div class="va-split">'
+    +'<div class="va-col"><div class="va-col-head" style="color:var(--mera);">'+vaDisp('Mera')+'</div>'+mgr_sourcing(recs,'Mera')+'</div>'
+    +'<div class="va-col"><div class="va-col-head" style="color:var(--suz);">'+vaDisp('Suz')+'</div>'+mgr_sourcing(recs,'Suz')+'</div>'
+  +'</div>';
   var realNotes=recs.filter(function(r){return mgr_isRealNote(r.notes);});
   if(realNotes.length){
     html+=mgr_section('💬 Notes This Week');
@@ -6488,7 +7212,7 @@ function mgr_switchTab(tab){
   var el=document.getElementById('mgr-tab-'+tab);if(el) el.style.display='block';
   var ab=document.getElementById('tab-'+tab);if(ab) ab.classList.add('active-tab');
   if(tab==='overview') mgr_renderOverview();
-  if(tab==='perf')     perfShow(window._perfWhich||'today');
+  if(tab==='perf')     perfShow(window._perfWhich||'week');
   if(tab==='today')    mgr_renderToday();
   if(tab==='mera')     mgr_renderVA('Mera','mgr-mera-content');
   if(tab==='suz')      mgr_renderVA('Suz','mgr-suz-content');
@@ -6501,6 +7225,153 @@ function mgr_switchTab(tab){
   if(tab==='spend')    mgr_renderSpend();
   if(tab==='filters')  mgr_renderFilters();
   if(tab==='settings') mgr_renderSettings();
+}
+/* ═══════════ LEAD INTELLIGENCE ═══════════
+   The money + flow layer: where leads come from, which sources actually earn,
+   how fast decisions get made, and — said plainly — what is NOT working.
+   Everything here is computed from the live sheet; nothing is ever auto-binned. */
+function liMoney(n){ n=Math.round(n||0); return (n<0?'-':'')+'£'+Math.abs(n).toLocaleString(); }
+function liDate(l){
+  var s=String(l.date||''); var m=s.match(/^(\d{4})-(\d{2})-(\d{2})/); if(m) return new Date(+m[1],+m[2]-1,+m[3]);
+  var p=s.split('/'); if(p.length===3) return new Date(+p[2],+p[1]-1,+p[0]); return null;
+}
+function liIsBuy(l){ return l.status==='bought'||l.status==='atbq'||l.status==='atba2a'; }
+/* ROI arrives as a fraction on some rows (0.1256) and a percentage on others (12.56) */
+function liRoi(l){ var r=+l.roi||0; return r>0&&r<=3?r*100:r; }
+function liQty(l){ try{ var m=(typeof ldMeta==='function')?ldMeta(l):null; if(m&&!m.na&&m.qty!=null) return Math.max(1,parseInt(m.qty)||1); }catch(e){} return 1; }
+function mgr_leadIntelHTML(){
+  var all=(window.leads||[]);
+  if(!all.length) return '';
+  var decided=all.filter(function(l){return l.islead!==null||l.status;});
+  var marked =all.filter(function(l){return l.islead===true;});
+  var buys   =all.filter(liIsBuy);
+  var pending=all.filter(function(l){return l.islead===null&&!l.status;});
+
+  // ── money on the buys ──
+  var spend=0, profit=0, roiSum=0, roiN=0, units=0, best=null;
+  buys.forEach(function(l){
+    var q=liQty(l); units+=q;
+    spend+=(+l.buy||0)*q; profit+=(+l.profit||0)*q;
+    var rr=liRoi(l); if(rr){ roiSum+=rr; roiN++; }
+    if(!best||((+l.profit||0)*q)>((+best.profit||0)*liQty(best))) best=l;
+  });
+  var avgRoi=roiN?Math.round(roiSum/roiN):0;
+  var missed=pending.reduce(function(a,l){return a+(+l.profit||0);},0);
+
+  // ── funnel ──
+  function fstage(label,n,of,col,sub){
+    var pct=of?Math.round(n/of*100):0;
+    return '<div class="li-fstage"><div class="li-fbar"><i style="width:'+Math.max(2,pct)+'%;background:'+col+';"></i></div>'
+      +'<div class="li-fmeta"><span class="li-flabel">'+label+'</span>'
+      +'<span class="li-fval" style="color:'+col+'">'+n.toLocaleString()+'</span>'
+      +'<span class="li-fpct">'+pct+'%</span></div>'
+      +(sub?'<div class="li-fsub">'+sub+'</div>':'')+'</div>';
+  }
+  var funnel='<div class="li-funnel">'
+    +fstage('Leads found',all.length,all.length,'#7c5cff',pending.length?'<b>'+pending.length+'</b> still waiting on you':'all reviewed ✓')
+    +fstage('You reviewed',decided.length,all.length,'#4fc3f7',(all.length-decided.length)+' not looked at yet')
+    +fstage('Worth a lead',marked.length,all.length,'#f5b544',decided.length?Math.round(marked.length/decided.length*100)+'% of what you reviewed':'')
+    +fstage('You bought',buys.length,all.length,'#10d99a',units>buys.length?units+' units total':'')
+    +'</div>';
+
+  // ── source / retailer performance with MONEY, not just counts ──
+  function perf(keyFn,label,minN){
+    var g={};
+    all.forEach(function(l){
+      var k=(keyFn(l)||'').trim()||'—';
+      var o=g[k]||(g[k]={k:k,n:0,d:0,b:0,profit:0,roi:0,roiN:0,units:0});
+      o.n++;
+      if(l.islead!==null||l.status) o.d++;
+      if(liIsBuy(l)){ var q=liQty(l); o.b++; o.units+=q; o.profit+=(+l.profit||0)*q; var rr2=liRoi(l); if(rr2){o.roi+=rr2;o.roiN++;} }
+    });
+    var arr=Object.keys(g).map(function(k){return g[k];}).filter(function(o){return o.k!=='—'&&o.n>=(minN||1);});
+    if(!arr.length) return {rows:'',winners:[],wasters:[]};
+    arr.forEach(function(o){ o.rate=o.d?o.b/o.d:0; o.avgRoi=o.roiN?Math.round(o.roi/o.roiN):0; o.per=o.n?o.profit/o.n:0; });
+    arr.sort(function(a,b){ return b.profit-a.profit || b.b-a.b || b.n-a.n; });
+    var maxP=Math.max.apply(null,arr.map(function(x){return x.profit;}).concat([1]));
+    var rows=arr.slice(0,10).map(function(o){
+      var rp=Math.round(o.rate*100);
+      var col=o.b===0?'#f5455f':rp>=25?'#10d99a':'#f5b544';
+      return '<div class="li-prow">'
+        +'<span class="li-pname" title="'+escHtml(o.k)+'">'+escHtml(o.k)+'</span>'
+        +'<span class="li-pbar"><i style="width:'+Math.round(Math.max(0,o.profit)/maxP*100)+'%;background:'+col+';"></i></span>'
+        +'<span class="li-pmoney" style="color:'+col+'">'+liMoney(o.profit)+'</span>'
+        +'<span class="li-pmeta">'+o.n+' leads · <b style="color:'+col+'">'+o.b+'</b> bought · '+rp+'%'+(o.avgRoi?' · '+o.avgRoi+'% ROI':'')+'</span>'
+        +'</div>';
+    }).join('');
+    return {rows:rows,
+      winners:arr.filter(function(o){return o.b>0;}).slice(0,3),
+      wasters:arr.filter(function(o){return o.d>=8&&o.b===0;}).sort(function(a,b){return b.n-a.n;}).slice(0,6)};
+  }
+  var bySrc=perf(function(l){return l.src;},'source',1);
+  var byStore=perf(function(l){return l.store;},'retailer',1);
+
+  // ── decision speed: how long leads wait on you ──
+  var waits=[];
+  all.forEach(function(l){
+    if(!(l.islead!==null||l.status)) return;
+    var d=liDate(l), dec=l.decided_at?new Date(l.decided_at):null;
+    if(!d||!dec||isNaN(dec.getTime())) return;
+    var hrs=(dec.getTime()-d.getTime())/3600000;
+    if(hrs>=0&&hrs<24*60) waits.push(hrs);
+  });
+  waits.sort(function(a,b){return a-b;});
+  var medWait=waits.length?waits[Math.floor(waits.length/2)]:0;
+  var sameDay=waits.filter(function(h){return h<24;}).length;
+  var now=Date.now();
+  var oldest=0;
+  pending.forEach(function(l){ var d=liDate(l); if(d){ var days=(now-d.getTime())/86400000; if(days>oldest) oldest=days; } });
+
+  // ── 14-day flow: found vs bought ──
+  var days=[], byDay={};
+  for(var i=13;i>=0;i--){ var dd=new Date(now-i*86400000); var k=dd.getFullYear()+'-'+('0'+(dd.getMonth()+1)).slice(-2)+'-'+('0'+dd.getDate()).slice(-2);
+    days.push({k:k,lab:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dd.getDay()][0]+' '+dd.getDate(),n:0,b:0}); byDay[k]=days[days.length-1]; }
+  all.forEach(function(l){ var d=liDate(l); if(!d) return;
+    var k=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);
+    var o=byDay[k]; if(!o) return; o.n++; if(liIsBuy(l)) o.b++; });
+  var maxD=Math.max.apply(null,days.map(function(x){return x.n;}).concat([1]));
+  var flow=days.map(function(x){
+    var h=Math.round(x.n/maxD*100), bh=x.n?Math.round(x.b/x.n*100):0;
+    return '<div class="li-fcol" title="'+x.lab+': '+x.n+' leads, '+x.b+' bought">'
+      +'<div class="li-fstack"><i class="li-fall" style="height:'+Math.max(2,h)+'%"><b style="height:'+bh+'%"></b></i></div>'
+      +'<span class="li-flab">'+x.lab.split(' ')[1]+'</span></div>';
+  }).join('');
+
+  // ── plain-English verdicts ──
+  var verdicts='';
+  if(bySrc.winners.length){
+    var w=bySrc.winners[0];
+    verdicts+='<div class="li-vd good"><b>'+escHtml(w.k)+'</b> is your best source — '+w.b+' buy'+(w.b===1?'':'s')+' from '+w.n+' leads ('+Math.round(w.rate*100)+'%), '+liMoney(w.profit)+' profit.</div>';
+  }
+  if(byStore.winners.length){
+    var sw=byStore.winners[0];
+    verdicts+='<div class="li-vd good"><b>'+escHtml(sw.k)+'</b> is your best retailer — '+liMoney(sw.profit)+' from '+sw.b+' buy'+(sw.b===1?'':'s')+'.</div>';
+  }
+  var allWaste=bySrc.wasters.concat(byStore.wasters).slice(0,5);
+  if(allWaste.length){
+    verdicts+='<div class="li-vd bad"><b>Not converting:</b> '+allWaste.map(function(o){return escHtml(o.k)+' ('+o.n+' leads, 0 buys)';}).join(' · ')
+      +' — worth a conversation with your VAs. Nothing is binned automatically.</div>';
+  }
+  if(oldest>=3) verdicts+='<div class="li-vd warn">Your oldest undecided lead has been waiting <b>'+Math.floor(oldest)+' days</b>. '+pending.length+' in the queue'+(missed>0?' worth '+liMoney(missed)+' in potential profit':'')+'.</div>';
+  if(waits.length>5) verdicts+='<div class="li-vd">You decide '+Math.round(sameDay/waits.length*100)+'% of leads within a day · typical turnaround <b>'+(medWait<24?Math.round(medWait)+'h':Math.round(medWait/24)+'d')+'</b>.</div>';
+
+  return '<div class="mgr-sec2"><div><div class="s-ttl">Lead intelligence</div>'
+      +'<div class="s-sub">Where your leads come from, which ones actually earn, and what isn\'t working — across all '+all.length.toLocaleString()+' leads.</div></div></div>'
+    +'<div class="kpi-row" style="margin-bottom:12px;">'
+      +mgr_kpi({icon:'cart',label:'Bought',value:buys.length,tone:'green',badge:{t:units+' units',tone:'green'},sub:'from <b>'+decided.length+'</b> reviewed'})
+      +mgr_kpi({icon:'layers',label:'Profit on buys',value:liMoney(profit),tone:'cyan',badge:{t:avgRoi+'% ROI',tone:avgRoi>=30?'green':'amber'},sub:liMoney(spend)+' committed'})
+      +mgr_kpi({icon:'inbox',label:'Waiting on you',value:pending.length,tone:pending.length?'amber':'green',badge:pending.length?{t:Math.floor(oldest)+'d oldest',tone:oldest>=3?'red':'amber'}:{t:'clear',tone:'green'},sub:missed>0?liMoney(missed)+' of potential profit sat in the queue':'nothing waiting'})
+      +mgr_kpi({icon:'clock',label:'Your turnaround',value:(waits.length?(medWait<24?Math.round(medWait)+'h':Math.round(medWait/24)+'d'):'—'),tone:'purple',badge:{t:(waits.length?Math.round(sameDay/waits.length*100)+'% same day':'no data'),tone:'purple'},sub:'median time from lead logged to your decision'})
+    +'</div>'
+    +(verdicts?'<div class="li-verdicts">'+verdicts+'</div>':'')
+    +'<div class="li-two">'
+      +'<div class="li-card"><div class="li-h">Your funnel</div>'+funnel+'</div>'
+      +'<div class="li-card"><div class="li-h">Last 14 days <span class="li-key"><i class="k-all"></i>found <i class="k-buy"></i>bought</span></div><div class="li-flow">'+flow+'</div></div>'
+    +'</div>'
+    +'<div class="li-two">'
+      +'<div class="li-card"><div class="li-h">Sourcing methods — by profit</div>'+(bySrc.rows||'<div class="li-none">No source data on your leads yet.</div>')+'</div>'
+      +'<div class="li-card"><div class="li-h">Retailers — by profit</div>'+(byStore.rows||'<div class="li-none">No retailer data yet.</div>')+'</div>'
+    +'</div>';
 }
 /* Filter performance — shared by the Filters tab and the Insights tab.
    Exact: opens + leads the VA logged. Estimated: that VA-day's buys shared out in
@@ -7062,6 +7933,7 @@ function mgr_taskSettingsHTML(settings){
         +'<button class="icon-btn" title="Move down" onclick="mgr_moveTaskRow('+i+',1)">↓</button>'
         +'<button class="icon-btn" title="Delete task" onclick="mgr_deleteTaskRow('+i+')" style="color:#ff6680;">Del</button>'
       +'</div>'
+      +sfltTaskStripHTML(t.id,i)
       +'</div>';
   }).join('');
   return '<div class="settings-card" data-sg="shift" style="margin-top:16px;">'
@@ -7310,21 +8182,24 @@ function mgr_renderSettings(){
       +'<div class="settings-title">Notifications &amp; Webhooks</div>'
       +'<div class="settings-sub">Toggle what fires, point each one at a Discord channel, and send a test. Blank URL = built-in default.</div>'
       +'<div class="wh-cols">'
-      +[['main','Main &mdash; EOD reports','whMain','nMain'],
+      +[['pay','\u{1F4B7} Important \u2014 pay &amp; admin','whPay','nPay'],
+        ['main','Main &mdash; EOD reports','whMain','nMain'],
         ['weekly','Weekly Monday summary','whWeekly','nWeekly'],
-        ['leadsmera','New lead ping &mdash; Mera channel <span class="wh-notwired">not wired yet</span>','whLeadsMera','nLeadsMera'],
-        ['leadssuz','New lead ping &mdash; Suz channel <span class="wh-notwired">not wired yet</span>','whLeadsSuz','nLeadsSuz'],
+        ['leadsmera','New lead ping &mdash; Mera channel','whLeadsMera','nLeadsMera'],
+        ['leadssuz','New lead ping &mdash; Suz channel','whLeadsSuz','nLeadsSuz'],
         ['tasks','Task ticks','whTasks','nTasks'],
         ['breaks','Breaks','whBreaks','nBreaks'],
         ['shiftstart','Shift start','whShiftStart','nShiftStart']].map(function(w){
           var on=settings[w[3]]===undefined?true:!!settings[w[3]];
-          return '<div class="wh-item"><div class="wh-lbl-row"><label class="wh-switch"><input type="checkbox" id="setting-n-'+w[0]+'"'+(on?' checked':'')+'><i></i></label><span class="settings-label">'+w[1]+'</span></div>'
-            +'<div class="wh-row"><input class="settings-input" id="setting-wh-'+w[0]+'" type="text" placeholder="https://discord.com/api/webhooks/&hellip;" value="'+escHtml(settings[w[2]]||'')+'"><button class="wh-test" onclick="wh_test(\''+w[0]+'\')">Send test</button></div></div>';
+          return '<div class="wh-item'+(w[0]==='pay'?' wh-pay':'')+'"><div class="wh-lbl-row"><label class="wh-switch"><input type="checkbox" id="setting-n-'+w[0]+'"'+(on?' checked':'')+'><i></i></label><span class="settings-label">'+w[1]+'</span></div>'
+            +'<div class="wh-row"><input class="settings-input" id="setting-wh-'+w[0]+'" type="text" placeholder="https://discord.com/api/webhooks/&hellip;" value="'+escHtml(settings[w[2]]||'')+'" oninput="whValidate(this)"><button class="wh-test" onclick="wh_test(\''+w[0]+'\')">Send test</button></div>'
+            +'<div class="wh-bad" id="wh-bad-'+w[0]+'">'+whBadMsg(settings[w[2]]||'')+'</div>'
+            +'<div class="wh-ok" id="wh-ok-'+w[0]+'"></div></div>';
         }).join('')
       +'</div>'
-      +'<div class="wh-warn">⚠️ The two <b>new lead ping</b> rows are saved but <b>nothing sends them yet</b> — the app has no automatic new-lead Discord post. "Send test" only proves the URL works, not that pings will arrive. Say the word and I\'ll wire it (it needs a first-run guard so it can\'t backfire and ping every existing lead at once).</div>'
+      +'<div class="wh-warn">💡 <b>New lead pings are live for both VAs.</b> Leave a channel blank and that VA\'s leads go to your main channel instead. The first run after switching this on only <b>arms</b> it — it never announces leads that were already in the sheet — and if several devices are open, only one of them posts.</div>'
       +'<div class="wh-lbl-row" style="margin-top:18px;"><span class="settings-label">@ mention on new lead (optional)</span></div>'
-      +'<div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap;"><input class="settings-input" id="setting-lead-mention" type="text" style="width:260px;" placeholder="&lt;@1255...&gt; you, or &lt;@&amp;roleID&gt; a role" value="'+escHtml(settings.leadMention||'')+'"><span style="font-size:11px;color:var(--muted-2);">Will be prepended to each lead ping once those are wired.</span></div>'
+      +'<div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap;"><input class="settings-input" id="setting-lead-mention" type="text" style="width:260px;" placeholder="&lt;@1255...&gt; you, or &lt;@&amp;roleID&gt; a role" value="'+escHtml(settings.leadMention||'')+'"><span style="font-size:11px;color:var(--muted-2);">Prepended to each lead ping. Blank = no @mention.</span></div>'
       +'<div class="wh-lbl-row" style="margin-top:18px;"><span class="settings-label">@ mention you on weekly review</span></div>'
       +'<div style="display:flex;align-items:center;gap:9px;"><input class="settings-input" id="setting-discord-id" type="text" style="width:220px;" placeholder="your Discord user ID (numbers)" value="'+escHtml(settings.discordUserId||'')+'"><span style="font-size:11px;color:var(--muted-2);">Discord → Settings → Advanced → Developer Mode on, then right-click your name → Copy User ID</span></div>'
       +'<div class="wh-lbl-row" style="margin-top:18px;"><span class="settings-label">Live idle alert after</span></div>'
@@ -7337,6 +8212,7 @@ function mgr_renderSettings(){
       +'</div>'
     +'</div>'
     +'</div>'
+    +paySettingsHTML()
     // saved filters now live on their own Filters tab (a card in Settings can't hold 1000s)
     +'<div class="settings-card" data-sg="leads"><div class="settings-title">🔎 Saved Filters</div>'
       +'<div class="settings-sub">Your filter library moved to its own tab — search, bulk-paste from Discord, archive, and see which ones actually produce leads.</div>'
@@ -7360,8 +8236,9 @@ function mgr_renderSettings(){
 // Cloud push with CLOBBER PROTECTION: a browser that has never had the webhook URLs
 // (preview, fresh device) must never wipe them from the shared cloud row. For these keys,
 // an EMPTY local value defers to whatever the cloud already has.
-var SETTINGS_PROTECT=['whMain','whWeekly','whLeadsMera','whLeadsSuz','whTasks','whBreaks','whShiftStart','leadMention','discordUserId','leadsStartDate'];
+var SETTINGS_PROTECT=['whMain','whWeekly','whLeadsMera','whLeadsSuz','whTasks','whBreaks','whShiftStart','whPay','appUrl','leadMention','discordUserId','leadsStartDate'];
 async function pushSettingsCloud(s){
+  if(IS_PREVIEW) return;
   try{
     var merged=JSON.parse(JSON.stringify(s));
     try{
@@ -7401,7 +8278,7 @@ function mgr_saveSettings(){
   if(!isNaN(daily)&&daily>0) settings.dailyHoursTarget=daily;
   if(!isNaN(oos)&&oos>=0) settings.oosHoursTarget=oos;
   if(pin) settings.managerPin=pin;
-  [['setting-wh-main','whMain'],['setting-wh-weekly','whWeekly'],['setting-wh-leadsmera','whLeadsMera'],['setting-wh-leadssuz','whLeadsSuz'],['setting-wh-tasks','whTasks'],['setting-wh-breaks','whBreaks'],['setting-wh-shiftstart','whShiftStart']].forEach(function(p){
+  [['setting-wh-main','whMain'],['setting-wh-weekly','whWeekly'],['setting-wh-leadsmera','whLeadsMera'],['setting-wh-leadssuz','whLeadsSuz'],['setting-wh-tasks','whTasks'],['setting-wh-breaks','whBreaks'],['setting-wh-shiftstart','whShiftStart'],['setting-wh-pay','whPay']].forEach(function(p){
     var el=document.getElementById(p[0]);
     // an EMPTY field never wipes a stored webhook URL (a device with blank fields kept
     // killing notifications on save) — to change one, paste the new URL over it
@@ -7964,7 +8841,8 @@ function mgr_renderAll(){
   mgr_flagBanner(mgr_getLog());
   mgr_renderOverview();
   mgr_syncFromDB();
-  try{ mgr_syncReports(); }catch(e){}                    // VA-reported issues live in the cloud, not his browser
+  try{ mgr_syncReports(); }catch(e){}
+  try{ payCheckCloud(); }catch(e){}                    // VA-reported issues live in the cloud, not his browser
   // saved-filter library + usage stats (own tables) — repaint settings if it's open
   try{ sfltLoadCloud().then(function(){ if(mgr_currentTab==='settings') sfltMgrRepaint(); }); }catch(e){}
   try{ fuLoadCloud().then(function(){ if(mgr_currentTab==='settings') sfltMgrRepaint(); }); }catch(e){}
@@ -8145,7 +9023,7 @@ function submitReport() {
   // A VA runs this on THEIR machine — localStorage alone meant Jack never saw a single
   // report. Send it to him for real: Discord straight away + the shared reports table.
   try{
-    if(typeof DISCORD_WEBHOOK!=='undefined' && DISCORD_WEBHOOK && rec.va!=='Test'){
+    if(!IS_PREVIEW && typeof DISCORD_WEBHOOK!=='undefined' && DISCORD_WEBHOOK && rec.va!=='Test'){
       fetch(DISCORD_WEBHOOK,{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({content:(getAppSettings().discordUserId?'<@'+getAppSettings().discordUserId+'> ':''),
           embeds:[{title:'⚠️ Issue reported — '+rec.va,color:15881515,
@@ -8487,7 +9365,8 @@ function showToast(msg,isError) {
     var bought=all.filter(isBought);
     var buyRate=decided.length?Math.round(bought.length/decided.length*100):0;
     var pending=all.filter(function(l){return l.islead===null&&!l.status;}).length;
-    var avg=all.length?(all.reduce(function(a,l){return a+l._sc.total;},0)/all.length).toFixed(1):'-';
+    // a lead without a score object used to blow up the whole Insights tab
+    var avg=all.length?(all.reduce(function(a,l){return a+((l._sc&&l._sc.total)||0);},0)/all.length).toFixed(1):'-';
     function vaFunnel(vaCode,name,col){
       var v=all.filter(function(l){return l.va===vaCode;});
       var vd=v.filter(function(l){return l.islead!==null;});
@@ -8585,7 +9464,8 @@ function showToast(msg,isError) {
     try{ if((window.leads||[]).length===0 && typeof loadLeadsFromDB==='function'){ loadLeadsFromDB().then(function(){ try{ var h=document.getElementById('lead-insights'); if(h) h.innerHTML=mgr_leadInsightsHTML(); }catch(e){} }); } }catch(e){}
     // filter usage (own table) so the Filter performance panel has data
     try{ if(!window._fuCloud && typeof fuLoadCloud==='function'){ fuLoadCloud().then(function(){ try{ var h=document.getElementById('lead-insights'); if(h) h.innerHTML=mgr_leadInsightsHTML(); }catch(e){} }); } }catch(e){}
-    var leadInsights='<div id="lead-insights">'+mgr_leadInsightsHTML()+'</div>'
+    var leadInsights='<div id="lead-intel">'+mgr_leadIntelHTML()+'</div>'
+      +'<div id="lead-insights">'+mgr_leadInsightsHTML()+'</div>'
       // moved out of Settings — your buying data belongs with the rest of the analysis
       +'<div class="mgr-section">Your buying data<span style="margin-left:auto;font-size:10.5px;font-weight:600;color:var(--muted-2);">learned from every decision you make</span></div>'
       +'<div style="background:var(--panel);border:1px solid var(--line-2);border-radius:14px;padding:14px 18px;margin-bottom:10px;"><div id="jack-insights"></div></div>';
@@ -8658,7 +9538,7 @@ function showToast(msg,isError) {
       try{
         if(tab==='overview') mgr_renderOverview();
         else if(tab==='trends') mgr_renderTrends();
-        else if(tab==='perf') perfShow(window._perfWhich||'today');
+        else if(tab==='perf') perfShow(window._perfWhich||'week');
         else if(tab==='today') mgr_renderToday();
         else if(tab==='mera') mgr_renderVA('Mera','mgr-mera-content');
         else if(tab==='suz') mgr_renderVA('Suz','mgr-suz-content');
@@ -8754,6 +9634,7 @@ function loadDecisions(){
     .catch(function(){});
 }
 function logDecision(l){
+  if(IS_PREVIEW) return;
   try{ if(!l||!l._sid) return;
     var isBuy=(l.status==='bought'||l.status==='atbq'||l.status==='atba2a');
     var m=(typeof ldMeta==='function')?ldMeta(l):{};
@@ -8904,6 +9785,516 @@ function normLeadISO(raw, createdAt){
   }
   return iso(a,b);
 }
+/* ═══════ NEW-LEAD PING ═══════
+   Posts to the VA's own Discord channel when their fresh leads land, so Jack sees them
+   without opening the app. Works for BOTH VAs; falls back to the main channel if a VA
+   hasn't got a dedicated one yet.
+
+   Two guards that matter:
+   · FIRST RUN ARMS SILENTLY — it records where the lead list is up to and sends nothing,
+     so switching this on can never blast the 500+ leads already in the sheet.
+   · CROSS-DEVICE DEDUPE — both VAs and Jack all run this app; an app_flags insert decides
+     which device actually sends, so a batch is announced once, not three times. */
+/* ═══════ PAY CYCLE ═══════
+   VAs are paid every 2 weeks on a Friday. Anchor is the last known payday; everything
+   else counts forward from it, so it stays right without maintenance.
+   Marking it paid writes a flag to Supabase, which is what stops the Apps Script
+   reminder — so the "done" state is shared between this app and the Discord button. */
+var PAY_ANCHOR='2026-07-24';           // Fri 24 Jul 2026 — the last sourcing payday Jack confirmed
+var PAY_EVERY_DAYS=14;
+/* Two different pay runs. Sourcing VAs are every 2 weeks on a Friday; admin is the
+   15th and 30th. Who sits on which run is editable in Settings, so adding a 4th person
+   later is a one-line job for Jack rather than a code change. */
+/* Pay runs are fully editable — name them, and pick either "every N weeks on <weekday>
+   from <date>" or "on these days of the month". Nothing here is hardcoded to Jack's
+   current setup, so a new arrangement is a settings change, not a code change. */
+/* Jack reads dates day-first — show DD/MM/YYYY everywhere, keep ISO for storage/keys */
+function payFmt(iso){
+  try{ var p=String(iso).split('-'); return p.length===3?(p[2]+'/'+p[1]+'/'+p[0]):String(iso); }catch(e){ return String(iso); }
+}
+function payISO(d){ return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2); }
+function payUKNow(){ return new Date(new Date().toLocaleString('en-US',{timeZone:'Europe/London'})); }
+/* kept for the legacy fortnightly-Friday default and anything still calling it */
+function payCycle(ref){
+  ref=ref||payUKNow();
+  var a=PAY_ANCHOR.split('-'); var anchor=new Date(+a[0],+a[1]-1,+a[2]);
+  var day=new Date(ref.getFullYear(),ref.getMonth(),ref.getDate());
+  var n=Math.floor(Math.floor((day-anchor)/86400000)/PAY_EVERY_DAYS);
+  var last=new Date(anchor); last.setDate(anchor.getDate()+n*PAY_EVERY_DAYS);
+  var next=new Date(last);   next.setDate(last.getDate()+PAY_EVERY_DAYS);
+  return { last:payISO(last), next:payISO(next), isPayday:payISO(day)===payISO(last),
+           daysToNext:Math.round((next-day)/86400000) };
+}
+var PAY_DEFAULT_RUNS=[
+  {k:'sourcing', label:'Sourcing', icon:'\u{1F50E}', type:'weeks',   everyWeeks:2, weekday:5, anchor:'2026-07-24'},
+  {k:'admin',    label:'Admin',    icon:'\u{1F4CB}', type:'monthly', days:[15,30]}
+];
+var PAY_ICONS=['\u{1F50E}','\u{1F4CB}','\u{1F4B7}','\u{1F5C2}️','⭐','\u{1F9FE}'];
+var PAY_WEEKDAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+function payRuns(){
+  var s=getAppSettings();
+  var r=s.payRuns;
+  if(Array.isArray(r)&&r.length) return r;
+  return PAY_DEFAULT_RUNS;
+}
+function payRunsSet(arr){
+  var s=getAppSettings(); s.payRuns=arr; saveAppSettings(s);
+  try{ pushSettingsCloud(s); }catch(e){}
+}
+function payRunBy(k){ return payRuns().filter(function(r){return r.k===k;})[0]||payRuns()[0]; }
+/* plain-English summary of a run's schedule, for the settings card and the banner */
+function payRunDesc(r){
+  if(!r) return '';
+  if(r.type==='monthly'){
+    var d=(r.days||[]).slice().sort(function(a,b){return a-b;});
+    if(!d.length) return 'no days set';
+    var ord=function(n){ var sfx=(n%10===1&&n!==11)?'st':(n%10===2&&n!==12)?'nd':(n%10===3&&n!==13)?'rd':'th'; return n+sfx; };
+    var has31=d.indexOf(31)>=0, has30=d.indexOf(30)>=0;
+    return 'the '+d.map(ord).join(' & ')+' of each month'
+      +((has31||has30)?' (shorter months use the last day)':'');
+  }
+  var n=parseInt(r.everyWeeks)||1;
+  return (n===1?'every ':'every '+n+' ')+(n===1?'':'weeks on ')+PAY_WEEKDAYS[(r.weekday==null?5:r.weekday)]+(n===1?' (weekly)':'');
+}
+function payPeople(){
+  var s=getAppSettings();
+  if(Array.isArray(s.payPeople)&&s.payPeople.length) return s.payPeople;
+  return [{name:'Mera',run:'sourcing'},{name:'Suz',run:'sourcing'}];   // until Jack edits it
+}
+function payPeopleSet(arr){
+  var s=getAppSettings(); s.payPeople=arr; saveAppSettings(s);
+  try{ pushSettingsCloud(s); }catch(e){}
+}
+function payPeopleFor(runK){ return payPeople().filter(function(p){ return (p.run||'sourcing')===runK; }); }
+/* the due-date maths for whichever run */
+function payRunCycle(runK,ref){
+  ref=ref||payUKNow();
+  var r=payRunBy(runK);
+  var day=new Date(ref.getFullYear(),ref.getMonth(),ref.getDate());
+  if(r && r.type==='monthly'){
+    var days=(r.days||[]).slice().sort(function(a,b){return a-b;});
+    if(!days.length) days=[15];
+    function nth(y,m,d){ var last=new Date(y,m+1,0).getDate(); return new Date(y,m,Math.min(d,last)); }
+    var cands=[];
+    [-1,0,1].forEach(function(off){
+      days.forEach(function(d){ cands.push(nth(day.getFullYear(),day.getMonth()+off,d)); });
+    });
+    cands.sort(function(a,b){ return a-b; });
+    var last=cands[0], next=cands[cands.length-1];
+    cands.forEach(function(c){ if(c<=day) last=c; });
+    for(var i=0;i<cands.length;i++){ if(cands[i]>day){ next=cands[i]; break; } }
+    return { last:payISO(last), next:payISO(next), isPayday:payISO(day)===payISO(last),
+             daysToNext:Math.round((next-day)/86400000) };
+  }
+  // every N weeks on a given weekday, counted from the anchor
+  var every=(parseInt(r&&r.everyWeeks)||2)*7;
+  var a=String((r&&r.anchor)||PAY_ANCHOR).split('-');
+  var anchor=new Date(+a[0],+a[1]-1,+a[2]);
+  var diff=Math.floor((day-anchor)/86400000);
+  var n=Math.floor(diff/every);
+  var last=new Date(anchor); last.setDate(anchor.getDate()+n*every);
+  var next=new Date(last);   next.setDate(last.getDate()+every);
+  return { last:payISO(last), next:payISO(next), isPayday:payISO(day)===payISO(last),
+           daysToNext:Math.round((next-day)/86400000) };
+}
+function payFlagKey(iso){ return 'paid_'+iso; }
+function payIsPaid(iso){
+  try{ if(localStorage.getItem('bdl_'+payFlagKey(iso))==='1') return true; }catch(e){}
+  return !!(window._payPaid&&window._payPaid[iso]);
+}
+/* pull the shared flag so the app agrees with whatever the Discord button did */
+function payCheckCloud(){
+  if(!DB_ENABLED) return Promise.resolve();
+  var keys=payRuns().map(function(r){ return payFlagKey(r.k+'_'+payRunCycle(r.k).last); });
+  return fetch(SUPABASE_URL+'/rest/v1/app_flags?k=in.('+keys.map(encodeURIComponent).join(',')+')&select=k',
+      {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}})
+    .then(function(r){ return r.ok?r.json():[]; })
+    .then(function(rows){
+      window._payPaid=window._payPaid||{};
+      (rows||[]).forEach(function(r){
+        var iso=String(r.k).replace(/^paid_/,'');
+        window._payPaid[iso]=true;
+        try{ localStorage.setItem('bdl_paid_'+iso,'1'); }catch(e){}
+      });
+      try{ if(mgr_currentTab==='overview') mgr_renderOverview(); }catch(e){}
+    }).catch(function(){});
+}
+function payMarkPaid(runK){
+  runK=runK||'sourcing';
+  var run=payRunBy(runK);
+  var cyc=payRunCycle(runK);
+  var c={last:runK+'_'+cyc.last, next:cyc.next};
+  if(payIsPaid(c.last)) return;
+  window._payPaid=window._payPaid||{}; window._payPaid[c.last]=true;
+  try{ localStorage.setItem('bdl_'+payFlagKey(c.last),'1'); }catch(e){}
+  if(!IS_PREVIEW && DB_ENABLED){
+    fetch(SUPABASE_URL+'/rest/v1/app_flags',{method:'POST',
+      headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,'Content-Type':'application/json',
+               Prefer:'resolution=ignore-duplicates,return=minimal'},
+      body:JSON.stringify({k:payFlagKey(c.last),v:'paid'})}).catch(function(){});
+    var hook=DISCORD_PAY_WEBHOOK||DISCORD_WEBHOOK;
+    if(hook){
+      fetch(hook,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({embeds:[{title:'✅ '+run.label+' paid — '+payFmt(cyc.last),color:3066993,
+          description:'**'+payPeopleFor(runK).map(function(p){return p.name;}).join(' & ')+'** marked paid in BDL VA HQ. Reminders for this run have stopped.\n\nNext '+run.label.toLowerCase()+' pay: **'+payFmt(cyc.next)+'**',
+          footer:{text:'BDL VA HQ · pay'},timestamp:new Date().toISOString()}]})}).catch(function(){});
+    }
+  }
+  try{ showToast('Marked as paid ✓ — reminders stopped'); }catch(e){}
+  try{ mgr_renderOverview(); }catch(e){}
+}
+/* Reminder pings — every 4h from 12pm UK on payday until it's marked paid.
+   Runs whenever the app is open; an app_flags insert per time-slot means reloading the
+   page or having it open on two machines can't double-ping. (For pings while the app is
+   CLOSED, the optional Apps Script cron covers the same slots using the same flags.) */
+function payPingCheck(){
+  try{
+    if(IS_PREVIEW||!DB_ENABLED) return;
+    var s=getAppSettings();
+    if(s.nPay===0) return;
+    var hook=(s.whPay||'').trim()||DISCORD_PAY_WEBHOOK||DISCORD_WEBHOOK;
+    if(!hook) return;
+    var now=payUKNow();
+    var mins=now.getHours()*60+now.getMinutes();
+    // 12pm / 4pm / 8pm UK only — no overnight pings
+    if(mins<12*60||mins>=22*60) return;
+    var today=payISO(new Date(now.getFullYear(),now.getMonth(),now.getDate()));
+    // whichever run is due and unpaid — sourcing and admin are tracked separately
+    var run=null,c=null,daysOver=0;
+    var _runs=payRuns();
+    for(var i=0;i<_runs.length;i++){
+      var r=_runs[i];
+      if(!payPeopleFor(r.k).length) continue;
+      var cyc=payRunCycle(r.k);
+      if(payIsPaid(r.k+'_'+cyc.last)) continue;
+      if(today<cyc.last) continue;
+      var d=Math.round((new Date(today)-new Date(cyc.last))/86400000);
+      if(d===0 && mins<12*60) continue;
+      run=r; c=cyc; daysOver=d; break;
+    }
+    if(!run) return;
+    var slot=daysOver*3+Math.floor((mins-12*60)/240);
+    var key='payping_'+run.k+'_'+c.last+'_'+slot;
+    fetch(SUPABASE_URL+'/rest/v1/app_flags',{method:'POST',
+      headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,'Content-Type':'application/json',
+               Prefer:'resolution=ignore-duplicates,return=representation'},
+      body:JSON.stringify({k:key,v:'sent'})})
+      .then(function(r){ return r.json(); })
+      .then(function(rows){
+        if(!(Array.isArray(rows)&&rows.length)) return;   // another device/slot already sent
+        var men=s.discordUserId?'<@'+s.discordUserId+'> ':'';
+        var late=daysOver>=1;
+        var names=payPeopleFor(run.k).map(function(p){return p.name;}).join(' & ');
+        fetch(hook,{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({ content: men+(late?'**'+run.label+' pay is overdue**':'**'+run.label+' pay is due today**'),
+            allowed_mentions: s.discordUserId?{parse:[],users:[String(s.discordUserId).trim()]}:undefined,
+            embeds:[{ title:run.icon+' '+run.label+' pay — '+names+' — '+payFmt(c.last),
+              color: late?15881515:16750848,
+              description:(late?'⚠️ **'+daysOver+' day'+(daysOver===1?'':'s')+' overdue.**\n\n':'')
+                +(run.k==='admin'?'Admin pay run (15th & 30th)':'Sourcing pay run (every 2 weeks, Friday)')+' for **'+names+'**.'
+                +(payAppUrl()
+                    ? '\n\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500'
+                      +'\n## [　✅　Mark '+run.label.toLowerCase()+' as paid　]('+payAppUrl()+'?paid='+encodeURIComponent(run.k+'_'+c.last)+')'
+                      +'\n*Tap that — it stops these reminders.*'
+                    : '\n\nOpen **BDL VA HQ → Overview** and hit **✅ Mark paid** to stop these reminders.')
+                +'\n\nNext '+run.label.toLowerCase()+' pay: **'+payFmt(c.next)+'**',
+              footer:{text:'BDL VA HQ · 12pm / 4pm / 8pm UK until marked paid'},
+              timestamp:new Date().toISOString() }]
+          })}).catch(function(){});
+      }).catch(function(){});
+  }catch(e){}
+}
+(function(){ setTimeout(payPingCheck,9000); setInterval(payPingCheck,15*60000); })();
+/* the banner Jack sees on payday (and after, if he still hasn't paid) */
+function paySettingsHTML(){
+  var people=payPeople();
+  var rows=people.map(function(p,i){
+    return '<div class="payp-row">'
+      +'<input class="settings-input payp-name" value="'+escHtml(p.name||'')+'" placeholder="Name" oninput="payPeopleEdit('+i+',\'name\',this.value)">'
+      +'<select class="settings-input payp-run" onchange="payPeopleEdit('+i+',\'run\',this.value)">'
+        +payRuns().map(function(r){ return '<option value="'+r.k+'"'+((p.run||payRuns()[0].k)===r.k?' selected':'')+'>'+(r.icon||'')+' '+escHtml(r.label)+'</option>'; }).join('')
+      +'</select>'
+      +'<button class="icon-btn" style="color:#ff6680" onclick="payPeopleDel('+i+')">Del</button>'
+      +'</div>';
+  }).join('');
+  var next=payRuns().map(function(r){
+    var who=payPeopleFor(r.k); if(!who.length) return '';
+    var c=payRunCycle(r.k);
+    return '<div class="payp-next"><b>'+r.icon+' '+r.label+'</b> — '+who.length+' '+(who.length===1?'person':'people')
+      +' · next <b>'+payFmt(c.next)+'</b> (in '+c.daysToNext+' day'+(c.daysToNext===1?'':'s')+')</div>';
+  }).join('');
+  return '<div class="settings-card" data-sg="shift">'
+    +'<div class="settings-title">💷 Pay runs</div>'
+    +'<div class="settings-sub">Set up as many pay cycles as you need, then put each person on one. You get a Discord reminder at <b>12pm, 4pm and 8pm UK</b> from the day it\'s due until you mark it paid on the Overview.</div>'
+    +'<div class="payr-head">Pay cycles</div>'
+    +'<div class="payr-list">'+payRunsEditorHTML()+'</div>'
+    +'<button class="btn btn-ghost payr-add" onclick="payRunAdd()">+ Add a pay cycle</button>'
+    +'<div class="payr-head" style="margin-top:16px;">Who\'s on each cycle</div>'
+    +'<div class="payp-list">'+rows+'</div>'
+    +'<button class="btn btn-ghost" style="margin-top:8px;" onclick="payPeopleAdd()">+ Add person</button>'
+    +'<div class="settings-field" style="margin-top:14px;"><label class="settings-label">Public app link (for the Discord button)</label>'
+      +'<input class="settings-input" id="setting-app-url" placeholder="https://yourname.github.io/your-repo/" value="'+escHtml(getAppSettings().appUrl||'')+'" oninput="payAppUrlSet(this.value)"></div>'
+    +'<div class="settings-sub" style="margin-top:6px;">Your GitHub Pages address. With this set, every pay reminder carries a <b>✅ Mark as paid</b> button you can tap straight from Discord'
+      +(payAppUrl()?' — <b style="color:#10d99a;">detected: '+escHtml(payAppUrl())+'</b>':'')+'.</div>'
+    +'<div class="pay-actions">'
+      +'<button class="btn btn-success" onclick="paySave()">💾 Save pay settings</button>'
+      +'<button class="btn btn-ghost" onclick="payTestPing()">📨 Send test reminder</button>'
+      +'<span class="pay-hint" id="pay-saved"></span>'
+    +'</div>'
+    +(next?'<div class="payp-nexts">'+next+'</div>':'')
+    +'</div>';
+}
+/* explicit save — the fields already write as you type, but a button you can press
+   (and a "Saved ✓" next to it) is worth more than me telling you it autosaves */
+function paySave(){
+  try{
+    var s=getAppSettings();
+    var u=document.getElementById('setting-app-url');
+    if(u) s.appUrl=String(u.value||'').trim();
+    var w=document.getElementById('setting-wh-pay');
+    if(w && String(w.value||'').trim()) s.whPay=String(w.value).trim();
+    var names=[].map.call(document.querySelectorAll('.payp-row'),function(row){
+      return { name:(row.querySelector('.payp-name')||{}).value||'',
+               run:(row.querySelector('.payp-run')||{}).value||'sourcing' };
+    }).filter(function(p){ return p.name.trim(); });
+    // same person twice is always a slip — keep the first, drop the repeat
+    var seen={}, deduped=[];
+    names.forEach(function(p){
+      var k=p.name.trim().toLowerCase();
+      if(seen[k]) return;
+      seen[k]=1; deduped.push({name:p.name.trim(),run:p.run});
+    });
+    var dropped=names.length-deduped.length;
+    if(deduped.length) s.payPeople=deduped;
+    saveAppSettings(s);
+    try{ pushSettingsCloud(s); }catch(e){}
+    var tag=document.getElementById('pay-saved');
+    if(tag){ tag.textContent='Saved ✓'; tag.className='pay-hint ok'; setTimeout(function(){ if(tag) tag.textContent=''; },2500); }
+    showToast(dropped?('Pay settings saved ✓ — removed '+dropped+' duplicate'+(dropped===1?'':'s')):'Pay settings saved ✓');
+    if(dropped) mgr_renderSettings();
+  }catch(e){ showToast('Could not save — '+e.message,true); }
+}
+/* fire a real reminder now, so you can check the whole chain end to end:
+   right channel · @mention · and the Mark-paid button actually working */
+function payTestPing(hookOverride){
+  var s=getAppSettings();
+  var hook=String(hookOverride||'').trim()||(s.whPay||'').trim();
+  if(!hook){ showToast('No pay channel set — paste the webhook into Notifications → 💷 Important — pay & admin, then Save',true); return; }
+  if(IS_PREVIEW){ showToast('Preview copy — test blocked so it can\'t hit your real channel',true); return; }
+  var _rs=payRuns(); var run=_rs[0], who=payPeopleFor(run.k);
+  for(var i=0;i<_rs.length;i++){ if(payPeopleFor(_rs[i].k).length){ run=_rs[i]; who=payPeopleFor(run.k); break; } }
+  var c=payRunCycle(run.k);
+  var names=who.map(function(p){return p.name;}).join(' & ')||'(nobody set)';
+  var url=payAppUrl();
+  var body={ content:(s.discordUserId?'<@'+s.discordUserId+'> ':'')+'**TEST — this is what a pay reminder looks like**',
+    allowed_mentions: s.discordUserId?{parse:[],users:[String(s.discordUserId).trim()]}:undefined,
+    embeds:[{ title:run.icon+' '+run.label+' pay — '+names+' — '+payFmt(c.next),
+      color:16750848,
+      description:'**This is a preview** \u2014 nothing is actually due today.\n\n'
+        +'When '+run.label.toLowerCase()+' pay falls due, this lands at **12pm, 4pm and 8pm UK** every day until you tap the link.\n\n'
+        +(run.k==='admin'?'Admin pay run (15th & 30th)':'Sourcing pay run (every 2 weeks, Friday)')+' for **'+names+'**.'
+        +'\n\nNext '+run.label.toLowerCase()+' pay: **'+payFmt(c.next)+'**'
+        +(url?'\n\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500'
+              +'\n## [　✅　Mark '+run.label.toLowerCase()+' as paid　]('+url+'?paid='+encodeURIComponent(run.k+'_'+c.next)+')'
+              +'\n────────────────────'
+              +'\n⬆️ **Go on, tap it** — it opens your app, marks that date paid and posts a ✅ back here. Nothing breaks; you can undo it in the app.'
+             :'\n\n⚠️ No **Public app link** set in Settings → 💷 Pay runs, so there\'s no link on this message.'),
+      footer:{text:'BDL VA HQ · test reminder'}, timestamp:new Date().toISOString() }] };
+  fetch(hook,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+    .then(function(r){ showToast(r.ok?'Test sent ✓ to the pay channel (…'+hook.replace(/\/$/,'').slice(-6)+')':'Discord rejected it — check the webhook URL',!r.ok); })
+    .catch(function(){ showToast('Could not reach Discord',true); });
+}
+function payAppUrlSet(v){ var s=getAppSettings(); s.appUrl=String(v||'').trim(); saveAppSettings(s); try{ pushSettingsCloud(s); }catch(e){} }
+/* the editor for the cycles themselves */
+function payRunsEditorHTML(){
+  return payRuns().map(function(r,i){
+    var isMonthly=r.type==='monthly';
+    var sched = isMonthly
+      ? '<span class="payr-lbl">on day(s)</span>'
+        +'<input class="settings-input payr-days" value="'+escHtml((r.days||[]).join(', '))+'" placeholder="15, 30" oninput="payRunEdit('+i+',\'days\',this.value)">'
+        +'<span class="payr-note">of each month</span>'
+      : '<span class="payr-lbl">every</span>'
+        +'<input class="settings-input payr-n" type="number" min="1" max="12" value="'+(parseInt(r.everyWeeks)||2)+'" oninput="payRunEdit('+i+',\'everyWeeks\',this.value)">'
+        +'<span class="payr-lbl">week(s) on</span>'
+        +'<select class="settings-input payr-wd" onchange="payRunEdit('+i+',\'weekday\',this.value)">'
+          +PAY_WEEKDAYS.map(function(d,n){ return '<option value="'+n+'"'+(((r.weekday==null?5:r.weekday))===n?' selected':'')+'>'+d+'</option>'; }).join('')
+        +'</select>'
+        +'<span class="payr-lbl">from</span>'
+        +'<input class="settings-input payr-anchor" type="date" value="'+escHtml(r.anchor||PAY_ANCHOR)+'" oninput="payRunEdit('+i+',\'anchor\',this.value)">';
+    var c=payRunCycle(r.k);
+    return '<div class="payr-row">'
+      +'<div class="payr-top">'
+        +'<select class="payr-icon" onchange="payRunEdit('+i+',\'icon\',this.value)">'
+          +PAY_ICONS.map(function(ic){ return '<option'+((r.icon||PAY_ICONS[0])===ic?' selected':'')+'>'+ic+'</option>'; }).join('')
+        +'</select>'
+        +'<input class="settings-input payr-name" value="'+escHtml(r.label||'')+'" placeholder="Cycle name — e.g. Sourcing" oninput="payRunEdit('+i+',\'label\',this.value)">'
+        +'<select class="settings-input payr-type" onchange="payRunEdit('+i+',\'type\',this.value)">'
+          +'<option value="weeks"'+(!isMonthly?' selected':'')+'>Every N weeks</option>'
+          +'<option value="monthly"'+(isMonthly?' selected':'')+'>Days of the month</option>'
+        +'</select>'
+        +(payRuns().length>1?'<button class="icon-btn" style="color:#ff6680" onclick="payRunDel('+i+')">Del</button>':'')
+      +'</div>'
+      +'<div class="payr-sched">'+sched+'</div>'
+      +'<div class="payr-next">'+payRunDesc(r)+' — next <b>'+payFmt(c.next)+'</b> ('+(c.daysToNext===0?'today':'in '+c.daysToNext+' day'+(c.daysToNext===1?'':'s'))+')</div>'
+      +'</div>';
+  }).join('');
+}
+function payRunEdit(i,k,v){
+  var arr=payRuns().map(function(r){ return JSON.parse(JSON.stringify(r)); });
+  if(!arr[i]) return;
+  if(k==='days'){
+    arr[i].days=String(v).split(/[^0-9]+/).map(function(x){return parseInt(x);})
+      .filter(function(n){ return n>=1&&n<=31; }).slice(0,6);
+  } else if(k==='everyWeeks'||k==='weekday'){
+    arr[i][k]=Math.max(k==='weekday'?0:1,parseInt(v)||0);
+  } else if(k==='type'){
+    arr[i].type=v;
+    if(v==='monthly'&&!(arr[i].days||[]).length) arr[i].days=[15];
+    if(v==='weeks'&&!arr[i].anchor) arr[i].anchor=PAY_ANCHOR;
+  } else { arr[i][k]=v; }
+  payRunsSet(arr);
+  if(k==='type'||k==='icon'||k==='weekday') mgr_renderSettings();
+  else { var box=document.querySelectorAll('.payr-row')[i]; var n=box&&box.querySelector('.payr-next');
+         if(n){ var c=payRunCycle(arr[i].k); n.innerHTML=payRunDesc(arr[i])+' — next <b>'+payFmt(c.next)+'</b> ('+(c.daysToNext===0?'today':'in '+c.daysToNext+' day'+(c.daysToNext===1?'':'s'))+')'; } }
+}
+function payRunAdd(){
+  var arr=payRuns().map(function(r){ return JSON.parse(JSON.stringify(r)); });
+  arr.push({k:'run'+Date.now().toString(36),label:'New cycle',icon:PAY_ICONS[2],type:'weeks',everyWeeks:2,weekday:5,anchor:payISO(payUKNow())});
+  payRunsSet(arr); mgr_renderSettings();
+}
+function payRunDel(i){
+  var arr=payRuns().map(function(r){ return JSON.parse(JSON.stringify(r)); });
+  if(arr.length<=1) return;
+  var gone=arr[i].k; arr.splice(i,1);
+  payRunsSet(arr);
+  var ppl=payPeople().map(function(p){ return p.run===gone?{name:p.name,run:arr[0].k}:p; });
+  payPeopleSet(ppl);
+  mgr_renderSettings();
+}
+function payPeopleEdit(i,k,v){ var a=payPeople().slice(); if(!a[i]) return; a[i][k]=v; payPeopleSet(a); if(k==='run') mgr_renderSettings(); }
+function payPeopleAdd(){ var a=payPeople().slice(); a.push({name:'',run:'sourcing'}); payPeopleSet(a); mgr_renderSettings(); }
+function payPeopleDel(i){ var a=payPeople().slice(); a.splice(i,1); payPeopleSet(a); mgr_renderSettings(); }
+/* ── Discord button lands here ──────────────────────────────────────────────
+   The app is hosted (GitHub Pages), so it has a real URL — which means a Discord
+   link button can just open it with ?paid=<run>_<date> and we record the payment
+   on load. No third-party service in the middle. */
+function payHandleDeepLink(){
+  try{
+    var q=new URLSearchParams(location.search||'');
+    var tok=q.get('paid'); if(!tok) return;
+    var m=String(tok).match(/^(sourcing|admin)_(\d{4}-\d{2}-\d{2})$/);
+    // strip it from the address bar either way so a refresh can't re-fire it
+    try{ history.replaceState({},'',location.pathname+location.hash); }catch(e){}
+    if(!m){ return; }
+    var runK=m[1], iso=m[2];
+    var run=payRunBy(runK); if(!run) return;
+    var key=runK+'_'+iso;
+    if(payIsPaid(key)){ try{ showToast(run.label+' pay for '+payFmt(iso)+' was already marked ✓'); }catch(e){} return; }
+    window._payPaid=window._payPaid||{}; window._payPaid[key]=true;
+    try{ localStorage.setItem('bdl_'+payFlagKey(key),'1'); }catch(e){}
+    if(!IS_PREVIEW && DB_ENABLED){
+      fetch(SUPABASE_URL+'/rest/v1/app_flags',{method:'POST',
+        headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,'Content-Type':'application/json',
+                 Prefer:'resolution=ignore-duplicates,return=minimal'},
+        body:JSON.stringify({k:payFlagKey(key),v:'paid'})}).catch(function(){});
+      var hook=DISCORD_PAY_WEBHOOK||DISCORD_WEBHOOK;
+      if(hook) fetch(hook,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({embeds:[{title:'✅ '+run.label+' paid — '+payFmt(iso),color:3066993,
+          description:'Marked paid from Discord. Reminders for this run have stopped.',
+          footer:{text:'BDL VA HQ · pay'},timestamp:new Date().toISOString()}]})}).catch(function(){});
+    }
+    try{ showToast('✅ '+run.label+' pay marked as paid — reminders stopped'); }catch(e){}
+    try{ if(typeof mgr_renderOverview==='function') mgr_renderOverview(); }catch(e){}
+  }catch(e){}
+}
+setTimeout(payHandleDeepLink,1200);
+/* the public URL of this app, so reminders can build the button link */
+function payAppUrl(){
+  var s=getAppSettings();
+  var u=(s.appUrl||'').trim();
+  if(u) return u.replace(/[?#].*$/,'');
+  try{ if(location.protocol==='http:'||location.protocol==='https:') return location.origin+location.pathname; }catch(e){}
+  return '';
+}
+function payBannerHTML(){
+  var now=payUKNow();
+  var todayD=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  return payRuns().map(function(run){
+    var who=payPeopleFor(run.k);
+    if(!who.length) return '';                       // nobody on this run
+    var c=payRunCycle(run.k);
+    var names=who.map(function(p){ return p.name; }).join(' & ');
+    if(payIsPaid(run.k+'_'+c.last)){
+      if(c.daysToNext>3) return '';
+      return '<div class="pay-bar done">✅ <b>'+run.label+' paid</b> — '+names+' for '+payFmt(c.last)
+        +' · next <b>'+payFmt(c.next)+'</b> (in '+c.daysToNext+' day'+(c.daysToNext===1?'':'s')+')</div>';
+    }
+    var overdue=Math.round((todayD-new Date(c.last))/86400000);
+    if(overdue<0) return '';
+    var when=overdue===0?'today':overdue===1?'yesterday':overdue+' days ago';
+    return '<div class="pay-bar due'+(overdue>=1?' late':'')+'">'
+      +'<span class="pay-ic">'+run.icon+'</span>'
+      +'<span class="pay-txt"><b>'+run.label+' pay '+when+'</b> — '+names+' due for '+payFmt(c.last)
+        +(overdue>=1?' · <b>still unpaid</b>':'')+'</span>'
+      +'<button class="pay-btn" onclick="payMarkPaid(\''+run.k+'\')">✅ Mark paid</button>'
+      +'</div>';
+  }).join('');
+}
+function leadPingChannel(va,s){
+  var own=(va==='Mera'?s.whLeadsMera:s.whLeadsSuz)||'';
+  var on=(va==='Mera'?s.nLeadsMera:s.nLeadsSuz);
+  if(on===0) return '';                       // that VA's ping switched off
+  return String(own||s.whMain||'').trim();    // no dedicated channel yet → main
+}
+async function leadPingCheck(rows){
+  if(IS_PREVIEW) return;
+  if(!rows||!rows.length) return;
+  var s; try{ s=getAppSettings(); }catch(e){ return; }
+  try{ if(inQuietHours()) return; }catch(e){}
+  if(!leadPingChannel('Mera',s) && !leadPingChannel('Suz',s)) return;
+
+  var stamps=rows.map(function(r){return r.created_at||'';}).filter(Boolean).sort();
+  if(!stamps.length) return;
+  var newest=stamps[stamps.length-1];
+  var hw=''; try{ hw=localStorage.getItem('bdl_leadping_hw')||''; }catch(e){}
+  if(!hw){ try{ localStorage.setItem('bdl_leadping_hw',newest); }catch(e){} return; }   // arm, don't fire
+  if(newest<=hw) return;
+
+  var fresh=rows.filter(function(r){ return (r.created_at||'')>hw; });
+  try{ localStorage.setItem('bdl_leadping_hw',newest); }catch(e){}
+  if(!fresh.length) return;
+
+  // only one device announces this batch
+  try{
+    var res=await fetch(SUPABASE_URL+'/rest/v1/app_flags',{method:'POST',
+      headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,'Content-Type':'application/json',
+               Prefer:'resolution=ignore-duplicates,return=representation'},
+      body:JSON.stringify({k:'leadping_'+newest,v:'sent'})});
+    var got=await res.json();
+    if(!(Array.isArray(got)&&got.length)) return;      // another device already sent it
+  }catch(e){ return; }                                  // can't dedupe → stay quiet rather than double-post
+
+  ['Mera','Suz'].forEach(function(va){
+    var hook=leadPingChannel(va,s); if(!hook) return;
+    var mine=fresh.filter(function(r){ return r.va===va; });
+    if(!mine.length) return;
+    var men=(s.leadMention||'').trim();
+    var top=mine.slice().sort(function(a,b){ return (+b.profit||0)-(+a.profit||0); });
+    var money=function(n){ return '£'+(Math.round((+n||0)*100)/100); };
+    var pct=function(n){ var v=+n||0; return (v>0&&v<=3?v*100:v).toFixed(0)+'%'; };
+    var lines=top.slice(0,6).map(function(r){
+      return '• **'+String(r.title||r.asin||'Lead').slice(0,58)+'** — '+money(r.profit)+' · '+pct(r.roi)+' ROI'
+        +(r.store?' · '+r.store:'');
+    }).join('\n');
+    if(mine.length>6) lines+='\n…and **'+(mine.length-6)+'** more';
+    var payload={ content: men||undefined, embeds:[{
+      title:(va==='Mera'?'🟣':'🟡')+' '+mine.length+' new lead'+(mine.length===1?'':'s')+' from '+va,
+      color:(va==='Mera'?9699327:16775867),
+      description:lines,
+      footer:{text:'BDL VA HQ · new leads'}, timestamp:new Date().toISOString() }]};
+    fetch(hook,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(function(){});
+  });
+}
 async function loadLeadsFromDB(){
   try{
     if(typeof SUPABASE_URL==='undefined'||typeof DB_ENABLED==='undefined'||!DB_ENABLED) return;
@@ -8915,6 +10306,7 @@ async function loadLeadsFromDB(){
       {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
     if(!res.ok) return;
     var rows=await res.json();
+    try{ leadPingCheck(rows); }catch(e){}
     var keepSel=(leads.find(function(x){return x.id===selId;})||{})._sid;
     var n=1;
     leads=rows.map(function(r){
@@ -8946,6 +10338,7 @@ async function loadLeadsFromDB(){
   }catch(e){}
 }
 function db_leadPatch(l,fields){
+  if(IS_PREVIEW) return;
   try{
     if(!l||!l._sid||typeof SUPABASE_URL==='undefined'||!DB_ENABLED) return;
     fields.writeback_pending=true; fields.decided_at=new Date().toISOString(); fields.updated_at=fields.decided_at;
@@ -9385,10 +10778,230 @@ function sfltCacheGet(){ try{ var a=JSON.parse(localStorage.getItem('bdl_saved_f
 function sfltCacheSet(arr){ try{ localStorage.setItem('bdl_saved_filters',JSON.stringify(arr||[])); }catch(e){} }
 function sfltHeaders(extra){ var h={'Content-Type':'application/json','apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY}; if(extra) for(var k in extra) h[k]=extra[k]; return h; }
 
+/* ONE-TIME RESET: testing wrote filters into the shared settings row, which then
+   synced out to every device. The cloud has been cleared and Jack had no real filters
+   of his own yet, so each device wipes its local filter cache ONCE and then trusts the
+   cloud from there. The flag makes sure this can never touch filters he adds later. */
+(function(){
+  try{
+    if(!localStorage.getItem('bdl_sflt_reset_1')){
+      localStorage.setItem('bdl_sflt_reset_1','1');
+      try{ localStorage.removeItem('bdl_saved_filters'); }catch(e){}
+      try{ var st=JSON.parse(localStorage.getItem('shifttrack_app_settings_v2')||'{}');
+           if(st && st.savedFilters){ st.savedFilters=[]; localStorage.setItem('shifttrack_app_settings_v2',JSON.stringify(st)); } }catch(e){}
+    }
+  }catch(e){}
+})();
+(function(){
+  function purge(){
+    try{
+      var isTest=function(f){ return /^Filter number \d+$/.test(String((f&&f.title)||'')); };
+      var c=(typeof sfltCacheGet==='function')?sfltCacheGet():null;
+      if(c&&c.length&&c.some(isTest)){ var k=c.filter(function(f){return !isTest(f);}); sfltCacheSet(k); }
+      var st=JSON.parse(localStorage.getItem('shifttrack_app_settings_v2')||'{}');
+      if(Array.isArray(st.savedFilters)&&st.savedFilters.some(isTest)){
+        st.savedFilters=st.savedFilters.filter(function(f){return !isTest(f);});
+        localStorage.setItem('shifttrack_app_settings_v2',JSON.stringify(st));
+      }
+    }catch(e){}
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){setTimeout(purge,400);});
+  else setTimeout(purge,400);
+})();
+/* ── Filters linked to a VA's POA ──────────────────────────────────────────
+   A filter can be assigned to Mera, Suz or both. Assigned filters become real
+   tasks on that VA's shift (Open + timer + log leads), sitting with the Jack POA
+   block, and ticking one logs it against the filter so the Filters tab fills in. */
+/* The POA task a filter belongs to already carries the frequency — daily filter
+   POAs run every shift, the Tue/Thu ones only appear on those days. So a filter
+   assigned to a slot inherits that rhythm for free. */
+var SFLT_SLOTS=[
+  {k:'daily', label:'Every day', task:{Mera:'kpf-daily', Suz:'suz-kpf-daily'}},
+  {k:'tue',   label:'Tuesdays',  task:{Mera:'kpf-tue'}},
+  {k:'thu',   label:'Thursdays', task:{Mera:'kpf-thu'}}
+];
+function sfltSlot(f){ var k=(f&&f.slot)||'daily'; return SFLT_SLOTS.filter(function(s){return s.k===k;})[0]||SFLT_SLOTS[0]; }
+function sfltSlotLabel(f){ return sfltSlot(f).label; }
+function sfltSetSlot(id,k){
+  var arr=getSavedFilters(); var f=arr.filter(function(x){return x.id===id;})[0]; if(!f) return;
+  f.slot=k; saveSavedFilters(arr); sfltMgrRepaint();
+  showToast('"'+(f.title||'Filter')+'" now runs '+sfltSlotLabel(f).toLowerCase());
+}
+/* every filter this VA should run on the POA task with this id, today */
+function sfltTaskIds(f){ return Array.isArray(f&&f.taskIds)?f.taskIds:[]; }
+function sfltForTask(va,taskId){
+  return getSavedFilters().filter(function(f){
+    if(f.archived||!f.url) return false;
+    // explicit link to this exact task wins — survives renaming/reordering the ticklist
+    if(sfltTaskIds(f).indexOf(taskId)>=0) return true;
+    // legacy: assigned to the VA with a day-slot that maps to this task
+    if(!sfltHasVA(f,va)) return false;
+    return sfltSlot(f).task[va]===taskId;
+  }).sort(function(a,b){ return (a.pos||0)-(b.pos||0); });
+}
+/* link/unlink a filter to a specific ticklist task */
+function sfltLinkTask(filterId,taskId){
+  var arr=getSavedFilters(); var f=arr.filter(function(x){return x.id===filterId;})[0];
+  if(!f||!taskId) return;
+  var ids=sfltTaskIds(f).slice();
+  if(ids.indexOf(taskId)<0) ids.push(taskId);
+  f.taskIds=ids; saveSavedFilters(arr);
+}
+function sfltUnlinkTask(filterId,taskId){
+  var arr=getSavedFilters(); var f=arr.filter(function(x){return x.id===filterId;})[0];
+  if(!f) return;
+  f.taskIds=sfltTaskIds(f).filter(function(t){return t!==taskId;});
+  saveSavedFilters(arr);
+  mgr_renderSettings();
+}
+function sfltFiltersForTaskId(taskId){
+  return getSavedFilters().filter(function(f){ return sfltTaskIds(f).indexOf(taskId)>=0; });
+}
+/* the "saved filters on this task" strip inside a ticklist editor row */
+function sfltTaskStripHTML(taskId,i){
+  var linked=sfltFiltersForTaskId(taskId);
+  var all=getSavedFilters().filter(function(f){ return !f.archived && f.url && sfltTaskIds(f).indexOf(taskId)<0; });
+  var chips=linked.map(function(f){
+    return '<span class="tf-chip"><span class="tf-tag t-'+(f.tag||'KPF')+'">'+(f.tag||'KPF')+'</span>'
+      +'<span class="tf-name">'+escHtml(f.title||'Filter')+'</span>'
+      +'<button class="tf-x" title="Unlink" onclick="sfltUnlinkTask(\''+f.id+'\',\''+taskId+'\')">✕</button></span>';
+  }).join('');
+  var dlId='tfdl-'+i;
+  return '<div class="tf-strip">'
+    +'<div class="tf-head">🎯 Saved filters on this task'+(linked.length?' <b>'+linked.length+'</b>':'')+'</div>'
+    +(chips?'<div class="tf-chips">'+chips+'</div>':'<div class="tf-none">None yet — the VA just gets the task on its own.</div>')
+    +(all.length?'<div class="tf-add">'
+      +'<input class="tf-input" id="'+dlId+'-i" list="'+dlId+'" placeholder="Type a filter name to link it…">'
+      +'<datalist id="'+dlId+'">'+all.map(function(f){ return '<option value="'+escHtml(f.title||'')+'">'; }).join('')+'</datalist>'
+      +'<button class="tf-btn" onclick="sfltLinkFromInput(\''+dlId+'-i\',\''+taskId+'\')">+ Link</button>'
+      +'</div>':'<div class="tf-none">Add filters on the Filters tab first.</div>')
+    +'</div>';
+}
+function sfltLinkFromInput(inputId,taskId){
+  var el=document.getElementById(inputId); if(!el) return;
+  var v=String(el.value||'').trim().toLowerCase(); if(!v){ showToast('Type a filter name first',true); return; }
+  var f=getSavedFilters().filter(function(x){ return String(x.title||'').toLowerCase()===v; })[0]
+     || getSavedFilters().filter(function(x){ return String(x.title||'').toLowerCase().indexOf(v)>=0; })[0];
+  if(!f){ showToast('No filter matches "'+el.value+'"',true); return; }
+  sfltLinkTask(f.id,taskId);
+  showToast('"'+(f.title||'Filter')+'" linked to this task ✓');
+  mgr_renderSettings();
+}
+function sfltVAs(f){ return Array.isArray(f&&f.vas)?f.vas:[]; }
+function sfltHasVA(f,va){ return sfltVAs(f).indexOf(va)>=0; }
+function sfltForVA(va){
+  return getSavedFilters().filter(function(f){ return !f.archived && f.url && sfltHasVA(f,va); })
+    .sort(function(a,b){ return (a.pos||0)-(b.pos||0); });
+}
+function sfltToggleVA(id,va){
+  var arr=getSavedFilters();
+  var f=arr.filter(function(x){return x.id===id;})[0]; if(!f) return;
+  var cur=sfltVAs(f).slice();
+  var i=cur.indexOf(va);
+  if(i>=0) cur.splice(i,1); else cur.push(va);
+  f.vas=cur;
+  saveSavedFilters(arr);
+  sfltMgrRepaint();
+  showToast(cur.length
+    ? '"'+(f.title||'Filter')+'" is on '+cur.map(function(v){return vaDisp(v);}).join(' + ')+"'s POA ✓"
+    : '"'+(f.title||'Filter')+'" removed from all POAs');
+}
+/* Fill a POA task's link rows with the filters assigned to that slot. Each filter
+   becomes a pre-filled link with its own leads box, so the VA just runs it and types
+   the number — and we can attribute leads back to the exact filter. */
+function sfltAttachToPoa(tasks,va){
+  var attached=[];
+  if(!tasks||!tasks.length) return attached;
+  tasks.forEach(function(t){
+    var mine=sfltForTask(va,t.id);
+    if(!mine.length) return;
+    t.hasLinks=true;
+    t.links=t.links||[]; t.linkLeads=t.linkLeads||[]; t.linkFilterIds=t.linkFilterIds||[]; t.linkNames=t.linkNames||[];
+    mine.forEach(function(f){
+      if(t.linkFilterIds.indexOf(f.id)>=0) return;
+      t.links.push(f.url||''); t.linkLeads.push(0); t.linkFilterIds.push(f.id); t.linkNames.push(f.title||'Filter');
+      attached.push(f.id);
+    });
+    // drop the "check Discord" hint — the library replaces that channel
+    if(/Discord/i.test(t.hint||'')) t.hint='Your saved filters are listed below — run each one and log the leads it gave you.';
+    t._poaFilters=true;
+  });
+  return attached;
+}
+/* ticking a POA task logs each attached filter + the leads it produced */
+function sfltPoaLinksTicked(task){
+  try{
+    if(!task||!task.linkFilterIds||!task.linkFilterIds.length) return;
+    if(typeof fuLog!=='function') return;
+    task.linkFilterIds.forEach(function(fid,i){
+      if(!fid) return;
+      fuLog(fid);
+      var n=parseInt((task.linkLeads||[])[i]);
+      if(!isNaN(n)&&n>0&&typeof fuSetLeads==='function') fuSetLeads(fid,n);
+    });
+  }catch(e){}
+}
+/* a linked filter, as a task on the VA's shift — same shape as a From-Jack item
+   so it gets the Open button, Start/Stop timer and "log leads found" treatment */
+/* ticking a linked-filter task logs an open + the leads it produced, so the
+   Filters tab's performance table fills itself with no extra typing */
+function sfltPoaTicked(task){
+  try{
+    if(!task||!task.isPoaFilter||!task.sfltId) return;
+    if(typeof fuLog!=='function') return;
+    fuLog(task.sfltId);
+    var n=parseInt(task.leads);
+    if(!isNaN(n)&&n>0&&typeof fuSetLeads==='function') fuSetLeads(task.sfltId,n);
+  }catch(e){}
+}
+/* superseded by sfltAttachToPoa (filters now nest inside the matching POA task);
+   kept only for filters whose slot has no POA task for that VA */
+function sfltPoaTask(f){
+  return { id:'pfilt-'+f.id, sfltId:f.id, name:'🎯 '+(f.title||'Filter'),
+    jbLabel:f.title||'Filter', jbReason:(f.note||'').trim(), mandatory:true,
+    hint:'One of your saved filters — open it, time it, and log how many leads it gave you.',
+    hasLinks:false, done:false, skipped:false, skipReason:'', time:'', timeHrs:0, timeMins:0,
+    leads:'', context:'', links:[],
+    jbType:(f.tag==='Storefront'?'sf':'kpf'), jbUrl:f.url||'', jbAsin:'',
+    jbTimer:true, jbLeads:true, isPoaFilter:true,
+    timerSec:0, timerRun:false, timerStart:null };
+}
+/* Exact URLs used while building/testing this app. They are fabricated and appear in
+   no real Keepa/SellerAmp filter, so matching on them can never remove one of Jack's. */
+var SFLT_JUNK_URLS=['keepa.com/#!deals/dyson','keepa.com/#!deals/real','argos.co.uk/clr',
+  'keepa.com/#!deals/lego','keepa.com/#!deals/mine','keepa.com/#!deals/7d','keepa.com/#!deals/mon',
+  'keepa.com/#!deals/x','keepa.com/#!deals/orph','keepa.com/#!deals/lap','keepa.com/#!deals/bare',
+  'keepa.com/#!deals/asus','keepa.com/#!deals/ht','keepa.com/#!product/sam','keepa.com/#!product/samsung',
+  'keepa.com/#!product/2-b08xyz','sas.selleramp.com/ht','sas.selleramp.com/x','superdrug.com/clearance',
+  'superdrug.com/clr','www.superdrug.com/clearance','x.com/old','x.com/1','k.com/1','k.com/2'];
+function sfltIsTestRow(f){
+  if(!f) return false;
+  if(/^Filter number \d+$/.test(String(f.title||''))) return true;
+  // seeded ids from testing were short ("f1","g12","t400"); a real sfltUid is
+  // 'f'+base36 timestamp+random, so it can never match this
+  if(/^[a-z]\d{1,3}$/.test(String(f.id||''))) return true;
+  // and anything carrying one of the fabricated test URLs
+  try{
+    var u=String(f.url||'').toLowerCase().replace(/^https?:\/\//,'').replace(/\/$/,'');
+    if(u && SFLT_JUNK_URLS.indexOf(u)>=0) return true;
+    if(/^keepa\.com\/#!deals\/\d+$/.test(u)) return true;   // seeded "deals/0..799"
+  }catch(e){}
+  return false;
+}
 function getSavedFilters(){
+  var out=null;
   var c=sfltCacheGet();
-  if(c) return c;
-  try{ var s=getAppSettings().savedFilters; return Array.isArray(s)?s:[]; }catch(e){ return []; }
+  if(c) out=c;
+  else { try{ var s=getAppSettings().savedFilters; out=Array.isArray(s)?s:[]; }catch(e){ out=[]; } }
+  // Filter out the "Filter number N" rows a test import once wrote into the shared
+  // settings row. Done on every read so no stale cache anywhere can resurrect them.
+  if(out.some(sfltIsTestRow)){
+    out=out.filter(function(f){ return !sfltIsTestRow(f); });
+    try{ sfltCacheSet(out); }catch(e){}
+    try{ var st=getAppSettings(); if(Array.isArray(st.savedFilters)&&st.savedFilters.some(sfltIsTestRow)){
+      st.savedFilters=out; saveAppSettings(st); } }catch(e){}
+  }
+  return out;
 }
 // legacy writer — still keeps the settings blob in step so nothing can be lost
 function saveSavedFilters(arr){
@@ -9399,6 +11012,7 @@ function saveSavedFilters(arr){
 // ── table layer ────────────────────────────────────────────────────────────
 function sfltRowOut(f,i){ return {id:f.id,title:String(f.title||'').slice(0,160),url:f.url||'',note:String(f.note||'').slice(0,300),tag:f.tag||'KPF',pos:(f.pos!=null?f.pos:i)||0,archived:!!f.archived,updated_at:new Date().toISOString()}; }
 function sfltUpsert(f,i){
+  if(IS_PREVIEW) return;
   if(!DB_ENABLED||SFLT_TABLE_OK===false) return Promise.resolve();
   return fetch(SUPABASE_URL+'/rest/v1/saved_filters',{method:'POST',headers:sfltHeaders({'Prefer':'resolution=merge-duplicates'}),body:JSON.stringify(sfltRowOut(f,i))})
     .then(function(r){ if(!r.ok&&r.status===404) SFLT_TABLE_OK=false; }).catch(function(){});
@@ -9429,14 +11043,44 @@ function sfltLoadCloud(){
     .catch(function(){ return getSavedFilters(); });
 }
 function sfltUid(){ return 'f'+Date.now().toString(36)+Math.floor(Math.random()*4096).toString(36); }
+/* Attach to a POA as you add — so a new filter can go straight onto Mera's or
+   Suz's plan without having to find it in the list afterwards. */
+function sfltPoaPickerHTML(which){
+  var vaBtns=['Mera','Suz'].map(function(v){
+    return '<button type="button" class="sflt-va sflt-newva" data-va="'+v+'" data-w="'+which+'" onclick="sfltNewVaTgl(this)" title="Put it on '+vaDisp(v)+"'s POA"+'">'+vaDisp(v).charAt(0)+'</button>';
+  }).join('');
+  return '<div class="sflt-newpoa">'
+    +'<span class="sflt-newlbl">Add to a POA</span>'
+    +'<span class="sflt-poa">'+vaBtns+'</span>'
+    +'<select class="sflt-slot" id="sflt-'+which+'-slot">'
+      +SFLT_SLOTS.map(function(sl){ return '<option value="'+sl.k+'">'+sl.label+'</option>'; }).join('')
+    +'</select>'
+    +'<span class="sflt-newhint">optional — leave blank to just save it to the library</span>'
+    +'</div>';
+}
+function sfltNewVaTgl(btn){
+  var v=btn.getAttribute('data-va');
+  btn.classList.toggle('on'); btn.classList.toggle('v-'+v);
+}
+function sfltNewPoa(which){
+  var vas=[].filter.call(document.querySelectorAll('.sflt-newva[data-w="'+which+'"].on'),function(b){return true;})
+             .map(function(b){ return b.getAttribute('data-va'); });
+  var sl=(document.getElementById('sflt-'+which+'-slot')||{}).value||'daily';
+  return {vas:vas, slot:sl};
+}
 function sfltAdd(){
   var t=(document.getElementById('sflt-title')||{}).value||''; var u=(document.getElementById('sflt-url')||{}).value||''; var n=(document.getElementById('sflt-note')||{}).value||'';
   t=t.trim(); u=u.trim(); if(!t||!u){ showToast('Add a title and a link',true); return; }
   var arr=getSavedFilters();
-  var f={id:sfltUid(),title:t.slice(0,160),url:u,note:n.trim().slice(0,300),tag:(document.getElementById('sflt-tag')||{}).value||'KPF',pos:arr.length,archived:false};
+  var poa=sfltNewPoa('add');
+  var f={id:sfltUid(),title:t.slice(0,160),url:u,note:n.trim().slice(0,300),tag:(document.getElementById('sflt-tag')||{}).value||'KPF',pos:arr.length,archived:false,
+         vas:poa.vas,slot:poa.slot};
   arr.push(f);
   saveSavedFilters(arr); sfltUpsert(f,arr.length-1);
-  mgr_renderSettings(); showToast('Filter saved ✓ — VAs can open it on shift');
+  if(typeof mgr_currentTab!=='undefined'&&mgr_currentTab==='filters') mgr_renderFilters(); else mgr_renderSettings();
+  showToast(poa.vas.length
+    ? 'Saved ✓ — on '+poa.vas.map(function(v){return vaDisp(v);}).join(' + ')+"'s POA, "+sfltSlotLabel(f).toLowerCase()
+    : 'Filter saved ✓ — in your library, not on a POA yet');
 }
 function sfltDel(id){
   if(!confirm('Delete this saved filter?\n\nThis removes it for good. To just hide it from your VAs, use Archive instead.')) return;
@@ -9459,50 +11103,142 @@ function sfltMove(id,dir){
   arr[i].pos=i; arr[j].pos=j;
   saveSavedFilters(arr); sfltUpsert(arr[i],i); sfltUpsert(arr[j],j); mgr_renderSettings();
 }
-var sfltMgrQuery='', sfltMgrShow=40;
-function sfltMgrSearch(v){ sfltMgrQuery=String(v||'').toLowerCase().trim(); sfltMgrShow=40; sfltMgrRepaint(); }
-function sfltMgrMore(){ sfltMgrShow+=60; sfltMgrRepaint(); }
+var sfltMgrQuery='', sfltMgrPage=0, sfltMgrTag='', sfltMgrSort='pos', sfltMgrArch=false, sfltMgrEdit='', sfltMgrPoa='';
+var SFLT_PER_PAGE=25;
+var SFLT_TAGS=['KPF','Keepa','A2A','Storefront','Other'];
+function sfltMgrSearch(v){ sfltMgrQuery=String(v||'').toLowerCase().trim(); sfltMgrPage=0; sfltMgrRepaint(); }
+function sfltMgrSetTag(t){ sfltMgrTag=(sfltMgrTag===t?'':t); sfltMgrPage=0; sfltMgrRepaint(); }
+function sfltMgrSetSort(v){ sfltMgrSort=v; sfltMgrPage=0; sfltMgrRepaint(); }
+function sfltMgrToggleArch(){ sfltMgrArch=!sfltMgrArch; sfltMgrPage=0; sfltMgrRepaint(); }
+function sfltMgrSetPoa(v){ sfltMgrPoa=(sfltMgrPoa===v?'':v); sfltMgrPage=0; sfltMgrRepaint(); }
+function sfltMgrGo(p){ sfltMgrPage=p; sfltMgrRepaint(); var h=document.getElementById('sflt-list-host'); if(h) h.scrollIntoView({block:'start',behavior:'smooth'}); }
+function sfltMgrEditRow(id){ sfltMgrEdit=(sfltMgrEdit===id?'':id); sfltMgrRepaint(); }
 function sfltMgrRepaint(){
-  var host=document.getElementById('sflt-list-host'); if(!host) return;
-  host.innerHTML=sfltRowsHTML();
+  var host=document.getElementById('sflt-list-host'); if(host) host.innerHTML=sfltRowsHTML();
+  var bar=document.getElementById('sflt-toolbar'); if(bar) bar.innerHTML=sfltToolbarHTML();
   var s=document.getElementById('sflt-search'); if(s&&document.activeElement!==s){ s.value=sfltMgrQuery; }
 }
 function sfltMatch(f,q){
   if(!q) return true;
   return ((f.title||'')+' '+(f.note||'')+' '+(f.tag||'')+' '+(f.url||'')).toLowerCase().indexOf(q)>=0;
 }
-var SFLT_TAGS=['KPF','Keepa','A2A','Storefront','Other'];
+/* the filtered+sorted set the list is currently showing */
+function sfltMgrSet(){
+  var all=getSavedFilters();
+  var stats=(typeof fuStatsAll==='function')?fuStatsAll():{};
+  var out=all.filter(function(f){
+    if(!sfltMgrArch && f.archived) return false;
+    if(sfltMgrPoa && !sfltHasVA(f,sfltMgrPoa)) return false;
+    if(sfltMgrTag && (f.tag||'KPF')!==sfltMgrTag) return false;
+    return sfltMatch(f,sfltMgrQuery);
+  });
+  var key=sfltMgrSort;
+  out.sort(function(a,b){
+    var sa=stats[a.id]||{uses:0,leads:0}, sb=stats[b.id]||{uses:0,leads:0};
+    if(key==='az')    return String(a.title||'').localeCompare(String(b.title||''));
+    if(key==='leads') return (sb.leads||0)-(sa.leads||0) || (sb.uses||0)-(sa.uses||0);
+    if(key==='uses')  return (sb.uses||0)-(sa.uses||0);
+    if(key==='cold')  return (sa.leads||0)-(sb.leads||0) || (sb.uses||0)-(sa.uses||0);
+    return (a.pos||0)-(b.pos||0);
+  });
+  return out;
+}
+function sfltToolbarHTML(){
+  var all=getSavedFilters();
+  var set=sfltMgrSet();
+  var arch=all.filter(function(f){return f.archived;}).length;
+  var counts={}; all.forEach(function(f){ if(!f.archived){ var t=f.tag||'KPF'; counts[t]=(counts[t]||0)+1; } });
+  var chips=SFLT_TAGS.map(function(t){
+    if(!counts[t]&&sfltMgrTag!==t) return '';
+    return '<button class="sflt-chip'+(sfltMgrTag===t?' on':'')+'" onclick="sfltMgrSetTag(\''+t+'\')">'+t+' <b>'+(counts[t]||0)+'</b></button>';
+  }).join('');
+  var poaCount={Mera:0,Suz:0};
+  all.forEach(function(f){ if(f.archived) return; sfltVAs(f).forEach(function(v){ if(poaCount[v]!=null) poaCount[v]++; }); });
+  var poaChips=['Mera','Suz'].map(function(v){
+    return '<button class="sflt-chip poa'+(sfltMgrPoa===v?' on v-'+v:'')+'" onclick="sfltMgrSetPoa(\''+v+'\')">'
+      +(sfltMgrPoa===v?'✓ ':'')+vaDisp(v)+"'s POA <b>"+poaCount[v]+'</b></button>';
+  }).join('');
+  return '<div class="sflt-tools">'
+    +'<input class="sflt-search2" id="sflt-search" placeholder="Search '+all.length+' filters by name, tag, note or link…" value="'+escHtml(sfltMgrQuery)+'" oninput="sfltMgrSearch(this.value)">'
+    +'<select class="sflt-sort" onchange="sfltMgrSetSort(this.value)">'
+      +'<option value="pos"'+(sfltMgrSort==='pos'?' selected':'')+'>My order</option>'
+      +'<option value="az"'+(sfltMgrSort==='az'?' selected':'')+'>A–Z</option>'
+      +'<option value="leads"'+(sfltMgrSort==='leads'?' selected':'')+'>Most leads</option>'
+      +'<option value="uses"'+(sfltMgrSort==='uses'?' selected':'')+'>Most used</option>'
+      +'<option value="cold"'+(sfltMgrSort==='cold'?' selected':'')+'>Worst performing</option>'
+    +'</select>'
+    +'</div>'
+    +'<div class="sflt-chips">'+poaChips+(sfltMgrTag?'<button class="sflt-chip on" onclick="sfltMgrSetTag(\''+sfltMgrTag+'\')">✕ '+sfltMgrTag+'</button>':'')+chips
+      +(arch?'<button class="sflt-chip arch'+(sfltMgrArch?' on':'')+'" onclick="sfltMgrToggleArch()">'+(sfltMgrArch?'✓ ':'')+'Archived <b>'+arch+'</b></button>':'')
+      +'<span class="sflt-count">'+set.length+(sfltMgrQuery||sfltMgrTag?' match'+(set.length===1?'':'es'):' filter'+(set.length===1?'':'s'))+'</span>'
+    +'</div>';
+}
+function sfltPagerHTML(total,page,pages){
+  if(pages<=1) return '';
+  var btn=function(p,label,dis){ return '<button class="sflt-pg'+(dis?' dis':'')+'"'+(dis?' disabled':'')+' onclick="sfltMgrGo('+p+')">'+label+'</button>'; };
+  var nums='';
+  var from=Math.max(0,Math.min(page-2,pages-5)), to=Math.min(pages,from+5);
+  for(var i=from;i<to;i++) nums+='<button class="sflt-pg num'+(i===page?' on':'')+'" onclick="sfltMgrGo('+i+')">'+(i+1)+'</button>';
+  return '<div class="sflt-pager">'
+    +btn(0,'« First',page===0)+btn(Math.max(0,page-1),'‹ Prev',page===0)
+    +nums
+    +btn(Math.min(pages-1,page+1),'Next ›',page>=pages-1)+btn(pages-1,'Last »',page>=pages-1)
+    +'<span class="sflt-pgi">'+(page*SFLT_PER_PAGE+1)+'–'+Math.min(total,(page+1)*SFLT_PER_PAGE)+' of '+total+'</span>'
+    +'</div>';
+}
 function sfltRowsHTML(){
   var all=getSavedFilters();
-  var TAGS=SFLT_TAGS;
-  var matched=all.filter(function(f){ return sfltMatch(f,sfltMgrQuery); });
-  var shown=matched.slice(0,sfltMgrShow);
+  if(!all.length) return '<div class="sflt-empty">No saved filters yet. Paste your Discord channel into the bulk box below — they replace the channel entirely.</div>';
+  var set=sfltMgrSet();
+  if(!set.length) return '<div class="sflt-empty">Nothing matches'+(sfltMgrQuery?' “'+escHtml(sfltMgrQuery)+'”':'')+(sfltMgrTag?' in '+sfltMgrTag:'')+'.</div>';
+  var pages=Math.ceil(set.length/SFLT_PER_PAGE);
+  if(sfltMgrPage>=pages) sfltMgrPage=pages-1;
+  var page=sfltMgrPage;
+  var slice=set.slice(page*SFLT_PER_PAGE,(page+1)*SFLT_PER_PAGE);
   var stats=(typeof fuStatsAll==='function')?fuStatsAll():{};
-  var rows=shown.map(function(f){
-    var i=all.indexOf(f);
+  var rows=slice.map(function(f,n){
     var st=stats[f.id]||{uses:0,leads:0};
-    var perf=st.uses?'<span class="sflt-perf'+(st.leads===0?' cold':'')+'">'+st.uses+' use'+(st.uses===1?'':'s')+' · '+st.leads+' lead'+(st.leads===1?'':'s')+'</span>':'<span class="sflt-perf none">not used yet</span>';
-    return '<div class="sflt-row'+(f.archived?' is-arch':'')+'" data-id="'+f.id+'">'
-      +'<div class="sflt-ord">'+(i+1)+'</div>'
-      +'<div class="sflt-fields">'
-        +'<div class="sflt-r1"><input class="settings-input sflt-t" value="'+escHtml(f.title||'')+'" placeholder="Filter name — e.g. 7-day drop £50+" oninput="sfltEdit(\''+f.id+'\',\'title\',this.value)">'
-          +'<select class="sflt-tag" onchange="sfltEdit(\''+f.id+'\',\'tag\',this.value)">'+TAGS.map(function(t){return '<option'+((f.tag||'KPF')===t?' selected':'')+'>'+t+'</option>';}).join('')+'</select></div>'
-        +'<input class="settings-input sflt-u" value="'+escHtml(f.url||'')+'" placeholder="Paste the filter link" oninput="sfltEdit(\''+f.id+'\',\'url\',this.value)">'
-        +'<input class="settings-input sflt-n" value="'+escHtml(f.note||'')+'" placeholder="Note for the VA (optional) — e.g. all great sellers" oninput="sfltEdit(\''+f.id+'\',\'note\',this.value)">'
-        +'<div class="sflt-meta">'+perf+(f.archived?'<span class="sflt-archtag">archived</span>':'')+'</div>'
-      +'</div>'
-      +'<div class="sflt-acts"><button class="icon-btn" onclick="sfltMove(\''+f.id+'\',-1)">↑</button><button class="icon-btn" onclick="sfltMove(\''+f.id+'\',1)">↓</button>'
-        +'<a class="icon-btn" href="'+String(f.url||'#').replace(/"/g,'&quot;')+'" target="_blank" title="Open">↗</a>'
-        +'<button class="icon-btn" title="'+(f.archived?'Unarchive':'Hide from VAs (keeps it)')+'" onclick="sfltArchive(\''+f.id+'\','+(f.archived?'false':'true')+')">'+(f.archived?'⊕':'⊘')+'</button>'
-        +'<button class="icon-btn" style="color:#ff6680" onclick="sfltDel(\''+f.id+'\')">Del</button></div>'
-      +'</div>';
+    var perf=st.uses
+      ? '<span class="sflt-pill'+(st.leads===0?' cold':' warm')+'">'+st.leads+' lead'+(st.leads===1?'':'s')+' · '+st.uses+' open'+(st.uses===1?'':'s')+'</span>'
+      : '<span class="sflt-pill none">never opened</span>';
+    var open=sfltMgrEdit===f.id;
+    var host=''; try{ host=(String(f.url||'').match(/^https?:\/\/(www\.)?([^\/]+)/i)||[])[2]||''; }catch(e){}
+    var assigned=sfltVAs(f).length>0;
+    var poaBtns='<span class="sflt-poa">'
+      +['Mera','Suz'].map(function(v){
+        var on=sfltHasVA(f,v);
+        return '<button class="sflt-va'+(on?' on v-'+v:'')+'" title="'+(on?'On ':'Add to ')+vaDisp(v)+"'s POA"+'" onclick="event.stopPropagation();sfltToggleVA(\''+f.id+'\',\''+v+'\')">'+vaDisp(v).charAt(0)+'</button>';
+      }).join('')
+      +(assigned?'<select class="sflt-slot" title="Which POA it runs with" onclick="event.stopPropagation()" onchange="sfltSetSlot(\''+f.id+'\',this.value)">'
+        +SFLT_SLOTS.map(function(sl){ return '<option value="'+sl.k+'"'+(sfltSlot(f).k===sl.k?' selected':'')+'>'+sl.label+'</option>'; }).join('')
+        +'</select>':'')
+      +'</span>';
+    var head='<div class="sflt-line" onclick="sfltMgrEditRow(\''+f.id+'\')">'
+      +'<span class="sflt-num">'+(page*SFLT_PER_PAGE+n+1)+'</span>'
+      +'<span class="sflt-tagp t-'+(f.tag||'KPF')+'">'+(f.tag||'KPF')+'</span>'
+      +'<span class="sflt-name">'+escHtml(f.title||'Untitled')+(f.archived?'<span class="sflt-archtag">archived</span>':'')
+        +(f.note?'<span class="sflt-note">'+escHtml(f.note)+'</span>':'')+'</span>'
+      +perf
+      +'<span class="sflt-host">'+escHtml(host)+'</span>'
+      +poaBtns
+      +'<span class="sflt-acts">'
+        +'<a class="sflt-ico open" href="'+String(f.url||'#').replace(/"/g,'&quot;')+'" target="_blank" title="Open filter" onclick="event.stopPropagation()">Open ↗</a>'
+        +'<button class="sflt-ico" title="Edit" onclick="event.stopPropagation();sfltMgrEditRow(\''+f.id+'\')">'+(open?'▴':'✎')+'</button>'
+        +'<button class="sflt-ico" title="'+(f.archived?'Show to VAs again':'Hide from VAs (keeps it)')+'" onclick="event.stopPropagation();sfltArchive(\''+f.id+'\','+(f.archived?'false':'true')+')">'+(f.archived?'⊕':'⊘')+'</button>'
+      +'</span></div>';
+    var edit=open?('<div class="sflt-edit">'
+      +'<div class="sflt-er1"><input class="settings-input" value="'+escHtml(f.title||'')+'" placeholder="Filter name" oninput="sfltEdit(\''+f.id+'\',\'title\',this.value)">'
+        +'<select class="sflt-tag" onchange="sfltEdit(\''+f.id+'\',\'tag\',this.value)">'+SFLT_TAGS.map(function(t){return '<option'+((f.tag||'KPF')===t?' selected':'')+'>'+t+'</option>';}).join('')+'</select></div>'
+      +'<input class="settings-input" value="'+escHtml(f.url||'')+'" placeholder="Filter link" oninput="sfltEdit(\''+f.id+'\',\'url\',this.value)">'
+      +'<input class="settings-input" value="'+escHtml(f.note||'')+'" placeholder="Note for the VA (optional)" oninput="sfltEdit(\''+f.id+'\',\'note\',this.value)">'
+      +'<div class="sflt-erow"><button class="sflt-ico" onclick="sfltMove(\''+f.id+'\',-1)">↑ Move up</button>'
+        +'<button class="sflt-ico" onclick="sfltMove(\''+f.id+'\',1)">↓ Move down</button>'
+        +'<button class="sflt-ico danger" onclick="sfltDel(\''+f.id+'\')">Delete</button>'
+        +'<button class="sflt-ico" style="margin-left:auto;" onclick="sfltMgrEditRow(\'\')">Done</button></div>'
+      +'</div>'):'';
+    return '<div class="sflt-row2'+(f.archived?' is-arch':'')+(open?' open':'')+'">'+head+edit+'</div>';
   }).join('');
-  if(!all.length) return '<div style="font-size:12px;color:var(--muted-2);padding:8px 2px;">No saved filters yet. Add your KPF / Keepa filters below — they replace the Discord channel.</div>';
-  if(!matched.length) return '<div style="font-size:12px;color:var(--muted-2);padding:8px 2px;">Nothing matches “'+escHtml(sfltMgrQuery)+'”.</div>';
-  if(matched.length>shown.length){
-    rows+='<button class="sflt-more" onclick="sfltMgrMore()">Show '+Math.min(60,matched.length-shown.length)+' more · '+(matched.length-shown.length)+' left</button>';
-  }
-  return rows;
+  return sfltPagerHTML(set.length,page,pages)+'<div class="sflt-rows">'+rows+'</div>'+sfltPagerHTML(set.length,page,pages);
 }
 /* ══════════ BULK IMPORT — paste the whole Discord channel in one go ══════════
    Adding 1000s of filters one form at a time isn't realistic, so this takes a
@@ -9563,7 +11299,9 @@ async function sfltBulkAdd(){
   if(!fresh.length){ showToast('All of those are already saved',true); return; }
   var btn=document.getElementById('sflt-bulk-btn');
   if(btn){ btn.disabled=true; btn.textContent='Adding '+fresh.length+'…'; }
-  var added=fresh.map(function(p,i){ return {id:sfltUid()+i.toString(36),title:p.title,url:p.url,note:p.note,tag:tag,pos:arr.length+i,archived:false}; });
+  var bpoa=sfltNewPoa('bulk');
+  var added=fresh.map(function(p,i){ return {id:sfltUid()+i.toString(36),title:p.title,url:p.url,note:p.note,tag:tag,pos:arr.length+i,archived:false,
+                                             vas:bpoa.vas.slice(),slot:bpoa.slot}; });
   var merged=arr.concat(added);
   saveSavedFilters(merged);
   // push to the table in batches so a big paste doesn't fire 1000 separate requests
@@ -9574,8 +11312,9 @@ async function sfltBulkAdd(){
     }
   }
   var bx=document.getElementById('sflt-bulk'); if(bx) bx.value='';
-  mgr_renderSettings();
-  showToast('Added '+added.length+' filter'+(added.length===1?'':'s')+' ✓ — your VAs can search them now');
+  if(typeof mgr_currentTab!=='undefined'&&mgr_currentTab==='filters') mgr_renderFilters(); else mgr_renderSettings();
+  showToast('Added '+added.length+' filter'+(added.length===1?'':'s')+' ✓'
+    +(bpoa.vas.length?' — all on '+bpoa.vas.map(function(v){return vaDisp(v);}).join(' + ')+"'s POA":' — in your library'));
 }
 function sfltManageHTML(){
   var all=getSavedFilters();
@@ -9583,19 +11322,21 @@ function sfltManageHTML(){
   return '<div class="settings-card" data-sg="leads">'
     +'<div class="settings-title">🔎 Saved Filters <span class="sflt-total">'+all.length+'</span></div>'
     +'<div class="settings-sub">Your KPF / Keepa filter library — VAs open these from a searchable panel on their shift, and you can reference one in a POA ("run the 7-day drop filter"). '+live+' live for VAs. Every open is logged so you can see which ones actually produce leads. Nothing is ever binned automatically.</div>'
-    +'<input class="settings-input sflt-search" id="sflt-search" placeholder="🔎 Search your filters by name, tag, note or link…" value="'+escHtml(sfltMgrQuery)+'" oninput="sfltMgrSearch(this.value)">'
+    +'<div id="sflt-toolbar">'+sfltToolbarHTML()+'</div>'
     +'<div class="sflt-list" id="sflt-list-host">'+sfltRowsHTML()+'</div>'
     +'<div class="sflt-add">'
       +'<div class="sflt-r1"><input class="settings-input" id="sflt-title" placeholder="Filter name — e.g. 7-day drop £50+">'
         +'<select class="sflt-tag" id="sflt-tag">'+SFLT_TAGS.map(function(t){return '<option>'+t+'</option>';}).join('')+'</select></div>'
       +'<input class="settings-input" id="sflt-url" placeholder="Paste the filter link (Keepa / SellerAmp / KPF)">'
       +'<input class="settings-input" id="sflt-note" placeholder="Note for the VA (optional)">'
+      +sfltPoaPickerHTML('add')
       +'<button class="btn btn-success" style="margin-top:10px;" onclick="sfltAdd()">+ Add filter</button>'
     +'</div>'
     +'<div class="sflt-bulk-wrap">'
       +'<div class="sflt-bulk-h">📥 Bulk add — paste your whole Discord channel</div>'
       +'<textarea class="settings-input sflt-bulk-ta" id="sflt-bulk" rows="5" placeholder="Paste many at once, one per line:&#10;7-day drop £50+ | https://keepa.com/... | all great sellers&#10;Samsung storefront - https://keepa.com/...&#10;https://keepa.com/..." oninput="sfltBulkPreview()"></textarea>'
       +'<div class="sflt-bulk-info" id="sflt-bulk-info">Paste as many as you like — one per line. Any of these work: <b>Name | link | note</b>, <b>Name - link</b>, or just the link on its own.</div>'
+      +sfltPoaPickerHTML('bulk')
       +'<div class="sflt-bulk-row"><select class="sflt-tag" id="sflt-bulk-tag">'+SFLT_TAGS.map(function(t){return '<option>'+t+'</option>';}).join('')+'</select>'
       +'<button class="btn btn-success" id="sflt-bulk-btn" onclick="sfltBulkAdd()">Add them all</button></div>'
     +'</div>'
@@ -9615,6 +11356,7 @@ function fuToday(){ try{ return (typeof mgr_ukToday==='function')?mgr_ukToday():
 function fuLocal(){ try{ var a=JSON.parse(localStorage.getItem('bdl_filter_usage')||'[]'); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
 function fuLocalSet(a){ try{ localStorage.setItem('bdl_filter_usage',JSON.stringify(a.slice(-400))); }catch(e){} }
 function fuLog(id){
+  if(IS_PREVIEW) return;
   var f=getSavedFilters().filter(function(x){return x.id===id;})[0]; if(!f) return;
   var va=(window.state&&state.currentVA)||'Jack';
   var day=fuToday();
@@ -9632,6 +11374,7 @@ function fuLog(id){
   setTimeout(function(){ try{ renderSavedFiltersVA(); }catch(e){} },250);
 }
 function fuSetLeads(id,d){
+  if(IS_PREVIEW) return;
   var day=fuToday(), va=(window.state&&state.currentVA)||'Jack';
   var all=fuLocal();
   var row=all.filter(function(u){return u.filter_id===id&&u.date===day&&u.va===va;})[0]; if(!row) return;
@@ -10024,7 +11767,8 @@ function jb_editorHTML(va){
       +'</div>'
       +'<div class="jb-item-opts"><label class="jb-toggle"><input type="checkbox" id="jb-itimer-'+va+'" '+(pref.timer?'checked':'')+' onchange="jb_prefTgl(\''+va+'\')"> &#9201; Time it</label>'
       +'<label class="jb-toggle"><input type="checkbox" id="jb-ileads-'+va+'" '+(pref.leads?'checked':'')+' onchange="jb_prefTgl(\''+va+'\')"> &#128200; Must log leads</label>'
-      +'<button class="jb-send-btn" onclick="jb_addItem(\''+va+'\')">&#10148; Send to '+vaDisp(va)+'</button></div>';
+      +'<button class="jb-send-btn" onclick="jb_addItem(\''+va+'\')">&#10148; Send to '+vaDisp(va)+'</button></div>'
+      +jbFilterPickHTML(va);
     })()
     +'</div>'
     +jb_secLabel('&#128203; Outstanding &mdash; rolls over until ticked'
@@ -10116,6 +11860,69 @@ function jb_pickType(va,t,el){
   try{ el.parentElement.querySelectorAll('.jb-typepill').forEach(function(b){ b.classList.toggle('active',b===el); }); }catch(e){}
   var iv=document.getElementById('jb-ival-'+va);
   if(iv) iv.placeholder=jb_placeholder(t);
+}
+/* Pick one of your saved filters straight into the composer — no copy-pasting a
+   Keepa link out of the Filters tab every time you set a POA. */
+function jbFilterPickHTML(va){
+  var all=[];
+  try{ all=getSavedFilters().filter(function(f){return !f.archived && f.url;}); }catch(e){}
+  if(!all.length) return '';
+  var q=(window._jbFq&&window._jbFq[va])||'';
+  var ql=q.toLowerCase();
+  var hits=q?all.filter(function(f){ return ((f.title||'')+' '+(f.tag||'')+' '+(f.note||'')).toLowerCase().indexOf(ql)>=0; }):all;
+  var show=hits.slice(0,6);
+  var opts=show.map(function(f){
+    return '<button class="jbf-opt" onclick="jbFilterPick(\''+va+'\',\''+f.id+'\')">'
+      +'<span class="jbf-tag t-'+(f.tag||'KPF')+'">'+(f.tag||'KPF')+'</span>'
+      +'<span class="jbf-name">'+escHtml(f.title||'Untitled')+'</span></button>';
+  }).join('');
+  var open=!!(window._jbFopen&&window._jbFopen[va]);
+  return '<div class="jbf-wrap'+(open?' open':'')+'">'
+    +'<button type="button" class="jbf-toggle" onclick="jbFilterToggle(\''+va+'\')">'
+      +'<span class="jbf-caret">'+(open?'▾':'▸')+'</span> 🔎 or pick from your <b>'+all.length+'</b> saved filters</button>'
+    +(open?('<div class="jbf-body">'
+      +'<input class="jbf-search" id="jbf-q-'+va+'" value="'+escHtml(q)+'" placeholder="Search your filters…" oninput="jbFilterSearch(\''+va+'\',this.value)">'
+      +'<div class="jbf-opts">'+(opts||'<span class="jbf-none">nothing matches</span>')
+        +(hits.length>show.length?'<span class="jbf-more">+'+(hits.length-show.length)+' more — keep typing</span>':'')+'</div>'
+      +'</div>'):'')
+    +'</div>';
+}
+function jbFilterToggle(va){
+  window._jbFopen=window._jbFopen||{};
+  window._jbFopen[va]=!window._jbFopen[va];
+  var w=document.querySelector('.jbf-wrap'); if(!w) return;
+  w.outerHTML=jbFilterPickHTML(va);
+  var i=document.getElementById('jbf-q-'+va); if(i) i.focus();
+}
+function jbFilterSearch(va,v){
+  window._jbFq=window._jbFq||{}; window._jbFq[va]=v;
+  var host=document.querySelector('.jbf-wrap'); // re-render just this block, keep focus
+  var wrap=document.getElementById('jbf-q-'+va);
+  if(!wrap) return;
+  var parent=wrap.closest('.jbf-wrap'); if(!parent) return;
+  parent.outerHTML=jbFilterPickHTML(va);
+  var again=document.getElementById('jbf-q-'+va);
+  if(again){ again.focus(); again.setSelectionRange(again.value.length,again.value.length); }
+}
+function jbFilterPick(va,id){
+  var f=null;
+  try{ f=getSavedFilters().filter(function(x){return x.id===id;})[0]; }catch(e){}
+  if(!f) return;
+  var kind=(f.tag==='Storefront')?'sf':'kpf';
+  // drive the real type pill so its handler updates state + placeholder too
+  var pillWrap=document.querySelector('.jb-typepills');
+  if(pillWrap){
+    var btn=[].filter.call(pillWrap.querySelectorAll('.jb-typepill'),function(b){
+      return String(b.getAttribute('onclick')||'').indexOf("'"+kind+"'")>=0; })[0];
+    if(btn) btn.click();
+  }
+  var t=document.getElementById('jb-itype-'+va); if(t) t.value=kind;
+  var val=document.getElementById('jb-ival-'+va); if(val) val.value=f.url||'';
+  var nm=document.getElementById('jb-iname-'+va); if(nm && !nm.value.trim()) nm.value=f.title||'';
+  var nt=document.getElementById('jb-inote-'+va); if(nt && !nt.value.trim() && f.note) nt.value=f.note;
+  try{ window._jbFopen=window._jbFopen||{}; window._jbFopen[va]=false;
+       var w=document.querySelector('.jbf-wrap'); if(w) w.outerHTML=jbFilterPickHTML(va); }catch(e){}
+  showToast('“'+(f.title||'Filter')+'” loaded — hit Send to '+vaDisp(va));
 }
 function jb_addItem(va){
   var tEl=document.getElementById('jb-itype-'+va), vEl=document.getElementById('jb-ival-'+va), nEl=document.getElementById('jb-iname-'+va), rEl=document.getElementById('jb-inote-'+va);
