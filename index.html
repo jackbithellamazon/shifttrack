@@ -95,7 +95,17 @@ body{
   -webkit-font-smoothing:antialiased;letter-spacing:-0.01em;
   background:var(--bg);
 }
-::selection{background:var(--accent-soft);}
+/* Selection MUST be solid. This was var(--accent-soft) — rgba(124,108,255,0.15) — which
+   over the near-black page composites to rgb(27,26,52) against rgb(10,11,16). A 17-point
+   difference on a dark screen is no feedback at all: you double-click, the word IS
+   selected, and you cannot tell. Highlighting is how you know you can copy.
+   #6d5cf0 rather than the brand #7c6cff: one shade down puts white text at 4.68:1 ON the
+   highlight and the highlight at 4.20:1 against the page. (Chrome's own default selection
+   manages only 3.04:1 for its white-on-blue, so this is clearer than native.) */
+::selection{background:#6d5cf0;color:#fff;text-shadow:none;}
+::-moz-selection{background:#6d5cf0;color:#fff;text-shadow:none;}
+input::selection,textarea::selection{background:#6d5cf0;color:#fff;}
+input::-moz-selection,textarea::-moz-selection{background:#6d5cf0;color:#fff;}
 *::-webkit-scrollbar{width:9px;height:9px;}
 *::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.13);border-radius:20px;}
 *::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.22);}
@@ -407,6 +417,12 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .sb-next{min-width:0;}
 .sb-next b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 /* ── per-link one-tap stepper ── */
+.pf-timer{display:inline-flex;align-items:center;gap:4px;background:var(--panel-2);border:1px solid var(--line-2);
+  color:var(--muted);font-family:var(--font-mono);font-size:11px;font-weight:700;padding:5px 10px;border-radius:8px;
+  cursor:pointer;flex:0 0 auto;transition:all .13s;}
+.pf-timer:hover{border-color:var(--accent);color:var(--text);}
+.pf-timer.run{background:color-mix(in srgb,var(--green) 16%,transparent);border-color:var(--green);color:var(--green);}
+.pf-link.pf-running{border-color:color-mix(in srgb,var(--green) 45%,transparent);}
 .pf-step{display:inline-flex;align-items:center;border:1px solid var(--line-2);border-radius:8px;overflow:hidden;background:var(--panel-2);flex:0 0 auto;}
 .pf-step button{width:29px;height:29px;border:none;background:none;color:var(--muted);font-size:14px;font-weight:800;cursor:pointer;line-height:1;transition:all .12s;}
 .pf-step button:hover{background:rgba(255,255,255,.07);color:var(--text);}
@@ -542,6 +558,11 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 @keyframes checkPop{0%{transform:scale(.35);}55%{transform:scale(1.2);}100%{transform:scale(1);}}
 .task-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;}
 .task-name{font-size:14.5px;font-weight:600;color:var(--text);line-height:1.3;}
+/* a host task carrying routed From-Jack items says so on the row — they're otherwise
+   invisible until the task is expanded */
+.jb-carry{display:inline-block;margin-left:8px;font-size:10.5px;font-weight:800;color:#fff;
+  background:var(--accent);padding:2px 9px;border-radius:999px;vertical-align:1px;white-space:nowrap;}
+.task-item.done .jb-carry{opacity:.45;}
 .task-sub{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--muted-2);line-height:1.2;}
 .task-sub svg{width:13px;height:13px;flex-shrink:0;opacity:.85;}
 .task-item.done .task-sub{color:color-mix(in srgb,var(--green) 55%,var(--muted));}
@@ -1661,6 +1682,29 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
   font-size:12px;font-weight:800;padding:6px 13px;border-radius:8px;cursor:pointer;}
 #lead-undo-bar button:hover{border-color:var(--cyan);color:var(--cyan);}
 @media(prefers-reduced-motion:reduce){#view-leads .litem-leaving{animation-duration:.01s;}}
+/* ── Your results (VA feedback loop) ── */
+.vres{background:linear-gradient(135deg,color-mix(in srgb,var(--green) 9%,var(--panel)),var(--panel));
+  border:1px solid color-mix(in srgb,var(--green) 26%,var(--line));border-radius:14px;padding:14px 16px;margin-bottom:12px;}
+.vres-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+.vres-head span{font-family:var(--font-head);font-size:15px;font-weight:800;color:var(--text);}
+.vres-head i{font-style:normal;font-size:11px;color:var(--muted-2);}
+.vres-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;}
+.vres-k{background:var(--panel-2);border:1px solid var(--line);border-radius:11px;padding:9px 11px;display:flex;flex-direction:column;gap:2px;}
+.vres-k b{font-family:var(--font-head);font-size:22px;font-weight:800;line-height:1;color:var(--text);}
+.vres-k span{font-size:10.5px;color:var(--muted-2);}
+.vres-buy b{color:var(--green);}
+.vres-wait b{color:var(--amber);}
+.vres-sec{margin-top:12px;}
+.vres-lbl{font-size:9.5px;font-weight:900;letter-spacing:.7px;text-transform:uppercase;color:var(--muted-2);margin-bottom:6px;}
+.vres-win{display:flex;align-items:center;gap:9px;font-size:12.5px;padding:5px 0;color:var(--text);}
+.vres-win span{color:var(--green);font-weight:900;}
+.vres-win b{flex:1;min-width:0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.vres-win i{font-style:normal;font-family:var(--font-mono);font-size:12px;font-weight:800;color:var(--green);}
+.vres-why{display:flex;align-items:center;gap:9px;font-size:12.5px;padding:4px 0;}
+.vres-why b{flex:1;font-weight:600;color:var(--text);}
+.vres-why i{font-style:normal;font-family:var(--font-mono);font-size:11.5px;color:var(--amber);}
+.vres-tip{margin-top:7px;font-size:11.5px;color:var(--muted);line-height:1.5;}
+@media(max-width:640px){.vres-row{grid-template-columns:repeat(2,minmax(0,1fr));}}
 #view-leads .d-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:7px;background:color-mix(in srgb,var(--amber) 16%,transparent);border:1px solid color-mix(in srgb,var(--amber) 42%,transparent);color:var(--amber);}
 .badge-row{display:flex;align-items:center;gap:7px;margin-bottom:8px;flex-wrap:wrap;}
 .badge-row .settings-input{margin:0;height:36px;padding:6px 9px;font-size:12px;}
@@ -1686,6 +1730,13 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 #view-leads .d-rail{display:flex;flex-direction:column;gap:12px;min-width:0;}
 @media(min-width:1080px){#view-leads .d-rail{position:sticky;top:14px;align-self:start;}}
 #view-leads .rail-card{background:var(--s2);border:1px solid var(--b2);border-radius:13px;padding:10px 13px;}
+#view-leads .rail-alt{margin-top:9px;padding-top:9px;border-top:1px solid var(--b2);font-size:12px;color:var(--muted);font-weight:600;}
+#view-leads .rail-alt b{font-size:14px;font-weight:800;}
+#view-leads .rail-alt span{display:block;font-size:10.5px;color:var(--muted-2);margin-top:2px;font-weight:500;}
+#view-leads .rail-warn{margin-top:8px;padding:7px 10px;border-radius:9px;font-size:11.5px;font-weight:800;
+  color:var(--amber);background:color-mix(in srgb,var(--amber) 12%,transparent);
+  border:1px solid color-mix(in srgb,var(--amber) 32%,transparent);}
+#view-leads .rail-warn span{display:block;font-size:10.5px;font-weight:600;color:var(--muted);margin-top:3px;line-height:1.45;}
 #view-leads .rail-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.9px;color:var(--t3);margin-bottom:8px;}
 #view-leads .rail-opt{font-weight:500;text-transform:none;letter-spacing:0;color:var(--t4);}
 #view-leads .rail-score{background:linear-gradient(160deg,color-mix(in srgb,var(--va) 9%,var(--s2)),var(--s2) 65%);}
@@ -2212,11 +2263,16 @@ body.has-save-bar{padding-bottom:64px;}
 #lead-fail-bar button{background:var(--red);border:none;color:#fff;font-family:inherit;font-size:12px;font-weight:800;padding:8px 15px;border-radius:9px;cursor:pointer;}
 /* slim expanded panel — the row owns time + leads, this owns the note */
 .task-fields.tf-slim{display:block;}
-.tf-recap{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:11px;}
-.tf-r{display:flex;align-items:baseline;gap:7px;font-size:13px;}
-.tf-r em{font-style:normal;font-size:9.5px;font-weight:900;letter-spacing:.7px;text-transform:uppercase;color:var(--muted-2);}
-.tf-r b{color:var(--text);font-family:var(--font-mono);}
-.tf-r i{font-style:normal;font-size:10.5px;color:var(--green);}
+/* recap as proper mini-tiles — Jack: "the min tiles being like the rest". Same shape
+   language as the KPI tiles instead of two bits of floating text. */
+.tf-recap{display:flex;align-items:stretch;gap:9px;flex-wrap:wrap;margin-bottom:11px;}
+.tf-r{display:flex;flex-direction:column;gap:3px;font-size:13px;background:var(--panel-2);
+  border:1px solid var(--line-2);border-radius:10px;padding:8px 14px;min-width:92px;}
+.tf-r em{font-style:normal;font-size:9px;font-weight:900;letter-spacing:.7px;text-transform:uppercase;color:var(--muted-2);}
+.tf-r b{color:var(--text);font-family:var(--font-head);font-size:15px;font-weight:800;}
+.tf-r.has{border-color:color-mix(in srgb,var(--green) 40%,transparent);}
+.tf-r.has b{color:var(--green);}
+.tf-r i{font-style:normal;font-size:10px;color:var(--green);}
 .tf-exact{margin-left:auto;background:transparent;border:1px dashed var(--line-2);color:var(--muted);font-family:inherit;font-size:11px;font-weight:700;padding:5px 11px;border-radius:8px;cursor:pointer;}
 .tf-exact:hover{border-color:var(--accent);border-style:solid;color:var(--text);}
 .tf-exactrow{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:11px;}
@@ -2240,15 +2296,101 @@ body.has-save-bar{padding-bottom:64px;}
 .sbi-brand{display:flex;align-items:center;gap:9px;font-family:var(--font-head);font-size:17px;font-weight:800;color:var(--text);}
 .sbi-exit{background:transparent;border:1px solid var(--line-2);color:var(--muted);font-family:inherit;font-size:12px;font-weight:700;padding:7px 14px;border-radius:9px;cursor:pointer;}
 .sbi-exit:hover{border-color:var(--red);color:var(--red);}
-.sbi-head{display:flex;align-items:baseline;gap:13px;flex-wrap:wrap;}
-.sbi-head h2{font-family:var(--font-head);font-size:27px;font-weight:800;color:var(--text);letter-spacing:-.02em;}
+.sbi-head{display:flex;align-items:baseline;gap:13px;flex-wrap:wrap;margin-bottom:14px;}
+.sbi-head h2{font-family:var(--font-head);font-size:26px;font-weight:800;color:var(--text);letter-spacing:-.02em;}
 .sbi-date{font-family:var(--font-mono);font-size:13px;color:var(--muted-2);}
 .sbi-sub{font-size:13px;color:var(--muted);margin:6px 0 20px;line-height:1.55;}
-.sbi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;}
+
+/* ── the day being imported for ───────────────────────────────────────────── */
+.sbi-daybar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--panel);
+  border:1px solid var(--line-2);border-radius:12px;padding:10px 14px;margin-bottom:18px;}
+.sbi-daybar.back{border-color:color-mix(in srgb,var(--amber) 55%,transparent);
+  background:color-mix(in srgb,var(--amber) 8%,var(--panel));}
+.sbi-daylab{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.01em;}
+.sbi-dateinput{background:#0b0c12;border:1px solid var(--line-2);border-radius:8px;color:var(--text);
+  font-family:var(--font-mono);font-size:12.5px;padding:6px 9px;outline:none;color-scheme:dark;cursor:pointer;}
+.sbi-dateinput:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
+.sbi-daytag{font-size:12.5px;font-weight:700;color:var(--text);}
+.sbi-todayflag{font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--green);background:color-mix(in srgb,var(--green) 15%,transparent);padding:3px 9px;border-radius:999px;}
+.sbi-backflag{font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--amber);background:color-mix(in srgb,var(--amber) 18%,transparent);padding:3px 9px;border-radius:999px;}
+.sbi-daybtn{margin-left:auto;background:transparent;border:1px solid var(--line-2);color:var(--muted);
+  font-family:inherit;font-size:11.5px;font-weight:700;padding:5px 12px;border-radius:8px;cursor:pointer;}
+.sbi-daybtn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ── step headers ─────────────────────────────────────────────────────────── */
+.sbi-step{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:11px;}
+.sbi-num{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;
+  background:var(--accent);color:#fff;font-size:11px;font-weight:800;flex:none;}
+.sbi-step-t{font-size:14px;font-weight:750;color:var(--text);}
+.sbi-step-t b{font-weight:800;}
+.sbi-search{margin-left:auto;background:#0b0c12;border:1px solid var(--line-2);border-radius:8px;color:var(--text);
+  font-family:inherit;font-size:12.5px;padding:6px 11px;outline:none;width:min(210px,45vw);}
+.sbi-search:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
+
+/* ── tag chips: two dozen of these, so they must stay small and scannable ─── */
+.sbi-picker{background:var(--panel);border:1px solid var(--line-2);border-radius:14px;padding:14px 15px;margin-bottom:16px;}
+.sbi-chips{display:flex;flex-wrap:wrap;gap:7px;}
+.sbi-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.045);
+  border:1px solid var(--line-2);border-radius:999px;color:var(--muted);font-family:inherit;
+  font-size:12.5px;font-weight:700;padding:6px 13px;cursor:pointer;transition:all .13s;}
+.sbi-chip:hover{border-color:var(--accent);color:var(--text);transform:translateY(-1px);}
+.sbi-chip.has{border-color:color-mix(in srgb,var(--green) 45%,transparent);color:var(--text);}
+.sbi-chip.started{border-color:color-mix(in srgb,var(--amber) 40%,transparent);}
+.sbi-chip.on{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 3px 12px var(--accent-soft);}
+.sbi-dot{width:7px;height:7px;border-radius:50%;background:var(--muted-2);flex:none;}
+.sbi-chip.dest-mera .sbi-dot{background:var(--mera);}
+.sbi-chip.dest-suz  .sbi-dot{background:var(--suz);}
+.sbi-chip.dest-jack .sbi-dot{background:var(--amber);}
+.sbi-chip.dest-mera{border-color:color-mix(in srgb,var(--mera) 38%,transparent);}
+.sbi-chip.dest-suz {border-color:color-mix(in srgb,var(--suz) 34%,transparent);}
+.sbi-chip.dest-mera:hover{border-color:var(--mera);box-shadow:0 3px 12px color-mix(in srgb,var(--mera) 25%,transparent);}
+.sbi-chip.dest-suz:hover {border-color:var(--suz); box-shadow:0 3px 12px color-mix(in srgb,var(--suz) 22%,transparent);}
+.sbi-chip.on .sbi-dot{background:#fff;}
+.sbi-key{width:100%;display:flex;gap:14px;margin-top:4px;font-size:10.5px;font-weight:700;color:var(--muted-2);}
+.sbi-key .k-m{color:var(--mera);}
+.sbi-key .k-s{color:var(--suz);}
+.sbi-key .k-j{color:var(--amber);}
+.sbi-chip-n{font-family:var(--font-mono);font-size:10.5px;font-weight:800;background:rgba(255,255,255,.16);
+  padding:1px 6px;border-radius:999px;}
+.sbi-chip.on .sbi-chip-n{background:rgba(0,0,0,.28);}
+.sbi-chip-tick{font-size:10px;color:var(--amber);}
+.sbi-chip.on .sbi-chip-tick{color:#fff;}
+.sbi-nochip{font-size:12.5px;color:var(--muted-2);padding:4px 2px;}
+.sbi-recent{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:0 0 11px;margin-bottom:11px;
+  border-bottom:1px solid var(--line-2);}
+.sbi-recent-l{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted-2);margin-right:2px;}
+.sbi-chip.sm{font-size:11.5px;padding:4px 11px;}
+.sb-oldday{color:var(--amber);font-weight:700;background:color-mix(in srgb,var(--amber) 13%,transparent);
+  padding:1px 7px;border-radius:999px;}
+
+/* ── the single paste box ─────────────────────────────────────────────────── */
+.sbi-paste{background:var(--panel);border:1px solid var(--line-2);border-radius:14px;padding:15px 16px;}
+.sbi-pick-hint{background:var(--panel);border:1px dashed var(--line-2);border-radius:14px;padding:28px 20px;
+  text-align:center;font-size:14px;color:var(--muted);}
+.sbi-pick-hint span{display:block;font-size:12px;color:var(--muted-2);margin-top:7px;line-height:1.55;}
+
+/* ── what's already in for this day ───────────────────────────────────────── */
+.sbi-done{margin-top:18px;background:var(--panel);border:1px solid var(--line-2);border-radius:14px;
+  padding:13px 15px 6px;}
+.sbi-done-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted-2);
+  padding-bottom:9px;border-bottom:1px solid var(--line-2);}
+.sbi-done-head span{font-family:var(--font-mono);font-size:11.5px;font-weight:700;letter-spacing:0;
+  text-transform:none;color:var(--green);}
+.sbi-done-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:9px 0;
+  border-bottom:1px solid rgba(255,255,255,.045);font-size:12.5px;}
+.sbi-done-row:last-child{border-bottom:none;}
+.sbi-done-row b{color:var(--text);font-weight:750;min-width:96px;}
+.sbi-done-n{font-family:var(--font-mono);font-size:11.5px;color:var(--muted-2);}
+.sbi-done-to{margin-left:auto;font-weight:700;color:var(--muted);}
+.sbi-done-to i{font-style:normal;color:var(--amber);font-weight:600;}
+
 .sbi-q{background:var(--panel);border:1px solid var(--line-2);border-radius:14px;padding:14px 15px;}
 .sbi-q-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px;flex-wrap:wrap;}
 .sbi-q-head b{font-size:15px;font-weight:750;color:var(--text);}
-.sbi-state{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap;}
+.sbi-state{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap;margin-left:auto;}
 .sbi-state.fresh{color:var(--muted-2);background:rgba(255,255,255,.05);}
 .sbi-state.open{color:var(--green);background:color-mix(in srgb,var(--green) 14%,transparent);}
 .sbi-state.locked{color:var(--amber);background:color-mix(in srgb,var(--amber) 14%,transparent);font-weight:600;}
@@ -2265,6 +2407,17 @@ body.has-save-bar{padding-bottom:64px;}
 .sbi-result{margin-top:9px;font-size:12px;line-height:1.65;padding:9px 12px;border-radius:9px;display:none;}
 .sbi-result.ok{display:block;color:var(--green);background:color-mix(in srgb,var(--green) 10%,transparent);border:1px solid color-mix(in srgb,var(--green) 30%,transparent);}
 .sbi-result.bad{display:block;color:var(--red);background:color-mix(in srgb,var(--red) 10%,transparent);border:1px solid color-mix(in srgb,var(--red) 30%,transparent);}
+.sbi-result.back{display:block;color:var(--text);background:color-mix(in srgb,var(--amber) 10%,transparent);border:1px solid color-mix(in srgb,var(--amber) 40%,transparent);font-size:12.5px;}
+.sbi-back-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px;}
+.sbi-dest-row{margin:-3px 0 10px;}
+.sbi-dest{font-size:12px;font-weight:700;color:var(--green);}
+.sbi-dest.review{color:var(--amber);}
+.sbi-dest b{font-weight:800;}
+a.sbi-mini{text-decoration:none;display:inline-block;}
+.sbi-mini{background:rgba(255,255,255,.07);border:1px solid var(--line-2);color:var(--text);font-family:inherit;
+  font-size:12px;font-weight:800;padding:7px 14px;border-radius:8px;cursor:pointer;}
+.sbi-mini.ok{background:var(--amber);border-color:var(--amber);color:#1a1503;}
+.sbi-mini:hover{filter:brightness(1.12);}
 .sbi-result i{font-style:normal;color:var(--muted-2);}
 .sbi-empty{background:var(--panel);border:1px solid var(--line-2);border-radius:14px;padding:26px;text-align:center;font-size:14px;color:var(--muted);}
 .sbi-empty span{display:block;font-size:12px;color:var(--muted-2);margin-top:7px;}
@@ -2303,8 +2456,44 @@ body.has-save-bar{padding-bottom:64px;}
 .sb-empty{background:var(--panel);border:1px dashed var(--line-2);border-radius:13px;padding:24px;text-align:center;font-size:14px;color:var(--muted);}
 .sb-empty span{display:block;font-size:12px;color:var(--muted-2);margin-top:6px;}
 /* queue admin */
+.sbq-bar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0 0 10px;}
+.sbq-stat{font-size:11.5px;font-weight:700;color:var(--muted);background:rgba(255,255,255,.045);
+  border:1px solid var(--line-2);border-radius:999px;padding:5px 12px;}
+.sbq-stat b{color:var(--text);font-weight:800;font-family:var(--font-mono);}
+.sbq-stat.ok{color:var(--green);border-color:color-mix(in srgb,var(--green) 35%,transparent);
+  background:color-mix(in srgb,var(--green) 9%,transparent);}
+.sbq-stat.ok b{color:var(--green);}
+.sbq-stat.warn{color:var(--amber);border-color:color-mix(in srgb,var(--amber) 45%,transparent);
+  background:color-mix(in srgb,var(--amber) 10%,transparent);}
+.sbq-stat.mute{color:var(--muted-2);background:transparent;border-color:transparent;}
+.sbq-search{margin-left:auto;background:#0b0c12;border:1px solid var(--line-2);border-radius:8px;color:var(--text);
+  font-family:inherit;font-size:12.5px;padding:6px 11px;outline:none;width:min(200px,45vw);}
+.sbq-search:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
+/* bulk-edit bar — idle it's a hint, active it's the controls */
+.sbq-bulk{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border-radius:11px;padding:8px 12px;margin-bottom:9px;
+  font-size:12px;transition:all .15s;}
+.sbq-bulk.idle{background:transparent;border:1px dashed var(--line-2);color:var(--muted-2);}
+.sbq-bulk.idle span{flex:1;}
+.sbq-bulk.on{background:color-mix(in srgb,var(--accent) 13%,var(--panel));
+  border:1px solid color-mix(in srgb,var(--accent) 50%,transparent);color:var(--text);}
+.sbq-bulk.on b{font-size:12.5px;font-weight:800;color:var(--accent);margin-right:4px;}
+.sbq-bl{font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted-2);margin-left:6px;}
+.sbq-mini{background:rgba(255,255,255,.06);border:1px solid var(--line-2);color:var(--muted);
+  font-family:inherit;font-size:11.5px;font-weight:700;padding:4px 11px;border-radius:7px;cursor:pointer;transition:all .12s;}
+.sbq-mini:hover{border-color:var(--accent);color:var(--text);}
+.sbq-mini.clear{margin-left:auto;}
+.sbq-mini.clear:hover{border-color:var(--red);color:var(--red);}
+.sbq-mini-sel{background:#0b0c12;border:1px solid var(--line-2);color:var(--text);font-family:inherit;
+  font-size:11.5px;font-weight:700;padding:4px 8px;border-radius:7px;cursor:pointer;}
+.sbq-sel td{background:color-mix(in srgb,var(--accent) 9%,transparent);}
+/* lean mode hides Frequency + Notes — on 25 rows they were "Daily" and "—" 25 times over */
+.sbq-tbl.lean{min-width:660px;}
+.sbq-move{display:inline-flex;flex-direction:column;gap:2px;}
+.sbq-move button{background:transparent;border:1px solid var(--line-2);color:var(--muted-2);
+  font-size:7px;line-height:1;padding:2px 5px;border-radius:4px;cursor:pointer;transition:all .12s;}
+.sbq-move button:hover{border-color:var(--accent);color:var(--accent);}
 .sbq-wrap{background:var(--panel);border:1px solid var(--line-2);border-radius:14px;padding:6px 8px 12px;margin-bottom:12px;overflow-x:auto;}
-.sbq-tbl{width:100%;border-collapse:collapse;min-width:820px;}
+.sbq-tbl{width:100%;border-collapse:collapse;min-width:880px;}
 .sbq-tbl th{text-align:left;font-size:9.5px;font-weight:900;letter-spacing:.6px;text-transform:uppercase;color:var(--muted-2);padding:10px 8px 8px;border-bottom:1px solid var(--line);}
 .sbq-tbl td{padding:5px 8px;border-bottom:1px solid color-mix(in srgb,var(--line) 55%,transparent);}
 .sbq-tbl tr:last-child td{border-bottom:none;}
@@ -2313,6 +2502,8 @@ body.has-save-bar{padding-bottom:64px;}
 .sb-none{text-align:center;color:var(--muted-2);font-size:12.5px;padding:18px;}
 .sb-inp{width:100%;background:#0b0c12;border:1px solid var(--line-2);border-radius:7px;color:var(--text);font-family:inherit;font-size:12.5px;padding:6px 9px;outline:none;}
 .sb-inp:focus{border-color:var(--accent);}
+.sb-goes-mera{color:var(--mera);border-color:color-mix(in srgb,var(--mera) 45%,transparent);font-weight:700;}
+.sb-goes-suz{color:var(--suz);border-color:color-mix(in srgb,var(--suz) 40%,transparent);font-weight:700;}
 .sb-inp-name{font-weight:700;}
 .sbq-del{background:transparent;border:1px solid var(--line-2);color:var(--muted-2);font-family:inherit;
   font-size:11px;width:26px;height:26px;border-radius:7px;cursor:pointer;transition:all .12s;}
@@ -2926,6 +3117,7 @@ body.has-save-bar{padding-bottom:64px;}
     <div id="from-jack"></div>
     <div id="va-filters"></div>
     <div id="shift-momentum"></div>
+    <div id="va-results"></div>
     <div class="stats-head">
       <div class="cardstyle-toggle" id="cardstyle-toggle">
         <button data-cs="bold"  onclick="setCardStyle('bold')">Bold</button>
@@ -3632,28 +3824,54 @@ async function discord_notify(rec) {
   var hitGoal=leadsN>=goal;
   var totalTasks=(rec.tasks||[]).length||(parseInt(rec.tasksDone)||0);
   var delta=dcDelta(leadsN,prevLeads,'');
+  /* Jack's verdict on the old layout: "not a fan of the bars as it looks like it's
+     broken" — the block-character bars render as broken grey rectangles on Discord
+     dark mode. Killed entirely. Fields + real analysis instead:
+     the VA's 7-shift average, best recent shift, and where today sits against both. */
+  var avg7=null, best7=null, days7=0;
+  try{
+    var h7=JSON.parse(localStorage.getItem('shifttrack_eod_log')||'[]')
+      .filter(function(r){ return r.va===rec.va && r.date!==rec.date; }).slice(0,7);
+    days7=h7.length;
+    if(days7){
+      avg7=Math.round(h7.reduce(function(s,r){ return s+(parseInt(r.totalLeads)||0); },0)/days7*10)/10;
+      best7=Math.max.apply(null,h7.map(function(r){ return parseInt(r.totalLeads)||0; }));
+    }
+  }catch(e){}
   var headline=hitGoal
-    ? '🔥 **'+leadsN+' leads** — goal smashed ('+goal+')'
-    : leadsN>=goal*0.75 ? '🟢 **'+leadsN+' leads** — just short of '+goal
-    : '🟠 **'+leadsN+' leads** — under the '+goal+' goal';
-  var desc=headline+(delta?'   '+delta+' vs last shift':'')
-    +'\n\n'+dcBar(leadsN,goal)+'  ·  leads vs goal'
-    +'\n'+dcBar(rec.tasksDone,totalTasks)+'  ·  '+rec.tasksDone+'/'+totalTasks+' tasks'
-      +(skips>0?'  ⚠️ '+skips+' skipped':'')
-    +'\n\n⏱ **'+rec.hoursWorked+'h** worked'+(rec.breakMins?' (☕'+rec.breakMins+'m break)':'')
-      +'  ·  📈 **'+lph+'**/hr  ·  🕐 '+rec.shiftStart+' → '+rec.shiftEnd;
-  if(typeof rec.jbOutstanding==='number'){
-    desc+='\n\n📌 **From Jack:** '+(rec.jbOutstanding>0
-      ? rec.jbOutstanding+' still open'+(rec.jbOldest>0?' · oldest **'+rec.jbOldest+'d**':'')+' → rolls to tomorrow'
-      : '✓ all clear');
+    ? '🔥 **'+leadsN+' leads** — goal hit ('+goal+' needed)'+(best7!==null&&leadsN>=best7?'  ·  🏆 **best of the last '+(days7+1)+' shifts**':'')
+    : leadsN>=goal*0.75 ? '🟢 **'+leadsN+' leads** — '+(goal-leadsN)+' short of the '+goal+' goal'
+    : '🟠 **'+leadsN+' leads** — '+(goal-leadsN)+' under the '+goal+' goal';
+  var form='';
+  if(avg7!==null){
+    var vsAvg=leadsN-avg7;
+    form=(vsAvg>=0?'▲ ':'▼ ')+Math.abs(Math.round(vsAvg*10)/10)+' vs their '+days7+'-shift average ('+avg7+')';
   }
+  var desc=headline
+    +(delta?'\n'+delta+' vs last shift'+(form?'  ·  '+form:''):(form?'\n'+form:''));
   if(rec.notes && rec.notes.trim()) desc+='\n\n💬 '+rec.notes.trim().slice(0,400);
+
+  var fields=[
+    {name:'✅ Tasks', value:'**'+rec.tasksDone+'** / '+totalTasks+(skips>0?'\n⚠️ '+skips+' skipped':''), inline:true},
+    {name:'⏱ Worked', value:'**'+rec.hoursWorked+'h**'+(rec.breakMins?'\n☕ '+rec.breakMins+'m break':''), inline:true},
+    {name:'📈 Rate', value:'**'+lph+'** leads/hr'+(avg7!==null?'\nusual ~'+(hrsN?Math.round(avg7/Math.max(1,hrsN)*10)/10:'—')+'/hr':''), inline:true},
+    {name:'🕐 Shift', value:rec.shiftStart+' → '+rec.shiftEnd, inline:true},
+  ];
+  if(typeof rec.jbOutstanding==='number'){
+    fields.push({name:'📌 From Jack',
+      value: rec.jbOutstanding>0
+        ? '**'+rec.jbOutstanding+' still open**'+(rec.jbOldest>0?' · oldest '+rec.jbOldest+'d':'')+'\nrolls to tomorrow'
+        : '✓ all clear', inline:true});
+  }
+  if(best7!==null) fields.push({name:'🏅 Recent best', value:'**'+best7+'** leads', inline:true});
+
   var embed = {
     embeds: [{
-      author: { name: rec.va+' · end of day' },
-      title: (rec.va === 'Mera' ? '🟣' : '🟡') + ' ' + rec.va + ' — ' + rec.date,
+      author: { name: 'End of day · '+rec.date },
+      title: (rec.va === 'Mera' ? '🟣' : '🟡') + ' ' + rec.va + ' — ' + leadsN + ' lead' + (leadsN===1?'':'s'),
       color: hitGoal ? 3066993 : colour,
       description: desc,
+      fields: fields,
       footer: { text: 'BDL VA HQ · submitted ' + rec.submittedAt + ' UK' },
       timestamp: new Date().toISOString()
     }]
@@ -4073,7 +4291,7 @@ function ukHour() { return ukNow().getHours(); }
 
 // ── STATE ────────────────────────────────────────────────
 // bumped on every ship — shown as a badge next to the logo so a screenshot instantly tells us the version
-var APP_VERSION='v170';
+var APP_VERSION='v182';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -4692,6 +4910,20 @@ function showVAView() {
   document.getElementById('view-manager').classList.remove('active');
   var lv=document.getElementById('view-leads'); if(lv) lv.classList.remove('active');
   document.getElementById('view-va').classList.add('active');
+  // THE v178 BLACK SCREEN, ROOT CAUSE: Sarah's page hides #login-screen with an inline
+  // display:none, and for anyone who hasn't picked a VA yet the login screen IS the VA
+  // view's only content. Coming back from the import page made view-va active — an
+  // active but completely EMPTY view, which the "is any .view active?" watchdog
+  // rightly ignored. If no shift is running and no setup form is open, the login
+  // screen must come back.
+  try{
+    var ls=document.getElementById('login-screen');
+    var setupOpen=['mera-setup','suz-setup'].some(function(id){
+      var el=document.getElementById(id); return el && el.style.display==='block';
+    });
+    var shiftUp=!!(window.state && state.shiftStart);
+    if(ls && !shiftUp && !setupOpen) ls.style.display='flex';
+  }catch(e){}
   updateNavBtn();
 }
 function _openManager(){
@@ -4882,21 +5114,21 @@ async function buildWeeklyEmbeds(monX,sunX,log,opts){
   })();
   var mDay=Math.max.apply(null,dayTot.concat([1]));
   var spark=dayTot.map(function(n){ var lv=Math.round((n/mDay)*7); return '\u2581\u2582\u2583\u2584\u2585\u2586\u2587\u2588'.charAt(Math.max(0,Math.min(7,lv))); }).join('');
+  /* Same verdict as the EOD embed (Jack, on the bars: "looks like it's broken") — the
+     dcBar lines rendered as broken grey rectangles AND duplicated mainFields, which were
+     built above and then never attached to the message at all. The description keeps the
+     story (headline, shape of the week, split, problems); numbers live in real fields. */
   var mainDesc=lead
     +'   '+delta(totL,pT)
-    +'\n\n'+dcBar(totH,hoursTarget)+'  \u00b7  **'+totH.toFixed(1)+'h** / '+hoursTarget+'h'
-    +'\n\u26a1 **'+(totH>0?(totL/totH).toFixed(1):'0')+'** leads/hr  \u00b7  '+(totShifts?(totL/totShifts).toFixed(1):'0')+' per shift  \u00b7  '+totShifts+' shifts'
     +(spark?'\n\n`'+spark+'`  Mon \u2192 Sun':'')
     +'\n\n'+(vaDisp('Mera')+': **'+M.lds+'**  \u00b7  '+vaDisp('Suz')+': **'+S.lds+'**')
-    +(wkSpend?'\n\u{1F4B7} Spend **'+money(wkSpend.total)+'**  ('+vaDisp('Mera')+' '+money(wkSpend.A.spend)+' \u00b7 '+vaDisp('Suz')+' '+money(wkSpend.S.spend)+')':'')
-    +(cBuy?'\n\u{1F3AF} Buy rate **'+cBuy.rate+'%** \u2014 '+cBuy.b+' of '+cBuy.d+' decided':'')
-    +(bestAll.bestD?'\n\u{1F3C6} Best day **'+bestAll.bestD.slice(0,5)+'** \u2014 '+bestAll.bestN+' leads ('+(bestAll===M?vaDisp('Mera'):vaDisp('Suz'))+')':'')
     +(issues.length?'\n\n\u26a0\ufe0f **'+issues.join(' \u00b7 ')+'**':'');
   var main={
     author:{name:(opts.label||'Weekly VA Review')},
     title:'\u{1F4CA} '+monX+' \u2192 '+sunX+(opts.test?'  \u00b7 TEST':''),
     color: onTrack?3066993:9133311,
     description:mainDesc,
+    fields:mainFields,
     footer:{text:'BDL VA HQ \u00b7 weekly review'},
     timestamp:new Date().toISOString()
   };
@@ -4915,16 +5147,11 @@ async function buildWeeklyEmbeds(monX,sunX,log,opts){
     if(vb) fields.push({name:'\u{1F3AF} Buy rate', value:'**'+vb.rate+'%** \u2014 '+vb.b+' of '+vb.d, inline:true});
     var statusTxt = opts.current ? (st.todayRec?'\u2705 Submitted '+(st.todayRec.submittedAt||'today'):'\u274c Not submitted yet')
                                  : (st.shifts===0?'\u274c No shifts logged this week':(short<=0?'\u2705 Hours target hit':'\u{1F7E1} '+short.toFixed(1)+'h short of target'));
-    var vaDesc=statusTxt
-      +'\n\n'+dcBar(st.lds,goalWk)+'  \u00b7  **'+st.lds+'**/'+goalWk+' leads   '+delta(st.lds,prevL)
-      +'\n'+dcBar(st.hrs,target)+'  \u00b7  **'+st.hrs.toFixed(1)+'h**/'+target+'h'
-      +'\n\n\u{1F4CB} **'+st.shifts+'** shifts  \u00b7  '+(st.shifts?Math.round(st.lds/st.shifts):0)+' leads/shift  \u00b7  '+(st.hrs>0?(st.lds/st.hrs).toFixed(1):'0')+'/hr'
-      +(st.bestD?'\n\u{1F3C6} Best day **'+st.bestD.slice(0,5)+'** \u2014 '+st.bestN+' leads':'')
-      +(spendLine?'\n\u{1F4B7} Spend **'+money(vaName==='Mera'?wkSpend.A.spend:wkSpend.S.spend)+'**':'')
-      +(vb?'\n\u{1F3AF} Buy rate **'+vb.rate+'%** \u2014 '+vb.b+' of '+vb.d:'');
+    var goalTxt=(st.lds>=goalWk?'\u2705 hit the '+goalWk+'-lead week':((goalWk-st.lds)+' short of the '+goalWk+'-lead week'));
+    var vaDesc=statusTxt+'\n'+goalTxt+'   '+delta(st.lds,prevL);
     return { embeds:[{ author:{name:vaDisp(vaName)+' \u00b7 week in review'},
       title:(vaName==='Mera'?'\u{1F7E3} ':'\u{1F7E1} ')+vaDisp(vaName)+' \u2014 '+st.lds+' leads',
-      color:col, description:vaDesc, footer:{text:'w/c '+monX}, timestamp:new Date().toISOString() }] };
+      color:col, description:vaDesc, fields:fields.filter(Boolean), footer:{text:'w/c '+monX}, timestamp:new Date().toISOString() }] };
   }
   var mainMsg={embeds:[main]};
   if(settings.discordUserId) mainMsg.content='<@'+settings.discordUserId+'>';
@@ -5361,6 +5588,7 @@ function renderTasks() {
     extEl.appendChild(fill(taskSectionEl('✓ Done',doneList.length,'tk-sec-done','done',false),doneList));
   }
 
+  try{ renderVaResults(); }catch(e){}
   markNextUpTask();
   updateTaskProgress();
   updateStats();
@@ -5641,7 +5869,12 @@ function buildTaskEl(task, i, isExtra) {
     '<div class="task-header" onclick="toggleBody(\''+bodyId+'\')">'
     + '<div class="'+checkCls+'" onclick="event.stopPropagation();'+checkClick+'">'+checkTick+'</div>'
     + iconTile
-    + '<div class="task-main"><div class="task-name">'+task.name+skipTag+'</div>'+subHtml+'</div>'
+    + '<div class="task-main"><div class="task-name">'+task.name+skipTag
+      // Routed From-Jack items are INVISIBLE until the task is opened — Jack looked at
+      // Mera's 13 outstanding items, then at her task list, and reasonably concluded
+      // they weren't there. If a host task is carrying his items, say so on the row.
+      +((task.jbIids&&task.jbIids.length)?'<span class="jb-carry">📌 '+task.jbIids.length+' from Jack</span>':'')
+      +'</div>'+subHtml+'</div>'
     + mandTag + timerHtml + statusChip
     + '<button class="task-expand-btn">&#9662;</button>'
     + '</div>'
@@ -5683,10 +5916,12 @@ function buildFields(task, i, isExtra) {
   var fromTimer = task._timeFromTimer ? ' <i>from the timer</i>' : '';
   var lc = taskLeadCount(task);
   var leadTxt = (task.leads===''||task.leads==null) ? 'not set' : (lc+' lead'+(lc===1?'':'s'));
+  var _hasTime=!!(task.timeHrs||task.timeMins);
+  var _hasLeads=!(task.leads===''||task.leads==null)&&lc>0;
   var tf = '<div class="task-fields tf-slim">'
     + '<div class="tf-recap">'
-      + '<span class="tf-r"><em>Time</em><b>'+loggedTxt+'</b>'+fromTimer+'</span>'
-      + '<span class="tf-r"><em>Leads</em><b>'+leadTxt+'</b></span>'
+      + '<span class="tf-r'+(_hasTime?' has':'')+'"><em>Time</em><b>'+loggedTxt+'</b>'+fromTimer+'</span>'
+      + '<span class="tf-r'+(_hasLeads?' has':'')+'"><em>Leads</em><b>'+leadTxt+'</b></span>'
       + '<button type="button" class="tf-exact" onclick="tfExact(\'' + sfx + '\')">Set exact time</button>'
     + '</div>'
     + '<div class="tf-exactrow" id="tfx-'+sfx+'" style="display:none;">'
@@ -5715,10 +5950,17 @@ function buildFields(task, i, isExtra) {
       // a link that came from a saved filter gets its name + a one-click Open
       if(lnames[li]){
         var _lset=(ll[li]!==''&&ll[li]!=null&&ll[li]!==undefined);
-        linkRows += '<div class="pf-link'+(_lset?' pf-logged':'')+'" id="pfr-'+sfx+'-'+li+'">'
+        var _run=!!(task.linkRun&&task.linkRun[li]);
+        var _secs=(task.linkSecs&&task.linkSecs[li])||0;
+        linkRows += '<div class="pf-link'+(_lset?' pf-logged':'')+(_run?' pf-running':'')+'" id="pfr-'+sfx+'-'+li+'">'
           + '<span class="pf-n">'+(li+1)+'</span>'
           + '<span class="pf-name" title="'+String(lnames[li]).replace(/"/g,'&quot;')+'">'+lnames[li]+'</span>'
-          + (lv[li]?'<a class="pf-open" href="'+String(lv[li]).replace(/"/g,'&quot;')+'" target="_blank" onclick="event.stopPropagation();ttEnsureRunning('+i+','+isExtra+')">Open &#8599;</a>':'')
+          + (lv[li]?'<a class="pf-open" href="'+String(lv[li]).replace(/"/g,'&quot;')+'" target="_blank" onclick="event.stopPropagation();pfTimerStart('+i+','+isExtra+','+li+')">Open &#8599;</a>':'')
+          // per-link Start/Stop — Jack: "start stop should be each one". One running at a
+          // time per task; starting link B banks link A's time automatically.
+          + '<button type="button" class="pf-timer'+(_run?' run':'')+'" id="pft-'+sfx+'-'+li+'"'
+            +' onclick="event.stopPropagation();pfTimerToggle('+i+','+isExtra+','+li+')">'
+            +(_run?'&#9632; ':'&#9654; ')+pfFmtSecs(_secs)+'</button>'
           // one tap per lead instead of click-select-type-tab, so per-link data actually gets filled in
           + '<span class="pf-step">'
             + '<button type="button" title="Down (tap once for zero)" onclick="event.stopPropagation();pfStep('+i+','+isExtra+','+li+',-1)">&#8722;</button>'
@@ -5781,7 +6023,8 @@ function quickLogHTML(task,i,isExtra){
   if(task.hasLinks){
     // per-link counts live in the panel — show the running total and one tap to get there
     h+='<span class="ql-auto'+(taskLeadCount(task)?'':' zero')+'" id="qll-'+sfx+'">'+taskLeadCount(task)+'</span>'
-      +'<button type="button" class="ql-chip" onclick="'+st+'qlOpen(\''+sfx+'\')">Links &#8250;</button>';
+      +'<button type="button" class="ql-chip" onclick="'+st+'qlOpen(\''+sfx+'\')">'
+        +((task.links&&task.links.length)?task.links.length+' link'+(task.links.length===1?'':'s'):'Links')+' &#8250;</button>';
   } else {
     var set=!(task.leads===''||task.leads===null||task.leads===undefined);
     h+='<span class="ql-step">'
@@ -5792,6 +6035,55 @@ function quickLogHTML(task,i,isExtra){
   }
   return h+'</div>';
 }
+/* ── per-link timers — "start stop should be each one" ──────────────────────
+   One per link row, one running at a time per task: starting link B banks link A's
+   elapsed time first (nobody works two filters at once, and forgetting to stop is
+   the normal case, not the exception). Opening a link starts its timer too. Time
+   accumulates in t.linkSecs[li]; the TASK timer keeps running independently. */
+function pfFmtSecs(s){
+  s=Math.max(0,Math.round(+s||0));
+  if(s<60) return s+'s';
+  var m=Math.floor(s/60);
+  return m>=60 ? Math.floor(m/60)+'h '+(m%60)+'m' : m+'m';
+}
+function pfTimerToggle(i,isExtra,li){
+  var arr=isExtra?state.extraTasks:state.tasks, t=arr[i]; if(!t||t.done) return;
+  t.linkRun=t.linkRun||[]; t.linkSecs=t.linkSecs||[];
+  if(t.linkRun[li]) pfTimerStop(t,li);
+  else pfTimerStart(i,isExtra,li);
+  renderTasks(); try{ saveDraftSoon(); }catch(e){}
+}
+function pfTimerStart(i,isExtra,li){
+  var arr=isExtra?state.extraTasks:state.tasks, t=arr[i]; if(!t||t.done) return;
+  t.linkRun=t.linkRun||[]; t.linkSecs=t.linkSecs||[];
+  if(t.linkRun[li]) return;                      // already running (e.g. Open clicked twice)
+  for(var z=0;z<t.linkRun.length;z++) if(t.linkRun[z]) pfTimerStop(t,z);   // bank the other one
+  t.linkRun[li]=Date.now();
+  try{ ttEnsureRunning(i,isExtra); }catch(e){}   // the task timer captures the total
+  renderTasks(); try{ saveDraftSoon(); }catch(e){}
+}
+function pfTimerStop(t,li){
+  if(!t.linkRun||!t.linkRun[li]) return;
+  var add=Math.round((Date.now()-t.linkRun[li])/1000);
+  t.linkSecs=t.linkSecs||[];
+  t.linkSecs[li]=(+t.linkSecs[li]||0)+Math.max(0,add);
+  t.linkRun[li]=null;
+}
+/* live tick for whichever link timer is running */
+setInterval(function(){
+  try{
+    [['t',state.tasks],['e',state.extraTasks]].forEach(function(pair){
+      (pair[1]||[]).forEach(function(t,i){
+        if(!t||!t.linkRun) return;
+        t.linkRun.forEach(function(st,li){
+          if(!st) return;
+          var el=document.getElementById('pft-'+pair[0]+i+'-'+li);
+          if(el) el.innerHTML='&#9632; '+pfFmtSecs((((t.linkSecs||[])[li])||0)+Math.round((Date.now()-st)/1000));
+        });
+      });
+    });
+  }catch(e){}
+},1000);
 /* per-link leads stepper — one tap. This is the ONLY route to knowing which
    individual storefront or filter actually produced anything. */
 function pfStep(i,isExtra,li,d){
@@ -5913,6 +6205,8 @@ function markDone(i, isExtra) {
     qlFlash(sfxD);
     showToast('Set leads found &#8212; tap + on the row (or &#8722; once for zero)', true); return;
   }
+  // bank any link timer still running — forgetting to stop is the normal case
+  try{ (task.linkRun||[]).forEach(function(st,z){ if(st) pfTimerStop(task,z); }); }catch(e){}
   task.done = true; task.skipped = false;
   task.tickedAt = new Date().toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:false});
   state._justDoneKey=(isExtra?'e':'t')+i; renderTasks(); setTimeout(function(){state._justDoneKey=null;},500);
@@ -6278,6 +6572,89 @@ function toggleBreak() {
 }
 
 // Live count of this VA's sourced leads for today, straight from the synced sheet (null if not loaded)
+/* ══════════ YOUR RESULTS — closing the loop for the VAs ═════════════════════
+   Until now a VA only ever saw VOLUME: leads today, this week, this month. What
+   Jack DECIDED never came back to the person who found it — so they were
+   optimising for the only number they could see, and had no way to learn what a
+   good lead looks like. Everything here already existed in the data; it just
+   never travelled back. Rejection reasons are shown too: being told "low ROI"
+   three times is worth more than any target. */
+function vaCode(va){ return va==='Mera'?'VA M':va==='Suz'?'VA S':null; }
+function vaYmd(s){
+  s=String(s||'');
+  var m=s.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+  if(m) return m[3]+('0'+m[2]).slice(-2)+('0'+m[1]).slice(-2);
+  var i=s.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if(i) return i[1]+('0'+i[2]).slice(-2)+('0'+i[3]).slice(-2);
+  return '';
+}
+function vaMyLeads(va, days){
+  var code=vaCode(va); if(!code||!window.leads) return [];
+  var cut='';
+  if(days){
+    var d=new Date(); d.setDate(d.getDate()-days);
+    cut=d.getFullYear()+('0'+(d.getMonth()+1)).slice(-2)+('0'+d.getDate()).slice(-2);
+  }
+  return window.leads.filter(function(l){
+    if(l.va!==code) return false;
+    if(!cut) return true;
+    var y=vaYmd(l.date); return y && y>=cut;
+  });
+}
+function vaResultsHTML(va){
+  var mine=vaMyLeads(va,30);
+  if(!mine.length) return '';
+  var decided=mine.filter(function(l){ return l.islead!==null || l.status; });
+  var bought =mine.filter(function(l){ return l.status==='bought'; });
+  var basket =mine.filter(function(l){ return ['atbq','atba2a','waiting'].indexOf(l.status)>-1; });
+  var waiting=mine.length-decided.length;
+  var rate   =decided.length ? Math.round(bought.length/decided.length*100) : null;
+
+  // what got turned down, and why — the actual teaching signal
+  var reasons={};
+  mine.filter(function(l){ return l.islead===false; }).forEach(function(l){
+    var n=String(l.notes||'').match(/Rejected:\s*([^\n.]+)/i);
+    var why=n?n[1].trim():'No reason given';
+    reasons[why]=(reasons[why]||0)+1;
+  });
+  var topReasons=Object.keys(reasons).sort(function(a,b){ return reasons[b]-reasons[a]; }).slice(0,3);
+
+  var wins=bought.slice().sort(function(a,b){ return (vaYmd(b.date)||'').localeCompare(vaYmd(a.date)||''); }).slice(0,3);
+
+  return '<div class="vres">'
+    +'<div class="vres-head"><span>&#127942; Your results</span><i>last 30 days &middot; what Jack actually did with your leads</i></div>'
+    +'<div class="vres-row">'
+      +'<div class="vres-k vres-buy"><b>'+bought.length+'</b><span>bought</span></div>'
+      +'<div class="vres-k"><b>'+basket.length+'</b><span>in the basket</span></div>'
+      +'<div class="vres-k"><b>'+(rate===null?'&#8211;':rate+'%')+'</b><span>hit rate</span></div>'
+      +'<div class="vres-k vres-wait"><b>'+waiting+'</b><span>still to review</span></div>'
+    +'</div>'
+    +(wins.length
+      ? '<div class="vres-sec"><div class="vres-lbl">Jack bought these from you</div>'
+        + wins.map(function(l){
+            return '<div class="vres-win"><span>&#10003;</span><b>'+escHtml(String(l.title||l.asin||'').slice(0,58))+'</b>'
+              +(l.profit?'<i>£'+Math.round(l.profit)+'</i>':'')+'</div>';
+          }).join('')
+        +'</div>'
+      : '')
+    +(topReasons.length
+      ? '<div class="vres-sec"><div class="vres-lbl">Most common reason yours get turned down</div>'
+        + topReasons.map(function(r){
+            return '<div class="vres-why"><b>'+escHtml(r)+'</b><i>&times;'+reasons[r]+'</i></div>';
+          }).join('')
+        +'<div class="vres-tip">Worth checking these before you add one — it saves you the work.</div>'
+        +'</div>'
+      : '')
+    +'</div>';
+}
+function renderVaResults(){
+  try{
+    var host=document.getElementById('va-results'); if(!host) return;
+    var va=(window.state&&(state._previewAs||state.currentVA))||null;
+    if(!va||va==='Test'){ host.innerHTML=''; return; }
+    host.innerHTML=vaResultsHTML(va);
+  }catch(e){}
+}
 function vaSheetLeadsToday(){
   try{
     var v=(window.state&&(state._previewAs||state.currentVA))||null;
@@ -11036,6 +11413,7 @@ function showToast(msg,isError) {
     var host=document.getElementById('mgr-trends-content'); if(!host) return;
     try{ if((window.leads||[]).length===0 && typeof loadLeadsFromDB==='function'){ loadLeadsFromDB().then(function(){
       try{ var hi=document.getElementById('lead-intel'); if(hi) hi.innerHTML=mgr_leadIntelHTML(); }catch(e){}
+      try{ renderVaResults(); }catch(e){}
       try{ var h=document.getElementById('lead-insights'); if(h) h.innerHTML=mgr_leadInsightsHTML(); }catch(e){}
     }); } }catch(e){}
     // filter usage (own table) so the Filter performance panel has data
@@ -11556,6 +11934,26 @@ async function payMarkPaid(runK){
   try{ showToast('Marked as paid \u2713 \u2014 reminders stopped'); }catch(e){}
   try{ mgr_renderOverview(); }catch(e){}
 }
+/* Straight question to the database: has this run been marked paid?
+   Returns 'paid' | 'unpaid' | 'unknown'.
+
+   'unknown' (offline, timeout, HTTP error) is deliberately NOT treated as unpaid.
+   A reminder fired because a network call blipped is worse than one that turns up
+   four hours late — the GitHub Action covers the same slots either way. */
+function payCloudPaid(key){
+  if(!DB_ENABLED) return Promise.resolve('unknown');
+  return fetchT(SUPABASE_URL+'/rest/v1/app_flags?k=eq.'+encodeURIComponent(payFlagKey(key))+'&select=k',
+      {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}})
+    .then(function(r){ return r.ok?r.json():null; })
+    .then(function(rows){
+      if(!Array.isArray(rows)) return 'unknown';
+      if(!rows.length) return 'unpaid';
+      // learned something — cache it so the banner agrees too
+      window._payPaid=window._payPaid||{}; window._payPaid[key]=true;
+      try{ localStorage.setItem('bdl_'+payFlagKey(key),'1'); }catch(e){}
+      return 'paid';
+    }).catch(function(){ return 'unknown'; });
+}
 /* one place that actually confirms the write landed */
 async function payWriteFlag(key){
   try{
@@ -11573,6 +11971,10 @@ async function payWriteFlag(key){
 function payPingCheck(){
   try{
     if(IS_PREVIEW||!DB_ENABLED) return;
+    // Pay reminders are Jack's business, and this timer used to run in EVERY browser
+    // with the app open — Mera's, Suz's, Sarah's. Their devices have no idea what has
+    // been paid (see below), so they pinged him about pay he had already sent.
+    if(!window._mgrUnlocked) return;
     var s=getAppSettings();
     if(s.nPay===0) return;
     var hook=(s.whPay||'').trim()||DISCORD_PAY_WEBHOOK||DISCORD_WEBHOOK;
@@ -11604,6 +12006,15 @@ function payPingCheck(){
     if(daysOver>=PAY_TAPER_DAYS && hourSlot!==0) return; // past day 3 → midday only
     var slot=daysOver*3+hourSlot;
     var key='payping_'+run.k+'_'+c.last+'_'+slot;
+    // ASK THE DATABASE, not this browser. payIsPaid() in the loop above reads only
+    // localStorage plus an in-memory map that payCheckCloud() fills — and payCheckCloud
+    // only ever ran inside Jack's manager init. Any device that hadn't run it believed
+    // the pay was outstanding for ever, claimed the time-slot (which silenced the GitHub
+    // Action, the one sender that WOULD have got it right) and posted anyway. That is why
+    // 24/07's sourcing pay kept nagging on the 28th and 29th — it was marked paid on the
+    // 27th, and the flag was sitting in Supabase the whole time.
+    payCloudPaid(run.k+'_'+c.last).then(function(state){
+    if(state!=='unpaid') return;               // paid, or we couldn't tell — either way, say nothing
     fetch(SUPABASE_URL+'/rest/v1/app_flags',{method:'POST',
       headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,'Content-Type':'application/json',
                Prefer:'resolution=ignore-duplicates,return=representation'},
@@ -11638,6 +12049,7 @@ function payPingCheck(){
               timestamp:new Date().toISOString() }]
           })}).catch(function(){});
       }).catch(function(){});
+    });
   }catch(e){}
 }
 (function(){ setTimeout(payPingCheck,9000); setInterval(payPingCheck,15*60000); })();
@@ -12475,10 +12887,28 @@ function detailH(l){
     </div>
     <div class="d-rail">
       <div class="rail-card rail-score">
-        <div class="rail-lbl">Overall score</div>
+        <div class="rail-lbl">${s.smart?'Match to your buys':'Overall score'}</div>
         <div class="rail-score-top"><div class="rail-score-num" style="color:${col}">${s.total.toFixed(1)}<span class="rail-score-denom">/ 10</span></div><span class="d-score-grade rail-grade ${scHealth(s.total)}">${scGrade(s.total)}</span></div>
         <div class="rail-score-bar"><i style="width:${Math.round(s.total*10)}%;background:${col}"></i></div>
         <div class="rail-cmp" style="color:${cmp[1]}">${cmp[2]} ${cmp[0]}</div>
+        ${(function(){
+          /* In learned mode this number is NOT deal quality — it's how closely the lead
+             resembles things Jack has bought before. Those are different questions, and
+             showing only the first as a big "/10" is how a £6.48-profit, 9.4%-ROI lead
+             ended up displaying 7.7 with three red warnings beside it. Show BOTH, and put
+             the warnings where the score is so they can't be read separately. */
+          var out='';
+          if(s.smart){
+            try{
+              var q=calcScore(l,true);
+              out+='<div class="rail-alt">Deal quality <b style="color:'+scCol(q.total)+'">'+q.total.toFixed(1)+'</b>/10'
+                 +'<span>on ROI, profit, demand &amp; margin</span></div>';
+            }catch(e){}
+          }
+          var b=[]; try{ b=leadBadges(l); }catch(e){}
+          if(b.length) out+='<div class="rail-warn">⚠ '+b.length+' warning'+(b.length===1?'':'s')+'<span>'+b.join(' · ')+'</span></div>';
+          return out;
+        })()}
       </div>
       <div class="rail-card">
         <div class="rail-lbl">Decision</div>
@@ -13885,9 +14315,33 @@ function sbLoadBatches(force){
 }
 function sbToday(){ return ukDateShort(); }
 function sbBatchesToday(){ var t=sbToday(); return (SB_BATCHES||[]).filter(function(b){ return b.date===t; }); }
+
+/* ── THE DAY BEING IMPORTED FOR ─────────────────────────────────────────────
+   Defaults to today and stays there unless it's deliberately changed. Backdating
+   exists because the sheet sometimes gets done a day late, and a batch has to
+   land on the day the work was actually for — otherwise the history is wrong and
+   the VA's task list is wrong with it. Everything downstream (which batch is open,
+   what Sarah sees, what the VA gets) follows sbWorkDate(), never sbToday(). */
+var SB_IMPORT_DATE=null;                       // null = today
+function sbWorkDate(){ return SB_IMPORT_DATE || sbToday(); }
+function sbIsBackdated(){ return sbWorkDate()!==sbToday(); }
+function sbToISO(uk){ var m=String(uk||'').match(/^(\d{2})\/(\d{2})\/(\d{4})$/); return m?(m[3]+'-'+m[2]+'-'+m[1]):''; }
+function sbFromISO(iso){ var m=String(iso||'').match(/^(\d{4})-(\d{2})-(\d{2})$/); return m?(m[3]+'/'+m[2]+'/'+m[1]):''; }
+/* "Tue 28 Jul" — so a backdated import can never be mistaken for today's at a glance */
+function sbDayLabel(uk){
+  var iso=sbToISO(uk); if(!iso) return uk||'';
+  try{ return new Date(iso+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}); }
+  catch(e){ return uk; }
+}
+function sbSetImportDate(iso){
+  var uk=sbFromISO(iso);
+  SB_IMPORT_DATE=(!uk||uk===sbToday())?null:uk;
+  sbRenderImport();
+}
+function sbResetImportDate(){ SB_IMPORT_DATE=null; sbRenderImport(); }
 /* the batch a new paste should join: today's highest-numbered one that is NOT started */
 function sbOpenBatch(qid){
-  var t=sbToday();
+  var t=sbWorkDate();
   var mine=(SB_BATCHES||[]).filter(function(b){ return b.storefront_id===qid && b.date===t; })
     .sort(function(a,b){ return (b.batch_number||1)-(a.batch_number||1); });
   var top=mine[0];
@@ -13910,7 +14364,8 @@ async function sbSubmit(qid, raw, opts){
       ? ('No valid ASINs found. An ASIN looks like B0XXXXXXXX — I saw things like "'+parsed.bad[0]+'".')
       : 'Paste some ASINs first — one per line.'};
   }
-  if(IS_PREVIEW) return {ok:true, preview:true, added:parsed.asins.length, dupes:parsed.dupes, bad:parsed.bad.length};
+  if(IS_PREVIEW) return {ok:true, preview:true, added:parsed.asins.length, dupes:parsed.dupes, bad:parsed.bad.length,
+                         queue:q.name, assignedTo:(q.manual_review?'Jack':(q.default_assignee||'Jack')), manual:!!q.manual_review};
 
   await sbLoadBatches(true);
   var slot=sbOpenBatch(qid);
@@ -13918,7 +14373,7 @@ async function sbSubmit(qid, raw, opts){
 
   if(isNew){
     var assignee = q.manual_review ? 'Jack' : (q.default_assignee||'Jack');
-    batch={ id:'b_'+sbUid(), storefront_id:qid, storefront_name:q.name, date:sbToday(),
+    batch={ id:'b_'+sbUid(), storefront_id:qid, storefront_name:q.name, date:sbWorkDate(),
             batch_number:newNumber, status: q.manual_review?'Draft':'Assigned',
             assigned_to: assignee, priority:q.priority||'Normal',
             asin_count:0, created_by:(opts.by||'Sarah') };
@@ -13995,7 +14450,13 @@ function sbClearInlineViewDisplay(){
 }
 function sbHideImport(){
   var v=document.getElementById('view-import');
-  if(v){ v.classList.remove('active'); v.style.removeProperty('display'); }
+  // If the import view isn't actually open, DO NOTHING. Every nav button calls this
+  // defensively, and the old version still ran its "go back to _sbPrevView" tail even
+  // when there was nothing to close — so Sarah's page → Jack → Shift restored a stale
+  // _sbPrevView on top of the view the nav had just opened, and left NOTHING with
+  // .active. Black screen. Closing something that isn't open must be a no-op.
+  if(!v || !v.classList.contains('active')) return;
+  v.classList.remove('active'); v.style.removeProperty('display');
   sbClearInlineViewDisplay();
   try{ history.replaceState({},'',location.pathname); }catch(e){}
   // return to wherever they came from rather than reloading the whole app
@@ -14004,6 +14465,23 @@ function sbHideImport(){
   if(back==='view-leads' && window._mgrUnlocked){ try{ _openLeads(); return; }catch(e){} }
   try{ showVAView(); }catch(e){ location.reload(); }
 }
+/* WATCHDOG — a blank screen must be impossible, whatever the cause.
+   This app has now produced one twice (v157 nesting, v177 sbHideImport's stale restore).
+   Both times the symptom was identical: no `.view` carrying `.active`, no error in the
+   console, and no way out but a reload. Rather than only fixing each cause, check the
+   invariant directly — if nothing is on screen and we aren't on the login screen, put
+   the user back somewhere real. */
+function viewWatchdog(){
+  try{
+    if(document.querySelector('.view.active')) return;
+    var ls=document.getElementById('login-screen');
+    if(ls && ls.style.display!=='none' && ls.offsetParent!==null) return;   // login is meant to be up
+    sbClearInlineViewDisplay();
+    if(window._mgrUnlocked && window._sbPrevView==='view-manager'){ try{ _openManager(); return; }catch(e){} }
+    try{ showVAView(); }catch(e){}
+  }catch(e){}
+}
+setInterval(viewWatchdog, 1200);
 /* Belt and braces: any nav click closes the import view first, and on load we clear
    stale inline display so a reload always rescues a stuck tab. */
 (function(){
@@ -14034,6 +14512,79 @@ function sbHideImport(){
   }
   chk();
 })();
+/* ── which tag she's on, and the search filter over the tag list ─────────────
+   The first build put one big textarea per queue in a grid. That was fine for six
+   queues; Jack's real tag list is two dozen, and twenty-four identical boxes is a
+   wall, not a page. One box, one tag at a time, everything else out of the way. */
+var SB_PICKED=null, SB_QFILTER='', SB_FLASH=null;
+function sbPick(qid){
+  SB_PICKED=(SB_PICKED===qid)?null:qid; SB_FLASH=null;
+  sbRenderImport();
+  if(SB_PICKED) setTimeout(function(){ var t=document.getElementById('sbi-ta'); if(t) t.focus(); },30);
+}
+/* repaint ONLY the chips — re-rendering the page would steal focus mid-word */
+function sbFilterTags(v){
+  SB_QFILTER=v||'';
+  var el=document.getElementById('sbi-chips');
+  if(el) el.innerHTML=sbChipsHTML();
+}
+/* Recently used tags. With 25 chips the real cost is HUNTING for the one you want, and
+   in practice a handful get used every day and the rest rarely. Keeping the sheet order
+   intact (Jack asked for it) but surfacing the last few used on top fixes that without
+   moving anything around under her. */
+function sbRecent(){
+  try{ var a=JSON.parse(localStorage.getItem('bdl_sb_recent')||'[]'); return Array.isArray(a)?a:[]; }
+  catch(e){ return []; }
+}
+function sbPushRecent(qid){
+  try{
+    var a=sbRecent().filter(function(x){ return x!==qid; });
+    a.unshift(qid);
+    localStorage.setItem('bdl_sb_recent', JSON.stringify(a.slice(0,6)));
+  }catch(e){}
+}
+function sbRecentHTML(){
+  var live={}; sbActiveQueues().forEach(function(q){ live[q.id]=q; });
+  var rec=sbRecent().map(function(id){ return live[id]; }).filter(Boolean);
+  if(rec.length<2) return '';                       // one chip isn't a shortcut, it's clutter
+  return '<div class="sbi-recent"><span class="sbi-recent-l">Recent</span>'
+    +rec.map(function(q){
+        return '<button class="sbi-chip sm'+(SB_PICKED===q.id?' on':'')+'" onclick="sbPick(\''+q.id+'\')">'
+          +escHtml(q.name)+'</button>';
+      }).join('')
+    +'</div>';
+}
+/* Where a tag routes = its colour. 25 identical grey pills told Sarah nothing;
+   now Mera tags are purple, Suz yellow, review tags amber — the same identity
+   colours the whole app already uses, so the meaning comes for free. */
+function sbDestCls(q){
+  if(q.manual_review) return 'dest-jack';
+  if(q.default_assignee==='Mera') return 'dest-mera';
+  if(q.default_assignee==='Suz')  return 'dest-suz';
+  return 'dest-jack';
+}
+function sbDestName(q){
+  return q.manual_review ? 'Jack (routes it)' : (q.default_assignee||'Jack');
+}
+function sbChipsHTML(){
+  var f=String(SB_QFILTER||'').trim().toLowerCase();
+  var qs=sbActiveQueues().filter(function(q){
+    return !f || String(q.name||'').toLowerCase().indexOf(f)>=0;
+  });
+  if(!qs.length) return '<div class="sbi-nochip">No tag matches “'+escHtml(SB_QFILTER)+'”.</div>';
+  return qs.map(function(q){
+    var slot=sbOpenBatch(q.id);
+    var n=slot.batch?(slot.batch.asin_count||0):0;
+    var started=(!slot.batch && slot.nextNumber>1);
+    return '<button class="sbi-chip '+sbDestCls(q)+(SB_PICKED===q.id?' on':'')+(slot.batch?' has':'')+(started?' started':'')+'"'
+      +' onclick="sbPick(\''+q.id+'\')" title="'+escHtml(q.name)+' → '+escHtml(sbDestName(q))+'">'
+      +'<i class="sbi-dot"></i>'+escHtml(q.name)
+      +(n?'<span class="sbi-chip-n">'+n+'</span>':(started?'<span class="sbi-chip-tick">✓</span>':''))
+      +'</button>';
+  }).join('')
+  // the colours mean something — say what, once, under the chips
+  +'<div class="sbi-key"><span class="k-m">● Mera</span><span class="k-s">● Suz</span><span class="k-j">● Jack routes it</span></div>';
+}
 function sbImportHTML(){
   var qs=sbActiveQueues();
   if(!qs.length){
@@ -14047,38 +14598,97 @@ function sbImportHTML(){
     return '<div class="sbi-wrap"><div class="sbi-empty">No queues set up yet.'
       +'<span>Jack: open the <b>Storefronts</b> tab and add one.</span></div></div>';
   }
-  var today=sbToday();
-  var boxes=qs.map(function(q){
+  var wd=sbWorkDate(), back=sbIsBackdated();
+
+  // ── the day being imported for ────────────────────────────────────────────
+  var dayBar='<div class="sbi-daybar'+(back?' back':'')+'">'
+    +'<span class="sbi-daylab">Importing for</span>'
+    +'<input type="date" class="sbi-dateinput" id="sbi-date" value="'+sbToISO(wd)+'"'
+      +' max="'+sbToISO(sbToday())+'" onchange="sbSetImportDate(this.value)">'
+    +'<span class="sbi-daytag">'+escHtml(sbDayLabel(wd))+'</span>'
+    +(back
+        ? '<span class="sbi-backflag">Backdated</span>'
+          +'<button class="sbi-daybtn" onclick="sbResetImportDate()">Back to today</button>'
+        : '<span class="sbi-todayflag">Today</span>')
+    +'</div>';
+
+  // ── step 2: the one paste box, for whichever tag is selected ──────────────
+  var paste;
+  var q=SB_PICKED?sbQueueById(SB_PICKED):null;
+  if(!q){
+    SB_PICKED=null;
+    paste='<div class="sbi-pick-hint"><b>Pick a tag above to start.</b>'
+      +'<span>The box appears here once you do — one tag at a time, so nothing lands in the wrong place.</span></div>';
+  } else {
     var slot=sbOpenBatch(q.id);
-    var openB=slot.batch;
-    var state = openB
-      ? ('<span class="sbi-state open">Batch '+(openB.batch_number||1)+' open · '+(openB.asin_count||0)+' ASINs so far</span>')
+    var state = slot.batch
+      ? '<span class="sbi-state open">Batch '+(slot.batch.batch_number||1)+' open · '+(slot.batch.asin_count||0)+' ASINs so far</span>'
       : (slot.nextNumber>1
-          ? '<span class="sbi-state locked">Batch '+(slot.nextNumber-1)+' has been started — this goes into <b>Batch '+slot.nextNumber+'</b></span>'
-          : '<span class="sbi-state fresh">Nothing yet today</span>');
-    return '<div class="sbi-q" id="sbi-q-'+q.id+'">'
-      +'<div class="sbi-q-head"><b>'+escHtml(q.name)+'</b>'+state+'</div>'
-      +'<textarea class="sbi-ta" id="sbi-ta-'+q.id+'" rows="5" spellcheck="false"'
-        +' placeholder="Paste ASINs here — one per line&#10;B0XXXXXXXX&#10;B0XXXXXXXX" '
-        +'oninput="sbImportCount(\''+q.id+'\')"></textarea>'
+          ? '<span class="sbi-state locked">Batch '+(slot.nextNumber-1)+' already started — this opens <b>Batch '+slot.nextNumber+'</b></span>'
+          : '<span class="sbi-state fresh">Nothing yet '+(back?'on this day':'today')+'</span>');
+    // Sarah (and Jack) could never see WHERE a submit would land — the routing lives
+    // in a table on a different page. Say it right on the paste panel.
+    var dest = q.manual_review
+      ? '<span class="sbi-dest review">→ lands with <b>Jack</b> to route to a VA (Storefronts tab)</span>'
+      : '<span class="sbi-dest">→ goes straight to <b>'+escHtml(vaDisp(q.default_assignee||'Jack'))+'</b> as a shift task</span>';
+    paste='<div class="sbi-paste">'
+      +'<div class="sbi-step"><span class="sbi-num">2</span>'
+        +'<span class="sbi-step-t">Paste the ASINs for <b>'+escHtml(q.name)+'</b></span>'+state+'</div>'
+      +'<div class="sbi-dest-row">'+dest+'</div>'
+      +'<textarea class="sbi-ta" id="sbi-ta" rows="8" spellcheck="false"'
+        +' placeholder="One per line&#10;B0XXXXXXXX&#10;B0XXXXXXXX" oninput="sbImportCount()"></textarea>'
       +'<div class="sbi-q-foot">'
-        +'<span class="sbi-count" id="sbi-count-'+q.id+'"></span>'
-        +'<button class="sbi-submit" id="sbi-btn-'+q.id+'" onclick="sbImportSubmit(\''+q.id+'\')">Submit</button>'
+        +'<span class="sbi-count" id="sbi-count"></span>'
+        +'<button class="sbi-submit" id="sbi-btn" onclick="sbImportSubmit()">Submit to '+escHtml(q.name)+'</button>'
       +'</div>'
-      +'<div class="sbi-result" id="sbi-res-'+q.id+'"></div>'
+      +'<div class="sbi-result'+(SB_FLASH?' ok':'')+'" id="sbi-res">'+(SB_FLASH||'')+'</div>'
       +'</div>';
-  }).join('');
+  }
+
+  // ── what's already gone in for this day ───────────────────────────────────
+  var done=(SB_BATCHES||[]).filter(function(b){ return b.date===wd; })
+    .sort(function(a,b){ return String(b.created_at||'').localeCompare(String(a.created_at||'')); });
+  var doneHTML='';
+  if(done.length){
+    var tot=done.reduce(function(s,b){ return s+(b.asin_count||0); },0);
+    doneHTML='<div class="sbi-done">'
+      +'<div class="sbi-done-head">Already in for '+escHtml(sbDayLabel(wd))
+        +'<span>'+done.length+' batch'+(done.length===1?'':'es')+' · '+tot+' ASIN'+(tot===1?'':'s')+'</span></div>'
+      +done.map(function(b){
+          var to=(b.status==='Draft')
+            ? '<i>waiting for Jack</i>'
+            : escHtml(vaDisp(b.assigned_to||'—'));
+          return '<div class="sbi-done-row">'
+            +'<b>'+escHtml(b.storefront_name||'—')+'</b>'
+            +'<span class="sbi-done-n">Batch '+(b.batch_number||1)+' · '+(b.asin_count||0)+' ASINs</span>'
+            +'<span class="sbi-done-to">'+to+'</span></div>';
+        }).join('')
+      +'</div>';
+  }
+
+  // No page title here — the bar above already says "Storefront import", and saying it
+  // twice only pushed the one thing that matters (which DAY) further down the page.
   return '<div class="sbi-wrap">'
-    +'<div class="sbi-head"><h2>Today’s imports</h2><div class="sbi-date">'+today+'</div></div>'
-    +'<div class="sbi-sub">Paste the ASINs into the right box and hit Submit. That’s it — the Keepa link and the task are made for you.</div>'
-    +'<div class="sbi-grid">'+boxes+'</div></div>';
+    +'<div class="sbi-sub">Pick the tag, paste the ASINs, hit Submit. That’s it — the Keepa link and the VA’s task are made for you.</div>'
+    +dayBar
+    +'<div class="sbi-picker">'
+      +'<div class="sbi-step"><span class="sbi-num">1</span><span class="sbi-step-t">Which tag?</span>'
+        +'<input class="sbi-search" id="sbi-search" placeholder="Type to filter…" value="'+escHtml(SB_QFILTER)+'"'
+          +' oninput="sbFilterTags(this.value)" spellcheck="false">'
+      +'</div>'
+      +sbRecentHTML()
+      +'<div class="sbi-chips" id="sbi-chips">'+sbChipsHTML()+'</div>'
+    +'</div>'
+    +paste
+    +doneHTML
+    +'</div>';
 }
 /* live count as she pastes — so she can sanity-check before submitting */
-function sbImportCount(qid){
-  var ta=document.getElementById('sbi-ta-'+qid), out=document.getElementById('sbi-count-'+qid);
+function sbImportCount(){
+  var ta=document.getElementById('sbi-ta'), out=document.getElementById('sbi-count');
   if(!ta||!out) return;
   var p=sbParseAsins(ta.value);
-  if(!ta.value.trim()){ out.textContent=''; return; }
+  if(!ta.value.trim()){ out.textContent=''; out.className='sbi-count'; return; }
   var bits=[p.asins.length+' ASIN'+(p.asins.length===1?'':'s')];
   if(p.dupes) bits.push(p.dupes+' duplicate'+(p.dupes===1?'':'s')+' will be removed');
   if(p.bad.length) bits.push(p.bad.length+' not recognised');
@@ -14086,13 +14696,32 @@ function sbImportCount(qid){
   out.textContent=bits.join('  ·  ');
 }
 var SB_LAST_PASTE={};
-async function sbImportSubmit(qid){
-  var ta=document.getElementById('sbi-ta-'+qid);
-  var res=document.getElementById('sbi-res-'+qid);
-  var btn=document.getElementById('sbi-btn-'+qid);
+async function sbImportSubmit(){
+  var qid=SB_PICKED; if(!qid) return;
+  var ta=document.getElementById('sbi-ta');
+  var res=document.getElementById('sbi-res');
+  var btn=document.getElementById('sbi-btn');
   if(!ta) return;
   var raw=ta.value;
   if(!raw.trim()){ showToast('Paste some ASINs first',true); ta.focus(); return; }
+
+  // A backdated import is a deliberate act, so make her confirm it once. In-app, not
+  // window.confirm — the native dialog renders at the TOP of the window ("This page
+  // says…"), nowhere near the button she pressed, and can't say where the work goes.
+  if(sbIsBackdated() && !window._sbBackOk){
+    var res0=document.getElementById('sbi-res');
+    if(res0){
+      res0.className='sbi-result back';
+      res0.innerHTML='<b>This is a backdated import.</b> It files under <b>'+sbDayLabel(sbWorkDate())
+        +'</b> ('+sbWorkDate()+') — it will show on Jack’s board and in history under that day, not today.'
+        +'<div class="sbi-back-acts">'
+        +'<button class="sbi-mini ok" onclick="window._sbBackOk=true;sbImportSubmit()">Yes — file it under '+sbDayLabel(sbWorkDate())+'</button>'
+        +'<button class="sbi-mini" onclick="sbResetImportDate()">No — switch to today</button>'
+        +'</div>';
+      return;
+    }
+    window._sbBackOk=true;   // no result element to ask in — fall through rather than block
+  }
 
   // double-submission guard: same list, same queue, within 5 minutes
   var sig=sbParseAsins(raw).asins.join(',');
@@ -14105,25 +14734,38 @@ async function sbImportSubmit(qid){
 
   btn.disabled=true; btn.textContent='Submitting…';
   var r=await sbSubmit(qid, raw, {by:'Sarah'});
-  btn.disabled=false; btn.textContent='Submit';
+  btn.disabled=false;
 
-  if(!r.ok){ res.className='sbi-result bad'; res.textContent=r.msg; return; }
+  if(!r.ok){ res.className='sbi-result bad'; res.textContent=r.msg; btn.textContent='Submit'; return; }
   SB_LAST_PASTE[qid]={sig:sig, at:Date.now()};
-  ta.value=''; sbImportCount(qid);
+  sbPushRecent(qid);
 
   var lines=['Imported: <b>'+r.added+'</b> ASIN'+(r.added===1?'':'s')];
   if(r.dupes) lines.push('Duplicates removed: <b>'+r.dupes+'</b>');
   if(r.bad)   lines.push('Not recognised: <b>'+r.bad+'</b>');
   if(r.preview){
-    res.className='sbi-result ok';
-    res.innerHTML=lines.join('<br>')+'<br><i>Preview mode — nothing was actually sent.</i>';
+    // He hit this FOUR times before telling me "why is nothing being sent — wtf".
+    // A quiet grey footnote is not an answer when the user's intent was to send —
+    // the result must be the warning, and the fix must be on the same line.
+    btn.textContent='Submit to '+r.queue;
+    res.className='sbi-result bad';
+    res.innerHTML='<b>NOT sent — saving is switched off in this copy.</b><br>'
+      +'Your '+r.added+' ASIN'+(r.added===1?'':'s')+' are still in the box above. '
+      +'Turn saving on, then press Submit again and it will go for real.'
+      +'<div class="sbi-back-acts">'
+      +(typeof enableLiveWrites==='function'
+          ? '<button class="sbi-mini ok" onclick="enableLiveWrites()">🔓 Switch saving on & reload</button>':'')
+      +'<a class="sbi-mini" href="https://jackbithellamazon.github.io/shifttrack/" target="_blank">Open the live app ↗</a>'
+      +'</div>';
     return;
   }
   lines.push('Batch size now: <b>'+r.total+'</b>');
-  lines.push(r.manual ? ('Waiting for Jack to assign it') : ('Sent to <b>'+vaDisp(r.assignedTo)+'</b>'));
-  res.className='sbi-result ok';
-  res.innerHTML='✓ '+lines.join('<br>');
-  try{ sbRenderImport(); }catch(e){}
+  lines.push(r.manual ? 'Waiting for Jack to assign it' : ('Sent to <b>'+vaDisp(r.assignedTo)+'</b>'));
+  if(sbIsBackdated()) lines.push('Filed under <b>'+sbDayLabel(sbWorkDate())+'</b>');
+  SB_FLASH='✓ '+lines.join('<br>');
+  // reload so the chip counts and the "already in" list are true, then repaint
+  try{ await sbLoadBatches(true); }catch(e){}
+  sbRenderImport();
 }
 function sbRenderImport(){
   var el=document.getElementById('sb-import-content'); if(!el) return;
@@ -14179,33 +14821,46 @@ function sbCardHTML(b, forVA){
     +'</div>'
     +'<div class="sb-meta"><b>'+(b.asin_count||0)+'</b> ASINs'
       +'<span class="sb-dot">·</span>'+who
-      +'<span class="sb-dot">·</span>'+escHtml(b.date||'')
+      +'<span class="sb-dot">·</span>'
+      +(b.date===sbToday()
+          ? escHtml(b.date||'')
+          : '<span class="sb-oldday" title="From an earlier day, still open">'+escHtml(sbDayLabel(b.date))+'</span>')
     +'</div>'
     +'<div class="sb-row">'+keepa+copy+'</div>'
     +acts
     +'</div>';
 }
 function sbTodayHTML(){
-  var todays=sbBatchesToday();
-  if(!todays.length){
+  // Today's batches PLUS anything still open from an earlier day. Filtering on
+  // today alone meant a batch nobody finished simply vanished at midnight, and
+  // once Sarah could backdate an import it would never have shown up here at all.
+  var t=sbToday();
+  var live=(SB_BATCHES||[]).filter(function(b){
+    return b.date===t || (b.status!=='Completed');
+  });
+  if(!live.length){
     return '<div class="sb-empty">Nothing imported today yet.<span>When Sarah pastes a list it appears here straight away.</span></div>';
   }
   var order={High:0,Normal:1,Low:2};
-  todays=todays.slice().sort(function(a,b){
+  live=live.slice().sort(function(a,b){
     var pa=order[a.priority||'Normal'], pb=order[b.priority||'Normal'];
     if(pa!==pb) return pa-pb;
     return String(a.storefront_name||'').localeCompare(String(b.storefront_name||''));
   });
-  var review=todays.filter(function(b){ return b.status==='Draft'; });
-  var rest=todays.filter(function(b){ return b.status!=='Draft'; });
+  var review=live.filter(function(b){ return b.status==='Draft'; });
+  var rest  =live.filter(function(b){ return b.status!=='Draft'; });
+  var older =live.filter(function(b){ return b.date!==t; }).length;
   var out='';
   if(review.length){
-    out+='<div class="mgr-section">Needs you'+'<span style="margin-left:auto;font-size:10.5px;font-weight:600;color:var(--muted-2);">'
+    out+='<div class="mgr-section">Needs you<span style="margin-left:auto;font-size:10.5px;font-weight:600;color:var(--muted-2);">'
       +review.length+' waiting to be routed</span></div>'
       +'<div class="sb-grid">'+review.map(function(b){return sbCardHTML(b,false);}).join('')+'</div>';
   }
   if(rest.length){
-    out+='<div class="mgr-section">In flight</div>'
+    out+='<div class="mgr-section">In flight'
+      +(older?'<span style="margin-left:auto;font-size:10.5px;font-weight:600;color:var(--amber);">'
+        +older+' carried over from an earlier day</span>':'')
+      +'</div>'
       +'<div class="sb-grid">'+rest.map(function(b){return sbCardHTML(b,false);}).join('')+'</div>';
   }
   return out;
@@ -14278,38 +14933,193 @@ function sbRefreshJack(){
 /* ── QUEUE ADMIN (replaces the master Google Sheet) ─────────────────────────*/
 function sbQueueRowHTML(q){
   function sel(id,val,opts){
-    return '<select class="sb-inp" onchange="sbQueueSet(\''+q.id+'\',\''+id+'\',this.value)">'
+    var cls=(id==='default_assignee')?(' sb-goes-'+String(val||'jack').toLowerCase()):'';
+    return '<select class="sb-inp'+cls+'" onchange="sbQueueSet(\''+q.id+'\',\''+id+'\',this.value)">'
       +opts.map(function(o){ return '<option value="'+o+'"'+(String(val)===o?' selected':'')+'>'+o+'</option>'; }).join('')
       +'</select>';
   }
-  return '<tr'+(q.active===false?' class="sbq-off"':'')+'>'
+  var cls=[]; if(q.active===false) cls.push('sbq-off'); if(SB_SEL[q.id]) cls.push('sbq-sel');
+  return '<tr'+(cls.length?' class="'+cls.join(' ')+'"':'')+'>'
+    +'<td class="sb-ctr"><label class="sb-chk"><input type="checkbox"'+(SB_SEL[q.id]?' checked':'')
+      +' onchange="sbSelToggle(\''+q.id+'\',this.checked)"><i></i></label></td>'
+    +'<td class="sb-ctr"><div class="sbq-move">'
+      +'<button title="Move up — Sarah sees the chips in this order" onclick="sbQueueMove(\''+q.id+'\',-1)">&#9650;</button>'
+      +'<button title="Move down" onclick="sbQueueMove(\''+q.id+'\',1)">&#9660;</button>'
+    +'</div></td>'
     +'<td><input class="sb-inp sb-inp-name" value="'+escHtml(q.name||'')+'" onchange="sbQueueSet(\''+q.id+'\',\'name\',this.value)"></td>'
     +'<td>'+sel('default_assignee', q.default_assignee||'Jack', ['Mera','Suz','Jack'])+'</td>'
     +'<td class="sb-ctr"><label class="sb-chk"><input type="checkbox"'+(q.manual_review?' checked':'')
       +' onchange="sbQueueSet(\''+q.id+'\',\'manual_review\',this.checked)"><i></i></label></td>'
     +'<td>'+sel('priority', q.priority||'Normal', SB_PRIORITY)+'</td>'
-    +'<td><input class="sb-inp" value="'+escHtml(q.frequency||'')+'" placeholder="Daily" onchange="sbQueueSet(\''+q.id+'\',\'frequency\',this.value)"></td>'
-    +'<td><input class="sb-inp" value="'+escHtml(q.notes||'')+'" placeholder="—" onchange="sbQueueSet(\''+q.id+'\',\'notes\',this.value)"></td>'
+    +(SB_SHOW_DETAILS
+       ? '<td><input class="sb-inp" value="'+escHtml(q.frequency||'')+'" placeholder="Daily" onchange="sbQueueSet(\''+q.id+'\',\'frequency\',this.value)"></td>'
+        +'<td><input class="sb-inp" value="'+escHtml(q.notes||'')+'" placeholder="—" onchange="sbQueueSet(\''+q.id+'\',\'notes\',this.value)"></td>'
+       : '')
     +'<td class="sb-ctr"><label class="sb-chk"><input type="checkbox"'+(q.active!==false?' checked':'')
       +' onchange="sbQueueSet(\''+q.id+'\',\'active\',this.checked)"><i></i></label></td>'
     +'<td class="sb-ctr"><button class="sbq-del" title="Remove this queue" onclick="sbQueueDel(\''+q.id+'\')">&#10005;</button></td>'
     +'</tr>';
 }
+/* ── BULK EDIT ──────────────────────────────────────────────────────────────
+   With 25 tags and 22 of them set to "review", routing every batch by hand is a
+   daily tax. Setting 22 dropdowns one at a time is worse. Tick the rows, set them
+   all at once. Frequency and Notes are hidden by default because they are identical
+   ("Daily" / "—") on every row and were eating half the table's width. */
+var SB_SEL={}, SB_SHOW_DETAILS=false;
+function sbSelCount(){ var n=0; for(var k in SB_SEL) if(SB_SEL[k]) n++; return n; }
+function sbSelIds(){ var a=[]; for(var k in SB_SEL) if(SB_SEL[k]) a.push(k); return a; }
+function sbAllShownSelected(){
+  var rows=sbAdminRows();
+  return rows.length>0 && rows.every(function(q){ return !!SB_SEL[q.id]; });
+}
+function sbSelToggle(id,on){ SB_SEL[id]=!!on; sbAdminRepaint(); }
+function sbSelAll(on){
+  sbAdminRows().forEach(function(q){ SB_SEL[q.id]=!!on; });
+  sbAdminRepaint();
+}
+function sbSelClear(){ SB_SEL={}; sbAdminRepaint(); }
+function sbAdminRepaint(){
+  var host=document.getElementById('mgr-storefronts-content');
+  if(host) host.innerHTML=sbJackHTML();
+}
+function sbToggleDetails(){ SB_SHOW_DETAILS=!SB_SHOW_DETAILS; sbAdminRepaint(); }
+async function sbBulkSet(field, val){
+  var ids=sbSelIds(); if(!ids.length) return;
+  if(field==='manual_review'||field==='active') val=(val==='true'||val===true);
+  ids.forEach(function(id){ var q=sbQueueById(id); if(q) q[field]=val; });
+  sbAdminRepaint();
+  if(IS_PREVIEW) return;
+  var fails=0;
+  await Promise.all(ids.map(async function(id){
+    try{
+      var patch={updated_at:new Date().toISOString()}; patch[field]=val;
+      var r=await fetchT(SUPABASE_URL+'/rest/v1/storefronts?id=eq.'+encodeURIComponent(id),{method:'PATCH',
+        headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+                 'Content-Type':'application/json',Prefer:'return=minimal'},
+        body:JSON.stringify(patch)});
+      if(!r.ok) fails++;
+    }catch(e){ fails++; }
+  }));
+  showToast(fails? (fails+' of '+ids.length+' didn\'t save — check your connection')
+                 : (ids.length+' queue'+(ids.length===1?'':'s')+' updated ✓'), !!fails);
+}
+function sbBulkBarHTML(){
+  var n=sbSelCount();
+  if(!n) return '<div class="sbq-bulk idle">'
+    +'<span>Tick rows to change several at once</span>'
+    +'<button class="sbq-mini" onclick="sbToggleDetails()">'
+      +(SB_SHOW_DETAILS?'Hide frequency &amp; notes':'Show frequency &amp; notes')+'</button>'
+    +'</div>';
+  return '<div class="sbq-bulk on">'
+    +'<b>'+n+' selected</b>'
+    +'<span class="sbq-bl">Goes to</span>'
+    +'<select class="sbq-mini-sel" onchange="if(this.value)sbBulkSet(\'default_assignee\',this.value);this.value=\'\';">'
+      +'<option value="">—</option><option>Mera</option><option>Suz</option><option>Jack</option></select>'
+    +'<span class="sbq-bl">Review</span>'
+    +'<button class="sbq-mini" onclick="sbBulkSet(\'manual_review\',true)">On</button>'
+    +'<button class="sbq-mini" onclick="sbBulkSet(\'manual_review\',false)">Off</button>'
+    +'<span class="sbq-bl">Active</span>'
+    +'<button class="sbq-mini" onclick="sbBulkSet(\'active\',true)">On</button>'
+    +'<button class="sbq-mini" onclick="sbBulkSet(\'active\',false)">Off</button>'
+    +'<button class="sbq-mini clear" onclick="sbSelClear()">Clear</button>'
+    +'</div>';
+}
+/* Search over the admin table. At 7 rows this was pointless; at 25 (Jack's full
+   sheet list) hunting for "Process 6" by eye is the slow bit. */
+var SB_ADMIN_FILTER='';
+function sbAdminFilter(v){
+  SB_ADMIN_FILTER=v||'';
+  var b=document.getElementById('sbq-body');
+  if(b) b.innerHTML=sbQueueRowsHTML();
+  var c=document.getElementById('sbq-shown');
+  if(c) c.textContent=sbAdminRows().length+' shown';
+}
+function sbAdminRows(){
+  var f=String(SB_ADMIN_FILTER||'').trim().toLowerCase();
+  return (SB_QUEUES||[]).filter(function(q){
+    return !f || String(q.name||'').toLowerCase().indexOf(f)>=0
+              || String(q.default_assignee||'').toLowerCase().indexOf(f)>=0;
+  });
+}
+function sbQueueRowsHTML(){
+  var rows=sbAdminRows();
+  if(!rows.length) return '<tr><td colspan="'+(SB_SHOW_DETAILS?10:8)+'" class="sb-none">'
+    +(SB_QUEUES&&SB_QUEUES.length?'No queue matches “'+escHtml(SB_ADMIN_FILTER)+'”.':'No queues yet.')+'</td></tr>';
+  return rows.map(sbQueueRowHTML).join('');
+}
+/* Order matters now: Sarah's tag chips appear in `pos` order, so the ones she uses
+   every day should be movable to the front rather than stuck wherever they were added. */
+async function sbQueueMove(id, dir){
+  var all=(SB_QUEUES||[]).slice().sort(function(a,b){ return (a.pos||0)-(b.pos||0); });
+  var i=all.findIndex(function(q){ return q.id===id; });
+  var j=i+dir;
+  if(i<0||j<0||j>=all.length) return;
+  var a=all[i], b=all[j];
+  var pa=a.pos||(i+1), pb=b.pos||(j+1);
+  if(pa===pb){ pa=i+1; pb=j+1; }             // never seen, but a tie would make the swap a no-op
+  a.pos=pb; b.pos=pa;
+  SB_QUEUES.sort(function(x,y){ return (x.pos||0)-(y.pos||0); });
+  var host=document.getElementById('mgr-storefronts-content'); if(host) host.innerHTML=sbJackHTML();
+  // A silent preview no-op here looks EXACTLY like a save: the row moves, nothing
+  // complains, and the order snaps back on refresh. Say it every time.
+  if(IS_PREVIEW){ showToast('Order changed here only — saving is OFF in this copy, so it will reset on refresh. Use the live app (or Switch saving on).', true); return; }
+  try{
+    await Promise.all([a,b].map(function(q){
+      return fetchT(SUPABASE_URL+'/rest/v1/storefronts?id=eq.'+encodeURIComponent(q.id),{method:'PATCH',
+        headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+                 'Content-Type':'application/json',Prefer:'return=minimal'},
+        body:JSON.stringify({pos:q.pos, updated_at:new Date().toISOString()})});
+    }));
+  }catch(e){ showToast('Couldn\'t save the new order',true); }
+}
 function sbQueuesHTML(){
   var qs=(SB_QUEUES||[]);
+  var active=qs.filter(function(q){ return q.active!==false; }).length;
+  var review=qs.filter(function(q){ return !!q.manual_review; }).length;
+  var missing=(typeof SB_SHEET_TAGS!=='undefined')
+    ? SB_SHEET_TAGS.filter(function(n){
+        return !qs.some(function(q){ return String(q.name||'').trim().toLowerCase()===n.toLowerCase(); }); }).length
+    : 0;
   return '<div class="mgr-section">Queues<span style="margin-left:auto;font-size:10.5px;font-weight:600;color:var(--muted-2);">'
-      +'this replaces the master sheet — Sarah gets one paste box per active row</span></div>'
-    +'<div class="sbq-wrap"><table class="sbq-tbl">'
-    +'<thead><tr><th>Queue</th><th>Goes to</th><th title="Always lands with Jack to route by hand">Review</th>'
-      +'<th>Priority</th><th>Frequency</th><th>Notes</th><th>Active</th><th></th></tr></thead>'
-    +'<tbody>'+(qs.length?qs.map(sbQueueRowHTML).join(''):'<tr><td colspan="8" class="sb-none">No queues yet.</td></tr>')+'</tbody>'
+      +'this replaces the master sheet — Sarah picks from one tag chip per active row</span></div>'
+    // The one number that was missing: how many tags exist vs how many Sarah can
+    // actually reach, and whether the sheet list is fully in yet.
+    +'<div class="sbq-bar">'
+      +'<span class="sbq-stat"><b>'+qs.length+'</b> tags</span>'
+      +'<span class="sbq-stat ok"><b>'+active+'</b> live for Sarah</span>'
+      +'<span class="sbq-stat"><b>'+review+'</b> land with you</span>'
+      +(missing?'<span class="sbq-stat warn">'+missing+' from your sheet not added yet</span>':'')
+      +'<span class="sbq-stat mute" id="sbq-shown">'+sbAdminRows().length+' shown</span>'
+      +'<input class="sbq-search" placeholder="Find a tag…" value="'+escHtml(SB_ADMIN_FILTER)+'"'
+        +' oninput="sbAdminFilter(this.value)" spellcheck="false">'
+    +'</div>'
+    +sbBulkBarHTML()
+    +'<div class="sbq-wrap"><table class="sbq-tbl'+(SB_SHOW_DETAILS?'':' lean')+'">'
+    +'<thead><tr>'
+      +'<th class="sb-ctr"><label class="sb-chk" title="Select all shown"><input type="checkbox"'
+        +(sbAllShownSelected()?' checked':'')+' onchange="sbSelAll(this.checked)"><i></i></label></th>'
+      +'<th title="Sarah’s tag chips appear in this order">#</th>'
+      +'<th>Queue</th><th>Goes to</th><th title="Always lands with Jack to route by hand">Review</th>'
+      +'<th>Priority</th>'
+      +(SB_SHOW_DETAILS?'<th>Frequency</th><th>Notes</th>':'')
+      +'<th>Active</th><th></th></tr></thead>'
+    +'<tbody id="sbq-body">'+sbQueueRowsHTML()+'</tbody>'
     +'</table>'
-    +'<button class="btn btn-ghost" style="margin-top:11px;" onclick="sbQueueAdd()">+ Add queue</button></div>';
+    // when the sheet list isn't fully in, this is the button he wants — say so and make
+    // it the obvious one, rather than a second ghost button he has to notice
+    +'<div style="display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-top:11px;">'
+      +'<button class="btn btn-ghost" onclick="sbQueueAdd()">+ Add queue</button>'
+      +'<button class="btn '+(missing?'btn-primary':'btn-ghost')+'" onclick="sbAddSheetTags()" '
+        +'title="Adds every tag from your master sheet’s dropdown that isn’t here yet">'
+        +(missing?'↻ Add the '+missing+' missing sheet tag'+(missing===1?'':'s'):'↻ Add my sheet tags')+'</button>'
+      +(missing?'<span style="font-size:11.5px;color:var(--muted-2);">'
+        +'they all land with you for review until you set where each one goes</span>':'')
+    +'</div></div>';
 }
 async function sbQueueSet(id, field, val){
   var q=sbQueueById(id); if(!q) return;
   q[field]=val;
-  if(IS_PREVIEW) return;
+  if(IS_PREVIEW){ showToast('Changed here only — saving is OFF in this copy. Use the live app to keep it.', true); return; }
   var patch={}; patch[field]=val; patch.updated_at=new Date().toISOString();
   var ok=await (async function(){
     try{
@@ -14340,7 +15150,7 @@ async function sbQueueDel(id){
   }
   var msg = used
     ? ('Delete the queue "'+q.name+'"?\n\n'
-       +'Its '+used+' past batch'+(used===1?'':'es')+' stay in your history under the name "'+q.name+'" — '
+       +'Its '+used+' past batch'+(used===1?' stays':'es stay')+' in your history under the name "'+q.name+'" — '
        +'nothing is lost. It just stops appearing as a paste box on Sarah’s page.')
     : ('Delete the queue "'+q.name+'"?\n\nIt has never been used, so nothing is lost.');
   if(!confirm(msg)) return;
@@ -14354,7 +15164,7 @@ async function sbQueueDel(id){
   SB_QUEUES=null;
   await sbLoadQueues(true);
   var host=document.getElementById('mgr-storefronts-content'); if(host) host.innerHTML=sbJackHTML();
-  showToast('"'+q.name+'" removed ✓'+(used?' — its '+used+' past batch'+(used===1?'':'es')+' are still in your history':''));
+  showToast('"'+q.name+'" removed ✓'+(used?' — its '+used+' past batch'+(used===1?' is':'es are')+' still in your history':''));
 }
 async function sbQueueAdd(){
   var name=prompt('Name the new queue (e.g. Competitors, UB, HTA):','');
@@ -14374,6 +15184,43 @@ async function sbQueueAdd(){
   await sbLoadQueues(true);
   var host=document.getElementById('mgr-storefronts-content'); if(host) host.innerHTML=sbJackHTML();
   showToast('"'+name+'" added — it goes to you for review until you change it ✓');
+}
+/* ── Jack's real tag list, straight off the master sheet's dropdown ──────────
+   In the order it appears there, so the paste-page chips read the same way round
+   as the sheet he's been using for years. Anything already set up is skipped, so
+   this is safe to press twice. */
+var SB_SHEET_TAGS=['Mera','Suz','Jack','Any','Other','Process 1','TFTJ','Process 2','SUBS','Comp',
+  'Process 3','FFB','Process 4','Process 5','Process 6','HTA','JTH','UB','PL','Process 7','HH',
+  'Process 8','Process 9',"10's"];
+async function sbAddSheetTags(){
+  var have={};
+  (SB_QUEUES||[]).forEach(function(q){ have[String(q.name||'').trim().toLowerCase()]=true; });
+  var missing=SB_SHEET_TAGS.filter(function(n){ return !have[n.toLowerCase()]; });
+  if(!missing.length){ showToast('Every tag from your sheet is already set up ✓'); return; }
+  var note = (have['competitors'] && missing.indexOf('Comp')>=0)
+    ? '\n\nNote: you already have a queue called "Competitors". "Comp" will be added alongside it — '
+      +'delete or rename whichever you don\'t want.' : '';
+  if(!confirm('Add '+missing.length+' tag'+(missing.length===1?'':'s')+' from your sheet?\n\n'
+    +missing.join(' · ')+'\n\nThey all land with you for review until you set where each one goes.'+note)) return;
+
+  var base=(SB_QUEUES||[]).length;
+  var rows=missing.map(function(n,i){
+    return { id:'sf_'+sbUid(), name:n, default_assignee:'Jack', manual_review:true,
+             priority:'Normal', frequency:'Daily', active:true,
+             pos: base + SB_SHEET_TAGS.indexOf(n) + 1 };
+  });
+  if(!IS_PREVIEW){
+    try{
+      var r=await fetchT(SUPABASE_URL+'/rest/v1/storefronts',{method:'POST',
+        headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+                 'Content-Type':'application/json',Prefer:'return=minimal'},
+        body:JSON.stringify(rows)});
+      if(!r.ok){ showToast('Couldn\'t add those — check your connection',true); return; }
+    }catch(e){ showToast('Couldn\'t add those — check your connection',true); return; }
+  }
+  await sbLoadQueues(true);
+  var host=document.getElementById('mgr-storefronts-content'); if(host) host.innerHTML=sbJackHTML();
+  showToast(missing.length+' tag'+(missing.length===1?'':'s')+' added ✓ — set where each goes in the table');
 }
 /* the Keepa template lives here so it can be corrected without a code change */
 function sbKeepaSettingHTML(){
