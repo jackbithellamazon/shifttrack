@@ -2456,6 +2456,21 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 .sb-empty{background:var(--panel);border:1px dashed var(--line-2);border-radius:13px;padding:24px;text-align:center;font-size:14px;color:var(--muted);}
 .sb-empty span{display:block;font-size:12px;color:var(--muted-2);margin-top:6px;}
 /* queue admin */
+.sb-card.sb-va-mera{border-left:3px solid var(--mera);}
+.sb-card.sb-va-suz{border-left:3px solid var(--suz);}
+.sb-card.sb-va-both{border-left:3px solid var(--cyan,#22d3ee);}
+.sb-card.sb-va-none{border-left:3px solid var(--amber);}
+.sb-card.sb-hi{background:color-mix(in srgb,var(--red) 6%,var(--panel));border-color:color-mix(in srgb,var(--red) 35%,transparent);}
+.sb-sum{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:13px;}
+.sb-sum-c{font-size:11.5px;font-weight:700;color:var(--muted);background:rgba(255,255,255,.045);
+  border:1px solid var(--line-2);border-radius:999px;padding:5px 12px;}
+.sb-sum-c b{font-family:var(--font-mono);font-weight:800;color:var(--text);}
+.sb-sum-c.amber{color:var(--amber);border-color:color-mix(in srgb,var(--amber) 40%,transparent);}
+.sb-sum-c.amber b{color:var(--amber);}
+.sb-sum-c.green{color:var(--green);border-color:color-mix(in srgb,var(--green) 35%,transparent);}
+.sb-sum-c.green b{color:var(--green);}
+.sb-sum-c.blue{color:#7cc0ff;border-color:rgba(124,192,255,.35);}
+.sb-sum-c.blue b{color:#7cc0ff;}
 .sbq-bar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0 0 10px;}
 .sbq-stat{font-size:11.5px;font-weight:700;color:var(--muted);background:rgba(255,255,255,.045);
   border:1px solid var(--line-2);border-radius:999px;padding:5px 12px;}
@@ -4291,7 +4306,7 @@ function ukHour() { return ukNow().getHours(); }
 
 // ── STATE ────────────────────────────────────────────────
 // bumped on every ship — shown as a badge next to the logo so a screenshot instantly tells us the version
-var APP_VERSION='v182';
+var APP_VERSION='v183';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -14813,7 +14828,12 @@ function sbCardHTML(b, forVA){
     else if(b.status==='Completed') acts='<div class="sb-acts"><span class="sb-locked">&#10003; Completed</span></div>';
   }
   var who = b.assigned_to ? ('<span class="sb-who">'+escHtml(vaDisp(b.assigned_to))+'</span>') : '<span class="sb-who none">unassigned</span>';
-  return '<div class="sb-card'+(locked?' locked':'')+'">'
+  // identity colour carries across the app — a board of ten cards should read
+  // who-has-what at a glance, not per-card
+  var vaCls = b.assigned_to==='Mera'?' sb-va-mera' : b.assigned_to==='Suz'?' sb-va-suz'
+            : b.assigned_to==='Both'?' sb-va-both' : ' sb-va-none';
+  var priCls = (b.priority==='High' && b.status!=='Completed')?' sb-hi':'';
+  return '<div class="sb-card'+(locked?' locked':'')+vaCls+priCls+'">'
     +'<div class="sb-top">'
       +'<div class="sb-name">'+escHtml(b.storefront_name||'Queue')
         +(b.batch_number>1?'<i>Batch '+b.batch_number+'</i>':'')+'</div>'
@@ -14850,7 +14870,16 @@ function sbTodayHTML(){
   var review=live.filter(function(b){ return b.status==='Draft'; });
   var rest  =live.filter(function(b){ return b.status!=='Draft'; });
   var older =live.filter(function(b){ return b.date!==t; }).length;
-  var out='';
+  var going =live.filter(function(b){ return b.status==='Started'; }).length;
+  var doneT =(SB_BATCHES||[]).filter(function(b){ return b.date===t && b.status==='Completed'; }).length;
+  var totA  =live.reduce(function(a,b){ return a+(b.asin_count||0); },0);
+  var out='<div class="sb-sum">'
+    +(review.length?'<span class="sb-sum-c amber"><b>'+review.length+'</b> to route</span>':'')
+    +(going?'<span class="sb-sum-c blue"><b>'+going+'</b> being worked</span>':'')
+    +(doneT?'<span class="sb-sum-c green"><b>'+doneT+'</b> done today</span>':'')
+    +'<span class="sb-sum-c"><b>'+totA+'</b> ASINs in play</span>'
+    +(older?'<span class="sb-sum-c amber">'+older+' carried over</span>':'')
+    +'</div>';
   if(review.length){
     out+='<div class="mgr-section">Needs you<span style="margin-left:auto;font-size:10.5px;font-weight:600;color:var(--muted-2);">'
       +review.length+' waiting to be routed</span></div>'
