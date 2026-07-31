@@ -50,6 +50,7 @@
      was two different yellows depending on which code path drew her. #FFEB3B is the
      canonical one (marked "locked" next to SUZ_COL); amber stays #f2c200 for warnings. */
   --suz:#FFEB3B;
+  --jack:#38bdf8;   /* Jack's own identity colour — amber read as Suz's yellow at dot size */
   --test:#12d99a;
 
   --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
@@ -2307,6 +2308,15 @@ body.has-save-bar{padding-bottom:64px;}
 .sbi-daybar.back{border-color:color-mix(in srgb,var(--amber) 55%,transparent);
   background:color-mix(in srgb,var(--amber) 8%,var(--panel));}
 .sbi-daylab{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.01em;}
+.sbi-days{display:flex;gap:5px;flex-wrap:wrap;}
+.sbi-day{background:rgba(255,255,255,.05);border:1px solid var(--line-2);color:var(--muted);font-family:inherit;
+  font-size:12px;font-weight:700;padding:5px 12px;border-radius:8px;cursor:pointer;transition:all .12s;}
+.sbi-day:hover{border-color:var(--accent);color:var(--text);}
+.sbi-day.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+.sbi-daybar.back .sbi-day.on{background:var(--amber);border-color:var(--amber);color:#141008;}
+.sbi-older{margin-left:auto;display:inline-flex;align-items:center;gap:7px;font-size:11.5px;
+  font-weight:700;color:var(--muted-2);cursor:pointer;}
+.sbi-older:hover{color:var(--text);}
 .sbi-dateinput{background:#0b0c12;border:1px solid var(--line-2);border-radius:8px;color:var(--text);
   font-family:var(--font-mono);font-size:12.5px;padding:6px 9px;outline:none;color-scheme:dark;cursor:pointer;}
 .sbi-dateinput:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
@@ -2342,7 +2352,9 @@ body.has-save-bar{padding-bottom:64px;}
 .sbi-dot{width:7px;height:7px;border-radius:50%;background:var(--muted-2);flex:none;}
 .sbi-chip.dest-mera .sbi-dot{background:var(--mera);}
 .sbi-chip.dest-suz  .sbi-dot{background:var(--suz);}
-.sbi-chip.dest-jack .sbi-dot{background:var(--amber);}
+.sbi-chip.dest-jack .sbi-dot{background:var(--jack);}
+.sbi-chip.dest-jack{border-color:color-mix(in srgb,var(--jack) 32%,transparent);}
+.sbi-chip.dest-jack:hover{border-color:var(--jack);box-shadow:0 3px 12px color-mix(in srgb,var(--jack) 25%,transparent);}
 .sbi-chip.dest-mera{border-color:color-mix(in srgb,var(--mera) 38%,transparent);}
 .sbi-chip.dest-suz {border-color:color-mix(in srgb,var(--suz) 34%,transparent);}
 .sbi-chip.dest-mera:hover{border-color:var(--mera);box-shadow:0 3px 12px color-mix(in srgb,var(--mera) 25%,transparent);}
@@ -2351,7 +2363,7 @@ body.has-save-bar{padding-bottom:64px;}
 .sbi-key{width:100%;display:flex;gap:14px;margin-top:4px;font-size:10.5px;font-weight:700;color:var(--muted-2);}
 .sbi-key .k-m{color:var(--mera);}
 .sbi-key .k-s{color:var(--suz);}
-.sbi-key .k-j{color:var(--amber);}
+.sbi-key .k-j{color:var(--jack);}
 .sbi-chip-n{font-family:var(--font-mono);font-size:10.5px;font-weight:800;background:rgba(255,255,255,.16);
   padding:1px 6px;border-radius:999px;}
 .sbi-chip.on .sbi-chip-n{background:rgba(0,0,0,.28);}
@@ -2385,6 +2397,13 @@ body.has-save-bar{padding-bottom:64px;}
 .sbi-done-row b{color:var(--text);font-weight:750;min-width:96px;}
 .sbi-done-n{font-family:var(--font-mono);font-size:11.5px;color:var(--muted-2);}
 .sbi-done-to{margin-left:auto;font-weight:700;color:var(--muted);}
+.sbi-done-head.sub{margin-top:11px;padding-top:11px;border-top:1px solid var(--line-2);border-bottom:none;padding-bottom:2px;}
+.sbi-done-head.sub span{color:var(--muted-2);}
+.sbi-done-day{font-size:10.5px;font-weight:800;color:var(--amber);background:color-mix(in srgb,var(--amber) 13%,transparent);
+  padding:2px 8px;border-radius:999px;}
+.sbi-done-st{font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:999px;}
+.sbi-done-st.ok{color:var(--green);background:color-mix(in srgb,var(--green) 14%,transparent);}
+.sbi-done-st.go{color:#7cc0ff;background:rgba(124,192,255,.14);}
 .sbi-done-to i{font-style:normal;color:var(--amber);font-weight:600;}
 
 .sbi-q{background:var(--panel);border:1px solid var(--line-2);border-radius:14px;padding:14px 15px;}
@@ -2410,6 +2429,11 @@ body.has-save-bar{padding-bottom:64px;}
 .sbi-result.back{display:block;color:var(--text);background:color-mix(in srgb,var(--amber) 10%,transparent);border:1px solid color-mix(in srgb,var(--amber) 40%,transparent);font-size:12.5px;}
 .sbi-back-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px;}
 .sbi-dest-row{margin:-3px 0 10px;}
+.sbi-open-note{margin-top:6px;font-size:11.5px;color:var(--muted-2);line-height:1.5;}
+.sbi-open-note b{color:var(--text);font-weight:750;}
+.sbi-undo{background:transparent;border:1px solid var(--line-2);color:var(--muted);font-family:inherit;
+  font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:7px;cursor:pointer;margin-left:6px;}
+.sbi-undo:hover{border-color:var(--red);color:var(--red);}
 .sbi-dest{font-size:12px;font-weight:700;color:var(--green);}
 .sbi-dest.review{color:var(--amber);}
 .sbi-dest b{font-weight:800;}
@@ -2459,7 +2483,7 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 .sb-card.sb-va-mera{border-left:3px solid var(--mera);}
 .sb-card.sb-va-suz{border-left:3px solid var(--suz);}
 .sb-card.sb-va-both{border-left:3px solid var(--cyan,#22d3ee);}
-.sb-card.sb-va-jack{border-left:3px solid var(--accent);}
+.sb-card.sb-va-jack{border-left:3px solid var(--jack);}
 .sb-card.sb-va-none{border-left:3px solid var(--amber);}
 .sb-card.sb-hi{background:color-mix(in srgb,var(--red) 6%,var(--panel));border-color:color-mix(in srgb,var(--red) 35%,transparent);}
 .sb-mine{font-size:11px;font-weight:800;color:var(--green);margin-right:auto;}
@@ -3137,6 +3161,7 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
         <p id="shift-date">-</p>
       </div>
       <div class="shift-controls" style="flex:1;">
+        <button id="preview-exit" onclick="exitTestPreview()" style="display:none;padding:9px 16px;font-size:12.5px;font-weight:800;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid var(--line-2);color:var(--muted);cursor:pointer;margin-right:2px;">&#8592; Back to dashboard</button>
         <div class="status-badge"><div class="status-dot"></div>ACTIVE</div>
         <div class="timer" id="shift-timer" style="font-size:22px;letter-spacing:2px;padding:0 12px;">00:00:00</div>
         <button onclick="saveShiftDraft(true)" id="save-btn" style="padding:10px 18px;font-size:13px;font-weight:700;border-radius:10px;background:color-mix(in srgb,var(--green) 14%,#0d0f16);border:1px solid color-mix(in srgb,var(--green) 34%,var(--line));color:#10d99a;letter-spacing:0.3px;transition:all 0.16s;cursor:pointer;" title="Save progress to cloud — use before restarting your laptop">💾 Save</button>
@@ -4323,7 +4348,7 @@ function ukHour() { return ukNow().getHours(); }
 
 // ── STATE ────────────────────────────────────────────────
 // bumped on every ship — shown as a badge next to the logo so a screenshot instantly tells us the version
-var APP_VERSION='v190';
+var APP_VERSION='v197';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -5265,6 +5290,24 @@ setTimeout(function(){ try{ updateRoleUI(); }catch(e){} }, 300);
 setTimeout(function(){ try{ if(window._mgrUnlocked && (!window.state||!state.shiftStart) && typeof _openManager==='function'){ _openManager(); } }catch(e){} }, 350);
 setTimeout(maybeSendWeeklySummary, 12000);
 function openTestPicker(){ var m=document.getElementById('test-modal'); if(m) m.classList.add('open'); }
+/* Jack pokes at a Test shift to see what his VAs see — and had no way out except
+   finishing or submitting it, neither of which he wants. A preview must be leavable.
+   Nothing is written: the Test VA never syncs, so dropping it costs nothing. */
+function exitTestPreview(){
+  try{
+    if(!confirm('Leave the preview and go back to your dashboard?\n\nNothing from this test shift is kept.')) return;
+    try{ if(window._sfTick){ clearInterval(window._sfTick); window._sfTick=null; } }catch(e){}
+    try{ localStorage.removeItem('shifttrack_draft_Test'); }catch(e){}
+    state.shiftStart=null; state.currentVA=null; state.tasks=[]; state.extraTasks=[];
+    state.storefronts=[]; state._previewAs=null; state.submitted=false;
+    var b=document.getElementById('preview-exit'); if(b) b.style.display='none';
+    var ls=document.getElementById('login-screen'); if(ls) ls.style.display='flex';
+    ['mera-setup','suz-setup'].forEach(function(id){ var e=document.getElementById(id); if(e) e.style.display='none'; });
+    try{ document.getElementById('view-va').classList.remove('setup-active'); }catch(e){}
+    if(window._mgrUnlocked){ try{ _openManager(); }catch(e){} } else { try{ showVAView(); }catch(e){} }
+    showToast('Preview closed \u2014 nothing was saved');
+  }catch(e){ location.reload(); }
+}
 function startTestPreview(previewVA){
   var m=document.getElementById('test-modal'); if(m) m.classList.remove('open');
   startShift('Test', false, previewVA);
@@ -5366,6 +5409,7 @@ function selectVA(va) {
         document.getElementById('view-va').classList.remove('setup-active');
         document.getElementById('report-btn').style.display = 'block';
         document.getElementById('shift-va-name').textContent = (va==='Test'&&previewVA) ? ('Preview \u2014 '+vaDisp(previewVA)+"'s Shift") : (vaDisp(va) + "'s Shift");
+        try{ var _pb=document.getElementById('preview-exit'); if(_pb) _pb.style.display=(va==='Test')?'inline-block':'none'; }catch(e){}
         document.getElementById('shift-date').textContent = ukDateString();
         document.getElementById('eod-form').style.display = 'block';
         document.getElementById('eod-report').classList.remove('show');
@@ -5542,6 +5586,7 @@ function startShift(va, newsletterDay, previewVA) {
   document.getElementById('view-va').classList.remove('setup-active');
   document.getElementById('report-btn').style.display = 'block';
   document.getElementById('shift-va-name').textContent = (va==='Test'&&previewVA) ? ('Preview \u2014 '+previewVA+"'s Shift") : (va + "'s Shift");
+  try{ var _pb=document.getElementById('preview-exit'); if(_pb) _pb.style.display=(va==='Test')?'inline-block':'none'; }catch(e){}
   document.getElementById('shift-date').textContent = ukDateString();
   document.getElementById('eod-form').style.display = 'block';
   document.getElementById('eod-report').classList.remove('show');
@@ -5765,8 +5810,14 @@ function buildJackTaskEl(task, i, isExtra){
 
   // big action row inside the body
   var actionRow='';
-  if(task.jbUrl) actionRow+='<a class="jb-open" href="'+String(task.jbUrl).replace(/"/g,'&quot;')+'" target="_blank" onclick="event.stopPropagation()">'+m[0]+' Open '+m[1].toLowerCase()+' &#8599;</a>';
-  if(task.jbType==='sf' && !task.done) actionRow+='<span class="jb-asin" onclick="event.stopPropagation();sfTrackFromPoa(0,\''+String(task.jbLabel||'Storefront').replace(/[\\\'"<>]/g,'')+'\')">&#9201; Track in Storefronts</span>';
+  // "Open storefront" told the VA nothing about what would open. A batch opens ALL its
+  // ASINs in one Keepa Product Viewer list, so say that — it's the whole point of the module.
+  if(task.jbUrl) actionRow+='<a class="jb-open" href="'+String(task.jbUrl).replace(/"/g,'&quot;')+'" target="_blank" onclick="event.stopPropagation()">'
+    +(task.jbUrlLabel ? '&#128200; '+String(task.jbUrlLabel).replace(/</g,'&lt;')+' &#8599;'
+                      : m[0]+' Open '+m[1].toLowerCase()+' &#8599;')+'</a>';
+  // "Track in Storefronts" duplicated the manual logger for a batch that already tracks
+  // itself — the row has its own timer and lead stepper. Only offer it on non-batch work.
+  if(task.jbType==='sf' && !task.sbBatchId && !task.done) actionRow+='<span class="jb-asin" onclick="event.stopPropagation();sfTrackFromPoa(0,\''+String(task.jbLabel||'Storefront').replace(/[\\\'"<>]/g,'')+'\')">&#9201; Track in Storefronts</span>';
   if(task.jbAsin){
     var cleanA=String(task.jbAsin).replace(/[^0-9A-Za-z]/g,'');
     actionRow+='<span class="jb-asin" onclick="event.stopPropagation();navigator.clipboard.writeText(\''+cleanA+'\');showToast(\'ASIN copied &#10003;\')">'+String(task.jbAsin).replace(/</g,'&lt;')+' &#128203;</span>'
@@ -5774,7 +5825,12 @@ function buildJackTaskEl(task, i, isExtra){
   }
   if(actionRow) actionRow='<div class="jb-openrow">'+actionRow+'</div>';
 
-  var reasonHtml = task.jbReason ? '<div class="jb-reason"><span class="jb-reason-tag">'+JB_ICON_SVG+' Jack&rsquo;s note</span><span>'+String(task.jbReason).replace(/</g,'&lt;')+'</span></div>' : '';
+  // The collapsed row already shows jbReason as its meta line. Repeating it verbatim
+  // inside the open panel as "Jack's note" was pure duplication — and on a storefront
+  // batch it isn't a note from Jack at all, it's how the thing works. Storefront batches
+  // therefore carry `sbHow` instead, styled as instructions, and never double up.
+  var reasonHtml = (task.jbReason && task.jbType!=='sf')
+    ? '<div class="jb-reason"><span class="jb-reason-tag">'+JB_ICON_SVG+' Jack&rsquo;s note</span><span>'+String(task.jbReason).replace(/</g,'&lt;')+'</span></div>' : '';
   var hintHtml=task.hint?'<div class="task-hint">'+task.hint+'</div>':'';
   var fieldsHtml=buildFields(task,i,isExtra);
   var actHtml;
@@ -14456,6 +14512,30 @@ function sbChipsHTML(){
   // the colours mean something — say what, once, under the chips
   +'<div class="sbi-key"><span class="k-m">● Mera</span><span class="k-s">● Suz</span><span class="k-j">● Jack routes it</span></div>';
 }
+/* A mis-paste used to be permanent: the batch stays OPEN by design (Jack's spec — locking
+   happens on Start, never before) so the next paste appends to it, and there was no undo.
+   Only ever allowed before a VA has started it, and it takes the ASINs with it. */
+async function sbScrapBatch(batchId){
+  var b=(SB_BATCHES||[]).filter(function(x){ return x.id===batchId; })[0];
+  if(!b) return;
+  if(b.status==='Started'||b.status==='Completed'){
+    showToast('Too late — '+vaDisp(b.started_by||b.assigned_to||'a VA')+' has already started this one',true); return;
+  }
+  if(!confirm('Scrap Batch '+(b.batch_number||1)+' for "'+(b.storefront_name||'')+'"?\n\n'
+    +(b.asin_count||0)+' ASIN'+((b.asin_count||0)===1?'':'s')+' will be removed and nobody will be asked to work it.\n\n'
+    +'Use this if the paste went to the wrong tag.')) return;
+  if(IS_PREVIEW){ showToast('Preview mode — not scrapped',true); return; }
+  try{
+    var h={apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY};
+    await fetchT(SUPABASE_URL+'/rest/v1/storefront_batch_items?batch_id=eq.'+encodeURIComponent(batchId),{method:'DELETE',headers:h});
+    var r=await fetchT(SUPABASE_URL+'/rest/v1/storefront_batches?id=eq.'+encodeURIComponent(batchId),{method:'DELETE',headers:h});
+    if(!r.ok){ showToast('Couldn\'t scrap it — check your connection',true); return; }
+  }catch(e){ showToast('Couldn\'t scrap it — check your connection',true); return; }
+  SB_FLASH=null;
+  await sbLoadBatches(true);
+  sbRenderImport();
+  showToast('Batch scrapped \u2713');
+}
 function sbImportHTML(){
   var qs=sbActiveQueues();
   if(!qs.length){
@@ -14472,15 +14552,25 @@ function sbImportHTML(){
   var wd=sbWorkDate(), back=sbIsBackdated();
 
   // ── the day being imported for ────────────────────────────────────────────
+  // The date input opens Chrome's own calendar, which can't be styled and is far more
+  // machinery than this needs — backdating is almost always "yesterday" or "the day
+  // before". Quick-pick the last few days; the calendar stays for anything older.
+  var quick='';
+  for(var qd=0; qd<5; qd++){
+    var dd=new Date(); dd.setDate(dd.getDate()-qd);
+    var uk=dd.toLocaleDateString('en-GB',{timeZone:'Europe/London'});
+    var lbl=qd===0?'Today':qd===1?'Yesterday':dd.toLocaleDateString('en-GB',{weekday:'short',day:'numeric'});
+    quick+='<button class="sbi-day'+(wd===uk?' on':'')+'" onclick="sbSetImportDate(\''+sbToISO(uk)+'\')">'+escHtml(lbl)+'</button>';
+  }
   var dayBar='<div class="sbi-daybar'+(back?' back':'')+'">'
     +'<span class="sbi-daylab">Importing for</span>'
-    +'<input type="date" class="sbi-dateinput" id="sbi-date" value="'+sbToISO(wd)+'"'
-      +' max="'+sbToISO(sbToday())+'" onchange="sbSetImportDate(this.value)">'
-    +'<span class="sbi-daytag">'+escHtml(sbDayLabel(wd))+'</span>'
-    +(back
-        ? '<span class="sbi-backflag">Backdated</span>'
-          +'<button class="sbi-daybtn" onclick="sbResetImportDate()">Back to today</button>'
-        : '<span class="sbi-todayflag">Today</span>')
+    +'<div class="sbi-days">'+quick+'</div>'
+    +(back?'<span class="sbi-backflag">'+escHtml(sbDayLabel(wd))+'</span>':'<span class="sbi-todayflag">Today</span>')
+    +'<label class="sbi-older" title="Pick any other date">'
+      +'<span>Older…</span>'
+      +'<input type="date" class="sbi-dateinput" id="sbi-date" value="'+sbToISO(wd)+'"'
+        +' max="'+sbToISO(sbToday())+'" onchange="sbSetImportDate(this.value)">'
+    +'</label>'
     +'</div>';
 
   // ── step 2: the one paste box, for whichever tag is selected ──────────────
@@ -14493,7 +14583,8 @@ function sbImportHTML(){
   } else {
     var slot=sbOpenBatch(q.id);
     var state = slot.batch
-      ? '<span class="sbi-state open">Batch '+(slot.batch.batch_number||1)+' open · '+(slot.batch.asin_count||0)+' ASINs so far</span>'
+      ? '<span class="sbi-state open" title="Still unlocked — more pastes today join this same batch until the VA presses Start">'
+        +'Batch '+(slot.batch.batch_number||1)+' open · '+(slot.batch.asin_count||0)+' ASINs so far</span>'
       : (slot.nextNumber>1
           ? '<span class="sbi-state locked">Batch '+(slot.nextNumber-1)+' already started — this opens <b>Batch '+slot.nextNumber+'</b></span>'
           : '<span class="sbi-state fresh">Nothing yet '+(back?'on this day':'today')+'</span>');
@@ -14505,7 +14596,13 @@ function sbImportHTML(){
     paste='<div class="sbi-paste">'
       +'<div class="sbi-step"><span class="sbi-num">2</span>'
         +'<span class="sbi-step-t">Paste the ASINs for <b>'+escHtml(q.name)+'</b></span>'+state+'</div>'
-      +'<div class="sbi-dest-row">'+dest+'</div>'
+      +'<div class="sbi-dest-row">'+dest
+        +(slot.batch
+            ? '<div class="sbi-open-note">Anything you paste now <b>joins Batch '+(slot.batch.batch_number||1)+'</b>'
+              +' — it stays open until '+escHtml(vaDisp(slot.batch.assigned_to||'the VA'))+' presses Start, so you can keep adding.'
+              +' <button class="sbi-undo" onclick="sbScrapBatch(\''+slot.batch.id+'\')">Wrong tag? Scrap it</button></div>'
+            : '')
+      +'</div>'
       +'<textarea class="sbi-ta" id="sbi-ta" rows="8" spellcheck="false"'
         +' placeholder="One per line&#10;B0XXXXXXXX&#10;B0XXXXXXXX" oninput="sbImportCount()"></textarea>'
       +'<div class="sbi-q-foot">'
@@ -14517,23 +14614,39 @@ function sbImportHTML(){
   }
 
   // ── what's already gone in for this day ───────────────────────────────────
-  var done=(SB_BATCHES||[]).filter(function(b){ return b.date===wd; })
-    .sort(function(a,b){ return String(b.created_at||'').localeCompare(String(a.created_at||'')); });
+  var byDate=function(a,b){ return String(b.created_at||'').localeCompare(String(a.created_at||'')); };
+  var done=(SB_BATCHES||[]).filter(function(b){ return b.date===wd; }).sort(byDate);
+  // A batch backdated to the 28th vanished the moment the picker went back to today —
+  // so Sarah couldn't see the thing she'd just filed. Show the selected day, then the
+  // other recent days underneath, each labelled, so nothing she imported disappears.
+  var recentCut=Date.now()-7*86400000;
+  var others=(SB_BATCHES||[]).filter(function(b){
+    if(b.date===wd) return false;
+    var iso=sbToISO(b.date); if(!iso) return false;
+    return new Date(iso+'T12:00:00').getTime()>=recentCut;
+  }).sort(byDate);
+  function rowHTML(b, showDay){
+    var to=(b.status==='Draft') ? '<i>waiting for Jack</i>' : escHtml(vaDisp(b.assigned_to||'—'));
+    var st=(b.status==='Completed')?'<span class="sbi-done-st ok">done</span>'
+          :(b.status==='Started')?'<span class="sbi-done-st go">being worked</span>':'';
+    return '<div class="sbi-done-row">'
+      +'<b>'+escHtml(b.storefront_name||'—')+'</b>'
+      +(showDay?'<span class="sbi-done-day">'+escHtml(sbDayLabel(b.date))+'</span>':'')
+      +'<span class="sbi-done-n">Batch '+(b.batch_number||1)+' · '+(b.asin_count||0)+' ASINs</span>'
+      +st+'<span class="sbi-done-to">'+to+'</span></div>';
+  }
   var doneHTML='';
-  if(done.length){
+  if(done.length||others.length){
     var tot=done.reduce(function(s,b){ return s+(b.asin_count||0); },0);
     doneHTML='<div class="sbi-done">'
       +'<div class="sbi-done-head">Already in for '+escHtml(sbDayLabel(wd))
-        +'<span>'+done.length+' batch'+(done.length===1?'':'es')+' · '+tot+' ASIN'+(tot===1?'':'s')+'</span></div>'
-      +done.map(function(b){
-          var to=(b.status==='Draft')
-            ? '<i>waiting for Jack</i>'
-            : escHtml(vaDisp(b.assigned_to||'—'));
-          return '<div class="sbi-done-row">'
-            +'<b>'+escHtml(b.storefront_name||'—')+'</b>'
-            +'<span class="sbi-done-n">Batch '+(b.batch_number||1)+' · '+(b.asin_count||0)+' ASINs</span>'
-            +'<span class="sbi-done-to">'+to+'</span></div>';
-        }).join('')
+        +'<span>'+(done.length?done.length+' batch'+(done.length===1?'':'es')+' · '+tot+' ASIN'+(tot===1?'':'s'):'nothing yet')+'</span></div>'
+      +(done.length?done.map(function(b){ return rowHTML(b,false); }).join('')
+                   :'<div class="sbi-done-row"><span class="sbi-done-n">No imports filed under this day.</span></div>')
+      +(others.length
+          ? '<div class="sbi-done-head sub">Other days this week<span>'+others.length+' batch'+(others.length===1?'':'es')+'</span></div>'
+            +others.map(function(b){ return rowHTML(b,true); }).join('')
+          : '')
       +'</div>';
   }
 
@@ -15380,13 +15493,16 @@ function sbBatchTask(b){
   var pri=(b.priority==='High')?' — HIGH PRIORITY':'';
   return {
     id:'sbatch-'+b.id, sbBatchId:b.id, sbStatus:b.status,
-    name:'Storefront batch · '+(b.storefront_name||'Queue')+(b.batch_number>1?' (Batch '+b.batch_number+')':'')+' — '+n+' ASIN'+(n===1?'':'s')+pri,
+    // The tag name alone read as a person ("Mera · 8 ASINs" looked like a task FOR Mera).
+    // Lead with what it is, then the tag, then the size.
+    name:'Storefront · '+(b.storefront_name||'Queue')+(b.batch_number>1?' (Batch '+b.batch_number+')':'')+' — '+n+' ASIN'+(n===1?'':'s')+pri,
     jbLabel:(b.storefront_name||'Queue')+' · '+n+' ASINs',
     mandatory:true, hasLinks:false,
-    jbUrl:b.keepa_url||'', jbType:'sf', jbTimer:true, jbLeads:true,
-    jbReason:(b.status==='Started'?'You started this — it’s locked, nothing can be added to it now.'
-                                  :'Press Start (the timer) when you begin — that locks the list so nothing changes under you.'),
-    hint:'Open Keepa, work the list, log what you found. Ticking this marks the batch complete for Jack.',
+    jbUrl:b.keepa_url||'', jbUrlLabel:'Open all '+n+' in Keepa', jbType:'sf', jbTimer:true, jbLeads:true,
+    jbReason:(b.status==='Started'
+        ? 'Locked — you started this, nothing can be added to it now.'
+        : 'Press Start when you begin. That locks the list so nothing changes under you.'),
+    hint:'Open the '+n+' ASINs in Keepa, work through them, then log your time and how many leads you got. Ticking this marks the batch done for Jack.',
     done:false, skipped:false, skipReason:'', time:'', timeHrs:0, timeMins:0, leads:'', context:'', links:[],
     timerSec:0, timerRun:false, timerStart:null
   };
@@ -15399,10 +15515,28 @@ function sbInjectBatchTasks(va, tasks){
   if(!mine.length) return 0;
   var order={High:0,Normal:1,Low:2};
   mine.sort(function(a,b){ return (order[a.priority||'Normal'])-(order[b.priority||'Normal']); });
-  mine.forEach(function(b){
-    if(tasks.some(function(t){ return t.id==='sbatch-'+b.id; })) return;
-    tasks.push(sbBatchTask(b));
-  });
+  // Batches used to be appended to the END of the shift list, which put them miles away
+  // from the "Storefronts" task in Jack's recurring ticklist — so a VA saw storefront work
+  // in two unrelated places. Slot them in directly AFTER that host task instead: one
+  // storefront section, batches first (they carry the ASINs), then the manual link boxes
+  // for anything the VA finds on their own. Falls back to appending if the host isn't
+  // in this VA's ticklist.
+  var hostAt=-1;
+  for(var h=0;h<tasks.length;h++){
+    if(JB_ROUTE.sf.indexOf(tasks[h].id)>=0){ hostAt=h; break; }
+  }
+  var fresh=mine.filter(function(b){
+    return !tasks.some(function(t){ return t.id==='sbatch-'+b.id; });
+  }).map(sbBatchTask);
+  if(!fresh.length) return mine.length;
+  if(hostAt>=0){
+    // keep them together under the host, in the priority order set above
+    var at=hostAt+1;
+    while(at<tasks.length && tasks[at] && tasks[at].sbBatchId) at++;
+    tasks.splice.apply(tasks, [at,0].concat(fresh));
+  } else {
+    fresh.forEach(function(t){ tasks.push(t); });
+  }
   return mine.length;
 }
 function sbVAHTML(va){
