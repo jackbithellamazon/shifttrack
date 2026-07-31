@@ -2459,8 +2459,10 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 .sb-card.sb-va-mera{border-left:3px solid var(--mera);}
 .sb-card.sb-va-suz{border-left:3px solid var(--suz);}
 .sb-card.sb-va-both{border-left:3px solid var(--cyan,#22d3ee);}
+.sb-card.sb-va-jack{border-left:3px solid var(--accent);}
 .sb-card.sb-va-none{border-left:3px solid var(--amber);}
 .sb-card.sb-hi{background:color-mix(in srgb,var(--red) 6%,var(--panel));border-color:color-mix(in srgb,var(--red) 35%,transparent);}
+.sb-mine{font-size:11px;font-weight:800;color:var(--green);margin-right:auto;}
 .sb-sum{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:13px;}
 .sb-sum-c{font-size:11.5px;font-weight:700;color:var(--muted);background:rgba(255,255,255,.045);
   border:1px solid var(--line-2);border-radius:999px;padding:5px 12px;}
@@ -4306,7 +4308,7 @@ function ukHour() { return ukNow().getHours(); }
 
 // ── STATE ────────────────────────────────────────────────
 // bumped on every ship — shown as a badge next to the logo so a screenshot instantly tells us the version
-var APP_VERSION='v183';
+var APP_VERSION='v187';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -8803,7 +8805,6 @@ function mgr_renderIssues(){
 
   html+=testBtn('Clear ALL shift logs','if(confirm(\'Delete ALL shift logs? Cannot be undone.\')){localStorage.removeItem(\'shifttrack_eod_log\');showToast(\'All logs cleared\');mgr_switchTab(mgr_currentTab);}','Wipe entire localStorage shift history. Use to reset demo data.');
   html+=testBtn('Clear issues log','mgr_clearIssues()','Remove all reported issues from the issues list.');
-  html+=testBtn('Re-inject demo data','localStorage.removeItem(\'shifttrack_eod_log\');mgr_injectFakeData();mgr_switchTab(mgr_currentTab);showToast(\'Demo data reloaded\');','Wipe logs and reload the built-in demo week (Mon 16 – Fri 20 Mar).');
   html+=testBtn('Force re-render','mgr_switchTab(mgr_currentTab);showToast(\'Re-rendered\');','Re-render current tab. Useful after manual localStorage edits.');
   html+=testBtn('Dump logs to console','console.log(JSON.parse(localStorage.getItem(\'shifttrack_eod_log\')||\'[]\'));showToast(\'Logged to console (F12)\');','Print full shift log to browser console for inspection.');
   html+=testBtn('Test flag banner','mgr_flagBanner([]);showToast(\'Banner cleared\');','Clear the action-needed banner at top of Jack view.');
@@ -10474,173 +10475,13 @@ function mgr_renderTest(){
 
 function renderManagerLog(){mgr_renderAll();}
 
-// ── FAKE DATA INJECTION ──────────────────────────────────
-function mgr_injectFakeData(){
-  var existing=mgr_getLog();
-  // Only inject if fake data isn't already present with tickedAt
-  var hasFreshFake=existing.some(function(r){
-    return (r.date==='16/03/2026'||r.date==='17/03/2026')&&r.tasks&&r.tasks.some(function(t){return t.tickedAt;});
-  });
-  if(hasFreshFake) return;
-  // Remove any old fake records (16-20 Mar) before re-injecting with tickedAt
-  existing=existing.filter(function(r){return !['16/03/2026','17/03/2026','18/03/2026','19/03/2026','20/03/2026'].includes(r.date);});
-
-  var fakeShifts=[
-    // MON 16 — Mera
-    {id:1710000001,va:'Mera',date:'16/03/2026',submittedAt:'05:42 pm',shiftStart:'09:01 am',shiftEnd:'05:42 pm',breakMins:32,breaks:[{startTime:'01:02 pm',endTime:'01:34 pm',durationMins:32}],hoursWorked:'8.1',totalLeads:14,leadsPerHr:'1.7',tasksDone:10,tasksSkipped:1,notes:'Good day — found a strong homeware brand on sale, dug deep and pulled 6 from one brand. KPF 7-day threw up some solid A2A. PP quiet in the morning but picked up after lunch.',
-      tasks:[
-        {id:'leadsheet',name:'Lead sheet check',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'09:52'},
-        {id:'telegram',name:'Telegram / Keepa',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'10:44'},
-        {id:'pp-main',name:'PP Main Run',done:true,skipped:false,skipReason:'',leads:2,time:'45m',context:'',tickedAt:'11:55'},
-        {id:'kpf-daily',name:'KPF Filters - 7 Day',done:true,skipped:false,skipReason:'',leads:4,time:'1h 10m',context:'',tickedAt:'12:10'},
-        {id:'jack-poa',name:'Jack POA',done:false,skipped:true,skipReason:'Link broken — reported',leads:0,time:'',context:'',tickedAt:''},
-        {id:'sourcing',name:'Sourcing Period',done:true,skipped:false,skipReason:'',leads:8,time:'3h 20m',context:'homeware brand deep dive',tickedAt:'14:30'},
-        {id:'storefronts',name:'Storefronts',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'16:10'},
-        {id:'pp-light',name:'PP Light check',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'17:10'},
-        {id:'telegram-eod',name:'Telegram EOD',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'17:30'},
-        {id:'leadsheet-eod',name:'Lead sheet final',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'17:35'}
-      ]},
-    // MON 16 — Suz
-    {id:1710000002,va:'Suz',date:'16/03/2026',submittedAt:'04:58 pm',shiftStart:'09:15 am',shiftEnd:'04:58 pm',breakMins:25,breaks:[{startTime:'12:45 pm',endTime:'01:10 pm',durationMins:25}],hoursWorked:'7.3',totalLeads:9,leadsPerHr:'1.2',tasksDone:9,tasksSkipped:0,notes:'EU sheet had 3 brands drop — completed all. PP eu channels were busy. Found a good laptop deal via newsletter.',
-      tasks:[
-        {id:'suz-leadsheet',name:'Lead sheet check',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'09:40'},
-        {id:'suz-telegram',name:'Telegram / Keepa',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'10:20'},
-        {id:'newsletter-a',name:'Newsletter Check',done:true,skipped:false,skipReason:'',leads:2,time:'40m',context:'laptop deal',tickedAt:'11:05'},
-        {id:'suz-pp',name:'PP Main Run',done:true,skipped:false,skipReason:'',leads:3,time:'1h',context:'eu channels busy',tickedAt:'12:15'},
-        {id:'suz-kpf-daily',name:'KPF Filters',done:true,skipped:false,skipReason:'',leads:0,time:'50m',context:'',tickedAt:'13:30'},
-        {id:'suz-sourcing',name:'Sourcing Period',done:true,skipped:false,skipReason:'',leads:4,time:'2h 30m',context:'laptop + electronics',tickedAt:'15:00'},
-        {id:'suz-eu',name:'EU Sheet',done:true,skipped:false,skipReason:'',leads:0,time:'30m',context:'3 brands',tickedAt:'15:55'},
-        {id:'suz-pp-light',name:'PP Light check',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'16:20'},
-        {id:'suz-leadsheet-eod',name:'Lead sheet final',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'16:45'}
-      ]},
-    // TUE 17 — Mera BEST
-    {id:1710000003,va:'Mera',date:'17/03/2026',submittedAt:'06:01 pm',shiftStart:'09:05 am',shiftEnd:'06:01 pm',breakMins:45,breaks:[{startTime:'11:10 am',endTime:'11:30 am',durationMins:20},{startTime:'02:45 pm',endTime:'03:10 pm',durationMins:25}],hoursWorked:'8.7',totalLeads:18,leadsPerHr:'2.1',tasksDone:11,tasksSkipped:0,notes:'Best day this week — newsletter was gold today. Found a flash promo on kitchen brand and pulled 7 leads from it alone. A2A filters also strong on Tue set.',
-      tasks:[
-        {id:'leadsheet',name:'Lead sheet check',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'09:47'},
-        {id:'telegram',name:'Telegram / Keepa',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'10:38'},
-        {id:'newsletter-a',name:'Newsletter (After Telegram)',done:true,skipped:false,skipReason:'',leads:5,time:'1h',context:'flash promo find',tickedAt:'12:05'},
-        {id:'pp-main',name:'PP Main Run',done:true,skipped:false,skipReason:'',leads:0,time:'45m',context:'',tickedAt:'13:20'},
-        {id:'kpf-daily',name:'KPF Filters',done:true,skipped:false,skipReason:'',leads:3,time:'1h 20m',context:'A2A strong today',tickedAt:'14:15'},
-        {id:'sourcing',name:'Sourcing Period',done:true,skipped:false,skipReason:'',leads:10,time:'3h 45m',context:'kitchen brand flash promo',tickedAt:'15:50'},
-        {id:'storefronts',name:'Storefronts',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'16:50'},
-        {id:'pp-light',name:'PP Light check',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'17:30'},
-        {id:'telegram-eod',name:'Telegram EOD',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'17:45'},
-        {id:'leadsheet-eod',name:'Lead sheet final',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'17:50'},
-        {id:'kpf-tue',name:'KPF Tue Filters',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'15:20'}
-      ]},
-    // TUE 17 — Suz
-    {id:1710000004,va:'Suz',date:'17/03/2026',submittedAt:'05:15 pm',shiftStart:'09:20 am',shiftEnd:'05:15 pm',breakMins:30,breaks:[{startTime:'01:00 pm',endTime:'01:30 pm',durationMins:30}],hoursWorked:'7.4',totalLeads:11,leadsPerHr:'1.5',tasksDone:9,tasksSkipped:1,notes:'KPF storefronts link was broken — flagged and moved on. PP channels threw up a few good EU brands.',
-      tasks:[
-        {id:'suz-leadsheet',name:'Lead sheet check',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'09:45'},
-        {id:'suz-telegram',name:'Telegram / Keepa',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'10:30'},
-        {id:'suz-pp',name:'PP Main Run',done:true,skipped:false,skipReason:'',leads:4,time:'1h 20m',context:'EU brands',tickedAt:'11:55'},
-        {id:'suz-kpf-daily',name:'KPF Filters',done:false,skipped:true,skipReason:'Link broken — reported to Jack. Will action tomorrow.',leads:0,time:'',context:'',tickedAt:''},
-        {id:'suz-sourcing',name:'Sourcing Period',done:true,skipped:false,skipReason:'',leads:6,time:'2h 40m',context:'EU brands',tickedAt:'14:10'},
-        {id:'suz-eu',name:'EU Sheet',done:true,skipped:false,skipReason:'',leads:0,time:'30m',context:'',tickedAt:'15:00'},
-        {id:'suz-storefronts',name:'Storefronts',done:true,skipped:false,skipReason:'',leads:1,time:'',context:'',tickedAt:'15:45'},
-        {id:'suz-pp-light',name:'PP Light check',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'16:30'},
-        {id:'suz-leadsheet-eod',name:'Lead sheet final',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'17:05'}
-      ]},
-    // WED 18 — Mera
-    {id:1710000005,va:'Mera',date:'18/03/2026',submittedAt:'05:30 pm',shiftStart:'09:08 am',shiftEnd:'05:30 pm',breakMins:28,breaks:[{startTime:'12:55 pm',endTime:'01:23 pm',durationMins:28}],hoursWorked:'8.0',totalLeads:11,leadsPerHr:'1.4',tasksDone:10,tasksSkipped:0,notes:'Steady day. Storefronts were productive — 4 leads from one storefront run. Sourcing a bit slower than usual, market felt thin.',
-      tasks:[
-        {id:'leadsheet',name:'Lead sheet check',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'09:55'},
-        {id:'telegram',name:'Telegram / Keepa',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'10:40'},
-        {id:'pp-main',name:'PP Main Run',done:true,skipped:false,skipReason:'',leads:0,time:'45m',context:'',tickedAt:'11:30'},
-        {id:'kpf-daily',name:'KPF Filters',done:true,skipped:false,skipReason:'',leads:2,time:'55m',context:'',tickedAt:'12:30'},
-        {id:'sourcing',name:'Sourcing Period',done:true,skipped:false,skipReason:'',leads:5,time:'2h 30m',context:'market thin today',tickedAt:'14:20'},
-        {id:'storefronts',name:'Storefronts',done:true,skipped:false,skipReason:'',leads:4,time:'2h',context:'productive storefront run',tickedAt:'16:00'},
-        {id:'pp-light',name:'PP Light check',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'16:50'},
-        {id:'telegram-eod',name:'Telegram EOD',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'17:15'},
-        {id:'leadsheet-eod',name:'Lead sheet final',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'17:25'}
-      ]},
-    // WED 18 — Suz
-    {id:1710000006,va:'Suz',date:'18/03/2026',submittedAt:'04:45 pm',shiftStart:'09:00 am',shiftEnd:'04:45 pm',breakMins:20,breaks:[{startTime:'12:30 pm',endTime:'12:50 pm',durationMins:20}],hoursWorked:'7.4',totalLeads:7,leadsPerHr:'0.9',tasksDone:9,tasksSkipped:0,notes:'Quiet day — EU sheet empty. PP channels slow. Pushed harder on manual sourcing in the afternoon.',
-      tasks:[
-        {id:'suz-leadsheet',name:'Lead sheet check',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'09:30'},
-        {id:'suz-telegram',name:'Telegram / Keepa',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'10:10'},
-        {id:'suz-pp',name:'PP Main Run',done:true,skipped:false,skipReason:'',leads:2,time:'1h',context:'slow day',tickedAt:'11:15'},
-        {id:'suz-kpf-daily',name:'KPF Filters',done:true,skipped:false,skipReason:'',leads:0,time:'45m',context:'',tickedAt:'12:10'},
-        {id:'suz-sourcing',name:'Sourcing Period',done:true,skipped:false,skipReason:'',leads:5,time:'3h',context:'manual sourcing push',tickedAt:'14:00'},
-        {id:'suz-eu',name:'EU Sheet',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'empty today',tickedAt:'14:30'},
-        {id:'suz-storefronts',name:'Storefronts',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'15:30'},
-        {id:'suz-pp-light',name:'PP Light check',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'16:00'},
-        {id:'suz-leadsheet-eod',name:'Lead sheet final',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'16:35'}
-      ]},
-    // THU 19 — Mera
-    {id:1710000007,va:'Mera',date:'19/03/2026',submittedAt:'05:58 pm',shiftStart:'09:02 am',shiftEnd:'05:58 pm',breakMins:35,breaks:[{startTime:'01:10 pm',endTime:'01:45 pm',durationMins:35}],hoursWorked:'8.4',totalLeads:16,leadsPerHr:'1.9',tasksDone:11,tasksSkipped:0,notes:'Thursday KPF filters were strong today — Laptops & Hoovers A2A threw up 5 leads. Newsletter also strong. Good overall day.',
-      tasks:[
-        {id:'leadsheet',name:'Lead sheet check',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'09:50'},
-        {id:'telegram',name:'Telegram / Keepa',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'10:35'},
-        {id:'pp-main',name:'PP Main Run',done:true,skipped:false,skipReason:'',leads:0,time:'40m',context:'',tickedAt:'11:20'},
-        {id:'kpf-daily',name:'KPF Filters - 7 Day',done:true,skipped:false,skipReason:'',leads:0,time:'55m',context:'',tickedAt:'12:20'},
-        {id:'kpf-thu',name:'KPF Thu Filters',done:true,skipped:false,skipReason:'',leads:5,time:'1h 30m',context:'Laptops & Hoovers A2A',tickedAt:'12:55'},
-        {id:'newsletter-b',name:'Newsletter Check',done:true,skipped:false,skipReason:'',leads:4,time:'50m',context:'strong today',tickedAt:'14:10'},
-        {id:'sourcing',name:'Sourcing Period',done:true,skipped:false,skipReason:'',leads:7,time:'3h',context:'brand sale digs',tickedAt:'15:55'},
-        {id:'storefronts',name:'Storefronts',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'16:45'},
-        {id:'pp-light',name:'PP Light check',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'17:15'},
-        {id:'telegram-eod',name:'Telegram EOD',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'17:40'},
-        {id:'leadsheet-eod',name:'Lead sheet final',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'17:50'}
-      ]},
-    // THU 19 — Suz BEST
-    {id:1710000008,va:'Suz',date:'19/03/2026',submittedAt:'05:20 pm',shiftStart:'09:10 am',shiftEnd:'05:20 pm',breakMins:40,breaks:[{startTime:'12:00 pm',endTime:'12:25 pm',durationMins:25},{startTime:'03:00 pm',endTime:'03:15 pm',durationMins:15}],hoursWorked:'7.8',totalLeads:13,leadsPerHr:'1.7',tasksDone:10,tasksSkipped:0,notes:'Best day this week — PP channels were firing. Found a strong EU clothing brand dropping heavily. Manual sourcing also solid.',
-      tasks:[
-        {id:'suz-leadsheet',name:'Lead sheet check',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'09:38'},
-        {id:'suz-telegram',name:'Telegram / Keepa',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'10:22'},
-        {id:'suz-pp',name:'PP Main Run',done:true,skipped:false,skipReason:'',leads:6,time:'1h 30m',context:'EU clothing brand',tickedAt:'11:30'},
-        {id:'suz-kpf-daily',name:'KPF Filters',done:true,skipped:false,skipReason:'',leads:0,time:'50m',context:'',tickedAt:'13:10'},
-        {id:'suz-sourcing',name:'Sourcing Period',done:true,skipped:false,skipReason:'',leads:7,time:'3h 10m',context:'strong manual day',tickedAt:'14:50'},
-        {id:'suz-eu',name:'EU Sheet',done:true,skipped:false,skipReason:'',leads:0,time:'25m',context:'1 brand',tickedAt:'15:30'},
-        {id:'suz-storefronts',name:'Storefronts',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'16:10'},
-        {id:'suz-pp-light',name:'PP Light check',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'16:45'},
-        {id:'suz-telegram-eod',name:'Telegram EOD',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'17:00'},
-        {id:'suz-leadsheet-eod',name:'Lead sheet final',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'17:10'}
-      ]},
-    // FRI 20 — Mera LOW
-    {id:1710000009,va:'Mera',date:'20/03/2026',submittedAt:'04:12 pm',shiftStart:'09:00 am',shiftEnd:'04:12 pm',breakMins:22,breaks:[{startTime:'01:15 pm',endTime:'01:37 pm',durationMins:22}],hoursWorked:'7.0',totalLeads:9,leadsPerHr:'1.3',tasksDone:10,tasksSkipped:1,notes:'Shorter day on Friday. Solid not spectacular. PP pings were quiet. Sourcing threw up a few good ones late morning.',
-      tasks:[
-        {id:'leadsheet',name:'Lead sheet check',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'09:58'},
-        {id:'telegram',name:'Telegram / Keepa',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'10:52'},
-        {id:'pp-main',name:'PP Main Run',done:true,skipped:false,skipReason:'',leads:2,time:'40m',context:'',tickedAt:'11:48'},
-        {id:'kpf-daily',name:'KPF Filters - 7 Day',done:true,skipped:false,skipReason:'',leads:1,time:'1h',context:'',tickedAt:'12:05'},
-        {id:'sourcing',name:'Sourcing Period',done:true,skipped:false,skipReason:'',leads:6,time:'2h 30m',context:'late morning finds',tickedAt:'14:20'},
-        {id:'storefronts',name:'Storefronts',done:false,skipped:true,skipReason:'Not working today — will add to POA',leads:0,time:'',context:'',tickedAt:''},
-        {id:'pp-light',name:'PP Light check',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'15:55'},
-        {id:'telegram-eod',name:'Telegram EOD',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'16:00'},
-        {id:'leadsheet-eod',name:'Lead sheet final',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'16:05'}
-      ]},
-    // FRI 20 — Suz
-    {id:1710000010,va:'Suz',date:'20/03/2026',submittedAt:'04:30 pm',shiftStart:'09:05 am',shiftEnd:'04:30 pm',breakMins:30,breaks:[{startTime:'01:00 pm',endTime:'01:30 pm',durationMins:30}],hoursWorked:'7.0',totalLeads:10,leadsPerHr:'1.4',tasksDone:9,tasksSkipped:0,notes:'Good Friday — newsletter had a decent one. EU sheet had 2 brands. Finished the week strong.',
-      tasks:[
-        {id:'suz-leadsheet',name:'Lead sheet check',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'09:35'},
-        {id:'suz-telegram',name:'Telegram / Keepa',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'10:15'},
-        {id:'newsletter-a',name:'Newsletter Check',done:true,skipped:false,skipReason:'',leads:3,time:'45m',context:'decent find',tickedAt:'11:05'},
-        {id:'suz-pp',name:'PP Main Run',done:true,skipped:false,skipReason:'',leads:0,time:'1h',context:'',tickedAt:'12:10'},
-        {id:'suz-kpf-daily',name:'KPF Filters',done:true,skipped:false,skipReason:'',leads:0,time:'50m',context:'',tickedAt:'14:00'},
-        {id:'suz-sourcing',name:'Sourcing Period',done:true,skipped:false,skipReason:'',leads:5,time:'2h 20m',context:'',tickedAt:'15:10'},
-        {id:'suz-eu',name:'EU Sheet',done:true,skipped:false,skipReason:'',leads:2,time:'30m',context:'2 brands',tickedAt:'15:55'},
-        {id:'suz-pp-light',name:'PP Light check',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'16:10'},
-        {id:'suz-leadsheet-eod',name:'Lead sheet final',done:true,skipped:false,skipReason:'',leads:0,time:'',context:'',tickedAt:'16:20'}
-      ]}
-  ];
-
-  var merged=fakeShifts.concat(existing);
-  merged.sort(function(a,b){return b.id-a.id;});
-  localStorage.setItem('shifttrack_eod_log',JSON.stringify(merged));
-
-  // Always ensure fake demo issue is in the list (for demo purposes)
-  try {
-    var existingIssues=mgr_getReports();
-    var hasFake=existingIssues.some(function(r){return r.id===1710000099;});
-    if(!hasFake){
-      var demoIssue={id:1710000099,va:'Suz',type:'technical',
-        text:'PP channel not loading — tried refreshing multiple times. The 50spm-eu-suz channel keeps spinning and never loads results. Happened twice around 10am and again at 2pm. Moving on for now but flagging.',
-        time:'16/03/2026 · 02:34 pm UK',resolved:false};
-      existingIssues.push(demoIssue);
-      localStorage.setItem('shifttrack_reports',JSON.stringify(existingIssues));
-    }
-  } catch(e){}
-}
+/* FAKE SHIFT DATA — REMOVED (v187).
+   Jack, twice: "wtf where has all this come from - no fake data at all" and "i never
+   added these wtf - make sure all fake data is removed". The injector held 19KB of
+   invented 16-20/03/2026 shifts, and a live "Re-inject demo data" button called it
+   straight after localStorage.removeItem('shifttrack_eod_log') — one misclick wiped
+   the real log and replaced it with fiction. The on-load cleanup that strips those
+   March rows stays, for any browser still carrying them. */
 
 var mgr_weekOffset=0;
 // ── WEEKLY REVIEW ────────────────────────────────────────
@@ -14804,7 +14645,10 @@ function sbPriPill(b){
     +'title="Click to change priority">'+p+'</button>';
 }
 function sbCardHTML(b, forVA){
-  var locked=(b.status==='Started'||b.status==='Completed');
+  // dimmed = "not actionable by you". Jack's OWN in-progress batch is very much
+  // actionable, so it must not wear the same greyed-out treatment as a VA's.
+  var _jackOn=(b.status==='Started' && (b.started_by==='Jack'||b.assigned_to==='Jack'));
+  var locked=((b.status==='Started'&&!_jackOn)||b.status==='Completed');
   var keepa = b.keepa_url
     ? '<a class="sb-btn sb-keepa" href="'+String(b.keepa_url).replace(/"/g,'&quot;')+'" target="_blank" onclick="event.stopPropagation()">Open Keepa &#8599;</a>'
     : '';
@@ -14817,7 +14661,16 @@ function sbCardHTML(b, forVA){
         +'<button class="sb-btn sb-send'+(b.assigned_to==='Suz'?' on':'')+'" onclick="sbAssign(\''+b.id+'\',\'Suz\')">'+vaDisp('Suz')+'</button>'
         +'<button class="sb-btn sb-send" onclick="sbAssign(\''+b.id+'\',\'Both\')">Both</button>'
         +'<button class="sb-btn sb-send'+(b.assigned_to==='Jack'?' on':'')+'" onclick="sbAssign(\''+b.id+'\',\'Jack\')">Keep</button>'
+        // A batch Jack KEEPS is his to work — without these it sat "Assigned" for ever,
+        // because Start/Complete only ever existed on the VA side of the card. Jack has
+        // no shift, so his lifecycle lives here on the board instead.
+        +(b.assigned_to==='Jack'
+            ? '<button class="sb-btn sb-start" onclick="sbJackStart(\''+b.id+'\')">&#9654; Start</button>'
+            : '')
         +'</div>';
+    } else if(b.status==='Started' && (b.started_by==='Jack'||b.assigned_to==='Jack')){
+      acts='<div class="sb-acts"><span class="sb-mine">&#9654; You\'re on this</span>'
+        +'<button class="sb-btn sb-done" onclick="sbJackComplete(\''+b.id+'\')">&#10003; Done</button></div>';
     } else {
       acts='<div class="sb-acts"><span class="sb-locked">&#128274; '+(b.status==='Started'?'Being worked on by ':'Completed by ')
         +escHtml(vaDisp(b.started_by||b.assigned_to||''))+' — locked</span></div>';
@@ -14830,8 +14683,12 @@ function sbCardHTML(b, forVA){
   var who = b.assigned_to ? ('<span class="sb-who">'+escHtml(vaDisp(b.assigned_to))+'</span>') : '<span class="sb-who none">unassigned</span>';
   // identity colour carries across the app — a board of ten cards should read
   // who-has-what at a glance, not per-card
+  // amber edge means "nobody has this yet, act on it". A batch Jack deliberately kept
+  // is owned, so it gets its own indigo — otherwise his own work sat in the board's
+  // to-do colour for ever and read as unrouted.
   var vaCls = b.assigned_to==='Mera'?' sb-va-mera' : b.assigned_to==='Suz'?' sb-va-suz'
-            : b.assigned_to==='Both'?' sb-va-both' : ' sb-va-none';
+            : b.assigned_to==='Both'?' sb-va-both'
+            : b.assigned_to==='Jack'?' sb-va-jack' : ' sb-va-none';
   var priCls = (b.priority==='High' && b.status!=='Completed')?' sb-hi':'';
   return '<div class="sb-card'+(locked?' locked':'')+vaCls+priCls+'">'
     +'<div class="sb-top">'
@@ -14940,6 +14797,20 @@ async function sbCyclePriority(batchId){
   var host=document.getElementById('mgr-storefronts-content');
   if(host) host.innerHTML=sbJackHTML();
   await sbPatch(batchId,{priority:next});
+}
+/* Jack's own lifecycle. The VA versions stamp state.currentVA, which Jack never has
+   (he doesn't start a shift), and they refresh the VA panel rather than his board. */
+async function sbJackStart(batchId){
+  var ok=await sbPatch(batchId,{status:'Started', started_by:'Jack', started_at:new Date().toISOString()});
+  if(!ok){ showToast('Couldn\'t start it — check your connection',true); return; }
+  showToast('Started — locked to you \u2713');
+  try{ sbRefreshJack(); }catch(e){}
+}
+async function sbJackComplete(batchId){
+  var ok=await sbPatch(batchId,{status:'Completed', completed_by:'Jack', completed_at:new Date().toISOString()});
+  if(!ok){ showToast('Couldn\'t save that — check your connection',true); return; }
+  showToast('Batch complete \u2713');
+  try{ sbRefreshJack(); }catch(e){}
 }
 async function sbStart(batchId){
   var ok=await sbPatch(batchId,{status:'Started', started_by:(state.currentVA||'VA'), started_at:new Date().toISOString()});
