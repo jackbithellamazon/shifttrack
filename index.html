@@ -2473,6 +2473,21 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 .sb-sum-c.green b{color:var(--green);}
 .sb-sum-c.blue{color:#7cc0ff;border-color:rgba(124,192,255,.35);}
 .sb-sum-c.blue b{color:#7cc0ff;}
+.sbp-t{background:rgba(255,255,255,.05);border:1px solid var(--line-2);color:var(--muted-2);font-family:inherit;
+  font-size:10.5px;font-weight:800;padding:3px 10px;border-radius:999px;cursor:pointer;transition:all .12s;}
+.sbp-t:hover{border-color:var(--accent);color:var(--text);}
+.sbp-t.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+.sbp-tbl{min-width:640px;}
+.sbp-tbl td{font-size:12.5px;padding:9px 8px;}
+.sbp-tbl td b{color:var(--text);font-weight:750;}
+.sbp-key{font-family:var(--font-mono);font-weight:800;color:var(--green);}
+.sbp-best td{background:color-mix(in srgb,var(--green) 7%,transparent);}
+.sbp-tag{font-style:normal;font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--green);background:color-mix(in srgb,var(--green) 15%,transparent);padding:2px 7px;border-radius:999px;margin-left:8px;}
+.sbp-pend{font-size:10.5px;color:var(--amber);}
+.sbp-man{font-style:normal;font-size:9.5px;font-weight:700;color:var(--muted-2);background:rgba(255,255,255,.06);
+  padding:2px 7px;border-radius:999px;margin-left:7px;}
+.sbp-note{font-size:11.5px;color:var(--muted-2);padding:9px 4px 2px;}
 .sbq-bar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0 0 10px;}
 .sbq-stat{font-size:11.5px;font-weight:700;color:var(--muted);background:rgba(255,255,255,.045);
   border:1px solid var(--line-2);border-radius:999px;padding:5px 12px;}
@@ -4308,7 +4323,7 @@ function ukHour() { return ukNow().getHours(); }
 
 // ── STATE ────────────────────────────────────────────────
 // bumped on every ship — shown as a badge next to the logo so a screenshot instantly tells us the version
-var APP_VERSION='v187';
+var APP_VERSION='v190';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -15189,6 +15204,143 @@ function sbHistoryHTML(){
     +(moreDays>0?'<button class="btn btn-ghost" style="margin-top:10px;" onclick="window._sbHistAll=1;sbRefreshJack()">Show '+moreDays+' earlier day'+(moreDays===1?'':'s')+'</button>':'')
     +'</div>';
 }
+/* ── WHAT'S ACTUALLY PRODUCING ─────────────────────────────────────────────
+   The module captured everything and analysed nothing. A batch becomes a task
+   on the VA's shift list with id `sbatch-<batchId>`; the VA logs time and leads
+   against it; that task is saved verbatim inside the EOD record. So the join
+   is: every batch  ->  the shift task that carries its id. Nothing else in the
+   app was reading that back, so "which storefront is worth running" was
+   unanswerable even though the data was all there.
+
+   Deliberately shows ASINs-per-lead as well as leads/hour: a tag that needs 200
+   ASINs to yield one lead is expensive even when the hourly rate looks fine. */
+/* Minutes off a task — and it MUST read `time` last, because `time` is the only one
+   that survives a save. Checked against the live DB: across 686 tasks in 40 shifts,
+   timeHrs / timeMins / timerSec appear ZERO times — the shift record keeps only the
+   formatted string ("1h", "30m", "1h 30m"). Reading the numeric fields alone would have
+   left Hours and Leads/hr permanently blank in the panel, on every historical shift and
+   every future one. The numeric fields are still tried first because they're live in the
+   VA's browser before submit. */
+function sbTaskMins(t){
+  if(!t) return 0;
+  var mins=(parseInt(t.timeHrs)||0)*60+(parseInt(t.timeMins)||0);
+  if(mins) return mins;
+  if(t.timerSec) return Math.round(t.timerSec/60);
+  var str=String(t.time||'').trim(); if(!str) return 0;
+  var h=str.match(/(\d+(?:\.\d+)?)\s*h/i), m=str.match(/(\d+)\s*m/i);
+  mins=(h?parseFloat(h[1])*60:0)+(m?parseInt(m[1]):0);
+  if(!mins && /^\d+$/.test(str)) mins=parseInt(str);   // bare number = minutes
+  return Math.round(mins);
+}
+function sbTaskIndex(log){
+  var idx={};
+  try{
+    (log||mgr_getLog()||[]).forEach(function(rec){
+      (rec.tasks||[]).forEach(function(t){
+        if(!t || String(t.id||'').indexOf('sbatch-')!==0) return;
+        var bid=String(t.id).slice(7);
+        idx[bid]={ leads:parseInt(t.leads)||0, mins:sbTaskMins(t), va:rec.va, date:rec.date, done:!!t.done };
+      });
+    });
+  }catch(e){}
+  return idx;
+}
+/* The shift screen ALSO has a manual "Add storefront" logger (name + timer + leads,
+   saved as rec.storefronts[]). Nobody has ever used it — 0 of 118 shifts — but it is
+   still on the page, so anything typed there must count too, otherwise the panel would
+   quietly ignore real work. Keyed by NAME, matched case-insensitively to the tag. */
+function sbManualIndex(log, cutMs){
+  var by={};
+  try{
+    (log||mgr_getLog()||[]).forEach(function(rec){
+      var iso=sbToISO(rec.date); 
+      if(iso && cutMs && new Date(iso+'T12:00:00').getTime()<cutMs) return;
+      (rec.storefronts||[]).forEach(function(sf){
+        var name=String(sf&&sf.name||'').trim(); if(!name) return;
+        var k=name.toLowerCase();
+        var r=by[k]||(by[k]={name:name,leads:0,mins:0,runs:0});
+        r.runs++;
+        r.leads+=parseInt(sf.leads)||0;
+        r.mins+=(parseInt(sf.seconds)||0)?Math.round(parseInt(sf.seconds)/60):sbTaskMins(sf);
+      });
+    });
+  }catch(e){}
+  return by;
+}
+function sbPerf(days, log){
+  days=days||30;
+  var cut=Date.now()-days*86400000;
+  var idx=sbTaskIndex(log), by={};
+  (SB_BATCHES||[]).forEach(function(b){
+    var iso=sbToISO(b.date); if(!iso) return;
+    if(new Date(iso+'T12:00:00').getTime()<cut) return;
+    var k=String(b.storefront_name||'—');
+    var r=by[k]||(by[k]={name:k,batches:0,asins:0,leads:0,mins:0,worked:0,done:0});
+    r.batches++; r.asins+=(b.asin_count||0);
+    if(b.status==='Completed') r.done++;
+    var t=idx[b.id];
+    if(t){ r.leads+=t.leads; r.mins+=t.mins; r.worked++; }
+  });
+  // fold in anything logged by hand on the shift screen, under the same tag name
+  var man=sbManualIndex(log, cut);
+  Object.keys(man).forEach(function(k){
+    var m=man[k];
+    var hit=Object.keys(by).filter(function(n){ return n.toLowerCase()===k; })[0];
+    var r = hit ? by[hit] : (by[m.name]={name:m.name,batches:0,asins:0,leads:0,mins:0,worked:0,done:0});
+    r.leads+=m.leads; r.mins+=m.mins; r.worked+=m.runs; r.manual=(r.manual||0)+m.runs;
+  });
+  return Object.keys(by).map(function(k){
+    var r=by[k];
+    r.hrs=r.mins/60;
+    r.lph=r.hrs>0?(r.leads/r.hrs):null;
+    r.apl=r.leads>0?(r.asins/r.leads):null;
+    return r;
+  }).sort(function(a,b){
+    if((b.leads||0)!==(a.leads||0)) return (b.leads||0)-(a.leads||0);
+    return (b.asins||0)-(a.asins||0);
+  });
+}
+var SB_PERF_DAYS=30;
+function sbPerfSet(d){ SB_PERF_DAYS=d; try{ sbRefreshJack(); }catch(e){} }
+function sbPerfHTML(){
+  var rows=sbPerf(SB_PERF_DAYS);
+  var head='<div class="mgr-section">What’s producing'
+    +'<span style="margin-left:auto;display:flex;gap:6px;">'
+    +[7,30,90].map(function(d){
+        return '<button class="sbp-t'+(SB_PERF_DAYS===d?' on':'')+'" onclick="sbPerfSet('+d+')">'+d+'d</button>';
+      }).join('')
+    +'</span></div>';
+  if(!rows.length){
+    return head+'<div class="sb-empty">Nothing to measure yet.'
+      +'<span>Once Sarah imports and a VA works a batch, each tag’s leads, hours and ASINs-per-lead appear here.</span></div>';
+  }
+  var anyWorked=rows.some(function(r){ return r.worked>0; });
+  var best=rows.filter(function(r){ return r.lph!=null; }).sort(function(a,b){ return b.lph-a.lph; })[0];
+  var body=rows.map(function(r){
+    var lph=r.lph!=null?r.lph.toFixed(1):'—';
+    var apl=r.apl!=null?Math.round(r.apl):'—';
+    var pend=r.batches-r.worked;
+    return '<tr'+(best&&r.name===best.name?' class="sbp-best"':'')+'>'
+      +'<td><b>'+escHtml(r.name)+'</b>'+(best&&r.name===best.name?'<i class="sbp-tag">best rate</i>':'')
+        +(r.manual?'<i class="sbp-man" title="'+r.manual+' logged by hand on the shift screen, not from an import">hand-logged</i>':'')+'</td>'
+      +'<td class="sb-ctr">'+r.batches+(pend?'<span class="sbp-pend"> · '+pend+' not worked</span>':'')+'</td>'
+      +'<td class="sb-ctr">'+r.asins+'</td>'
+      +'<td class="sb-ctr"><b>'+(r.worked?r.leads:'—')+'</b></td>'
+      +'<td class="sb-ctr">'+(r.hrs>0?r.hrs.toFixed(1)+'h':'—')+'</td>'
+      +'<td class="sb-ctr sbp-key">'+lph+'</td>'
+      +'<td class="sb-ctr">'+apl+'</td>'
+      +'</tr>';
+  }).join('');
+  return head
+    +'<div class="sbq-wrap"><table class="sbq-tbl sbp-tbl">'
+    +'<thead><tr><th>Tag</th><th class="sb-ctr">Batches</th><th class="sb-ctr">ASINs sent</th>'
+      +'<th class="sb-ctr">Leads</th><th class="sb-ctr">Hours</th>'
+      +'<th class="sb-ctr" title="Leads found per hour worked on that tag">Leads/hr</th>'
+      +'<th class="sb-ctr" title="How many ASINs it takes to find one lead — lower is better">ASINs per lead</th></tr></thead>'
+    +'<tbody>'+body+'</tbody></table>'
+    +(anyWorked?'':'<div class="sbp-note">No batch has been worked to completion yet — leads and hours fill in as the VAs tick them off.</div>')
+    +'</div>';
+}
 function sbJackHTML(){
   if(window.SB_TABLES_MISSING){
     return '<div class="sb-setup"><div class="sb-setup-t">\u26A0\uFE0F Storefront module isn\u2019t switched on yet</div>'
@@ -15205,7 +15357,7 @@ function sbJackHTML(){
         +escHtml(sbSetupSQL())+'</textarea></div>'
       +'</div>';
   }
-  return sbTodayHTML()+sbHistoryHTML()+sbQueuesHTML()+sbKeepaSettingHTML();
+  return sbTodayHTML()+sbPerfHTML()+sbHistoryHTML()+sbQueuesHTML()+sbKeepaSettingHTML();
 }
 function mgr_renderStorefronts(){
   var el=document.getElementById('mgr-storefronts-content'); if(!el) return;
