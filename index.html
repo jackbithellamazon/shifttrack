@@ -776,8 +776,25 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .pay-hint{font-size:11.5px;color:var(--muted-2);font-weight:700;}
 .pay-hint.ok{color:#10d99a;}
 .payr-head{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted-2);margin:12px 0 8px;}
-.payr-list{display:flex;flex-direction:column;gap:9px;}
-.payr-row{background:var(--panel-2);border:1px solid var(--line-2);border-radius:11px;padding:10px 11px;}
+.payr-list{display:flex;flex-direction:column;gap:6px;}
+/* A pay cycle is three short facts — an icon, a name, a schedule. It was laid out as a
+   full form with each control on its own line, so two cycles filled half the settings
+   page. Everything now sits on one wrapping line with the summary inline beside it. */
+.payr-row{background:var(--panel-2);border:1px solid var(--line-2);border-radius:10px;padding:7px 9px;
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.payr-row .payr-top{display:contents;}
+.payr-row .payr-when{display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.payr-row .settings-input{padding:5px 8px!important;font-size:12px!important;height:auto!important;}
+.payr-row .payr-name{flex:1 1 150px;min-width:120px;}
+.payr-row .payr-type{flex:0 0 auto;width:auto;min-width:120px;}
+.payr-row .payr-days,.payr-row .payr-n{width:58px;text-align:center;}
+.payr-row .payr-wd{width:auto;min-width:92px;}
+.payr-row .payr-anchor{width:132px;}
+.payr-lbl,.payr-note{font-size:10.5px!important;color:var(--muted-2);white-space:nowrap;}
+.payr-next{flex:1 1 100%;font-size:10.5px;color:var(--muted-2);border-top:1px solid var(--line-2);
+  padding-top:5px;margin-top:2px;}
+.payr-next b{color:var(--text);}
+.payr-icon{padding:4px 2px!important;font-size:14px!important;width:46px;}
 .payr-top{display:grid;grid-template-columns:64px minmax(0,1fr) 168px auto;gap:7px;align-items:center;}
 .payr-icon{background:var(--panel);border:1px solid var(--line-2);border-radius:8px;color:var(--text);font-size:15px;padding:6px;cursor:pointer;text-align:center;}
 .payr-sched{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:9px;}
@@ -793,7 +810,12 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .payr-next b{color:var(--text);}
 .payr-add{margin-top:9px;}
 @media(max-width:900px){ .payr-top{grid-template-columns:56px 1fr;} .payr-type{grid-column:1/-1;} }
-.payp-row{display:grid;grid-template-columns:1fr 150px auto;gap:8px;margin-bottom:7px;align-items:center;}
+.payp-row{display:grid;grid-template-columns:1fr 160px auto;gap:6px;margin-bottom:5px;align-items:center;}
+.payp-row .settings-input{padding:5px 9px!important;font-size:12.5px!important;}
+.payp-list{margin-bottom:2px;}
+.payr-head{font-size:9.5px!important;font-weight:900;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--muted-2);margin:0 0 6px!important;}
+.payr-add{margin-top:6px!important;padding:5px 12px!important;font-size:11.5px!important;}
 .payp-list{margin-top:10px;}
 .payp-nexts{margin-top:11px;padding-top:10px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:5px;}
 .payp-next{font-size:11.5px;color:var(--muted-2);}
@@ -845,6 +867,10 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .tk-sec-done .task-item .task-header{padding-top:7px;padding-bottom:7px;}
 .tk-sec-done .task-item .task-sub,.tk-sec-done .task-item .jbcard-meta{display:none;}
 .tk-sec-done .task-item:hover{opacity:1;}
+.tab-bar{display:flex;align-items:flex-start;gap:11px;border-radius:12px;padding:11px 14px;margin-bottom:12px;font-size:13px;line-height:1.55;}
+.tab-bar.bad{background:color-mix(in srgb,#f5455f 13%,var(--panel));border:1px solid color-mix(in srgb,#f5455f 48%,transparent);color:var(--text);}
+.tab-bar.fixed{background:color-mix(in srgb,#10d99a 9%,var(--panel));border:1px solid color-mix(in srgb,#10d99a 32%,transparent);color:var(--muted);font-size:12.5px;}
+.tab-bar b{color:var(--text);}
 .pay-bar{display:flex;align-items:center;gap:11px;border-radius:12px;padding:11px 14px;margin-bottom:12px;font-size:13px;}
 .pay-bar.due{background:color-mix(in srgb,var(--amber,#f2c200) 12%,var(--panel));border:1px solid color-mix(in srgb,var(--amber,#f2c200) 42%,transparent);color:var(--text);}
 .pay-bar.due.late{background:color-mix(in srgb,#f5455f 12%,var(--panel));border-color:color-mix(in srgb,#f5455f 45%,transparent);}
@@ -1683,11 +1709,42 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 #view-leads .d-badges{display:flex;flex-wrap:wrap;gap:7px;margin:-4px 0 14px;}
 /* duplicate leads — same VA is noise (dim it); both VAs is a signal (tint, don't dim) */
 #view-leads .dup-tag{font-size:8px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:5px;margin-left:4px;white-space:nowrap;}
-#view-leads .dup-tag.dup-same{color:var(--t3);background:rgba(255,255,255,.09);}
+#view-leads .dup-tag.dup-same{color:var(--t3);background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.14);}
 #view-leads .dup-tag.dup-cross{color:#04141a;background:var(--cyan);}
-#view-leads .litem.dup-row-same{opacity:.55;}
-#view-leads .litem.dup-row-same:hover{opacity:.85;}
-#view-leads .litem.dup-row-cross{background:color-mix(in srgb,var(--cyan) 7%,transparent);}
+/* DUPE (same VA twice) = wasted effort. A flat opacity:.55 dimmed the score, the price
+   and the thumbnail equally, so the row got harder to READ without looking any more
+   "already seen". Desaturate the picture, grey the panel, mute the figures — but keep
+   the title at full contrast so it stays scannable. */
+/* held on screen after a decision, until he moves to another lead */
+#view-leads .litem.litem-decided{background:color-mix(in srgb,var(--green) 9%,transparent);
+  box-shadow:inset 3px 0 0 var(--green);}
+#view-leads .litem.litem-decided .litem-title::after{content:'DECIDED \2014 still open';
+  margin-left:8px;font-size:8px;font-weight:900;letter-spacing:.5px;color:var(--green);
+  background:color-mix(in srgb,var(--green) 16%,transparent);padding:2px 6px;border-radius:5px;
+  vertical-align:middle;white-space:nowrap;}
+#view-leads .litem.dup-row-same{background:rgba(255,255,255,.028);
+  box-shadow:inset 3px 0 0 rgba(255,255,255,.16);}
+#view-leads .litem.dup-row-same img{filter:grayscale(1) brightness(.75);}
+#view-leads .litem.dup-row-same .litem-title{color:var(--t2);}
+#view-leads .litem.dup-row-same .lmeta,
+#view-leads .litem.dup-row-same .litem-sub,
+#view-leads .litem.dup-row-same .lchip{opacity:.5;}
+#view-leads .litem.dup-row-same .lscore{filter:saturate(.35);}
+#view-leads .litem.dup-row-same:hover{background:rgba(255,255,255,.055);}
+#view-leads .litem.dup-row-same:hover img{filter:none;}
+#view-leads .litem.dup-row-same:hover .lmeta,
+#view-leads .litem.dup-row-same:hover .litem-sub,
+#view-leads .litem.dup-row-same:hover .lchip{opacity:.85;}
+
+/* BOTH VAs = the opposite signal. Two people landing on the same product independently
+   is weak evidence it's genuinely attractive, so this must stand OUT, not fade. 7% cyan
+   was invisible against the panel — now a real tint plus a cyan inner edge, sitting
+   inside the VA identity stripe rather than replacing it. */
+#view-leads .litem.dup-row-cross{background:color-mix(in srgb,var(--cyan) 13%,transparent);
+  box-shadow:inset 3px 0 0 var(--cyan);}
+#view-leads .litem.dup-row-cross:hover{background:color-mix(in srgb,var(--cyan) 20%,transparent);}
+#view-leads .litem.dup-row-cross .dup-tag.dup-cross{box-shadow:0 0 12px -2px color-mix(in srgb,var(--cyan) 60%,transparent);}
 #view-leads .dup-note{display:flex;align-items:center;gap:8px;font-size:12px;line-height:1.5;padding:9px 12px;border-radius:9px;margin:-4px 0 13px;}
 #view-leads .dup-note.same{color:var(--t3);background:rgba(255,255,255,.05);border:1px solid var(--b2);}
 #view-leads .dup-note.cross{color:var(--t2);background:color-mix(in srgb,var(--cyan) 10%,transparent);border:1px solid color-mix(in srgb,var(--cyan) 32%,transparent);}
@@ -2061,7 +2118,9 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .kc-goal-bar{height:6px;border-radius:4px;background:rgba(255,255,255,.09);overflow:hidden;}
 .kc-goal-bar i{display:block;height:100%;border-radius:4px;}
 .keepa-2col{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,1fr);gap:16px;align-items:start;margin-bottom:16px;}
-@media(max-width:1000px){.keepa-2col{grid-template-columns:1fr;}}
+/* the two VA breakdowns must be EQUAL width — they are read side by side */
+.kbd-2col{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start;margin-bottom:16px;}
+@media(max-width:1000px){.keepa-2col,.kbd-2col{grid-template-columns:1fr;}}
 .kins{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.05);}
 .kins:last-child{border-bottom:none;}
 .kins-dot{width:26px;height:26px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;}
@@ -2069,7 +2128,8 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .kins-v{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums;}
 .kbd-head{display:flex;align-items:center;gap:9px;margin-bottom:12px;}
 .kbd-wk{margin-left:auto;font-size:10.5px;font-weight:700;padding:2px 10px;border-radius:999px;background:color-mix(in srgb,currentColor 14%,transparent);border:1px solid color-mix(in srgb,currentColor 32%,transparent);}
-.kbd-row{display:grid;grid-template-columns:96px 46px 1fr 66px 60px;gap:10px;align-items:center;padding:6px 0;border-top:1px solid rgba(255,255,255,.05);font-size:12.5px;}
+.kbd-row{display:grid;grid-template-columns:minmax(64px,96px) minmax(38px,46px) minmax(48px,1fr) minmax(50px,66px) minmax(46px,60px);gap:10px;align-items:center;padding:6px 0;border-top:1px solid rgba(255,255,255,.05);font-size:12.5px;}
+@media(max-width:1180px){.kbd-row{gap:7px;}}
 .kbd-hrow{border-top:none;font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted-2);padding-bottom:2px;}
 .kbd-date{color:var(--muted);white-space:nowrap;font-size:11.5px;} .kbd-today{font-size:8px;background:var(--accent-soft);color:#fff;padding:1px 5px;border-radius:4px;font-weight:800;}
 .kbd-add{font-weight:800;font-variant-numeric:tabular-nums;}
@@ -2379,6 +2439,15 @@ body.has-save-bar{padding-bottom:64px;}
 .sbi-chip.dest-mera .sbi-dot{background:var(--mera);}
 .sbi-chip.dest-suz  .sbi-dot{background:var(--suz);}
 .sbi-chip.dest-jack .sbi-dot{background:var(--jack);}
+.sbi-chip.dest-both .sbi-dot{background:#f472b6;}
+.sbi-chip.dest-all  .sbi-dot{background:#10d99a;}
+.sbi-chip.dest-review .sbi-dot{background:#8b93a8;}   /* NOT amber — amber IS Suz's yellow */
+.sbi-chip.dest-both{border-color:color-mix(in srgb,#f472b6 36%,transparent);}
+.sbi-chip.dest-both:hover{border-color:#f472b6;box-shadow:0 3px 12px color-mix(in srgb,#f472b6 25%,transparent);}
+.sbi-chip.dest-all{border-color:color-mix(in srgb,#10d99a 36%,transparent);}
+.sbi-chip.dest-all:hover{border-color:#10d99a;box-shadow:0 3px 12px color-mix(in srgb,#10d99a 25%,transparent);}
+.sbi-chip.dest-review{border-color:color-mix(in srgb,#8b93a8 40%,transparent);border-style:dashed;}
+.sbi-chip.dest-review:hover{border-color:#8b93a8;box-shadow:0 3px 12px color-mix(in srgb,#8b93a8 25%,transparent);}
 .sbi-chip.dest-jack{border-color:color-mix(in srgb,var(--jack) 32%,transparent);}
 .sbi-chip.dest-jack:hover{border-color:var(--jack);box-shadow:0 3px 12px color-mix(in srgb,var(--jack) 25%,transparent);}
 .sbi-chip.dest-mera{border-color:color-mix(in srgb,var(--mera) 38%,transparent);}
@@ -2644,82 +2713,121 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 .aud-tm.none{color:var(--muted-2);}
 .aud-h span{margin-left:auto;}
 .aud-empty{font-size:12px;color:var(--muted-2);padding:12px 0;}
-.sbr-list{display:flex;flex-direction:column;gap:5px;margin-bottom:15px;}
-/* Tiles for the VAs' batches: they're reference, not action, so three or four fit on a
-   row where one full-width row used to sit. Same markup — the container decides. */
-.sbr-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px;margin-bottom:15px;}
-/* The markup inside a row is FLAT — name, day, count, status, spacer, keepa, copy,
-   actions are all siblings. My previous attempt put day/count/status in the same grid
-   cell, so they stacked on top of each other ("12ASINs" printed over itself). Flex-wrap
-   instead, and use the spacer that already sits between status and the links to force
-   the line break. flex-basis:100% on a wrapped item starts a new line — that is the
-   whole trick, and it needs no markup change. */
-.sbr-tiles .sbr{display:flex;flex-wrap:wrap;align-items:center;gap:6px 7px;padding:11px 13px;}
-.sbr-tiles .sbr-tag{flex:1 1 auto;min-width:0;font-size:14px;
+.sbrt{display:flex;align-items:center;gap:6px;flex-wrap:wrap;border-radius:10px;padding:8px 11px;margin-bottom:8px;font-size:12px;}
+.sbrt.idle{background:transparent;border:1px dashed var(--line-2);}
+.sbrt.on{background:color-mix(in srgb,var(--accent) 13%,var(--panel));
+  border:1px solid color-mix(in srgb,var(--accent) 50%,transparent);}
+.sbrt.on b{color:var(--accent);font-weight:800;margin-right:4px;}
+.sbrt-l{color:var(--muted-2);margin-right:2px;}
+.sbrt-tag{background:rgba(255,255,255,.05);border:1px solid var(--line-2);color:var(--muted);
+  font-family:inherit;font-size:11.5px;font-weight:700;padding:4px 11px;border-radius:999px;cursor:pointer;}
+.sbrt-tag b{font-family:var(--font-mono);color:var(--text);margin-left:3px;}
+.sbrt-tag:hover{border-color:var(--accent);color:var(--text);}
+.sbrt-tag.all{margin-left:auto;border-style:dashed;}
+.sbrt-b{background:rgba(255,255,255,.06);border:1px solid var(--line-2);color:var(--text);
+  font-family:inherit;font-size:11.5px;font-weight:700;padding:5px 12px;border-radius:8px;cursor:pointer;}
+.sbrt-b:hover{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 20%,transparent);}
+.sbrt-b[data-w]{--b:var(--muted-2);border-color:color-mix(in srgb,var(--b) 42%,transparent);
+  color:color-mix(in srgb,var(--b) 76%,var(--text));background:color-mix(in srgb,var(--b) 12%,transparent);}
+.sbrt-b[data-w]:hover{background:var(--b);border-color:var(--b);color:#0a0d14;}
+.sbrt-b[data-w="Mera"]{--b:var(--mera);} .sbrt-b[data-w="Suz"]{--b:var(--suz);}
+.sbrt-b[data-w="Both"]{--b:#f472b6;} .sbrt-b[data-w="All"]{--b:#10d99a;}
+.sbrt-b[data-w="Jack"]{--b:var(--jack);}
+.sbrt-b.bin{color:var(--muted-2);} .sbrt-b.bin:hover{border-color:var(--red);color:var(--red);background:color-mix(in srgb,var(--red) 12%,transparent);}
+.sbrt-b.clear{margin-left:auto;color:var(--muted-2);}
+.sbr-pick{display:inline-flex;cursor:pointer;flex:0 0 auto;}
+.sbr-pick input{display:none;}
+.sbr-pick i{width:17px;height:17px;border-radius:5px;border:1.5px solid var(--line-2);display:block;position:relative;transition:all .12s;}
+.sbr-pick input:checked + i{background:var(--accent);border-color:var(--accent);}
+.sbr-pick input:checked + i::after{content:'';position:absolute;left:5px;top:1.5px;width:4px;height:9px;
+  border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);}
+.sbr.picked{background:color-mix(in srgb,var(--accent) 11%,var(--panel));border-color:color-mix(in srgb,var(--accent) 42%,transparent);}
+/* ── Queue tiles ──────────────────────────────────────────────────────────────
+   A full-width row per batch costs a whole screen width to say "FFB, 3 ASINs".
+   At 100+ a day that is scrolling, not reading. Every group is a tile grid now —
+   five or six across where one row used to sit — and each tile wears its
+   destination's colour so who-has-what reads without being read.
+   Structure is EXPLICIT (head / meta / tools / route). The old markup was flat
+   siblings positioned by flex-wrap and a spacer, which is what let the day pill,
+   the count and the status print on top of each other. */
+.sbr-list,.sbr-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(244px,1fr));
+  gap:9px;margin-bottom:16px;align-items:start;}
+@media(max-width:700px){.sbr-list,.sbr-tiles{grid-template-columns:1fr;}}
+.sbr-more{display:block;width:100%;margin:-8px 0 16px;padding:9px;border-radius:10px;
+  background:rgba(255,255,255,.04);border:1px dashed var(--line-2);color:var(--muted);
+  font-family:inherit;font-size:11.5px;font-weight:700;cursor:pointer;transition:all .12s;}
+.sbr-more:hover{border-color:var(--accent);color:var(--text);background:color-mix(in srgb,var(--accent) 12%,transparent);}
+
+.sbr{--o:var(--muted-2);display:flex;flex-direction:column;gap:8px;
+  background:linear-gradient(158deg,color-mix(in srgb,var(--o) 14%,var(--panel)),var(--panel) 74%);
+  border:1px solid color-mix(in srgb,var(--o) 24%,var(--line-2));
+  border-left:3px solid var(--o);border-radius:12px;padding:10px 12px 11px;
+  transition:border-color .13s,background .13s,transform .13s;}
+.sbr:hover{border-color:color-mix(in srgb,var(--o) 55%,transparent);transform:translateY(-1px);}
+.sbr-mera{--o:var(--mera);} .sbr-suz{--o:var(--suz);} .sbr-jack{--o:var(--jack);}
+.sbr-both{--o:#f472b6;} .sbr-all{--o:#10d99a;} .sbr-none{--o:#8b93a8;}
+.sbr.is-draft{border-left-width:4px;}
+.sbr.is-done{opacity:.45;} .sbr.is-done:hover{opacity:.85;}
+.sbr.picked{background:color-mix(in srgb,var(--accent) 16%,var(--panel));
+  border-color:color-mix(in srgb,var(--accent) 55%,transparent);}
+
+.sbr-hd{display:flex;align-items:center;gap:7px;min-width:0;}
+.sbr-tag{flex:1 1 auto;min-width:0;font-size:14px;font-weight:800;color:var(--text);
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.sbr-tiles .sbr-day,.sbr-tiles .sbr-n,.sbr-tiles .sbr-st{flex:0 0 auto;white-space:nowrap;
-  /* .sbr-day and .sbr-st ship different vertical padding (2px vs 3px), which made any
-     tile carrying a day pill exactly 2px taller than its neighbours. Same box for both. */
-  display:inline-flex;align-items:center;height:20px;padding-top:0;padding-bottom:0;}
-.sbr-tiles .sbr-sp{display:block;flex:0 0 100%;height:0;margin:0;}     /* line break 1 */
-.sbr-tiles .sbr-key{flex:1 1 auto;justify-content:center;font-size:11px;padding:6px 10px;}
-.sbr-tiles .sbr-copy{flex:0 0 auto;font-size:11px;padding:6px 10px;}
-.sbr-tiles .sbr-route{flex:0 0 100%;display:grid;                       /* line break 2 */
-  grid-template-columns:repeat(5,1fr) auto;gap:3px;margin-top:1px;}
-.sbr-tiles .sbr-b{padding:6px 2px;text-align:center;font-size:10.5px;}
-.sbr-tiles .sbr-b.bin{margin-left:0;}
-.sbr-tiles .sbr-lock{flex:0 0 100%;}
-.sbr{display:flex;align-items:center;gap:11px;flex-wrap:wrap;background:var(--panel);
-  border:1px solid var(--line-2);border-left:3px solid var(--muted-2);border-radius:10px;
-  padding:9px 13px;transition:border-color .13s,background .13s;}
-.sbr:hover{background:color-mix(in srgb,#fff 2%,var(--panel));}
-.sbr-mera{border-left-color:var(--mera);}
-.sbr-suz{border-left-color:var(--suz);}
-.sbr-jack{border-left-color:var(--jack);}
-.sbr-both{border-left-color:#22d3ee;}
-.sbr-none{border-left-color:var(--amber);}
-.sbr.is-draft{background:color-mix(in srgb,var(--amber) 5%,var(--panel));}
-.sbr.is-done{opacity:.5;}
-.sbr-tag{font-size:13.5px;font-weight:800;color:var(--text);min-width:74px;}
-.sbr-tag i{font-style:normal;font-size:10px;color:var(--muted-2);margin-left:5px;}
-.sbr-day{font-size:10.5px;font-weight:700;color:var(--muted-2);background:rgba(255,255,255,.05);
-  padding:2px 8px;border-radius:999px;}
-.sbr-day.old{color:var(--amber);background:color-mix(in srgb,var(--amber) 14%,transparent);}
-.sbr-n{font-size:12px;color:var(--muted);}
-.sbr-n b{font-family:var(--font-mono);font-size:13px;font-weight:800;color:var(--text);}
-.sbr-st{font-size:10.5px;font-weight:800;letter-spacing:.03em;padding:3px 9px;border-radius:999px;}
-.sbr-st.route{color:var(--amber);background:color-mix(in srgb,var(--amber) 15%,transparent);}
-.sbr-st.going{color:#7cc0ff;background:rgba(124,192,255,.14);}
-.sbr-st.done{color:var(--green);background:color-mix(in srgb,var(--green) 14%,transparent);}
-.sbr-st.with{color:var(--muted);background:rgba(255,255,255,.06);}
-.sbr-sp{flex:1;}
-.sbr-key{display:inline-flex;align-items:center;gap:5px;background:color-mix(in srgb,var(--accent) 16%,transparent);
+.sbr-tag i{font-style:normal;font-size:10px;color:var(--muted-2);margin-left:4px;}
+.sbr-day{flex:0 0 auto;font-size:10px;font-weight:700;color:var(--muted-2);white-space:nowrap;
+  background:rgba(255,255,255,.06);padding:3px 8px;border-radius:999px;}
+.sbr-day.old{color:var(--amber);background:color-mix(in srgb,var(--amber) 15%,transparent);}
+
+.sbr-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.sbr-n{font-size:11px;color:var(--muted-2);white-space:nowrap;}
+.sbr-n b{font-family:var(--font-mono);font-size:17px;font-weight:800;color:var(--o);
+  margin-right:4px;letter-spacing:-.02em;}
+.sbr-st{font-size:9.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  padding:3px 8px;border-radius:999px;white-space:nowrap;}
+.sbr-st.route{color:var(--amber);background:color-mix(in srgb,var(--amber) 17%,transparent);}
+.sbr-st.going{color:#7cc0ff;background:rgba(124,192,255,.16);}
+.sbr-st.done{color:var(--green);background:color-mix(in srgb,var(--green) 15%,transparent);}
+.sbr-st.with{color:var(--muted);background:rgba(255,255,255,.07);}
+
+.sbr-tools{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px;}
+.sbr-key{display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  background:color-mix(in srgb,var(--accent) 16%,transparent);
   border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);color:var(--accent);border-radius:8px;
-  padding:5px 11px;font-size:11.5px;font-weight:700;text-decoration:none;white-space:nowrap;transition:all .12s;}
+  padding:6px 8px;font-size:11px;font-weight:700;text-decoration:none;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;transition:all .12s;}
 .sbr-key b{font-family:var(--font-mono);font-weight:800;}
 .sbr-key:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
 .sbr-key.off{background:transparent;border-color:var(--line-2);color:var(--muted-2);cursor:default;}
 .sbr-key.off:hover{background:transparent;color:var(--muted-2);}
 .sbr-copy{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.05);
-  border:1px solid var(--line-2);color:var(--muted);border-radius:8px;padding:5px 11px;
-  font-family:inherit;font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .12s;}
+  border:1px solid var(--line-2);color:var(--muted);border-radius:8px;padding:6px 9px;
+  font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .12s;}
 .sbr-copy:hover{border-color:var(--accent);color:var(--text);}
-.sbr-route{display:inline-flex;gap:4px;flex-wrap:wrap;}
-.sbr-b{background:rgba(255,255,255,.05);border:1px solid var(--line-2);color:var(--muted);
-  font-family:inherit;font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:7px;
-  cursor:pointer;transition:all .12s;}
-.sbr-b:hover{border-color:var(--accent);color:var(--text);}
-.sbr-b.on{background:var(--accent);border-color:var(--accent);color:#fff;}
-.sbr-b.done{background:color-mix(in srgb,var(--green) 10%,transparent);
-  border-color:color-mix(in srgb,var(--green) 32%,transparent);color:var(--green);}
-.sbr-b.done:hover{background:var(--green);color:#08120e;border-color:var(--green);}
-.sbr-b.bin{background:transparent;border-color:var(--line-2);color:var(--muted-2);
-  font-size:12px;padding:5px 9px;margin-left:3px;}
-.sbr-b.bin:hover{border-color:var(--red);color:var(--red);background:color-mix(in srgb,var(--red) 10%,transparent);}
-.sbr-b.go{background:color-mix(in srgb,var(--green) 18%,transparent);
-  border-color:color-mix(in srgb,var(--green) 45%,transparent);color:var(--green);}
-.sbr-b.go:hover{background:var(--green);color:#08120e;border-color:var(--green);}
-.sbr-lock{font-size:11px;color:var(--muted-2);}
+
+/* Destinations carry the SAME colour as the person, everywhere in the app, so the
+   button you press and the tile it produces are visibly the same thing. */
+.sbr-route{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;}
+.sbr-act{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
+.sbr-act.one{grid-template-columns:1fr;}
+.sbr-b{--b:var(--muted-2);background:color-mix(in srgb,var(--b) 11%,transparent);
+  border:1px solid color-mix(in srgb,var(--b) 30%,transparent);
+  color:color-mix(in srgb,var(--b) 72%,var(--text));
+  font-family:inherit;font-size:10.5px;font-weight:700;padding:6px 3px;border-radius:7px;
+  cursor:pointer;transition:all .12s;text-align:center;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;}
+.sbr-b:hover{background:color-mix(in srgb,var(--b) 28%,transparent);border-color:var(--b);color:#fff;}
+.sbr-b.on{background:var(--b);border-color:var(--b);color:#0a0d14;font-weight:800;}
+.sbr-b[data-w="Mera"]{--b:var(--mera);}
+.sbr-b[data-w="Suz"]{--b:var(--suz);}
+.sbr-b[data-w="Both"]{--b:#f472b6;}
+.sbr-b[data-w="All"]{--b:#10d99a;}
+.sbr-b[data-w="Jack"]{--b:var(--jack);}
+.sbr-b.go,.sbr-b.done{--b:var(--green);padding:7px 3px;font-size:11px;}
+.sbr-b.go:hover,.sbr-b.done:hover{color:#08120e;}
+.sbr-b.bin{--b:var(--red);}
+.sbr-b.bin:hover{color:#fff;}
+.sbr-lock{font-size:10.5px;color:var(--muted-2);text-align:center;padding:3px 0;}
 .sb-sum{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:13px;}
 .sb-sum-c{font-size:11.5px;font-weight:700;color:var(--muted);background:rgba(255,255,255,.045);
   border:1px solid var(--line-2);border-radius:999px;padding:5px 12px;}
@@ -2730,6 +2838,31 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 .sb-sum-c.green b{color:var(--green);}
 .sb-sum-c.blue{color:#7cc0ff;border-color:rgba(124,192,255,.35);}
 .sb-sum-c.blue b{color:#7cc0ff;}
+.tm-h{font-size:13px;font-weight:800;color:var(--text);margin-bottom:3px;}
+.tm-s{font-size:11.5px;color:var(--muted-2);line-height:1.5;margin-bottom:10px;}
+.tm-wait{font-size:12px;color:var(--muted-2);border-top:1px solid var(--line);padding-top:12px;}
+.tm-wrap{overflow-x:auto;}
+.tm{width:100%;border-collapse:separate;border-spacing:4px;}
+.tm th{font-size:9.5px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;color:var(--muted-2);
+  text-align:center;padding:2px;}
+.tm tbody th{text-align:left;white-space:nowrap;color:var(--text);font-size:11.5px;letter-spacing:0;text-transform:none;}
+.tm tbody th span{display:block;font-size:9px;font-weight:600;color:var(--muted-2);text-transform:none;letter-spacing:0;}
+.tm-c{background:rgba(255,255,255,.04);border:1px solid var(--line-2);border-radius:8px;padding:7px 4px;text-align:center;}
+.tm-c b{display:block;font-family:var(--font-head);font-size:17px;font-weight:800;color:var(--muted);line-height:1;}
+.tm-c span{display:block;font-size:9px;color:var(--muted-2);margin-top:3px;}
+.tm-c .dim{opacity:.5;}
+.tm-c.none{opacity:.4;}
+.tm-c.agree{background:color-mix(in srgb,var(--green) 13%,transparent);border-color:color-mix(in srgb,var(--green) 40%,transparent);}
+.tm-c.agree b{color:var(--green);}
+.tm-c.under{background:color-mix(in srgb,var(--amber) 14%,transparent);border-color:color-mix(in srgb,var(--amber) 45%,transparent);}
+.tm-c.under b{color:var(--amber);}
+.tm-c.over{background:color-mix(in srgb,var(--red) 11%,transparent);border-color:color-mix(in srgb,var(--red) 38%,transparent);}
+.tm-c.over b{color:var(--red);}
+.tm-flags{margin-top:10px;display:flex;flex-direction:column;gap:5px;font-size:11.5px;color:var(--muted);}
+.tm-flags div{background:color-mix(in srgb,var(--amber) 8%,transparent);
+  border:1px solid color-mix(in srgb,var(--amber) 26%,transparent);border-radius:8px;padding:7px 11px;}
+.tm-flags b{color:var(--text);}
+.tm-ok{margin-top:10px;font-size:11.5px;color:var(--muted-2);}
 .spx-top{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:10px;}
 .spx-t{background:var(--panel);border:1px solid var(--line-2);border-radius:11px;padding:10px 13px;
   display:flex;flex-direction:column;gap:1px;}
@@ -3682,7 +3815,7 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
       <div class="topbar-title" id="view-title">New Leads</div>
       <span class="tt-count" id="tt-count"></span>
       <div class="filters">
-        <select id="f-date" onchange="fDateChange()"><option value="month" selected>This month</option><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="48h">Last 48h</option><option value="7d">Last 7 days</option><option value="day">Pick a day…</option><option value="all">All dates</option></select>
+        <select id="f-date" onchange="fDateChange()"><option value="sheet" selected>Whatever months I&rsquo;ve ticked</option><option value="month">This calendar month</option><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="48h">Last 48h</option><option value="7d">Last 7 days</option><option value="day">Pick a day…</option><option value="all">All dates</option></select>
         <input type="date" id="f-day" style="display:none" onchange="fDaySet(this.value)">
         <select id="f-store" onchange="renderList()"><option value="all">All stores</option><option>Argos</option><option>Amazon.UK</option><option>Amazon.FR</option><option>Currys</option><option>John Lewis</option><option>scan</option></select>
         <select id="f-cat" onchange="renderList()"><option value="all">All categories</option><option>Beauty</option><option>Computers &amp; Acc.</option><option>Electronics</option><option>Home &amp; Garden</option></select>
@@ -4659,7 +4792,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v22.9';
+var APP_VERSION='v25.0';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -7456,8 +7589,69 @@ function mgr_getLog(){
   try{return JSON.parse(localStorage.getItem('shifttrack_eod_log')||'[]');}catch(e){return[];}
 }
 // Load from Supabase and merge into localStorage, then re-render
+/* ── THE MONTH ROLLS OVER AND THE APP GOES BLIND ─────────────────────────────
+   `sheet_tabs.included` is what the Apps Script reads to decide which tabs to push.
+   Proof it matters: the two July tabs synced to 31 Jul, while every tab switched off
+   on 10 Jul has been frozen at 10 Jul ever since. So on the 1st of a new month, with
+   no new tab included, leads simply stop arriving — silently — and the end-of-day
+   reconciliation then reports every lead a VA logged as missing from the sheet.
+   Jack asked for this automated, so it heals itself and only shouts when it can't. */
+var TAB_STATE=null;
+var TAB_MONTHS=['january','february','march','april','may','june','july','august',
+                'september','october','november','december'];
+function tabIsBaseMonth(name,mi){
+  var low=String(name||'').toLowerCase();
+  if(low.indexOf('a2a')>=0 || /\bpp\b/.test(low)) return false;   // variants stay as Jack set them
+  var m=TAB_MONTHS[mi];
+  return low.indexOf(m)>=0 || new RegExp('\\b'+m.slice(0,3)).test(low);
+}
+async function sheetTabsAutoSync(){
+  if(!DB_ENABLED || IS_PREVIEW) return null;
+  var mi=new Date().getMonth(), mName=TAB_MONTHS[mi];
+  try{
+    var res=await fetchT(SUPABASE_URL+'/rest/v1/sheet_tabs?select=sheet_id,tab,included',
+      {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
+    if(!res.ok) return null;
+    var rows=await res.json(); if(!Array.isArray(rows)) return null;
+    var turnedOn=[], missing=[];
+    Object.keys(SHEET_NAMES).forEach(function(sid){
+      var mine=rows.filter(function(t){ return t.sheet_id===sid && tabIsBaseMonth(t.tab,mi); });
+      if(!mine.length){ missing.push(SHEET_NAMES[sid]); return; }
+      mine.forEach(function(t){
+        if(t.included) return;
+        turnedOn.push(SHEET_NAMES[sid]+' → '+t.tab);
+        fetchT(SUPABASE_URL+'/rest/v1/sheet_tabs?sheet_id=eq.'+encodeURIComponent(sid)
+               +'&tab=eq.'+encodeURIComponent(t.tab),
+          {method:'PATCH',headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+           'Content-Type':'application/json',Prefer:'return=minimal'},
+           body:JSON.stringify({included:true,updated_at:new Date().toISOString()})}).catch(function(){});
+      });
+    });
+    TAB_STATE={month:mName, turnedOn:turnedOn, missing:missing};
+    if(turnedOn.length) showToast('New month — switched on '+turnedOn.length+' '+mName+' tab'
+      +(turnedOn.length===1?'':'s')+' so leads keep syncing ✓');
+    return TAB_STATE;
+  }catch(e){ return null; }
+}
+function tabBannerHTML(){
+  if(!TAB_STATE) return '';
+  var m=TAB_STATE.month.charAt(0).toUpperCase()+TAB_STATE.month.slice(1);
+  var out='';
+  if(TAB_STATE.missing.length){
+    out+='<div class="tab-bar bad">⚠️<div>No <b>'+m+'</b> tab has reached the app for <b>'
+      +TAB_STATE.missing.join('</b> and <b>')+'</b>.<br>'
+      +'Until that tab exists in the sheet and the sheet script has run once, '+m
+      +' leads will not appear here — and the end-of-day check will report every lead as missing.</div></div>';
+  }
+  if(TAB_STATE.turnedOn.length){
+    out+='<div class="tab-bar fixed">✅ New month — switched on automatically so nothing stops syncing: <b>'
+      +TAB_STATE.turnedOn.join('</b>, <b>')+'</b></div>';
+  }
+  return out;
+}
 async function mgr_syncFromDB(){
   if(!DB_ENABLED){ window._mgrSyncedOnce=true; return; }
+  try{ await sheetTabsAutoSync(); }catch(e){}
   var rows=await db_loadAll();
   window._mgrSyncedOnce=true;                                   // first cloud sync done — skeleton can go
   clearTimeout(window._mgrSkelSafety); window._mgrSkelSafety=0;
@@ -8769,7 +8963,7 @@ function mgr_renderOverview(){
     +'<button onclick="mgr_changeWeek(1)"'+(mgr_weekOffset>=0?' disabled':'')+'>Next ›</button>'
     +(mgr_weekOffset!==0?'<button onclick="mgr_weekOffset=0;mgr_changeWeek(0)">This week</button>':'')+'</div>';
 
-  var html=payBannerHTML();
+  var html=tabBannerHTML()+payBannerHTML();
   html+='<div id="spend-tile">'+(_spendCache?'':spendSkeleton(true))+'</div>';
 
   // ── Weekly performance (neutral cards, colour = status, direct actions) ──
@@ -9958,6 +10152,12 @@ function mgr_renderKeepa(){
 
   // Pull keepa data from local log
   var log=mgr_getLog().filter(function(r){return r.va!=='Test'&&(r.keepaCount||r.data&&r.data.keepaCount);});
+  // Mera & Suz work Mon-Fri. A weekend row is an oddity (late submit), so it is
+  // pulled out of every window and average and called out, not quietly dropped.
+  function kIsWknd(d){ var p=String(d||'').split('/'); if(p.length!==3) return false;
+    var w=new Date(+p[2],+p[1]-1,+p[0]).getDay(); return w===0||w===6; }
+  var kWknd=log.filter(function(r){ return kIsWknd(r.date); });
+  log=log.filter(function(r){ return !kIsWknd(r.date); });
 
   // Normalise — data might be in rec directly or in rec.data
   function getKC(r){ return parseInt(r.keepaCount||0)||(r.data&&parseInt(r.data.keepaCount||0))||0; }
@@ -9977,21 +10177,48 @@ function mgr_renderKeepa(){
   var dts=Object.keys(mBy).concat(Object.keys(sBy));
   dts=dts.filter(function(d,i){return dts.indexOf(d)===i;}).sort(function(a,b){var pa=a.split('/'),pb=b.split('/');return new Date(+pa[2],+pa[1]-1,+pa[0])-new Date(+pb[2],+pb[1]-1,+pb[0]);});
   var win=dts.slice(-14);
-  if(!win.length){ el.innerHTML='<div class="mgr-sec2"><div><div class="s-ttl">Keepa Performance</div><div class="s-sub">Tracker growth · last 14 days</div></div></div><div style="color:var(--muted-2);font-size:13px;padding:24px 4px;">No Keepa data yet — appears once VAs submit their tracker counts.</div>'; return; }
+  if(!win.length){ el.innerHTML='<div class="mgr-sec2"><div><div class="s-ttl">Keepa Performance</div><div class="s-sub">Tracker growth · last 14 working days</div></div></div><div style="color:var(--muted-2);font-size:13px;padding:24px 4px;">No Keepa data yet — appears once VAs submit their tracker counts.</div>'; return; }
   var mAdd=win.map(function(d){return mBy[d]||0;}), sAdd=win.map(function(d){return sBy[d]||0;}), net=win.map(function(d,i){return mAdd[i]+sAdd[i];});
   var mRun=[],sRun=[],_mL=0,_sL=0; win.forEach(function(d){if(mTBy[d]!==undefined)_mL=mTBy[d];mRun.push(_mL);if(sTBy[d]!==undefined)_sL=sTBy[d];sRun.push(_sL);});
   var mChg=mAdd.reduce(function(a,b){return a+b;},0), sChg=sAdd.reduce(function(a,b){return a+b;},0), cChg=mChg+sChg;
   function pctOf(chg,tot){var base=tot-chg;return base>0?(chg/base*100):0;}
-  var avgNet=win.length?net.reduce(function(a,b){return a+b;},0)/win.length:0;
+  // A tracker PURGE is not a day's sourcing. One -440 (Suz, 03 Jul) dragged the
+  // y-axis to -500 and flattened every real day into a hairline, and dragged the
+  // daily average negative with it. Cap the axis and drop those days from the
+  // average — but name them, never silently.
+  function kFmt(d){ var p=String(d).split('/');
+    return p[0]+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+p[1]-1]; }
+  var _kAll=mAdd.concat(sAdd,net).slice().sort(function(a,b){return a-b;});
+  function _kq(pc){ return _kAll[Math.min(_kAll.length-1,Math.max(0,Math.round((_kAll.length-1)*pc)))]; }
+  var _kIqr=(_kq(.75)-_kq(.25))||1, _kLo=_kq(.25)-_kIqr*3;
+  // ONLY the downside counts. A huge positive day (+54) is a real day's sourcing and
+  // must stay on the chart and in the average — it was being called a purge, which is
+  // both wrong and insulting to the day's work. A huge NEGATIVE is a tracker cleanup.
+  var kOut=[];
+  win.forEach(function(d,i){ if(mAdd[i]<_kLo||sAdd[i]<_kLo||net[i]<_kLo) kOut.push(i); });
+  var kNorm=win.map(function(_,i){return i;}).filter(function(i){return kOut.indexOf(i)<0;});
+  var yLo=0,yHi=0;
+  kNorm.forEach(function(i){ yLo=Math.min(yLo,mAdd[i],sAdd[i],net[i]); });
+  win.forEach(function(d,i){ yHi=Math.max(yHi,mAdd[i],sAdd[i],net[i]); });
+  var _pad=Math.max(2,Math.round((yHi-yLo)*0.14));
+  yHi+=_pad; if(yLo<0) yLo-=_pad;
+  var avgNet=kNorm.length?kNorm.reduce(function(a,i){return a+net[i];},0)/kNorm.length:0;
   var goalDay=parseInt(getAppSettings().keepaGoalDay)||15, goalPct=Math.max(0,Math.min(100,Math.round(avgNet/goalDay*100)));
   function kSpark(vals,col){ if(vals.length<2)return''; var w=104,h=32,mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals),rg=(mx-mn)||1; var pts=vals.map(function(v,i){return ((i/(vals.length-1))*w).toFixed(1)+','+(h-((v-mn)/rg)*(h-5)-2.5).toFixed(1);}); return '<svg viewBox="0 0 '+w+' '+h+'" width="100%" height="'+h+'" preserveAspectRatio="none"><path d="M0,'+h+' L'+pts.join(' L')+' L'+w+','+h+' Z" fill="'+col+'20"/><polyline points="'+pts.join(' ')+'" fill="none" stroke="'+col+'" stroke-width="2" stroke-linejoin="round"/></svg>'; }
   function kCard(name,col,total,chg,pct,vals){ var up=chg>=0; return '<div class="kcard" style="--k:'+col+'"><div class="kc-top"><span class="kc-ico" style="background:'+col+'">'+name[0]+'</span><span class="kc-name">'+name+'</span></div><div class="kc-mid"><div><div class="kc-val">'+total.toLocaleString()+'</div><div class="kc-lbl">Total trackers</div></div><div class="kc-chg"><div class="kc-delta '+(up?'up':'dn')+'">'+(up?'↑':'↓')+' '+Math.abs(chg)+'</div><div class="kc-pct '+(up?'up':'dn')+'">'+(pct>=0?'+':'')+pct.toFixed(1)+'%</div></div></div><div class="kc-spark">'+kSpark(vals,col)+'</div></div>'; }
-  var html='<div class="mgr-sec2"><div><div class="s-ttl">Keepa Performance</div><div class="s-sub">Tracker growth · last 14 days · <span style="color:#10d99a;">● live</span></div></div></div>';
+  var wLbl=win.length+' working day'+(win.length===1?'':'s');
+  var html='<div class="mgr-sec2"><div><div class="s-ttl">Keepa Performance</div><div class="s-sub">Tracker growth · last '+wLbl+' (Mon–Fri) · <span style="color:#10d99a;">● live</span></div></div></div>';
+  var kNotes=[];
+  if(kWknd.length) kNotes.push(kWknd.length+' weekend entr'+(kWknd.length===1?'y':'ies')+' ('+kWknd.map(function(r){return String(r.date).slice(0,5);}).join(', ')+') left out — VAs work Mon–Fri');
+  if(kOut.length) kNotes.push(kOut.map(function(i){ return kFmt(win[i])+' ('+net[i]+')'; }).join(', ')
+      +' '+(kOut.length===1?'is a tracker clear-out, not a day\u2019s sourcing':'are tracker clear-outs, not sourcing')
+      +' — kept off the axis and out of the daily average so the real days stay readable');
+  if(kNotes.length) html+='<div style="font-size:11px;color:var(--muted-2);margin:-6px 0 12px;line-height:1.6;">'+kNotes.join('<br>')+'</div>';
   html+='<div class="kcard-row">'
     +kCard(vaDisp('Mera'),mera,mTotal,mChg,pctOf(mChg,mTotal),mRun)
     +kCard(vaDisp('Suz'),suz,sTotal,sChg,pctOf(sChg,sTotal),sRun)
     +kCard('Combined',KPI_TONE.green,combined,cChg,pctOf(cChg,combined),mRun.map(function(v,i){return v+(sRun[i]||0);}))
-    +'<div class="kcard" style="--k:'+KPI_TONE.cyan+'"><div class="kc-top"><span class="kc-ico" style="background:'+KPI_TONE.cyan+'">◈</span><span class="kc-name">Net adds · 14d</span></div><div class="kc-mid"><div><div class="kc-val">'+(avgNet>=0?'+':'')+avgNet.toFixed(1)+'</div><div class="kc-lbl">avg net adds / day</div></div></div><div class="kc-goal"><div class="kc-goal-top"><span>Goal +'+goalDay+' / day</span><span>'+goalPct+'%</span></div><div class="kc-goal-bar"><i style="width:'+goalPct+'%;background:'+KPI_TONE.cyan+'"></i></div></div></div>'
+    +'<div class="kcard" style="--k:'+KPI_TONE.cyan+'"><div class="kc-top"><span class="kc-ico" style="background:'+KPI_TONE.cyan+'">◈</span><span class="kc-name">Net adds · '+win.length+'d (Mon–Fri)</span></div><div class="kc-mid"><div><div class="kc-val">'+(avgNet>=0?'+':'')+avgNet.toFixed(1)+'</div><div class="kc-lbl">avg net adds / working day</div></div></div><div class="kc-goal"><div class="kc-goal-top"><span>Goal +'+goalDay+' / working day</span><span>'+goalPct+'%</span></div><div class="kc-goal-bar"><i style="width:'+goalPct+'%;background:'+KPI_TONE.cyan+'"></i></div></div></div>'
     +'</div>';
 
   // Build chart data — daily totals per VA
@@ -10026,16 +10253,16 @@ function mgr_renderKeepa(){
   var trendUp=avgA(net.slice(hf))>=avgA(net.slice(0,hf));
   function kIns(col,label,sub,val){ return '<div class="kins"><span class="kins-dot" style="background:'+col+'22;color:'+col+';">●</span><div class="kins-txt"><div class="kins-l">'+label+'</div><div class="kins-s">'+sub+'</div></div><div class="kins-v" style="color:'+col+';">'+val+'</div></div>'; }
   html+='<div class="keepa-2col">'
-    +'<div class="mgr-card2"><div class="mc2-h">Daily adds by tracker — last 14 days</div><div style="height:210px;position:relative;"><canvas id="'+chartId+'"></canvas></div></div>'
+    +'<div class="mgr-card2"><div class="mc2-h">Daily adds by tracker — last '+wLbl+' (Mon–Fri)</div><div style="height:210px;position:relative;"><canvas id="'+chartId+'"></canvas></div></div>'
     +'<div class="mgr-card2"><div class="mc2-h">&#10022; Key insights</div>'
       +kIns('#10d99a','Best day',fmtD(win[bi]),(net[bi]>=0?'+':'')+net[bi])
       +kIns('#f5455f','Worst drop',fmtD(win[wi]),(net[wi]>=0?'+':'')+net[wi])
-      +kIns('#8b5cff','Positive days',posDays+' of '+win.length+' days',Math.round(posDays/win.length*100)+'%')
-      +kIns(trendUp?'#18c8f0':'#f5a524','Trend',trendUp?'Improving vs prior '+hf+'d':'Cooling vs prior '+hf+'d',trendUp?'&#8599;':'&#8600;')
+      +kIns('#8b5cff','Positive days',posDays+' of '+win.length+' working days',Math.round(posDays/win.length*100)+'%')
+      +kIns(trendUp?'#18c8f0':'#f5a524','Trend',trendUp?'Improving vs prior '+hf+' working days':'Cooling vs prior '+hf+' working days',trendUp?'&#8599;':'&#8600;')
     +'</div>'
   +'</div>';
-  html+='<div class="mc2-h" style="margin:2px 0 10px;">Daily breakdown</div>';
-  html+='<div class="keepa-2col">';
+  html+='<div class="mc2-h" style="margin:2px 0 10px;">Daily breakdown · last 7 working days logged</div>';
+  html+='<div class="kbd-2col">';
 
   // ONE scale for both panels. Each used to normalise to its own max, so Mera's +9
   // drew longer than Suz's +10 and the side-by-side comparison was meaningless
@@ -10064,7 +10291,7 @@ function mgr_renderKeepa(){
         +'<span class="kbd-vs" style="color:'+vc+';">'+(vs==null?'—':(vs>0?'+':'')+vs)+'<span class="kbd-dot" style="background:'+vc+';"></span></span>'
         +'</div>';
     }).join('');
-    return '<div class="mgr-card2"><div class="kbd-head"><span class="kc-ico" style="background:'+col+'">'+name[0]+'</span><span class="kc-name">'+name+' — daily breakdown</span><span class="kbd-wk" style="color:'+col+';">+'+wk+' this week</span></div>'
+    return '<div class="mgr-card2"><div class="kbd-head"><span class="kc-ico" style="background:'+col+'">'+name[0]+'</span><span class="kc-name">'+name+' — daily breakdown</span><span class="kbd-wk" style="color:'+col+';">+'+wk+' · last 7 logged</span></div>'
       +'<div class="kbd-row kbd-hrow"><span>Date</span><span>Adds</span><span></span><span>Running</span><span>vs prev</span></div>'+rows+'</div>';
   }
   html+=keepaBreakdown(vaDisp('Mera'),mera,mRecs);
@@ -10112,7 +10339,7 @@ function mgr_renderKeepa(){
             ticks:{color:'#8b93a8',font:{size:10},maxRotation:45},
             grid:{display:false}
           },
-          y:{stacked:true,
+          y:{stacked:true,min:yLo,max:yHi,
             ticks:{color:'#8b93a8',font:{size:10},callback:function(v){return v.toLocaleString();}},
             grid:{color:'rgba(255,255,255,0.05)'},
             beginAtZero:true
@@ -10688,78 +10915,69 @@ function renderJackInsights(){
     +rank('Best stores',A.byStore,'🏬')
     +rank('Best categories',A.byCat,'🗂️');
 }
+/* ── HOW THE MATRIX IS DOING ────────────────────────────────────────────────
+   The old panel taught four WEIGHT SLIDERS and offered auto-tune. Those are dead:
+   calcScore is now a lookup matrix and reads no weights at all, so anything that
+   nudged sliders was moving a control wired to nothing. What still matters — and
+   matters more — is whether each CELL of the matrix matches what Jack actually
+   buys. Show the grid, mark where his buys landed, and let the cells that
+   disagree with him speak for themselves. */
 function renderScoreTeach(){
   var host=document.getElementById('score-teach'); if(!host) return;
-  var decided=(window.leads||[]).filter(function(l){return l.islead!==null;});
-  var bought=decided.filter(function(l){return l.status==='bought'||l.status==='atbq'||l.status==='atba2a';});
+  var decided=(window.leads||[]).filter(function(l){ return l.islead!==null||l.status; });
+  var isBuy=function(l){ return l.status==='bought'||l.status==='atbq'||l.status==='atba2a'; };
   if(decided.length<5){
-    host.innerHTML='<div style="font-size:12px;color:var(--muted-2);border-top:1px solid var(--line);padding-top:12px;">Teach the score: once you\'ve decided ~5+ leads (Bought / Not), this shows your buy-rate by score band and can auto-tune the weights to match what you actually buy.</div>';
+    host.innerHTML='<div class="tm-wait">Decide a few more leads and this shows how the scoring matrix matches your buying.</div>';
     return;
   }
-  // buy rate by score band
-  var bands=[['9-10',9,10.1],['7-8',7,9],['5-6',5,7],['0-4',0,5]];
-  var rows=bands.map(function(b){
-    var inB=decided.filter(function(l){var s=l._sc.total;return s>=b[1]&&s<b[2];});
-    var bt=inB.filter(function(l){return l.status==='bought'||l.status==='atbq'||l.status==='atba2a';});
-    var rate=inB.length?Math.round(bt.length/inB.length*100):0;
-    return '<div class="teach-band"><span class="lbl">Score '+b[0]+'</span><span class="bar"><i style="width:'+rate+'%"></i></span><span class="val">'+rate+'% ('+inB.length+')</span></div>';
-  }).join('');
-  // "why you bought" — what your buys look like vs your passes, and what the score under-weights
-  var A=computeBuyAnalysis();
-  var whyRows=A.cmp.map(function(c){
-    var up=c.gapPct>=0; var strong=Math.abs(c.gapPct)>=25;
-    return '<div class="why-row"><span class="why-name">'+c.name+'</span>'
-      +'<span class="why-vals">buys <b>'+ (c.name==='Profit'?'£'+c.bought.toFixed(0):c.name==='Demand'?c.bought.toFixed(1):c.bought.toFixed(0)+'%') +'</b> vs passes '+ (c.name==='Profit'?'£'+c.passed.toFixed(0):c.name==='Demand'?c.passed.toFixed(1):c.passed.toFixed(0)+'%') +'</span>'
-      +'<span class="why-gap '+(up?'up':'down')+(strong?' strong':'')+'">'+(up?'+':'')+c.gapPct+'%</span></div>';
-  }).join('');
-  var td=A.topDisc;
-  var verdict= td?('Your buys are driven most by <b>'+td.name+'</b> ('+(td.gapPct>=0?'+':'')+td.gapPct+'% vs passes). '
-    +(Math.abs(td.gapPct)>=25?'Auto-tune will lean the score toward '+td.name+'.':'Your buys and passes look similar — the score is roughly matched.')):'';
-  var mode=(getAppSettings().scoreMode==='smart')?'smart':'manual';
-  var sm=getSmartModel();
-  var modeToggle='<div class="sc-mode"><button class="'+(mode==='manual'?'on':'')+'" onclick="setScoreMode(\'manual\')">Manual weights</button>'
-    +'<button class="'+(mode==='smart'?'on':'')+'" onclick="setScoreMode(\'smart\')">🧠 Learning score <span class="beta">beta</span></button></div>';
-  var learnPanel='';
-  if(mode==='smart'){
-    var mAcc=(function(){ var isBuy=function(l){return l.status==='bought'||l.status==='atbq'||l.status==='atba2a';};
-      var dd=(window.leads||[]).filter(function(l){return l.islead!==null;}); var c=0; dd.forEach(function(l){ var man=calcScore({roi:l.roi,profit:l.profit,spm:l.spm,fba:l.fba,margin:l.margin},true); if(((man.total>=5)?1:0)===(isBuy(l)?1:0))c++; }); return dd.length?Math.round(c/dd.length*100):0; })();
-    if(!sm){ learnPanel='<div class="learn-box"><b>Not trained yet.</b> Decide at least 6 buys and 6 passes, then hit <b>Train</b> — the model learns which combinations you actually buy (e.g. a fast seller justifying a lower ROI).<div style="margin-top:10px;"><button class="btn btn-success" onclick="trainAndApply()">🧠 Train the model</button></div></div>'; }
-    else{
-      var drivers='';
-      try{ var d=SMART_FEATS.map(function(n,i){return {n:n,w:sm.w[i+1]};}).sort(function(a,b){return Math.abs(b.w)-Math.abs(a.w);}).slice(0,4);
-        drivers=d.map(function(x){ var pos=x.w>=0; return '<div class="ld-drv"><span>'+x.n+'</span><span class="'+(pos?'up':'down')+'">'+(pos?'higher → buy':'lower → buy')+'</span></div>'; }).join(''); }catch(e){}
-      learnPanel='<div class="learn-box">'
-        +'<div class="learn-hd"><span class="learn-acc">'+sm.acc+'%</span><span class="learn-acc-l">predicts your '+sm.buys+' buys correctly<br><small>the basic score only manages '+mAcc+'%</small></span></div>'
-        +'<div class="learn-drv-t">What it learned drives your buys:</div>'+drivers
-        +'<div class="learn-note">Every lead is judged in its own context — velocity, ROI and profit together, not flat weights. Keep deciding and hit Retrain to sharpen it.</div>'
-        +'<div style="display:flex;gap:8px;margin-top:11px;flex-wrap:wrap;"><button class="btn btn-success" onclick="trainAndApply()">🔄 Retrain from my latest decisions</button></div>'
-        +'</div>';
-    }
+  var bands=SPM_BANDS.slice().reverse();          // low → high reads better as a grid
+  var tiers=[['low','under £3'],['mid','£3–8.99'],['high','£9+']];
+  function cell(bandName,tier){
+    var inC=decided.filter(function(l){
+      var spm=parseFloat(l.spm); if(isNaN(spm)) spm=parseSpm(l.spm);
+      var p=parseFloat(l.profit)||0;
+      if(!(spm>0)||!(p>0)) return false;
+      return spmBand(spm).name===bandName && profitTier(p)===tier;
+    });
+    var b=inC.filter(isBuy).length;
+    var base=(DEAL_MATRIX[bandName]||{})[tier];
+    return { n:inC.length, buys:b, score:base?base[0]:0,
+             rate: inC.length?Math.round(b/inC.length*100):null };
   }
-  host.innerHTML='<div style="border-top:1px solid var(--line);padding-top:12px;">'
-    +modeToggle+learnPanel
-    +'<div style="font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin:14px 0 9px;">Teach the score &mdash; your buy-rate by band</div>'
-    +rows
-    +'<div style="font-size:11px;color:var(--muted-2);margin:10px 0 12px;">Higher bands should buy more. If they don\'t, auto-tune nudges the weight sliders toward what your bought leads actually look like.</div>'
-    +'<div class="why-box"><div class="why-title">📊 What your '+bought.length+' buys have in common (vs your passes)</div>'
-      +whyRows
-      +(verdict?'<div class="why-verdict">'+verdict+'</div>':'')
-    +'</div>'
-    +(mode==='manual'?((function(){
-      var st=getAppSettings();
-      var W=[['ROI',st.swRoi,'#10d99a'],['Profit',st.swProfit,'#8b5cff'],['Demand',st.swDemand,'#18c8f0'],['Margin',st.swMargin,'#f5a524']];
-      return '<div class="why-title" style="margin:14px 0 4px;">⚖️ Current score weights</div><div class="wbars">'
-        +W.map(function(w){ var v=w[1]===undefined?1:+w[1];
-          return '<div class="wbar-row"><span class="wbar-n">'+w[0]+'</span>'
-            +'<span class="wbar-track"><i style="width:'+(v/2*100)+'%;background:'+w[2]+'"></i></span>'
-            +'<span class="wbar-v">'+v.toFixed(1)+'×</span></div>'; }).join('')
-      +'</div>';
-    })()
-    +'<div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">'
-      +'<button class="btn btn-success" onclick="autoTuneWeights()">⚡ Auto-tune from my '+bought.length+' buys</button>'
-      +'<button class="btn btn-ghost" onclick="resetWeights()">Reset to 1.0×</button>'
-    +'</div>'):'')
-    +'</div>';
+  var rows=bands.map(function(band){
+    return '<tr><th>'+escHtml(band.name)+'<span>'+escHtml(band.label)+'</span></th>'
+      +tiers.map(function(t){
+          var c=cell(band.name,t[0]);
+          var cls = c.n===0 ? 'none'
+                  : (c.rate>=50 && c.score>=7) ? 'agree'
+                  : (c.rate>=50 && c.score<5)  ? 'under'      // you buy these, matrix rates them low
+                  : (c.rate<20  && c.score>=8) ? 'over'       // matrix loves these, you don't
+                  : 'ok';
+          return '<td class="tm-c '+cls+'"><b>'+c.score+'</b>'
+            +(c.n? '<span>'+c.buys+'/'+c.n+' bought</span>' : '<span class="dim">no data</span>')
+            +'</td>';
+        }).join('')
+      +'</tr>';
+  }).join('');
+
+  // where the matrix and Jack disagree — the only actionable part
+  var flags=[];
+  bands.forEach(function(band){ tiers.forEach(function(t){
+    var c=cell(band.name,t[0]);
+    if(c.n<3) return;
+    if(c.rate>=50 && c.score<5) flags.push('You buy <b>'+c.buys+' of '+c.n+'</b> at <b>'+band.name+' SPM / '+t[1]+'</b> — the matrix scores that '+c.score+'. Worth raising.');
+    if(c.rate<=10 && c.score>=8) flags.push('The matrix scores <b>'+band.name+' SPM / '+t[1]+'</b> at '+c.score+', but you\'ve bought '+c.buys+' of '+c.n+'. Worth lowering.');
+  });});
+
+  host.innerHTML='<div class="tm-h">How the matrix matches your buying</div>'
+    +'<div class="tm-s">Each cell is the score that combination gets, and how many you actually bought. '
+      +'Green means the matrix and you agree.</div>'
+    +'<div class="tm-wrap"><table class="tm"><thead><tr><th></th>'
+      +tiers.map(function(t){ return '<th>'+t[1]+'</th>'; }).join('')+'</tr></thead>'
+      +'<tbody>'+rows+'</tbody></table></div>'
+    +(flags.length
+        ? '<div class="tm-flags">'+flags.map(function(f){ return '<div>⚠ '+f+'</div>'; }).join('')+'</div>'
+        : '<div class="tm-ok">Nothing disagrees yet — decide more leads and any mismatched cell will show up here.</div>');
 }
 function setScoreMode(m){ var st=getAppSettings(); st.scoreMode=m; saveAppSettings(st);
   if(m==='smart'&&!getSmartModel()){ var r=trainSmartModel(); if(r&&r.err){ showToast(r.err,true); } }
@@ -12005,18 +12223,115 @@ function smartWhy(l,s){
     return '<div class="smart-why">🧠 '+msg+nearTxt+'</div>';
   }catch(e){ return ''; }
 }
+/* ── JACK'S DEAL MATRIX ─────────────────────────────────────────────────────
+   Replaces the old weighted sum. Measured against his real decisions, that sum
+   scored WORSE than a coin flip (AUC 0.43) — because his rule was never additive.
+   It is a lookup: volume first, then unit profit, then ROI as a safety check.
+   "Below 10 SPM, reject regardless of profit" cannot be expressed by weights at all,
+   which is why auto-tuning the sliders could never converge.
+
+   SPM band  ×  profit tier  →  base score, then the ROI check.               */
+/* The two ways a sub-10% ROI is forgiven. "Super" is a judgement call, so it lives here
+   as one editable object rather than buried in the branch: £25/unit is well clear of the
+   £9 "high profit" tier, and 300 SPM is the top volume band. */
+var ROI_LET_OFF={ profit:25, spm:300 };
+var SPM_BANDS=[
+  {min:300, name:'300+',      label:'very high volume'},
+  {min:100, name:'100-299',   label:'strong volume'},
+  {min:50,  name:'50-99',     label:'decent volume'},
+  {min:30,  name:'30-49',     label:'workable volume'},
+  {min:10,  name:'10-29',     label:'very low volume'},
+  {min:0,   name:'under 10',  label:'below minimum volume'}
+];
+var DEAL_MATRIX={
+  '300+':    {high:[10,'Exceptional lead. Buy as many as possible.'],
+              mid: [9, 'Rare find — fast sales and mid profit. Buy heavily.'],
+              low: [7, 'Fast sales, low profit. Still solid.']},
+  '100-299': {high:[9, 'Rare find — strong volume and high profit. Buy heavily.'],
+              mid: [8, 'Strong buy. Good volume, mid profit.'],
+              low: [6, 'Decent volume but low profit.']},
+  '50-99':   {high:[8, 'Good profit and decent volume. Strong buy.'],
+              mid: [7, 'Bread-and-butter mid-ticket lead. Solid buy.'],
+              low: [5, 'Borderline — only buy if the graphs look good.']},
+  '30-49':   {high:[8, 'High profit and decent volume. Buy roughly 7-15 units.'],
+              mid: [6, 'Buy roughly 7-15 units depending on competition.'],
+              low: [3, 'Low priority. Pass.']},
+  '10-29':   {high:[7, 'High profit but borderline volume — only buy if the graphs look good.'],
+              mid: [5, 'Borderline — only buy if the graphs look good.'],
+              low: [2, 'Low priority. Pass.']},
+  'under 10':{high:[1, 'Below minimum volume. Profit does not rescue it.'],
+              mid: [1, 'Below minimum volume. Profit does not rescue it.'],
+              low: [1, 'Below minimum volume. Profit does not rescue it.']}
+};
+function spmBand(spm){
+  for(var i=0;i<SPM_BANDS.length;i++) if(spm>=SPM_BANDS[i].min) return SPM_BANDS[i];
+  return SPM_BANDS[SPM_BANDS.length-1];
+}
+function profitTier(p){ return p>=9?'high':(p>=3?'mid':'low'); }
+function tierLabel(t){ return t==='high'?'High profit':t==='mid'?'Mid profit':'Low profit'; }
 function calcScore(l,forceManual){
-  try{ if(!forceManual && getAppSettings().scoreMode==='smart'){ var sm=smartScore(l); if(sm) return sm; } }catch(e){}
-  var W={r:1,p:1,d:1,m:1};
-  try{ var st=getAppSettings(); W={r:st.swRoi===undefined?1:st.swRoi, p:st.swProfit===undefined?1:st.swProfit, d:st.swDemand===undefined?1:st.swDemand, m:st.swMargin===undefined?1:st.swMargin}; }catch(e){}
-  const roi=(l.roi>=30?25:l.roi>=25?22:l.roi>=20?18:l.roi>=15?14:l.roi>=10?8:2)*W.r;
-  const profit=(l.profit>=80?25:l.profit>=50?22:l.profit>=30?18:l.profit>=20?14:l.profit>=10?8:l.profit>=5?4:1)*W.p;
-  const ratio=l.fba>0?l.spm/l.fba:l.spm;
-  const demand=(ratio>=100?30:ratio>=50?26:ratio>=20?20:ratio>=10?14:ratio>=5?8:ratio>=2?4:1)*W.d;
-  const margin=(l.margin>=20?10:l.margin>=12?8:l.margin>=6?5:2)*W.m;
-  const denom=Math.max(1,25*W.r+25*W.p+30*W.d+10*W.m);
-  const total=Math.min(Math.round(((roi+profit+demand+margin)/denom)*100)/10,10);
-  return{total,bd:[{n:'ROI ('+l.roi+'%)',p:Math.round(roi),m:Math.round(25*W.r)},{n:'Net profit (£'+l.profit+')',p:Math.round(profit),m:Math.round(25*W.p)},{n:'Demand vs competition',p:Math.round(demand),m:Math.round(30*W.d)},{n:'Margin ('+l.margin+'%)',p:Math.round(margin),m:Math.round(10*W.m)}]};
+  var spm=parseFloat(l&&l.spm); if(isNaN(spm)) spm=parseSpm(l&&l.spm);
+  var profit=parseFloat(l&&l.profit)||0;
+  var roiRaw=l?l.roi:null;
+  var roiBlank=(roiRaw===''||roiRaw===null||roiRaw===undefined);
+  var roi=parseFloat(roiRaw); if(isNaN(roi)) roi=0;
+  // NO ratio conversion here. The loader already does `if(roi>0&&roi<3) roi*=100`, so a
+  // lead arrives as a real percentage — converting again turned a genuine 1% ROI into
+  // 100% and let a hopeless lead skip the check entirely.
+
+  // nothing to score until the two inputs the matrix needs are present
+  if(!(spm>0) || !(profit>0)){
+    return { total:0, unscored:true, verdict:'Needs SPM and profit before it can be scored.',
+             band:null, tier:null, bd:[
+               {n:'Sales per month', p:spm>0?1:0, m:1},
+               {n:'Profit per unit', p:profit>0?1:0, m:1},
+               {n:'ROI', p:roiBlank?0:1, m:1},
+               {n:'—', p:0, m:1}] };
+  }
+
+  var band=spmBand(spm), tier=profitTier(profit);
+  var cell=(DEAL_MATRIX[band.name]||DEAL_MATRIX['under 10'])[tier];
+  var base=cell[0], verdict=cell[1], note='', roiExempt=false;
+
+  // ── ROI safety check ──────────────────────────────────────────────────────
+  var total=base;
+  if(roiBlank){
+    // His own write-up calls a blank ROI reading as 0% "the biggest practical issue" —
+    // it punishes a lead for a field nobody filled in. Unknown is not the same as bad:
+    // no penalty, but say so, because the check genuinely hasn't run.
+    note='ROI not entered — the 10% check hasn’t run on this one.';
+  } else if(roi < 10){
+    /* Jack: "wouldn't really buy anything under 10% ROI unless it's super high ticket
+       high profit, or a super fast seller." So the ROI check is conditional, not
+       absolute — two escapes, both of which mean the money still works despite the
+       percentage. Below 10 SPM is NOT one of them: that floor is unconditional. */
+    var superProfit = profit >= ROI_LET_OFF.profit;
+    var superFast   = spm    >= ROI_LET_OFF.spm;
+    if(spm >= 10 && (superProfit || superFast)){
+      note = superProfit
+        ? 'ROI is only '+Math.round(roi*10)/10+'%, but at £'+profit.toFixed(2)+' a unit the cash still works — not docked.'
+        : 'ROI is only '+Math.round(roi*10)/10+'%, but at '+Math.round(spm)+' sales a month the cash recycles fast — not docked.';
+      roiExempt = true;
+    } else if(base > 3){
+      total=Math.max(base-2, 3); note='ROI below 10% — docked 2 points.';
+    } else {
+      total=1; verdict='ROI below 10%. Pass.'; note='Weak before the ROI check, so rejected outright.';
+    }
+  }
+
+  return {
+    total: total, base: base, band: band.name, bandLabel: band.label,
+    tier: tier, tierLabel: tierLabel(tier), verdict: verdict, note: note,
+    roiPenalty: (total!==base), roiBlank: roiBlank, roiExempt: roiExempt,
+    bd:[
+      {n:'Sales per month ('+(Math.round(spm*10)/10)+')', p:Math.round(base/10*30), m:30},
+      {n:'Profit per unit (£'+profit.toFixed(2)+') — '+tierLabel(tier),
+        p:tier==='high'?30:tier==='mid'?20:8, m:30},
+      {n:'Volume band — '+band.label, p:Math.round(base/10*30), m:30},
+      {n:'ROI ('+(roiBlank?'not entered':Math.round(roi*10)/10+'%')+')',
+        p:roiBlank?5:(roi>=10?10:0), m:10}
+    ]
+  };
 }
 const VANOTES={};
 const HRS={};
@@ -12915,10 +13230,11 @@ function populateMonthFilter(){
   var MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
   var seen={}; leads.forEach(function(l){ var p=(l.date||'').split('/'); if(p.length===3){ var k=p[2]+'-'+p[1]; if(k!==curKey) seen[k]=1; } });
   var months=Object.keys(seen).sort().reverse();
-  sel.innerHTML='<option value="month">This month</option>'
+  sel.innerHTML='<option value="sheet">Whatever months I’ve ticked</option>'
+    +'<option value="month">This calendar month</option>'
     +months.map(function(k){ var y=k.split('-')[0], m=+k.split('-')[1]; return '<option value="m:'+k+'">'+MN[m-1]+' '+y+'</option>'; }).join('')
     +'<option value="today">Today</option><option value="yesterday">Yesterday</option><option value="48h">Last 48h</option><option value="7d">Last 7 days</option><option value="day">Pick a day…</option><option value="all">All dates</option>';
-  sel.value=[].some.call(sel.options,function(o){return o.value===keep;})?keep:'month';
+  sel.value=[].some.call(sel.options,function(o){return o.value===keep;})?keep:'sheet';
 }
 function getF(){
   const fs=document.getElementById('f-store')?.value||'all';
@@ -12932,6 +13248,7 @@ function getF(){
     if(view==='new'&&(l.status||l.islead!==null))return false;   // New = anything Jack hasn't decided yet (seen or not); deciding drops it out
     if(window._staleFilter&&(view==='new'||view==='all')&&!isStale(l))return false;   // "Going stale" ribbon filter
     if(fd!=='all'){ var _d=_pGB(l.date); if(!_d)return false; var _dd=Math.round((_t0-_d)/86400000);
+      if(fd==='sheet') return true;   // the ticked tabs already chose the months
       if(fd==='month'&&(_d.getMonth()!==_now.getMonth()||_d.getFullYear()!==_now.getFullYear()))return false;
       if(fd.slice(0,2)==='m:'){ var _ym=fd.slice(2).split('-'); if(_d.getFullYear()!==+_ym[0]||(_d.getMonth()+1)!==+_ym[1])return false; }
       if(fd.slice(0,2)==='d:'){ var _iso=_d.getFullYear()+'-'+('0'+(_d.getMonth()+1)).slice(-2)+'-'+('0'+_d.getDate()).slice(-2); if(_iso!==fd.slice(2))return false; }
@@ -12968,6 +13285,7 @@ function _leadCtx(l, useView, useVa){
   let fd=document.getElementById('f-date')?.value||'all'; if(fd==='day') fd=window._fDay?('d:'+window._fDay):'all';
   if(fd!=='all'){ var p=String(l.date||'').split('/'); var d=p.length===3?new Date(+p[2],+p[1]-1,+p[0]):null; if(!d)return false;
     var now=new Date(), t0=new Date(now.getFullYear(),now.getMonth(),now.getDate()); var dd=Math.round((t0-d)/86400000);
+    if(fd==='sheet') return true;     // ditto — don't second-guess his tab ticks
     if(fd==='month'&&(d.getMonth()!==now.getMonth()||d.getFullYear()!==now.getFullYear()))return false;
     if(fd.slice(0,2)==='m:'){ var ym=fd.slice(2).split('-'); if(d.getFullYear()!==+ym[0]||(d.getMonth()+1)!==+ym[1])return false; }
     if(fd.slice(0,2)==='d:'){ var iso=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2); if(iso!==fd.slice(2))return false; }
@@ -13032,19 +13350,41 @@ function updateCounts(){
 function leadStillBelongs(l){
   try{ return getF().some(function(x){ return x.id===l.id; }); }catch(e){ return true; }
 }
+/* A decided lead used to slide out 260ms later, taking the open detail pane with it —
+   so pressing BOUGHT closed the very panel holding the note field and the quantity box,
+   and Jack couldn't record what he'd just decided. It now STAYS until he moves on: the
+   row is marked decided, the list keeps it, and it only leaves when he selects a
+   different lead. Nothing is lost between deciding and writing it up. */
+var _pendingLeave=null;
 function afterDecision(id){
   try{
     var l=(window.leads||[]).find(function(x){ return x.id===id; });
     if(!l) return;
     if(leadStillBelongs(l)){ renderList(); return; }     // still matches the filter — just repaint
-    var row=document.querySelector('.litem[data-lid="'+id+'"]');
-    if(!row){ renderList(); return; }
-    row.classList.add('litem-leaving');
+    // hold it on screen while it's the one being looked at
+    if(selId===l.id){
+      _pendingLeave=l.id;
+      var row=document.querySelector('.litem[data-lid="'+id+'"]');
+      if(row) row.classList.add('litem-decided');
+      try{ renderDetail(); }catch(e){ try{ renderList(); }catch(_){} }
+      return;
+    }
+    var row2=document.querySelector('.litem[data-lid="'+id+'"]');
+    if(!row2){ renderList(); return; }
+    row2.classList.add('litem-leaving');
     setTimeout(function(){
       try{ renderList(); }catch(e){}
       showDecisionUndo(l);
     }, 260);
   }catch(e){ try{ renderList(); }catch(_){} }
+}
+/* called when the selection changes — now the held row can go */
+function flushPendingLeave(){
+  if(_pendingLeave==null) return;
+  var id=_pendingLeave; _pendingLeave=null;
+  var l=(window.leads||[]).find(function(x){ return x.id===id; });
+  try{ renderList(); }catch(e){}
+  if(l && !leadStillBelongs(l)) showDecisionUndo(l);
 }
 function decisionLabel(l){
   if(l.status==='bought') return 'Bought';
@@ -13222,6 +13562,10 @@ function litemH(l){
   </div>`;
 }
 function selectLead(id,scroll){
+  // moving to a different lead is the signal that he's finished with the decided one
+  try{ if(_pendingLeave!=null && _pendingLeave!==id){ var _p=_pendingLeave; _pendingLeave=null;
+       var _l=(window.leads||[]).find(function(x){ return x.id===_p; });
+       if(_l && !leadStillBelongs(_l)) setTimeout(function(){ try{ showDecisionUndo(_l); }catch(e){} },30); } }catch(e){}
   selId=id;
   document.querySelectorAll('#view-leads .litem').forEach(x=>x.classList.toggle('sel',+x.dataset.lid===id));
   const l=leads.find(x=>x.id===id);if(!l)return;
@@ -15039,13 +15383,15 @@ function sbRecentHTML(){
    now Mera tags are purple, Suz yellow, review tags amber — the same identity
    colours the whole app already uses, so the meaning comes for free. */
 function sbDestCls(q){
-  if(q.manual_review) return 'dest-jack';
-  if(q.default_assignee==='Mera') return 'dest-mera';
-  if(q.default_assignee==='Suz')  return 'dest-suz';
-  return 'dest-jack';
+  if(q.manual_review) return 'dest-review';
+  var a=q.default_assignee||'Jack';
+  return a==='Mera'?'dest-mera' : a==='Suz'?'dest-suz'
+       : a==='Both'?'dest-both' : a==='All'?'dest-all' : 'dest-jack';
 }
 function sbDestName(q){
-  return q.manual_review ? 'Jack (routes it)' : (q.default_assignee||'Jack');
+  if(q.manual_review) return 'Jack (routes it)';
+  var a=q.default_assignee||'Jack';
+  return a==='Both'?'Both VAs' : a==='All'?'All 3 of us' : vaDisp(a);
 }
 function sbChipsHTML(){
   var f=String(SB_QFILTER||'').trim().toLowerCase();
@@ -15179,7 +15525,7 @@ function sbImportHTML(){
     // in a table on a different page. Say it right on the paste panel.
     var dest = q.manual_review
       ? '<span class="sbi-dest review">→ lands with <b>Jack</b> to route to a VA (Storefronts tab)</span>'
-      : '<span class="sbi-dest">→ goes straight to <b>'+escHtml(vaDisp(q.default_assignee||'Jack'))+'</b> as a shift task</span>';
+      : '<span class="sbi-dest">→ goes straight to <b>'+escHtml(sbDestName(q))+'</b> as a shift task</span>';
     paste='<div class="sbi-paste">'
       +'<div class="sbi-step"><span class="sbi-num">2</span>'
         +'<span class="sbi-step-t">Paste the ASINs for <b>'+escHtml(q.name)+'</b></span>'+state+'</div>'
@@ -15435,6 +15781,86 @@ function sbCardHTML(b, forVA){
    say all of that in one scannable line, and only surface the controls the row's
    state actually needs. Routing is the whole job on an unrouted batch, so those
    rows carry it inline; everything else keeps it behind one button. */
+/* ── BULK ROUTING ───────────────────────────────────────────────────────────
+   Jack expects ~30 batches needing routing a day. One row each with five route
+   buttons is 150+ clicks, and that's if he does it daily. So: tick the ones going
+   the same way, route them in one action. Tag-level shortcuts too, because in
+   practice everything under one tag usually goes to the same person. */
+var SB_ROUTE_SEL={};
+function sbRSel(id,on){ SB_ROUTE_SEL[id]=!!on; sbRefreshJack(); }
+function sbRSelAll(on,ids){
+  (ids||[]).forEach(function(i){ SB_ROUTE_SEL[i]=!!on; });
+  sbRefreshJack();
+}
+function sbRSelTag(tag,ids){ sbRSelAll(true,ids); }
+function sbRSelClear(){ SB_ROUTE_SEL={}; sbRefreshJack(); }
+function sbRSelIds(){ var a=[]; for(var k in SB_ROUTE_SEL) if(SB_ROUTE_SEL[k]) a.push(k); return a; }
+async function sbRouteBulk(who){
+  var ids=sbRSelIds(); if(!ids.length) return;
+  if(who==='bin'){
+    var ok=await askConfirm({
+      title:'Bin '+ids.length+' batch'+(ids.length===1?'':'es')+'?',
+      body:'Their ASINs are deleted and nobody will be asked to work them.',
+      yes:'Bin them', no:'Keep them', danger:true });
+    if(!ok) return;
+    for(var i=0;i<ids.length;i++){ try{ await sbScrapBatchSilent(ids[i]); }catch(e){} }
+    SB_ROUTE_SEL={};
+    await sbLoadBatches(true); sbRefreshJack();
+    showToast(ids.length+' binned \u2713'); return;
+  }
+  var done=0;
+  for(var j=0;j<ids.length;j++){
+    try{ await sbAssign(ids[j], who, true); done++; }catch(e){}
+  }
+  SB_ROUTE_SEL={};
+  await sbLoadBatches(true); sbRefreshJack();
+  showToast(done+' batch'+(done===1?'':'es')+' sent to '+(who==='All'?'all 3 of you':who==='Both'?'both VAs':vaDisp(who))+' \u2713');
+}
+/* same delete as sbScrapBatch but without its own confirm — the bulk one already asked */
+async function sbScrapBatchSilent(batchId){
+  var h={apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY};
+  await fetchT(SUPABASE_URL+'/rest/v1/storefront_batch_items?batch_id=eq.'+encodeURIComponent(batchId),{method:'DELETE',headers:h});
+  return fetchT(SUPABASE_URL+'/rest/v1/storefront_batches?id=eq.'+encodeURIComponent(batchId),{method:'DELETE',headers:h});
+}
+function sbRouteBarHTML(drafts){
+  var ids=drafts.map(function(b){ return b.id; });
+  var n=sbRSelIds().filter(function(i){ return ids.indexOf(i)>=0; }).length;
+  // one chip per tag so "send every FFB to Suz" is two clicks regardless of how many
+  var byTag={};
+  drafts.forEach(function(b){ var t=b.storefront_name||'—'; (byTag[t]=byTag[t]||[]).push(b.id); });
+  var tags=Object.keys(byTag).sort();
+  if(!n){
+    return '<div class="sbrt idle">'
+      +'<span class="sbrt-l">Tick rows, or grab a whole tag:</span>'
+      +tags.map(function(t){
+          return '<button class="sbrt-tag" onclick=\'sbRSelAll(true,'+JSON.stringify(byTag[t])+')\'>'
+            +escHtml(t)+' <b>'+byTag[t].length+'</b></button>'; }).join('')
+      +'<button class="sbrt-tag all" onclick=\'sbRSelAll(true,'+JSON.stringify(ids)+')\'>Select all '+ids.length+'</button>'
+      +'</div>';
+  }
+  return '<div class="sbrt on">'
+    +'<b>'+n+' selected</b>'
+    +['Mera','Suz','Both','All'].map(function(v){
+        var lbl=v==='All'?'All 3':v==='Both'?'Both VAs':vaDisp(v);
+        return '<button class="sbrt-b" data-w="'+v+'" onclick="sbRouteBulk(\''+v+'\')">&#8594; '+escHtml(lbl)+'</button>';
+      }).join('')
+    +'<button class="sbrt-b" data-w="Jack" onclick="sbRouteBulk(\'Jack\')">&#8594; Me</button>'
+    +'<button class="sbrt-b bin" onclick="sbRouteBulk(\'bin\')">&#10005; Bin</button>'
+    +'<button class="sbrt-b clear" onclick="sbRSelClear()">Clear</button>'
+    +'</div>';
+}
+// Groups are capped so a 300-batch day is a page, not a wall. Nothing is hidden
+// permanently — the count in the button is the honest total.
+var SB_GRP_ALL={};
+function sbGrpAll(k){ SB_GRP_ALL[k]=true; sbRefreshJack(); }
+var SB_GRP_CAP=24;
+function sbGrpBody(rows,key,cls){
+  var show=rows, more=0;
+  if(rows.length>SB_GRP_CAP && !SB_GRP_ALL[key]){ show=rows.slice(0,SB_GRP_CAP); more=rows.length-SB_GRP_CAP; }
+  return '<div class="'+cls+'">'+show.map(sbRowHTML).join('')+'</div>'
+    +(more?'<button class="sbr-more" onclick="sbGrpAll(\''+key+'\')">Show all '+rows.length
+      +' &mdash; '+more+' more hidden &#8595;</button>':'');
+}
 function sbRowHTML(b){
   var t=sbToday();
   var mine=(b.assigned_to==='Jack');
@@ -15443,12 +15869,12 @@ function sbRowHTML(b){
   var doneB=(b.status==='Completed');
   var jackOn=started&&(b.started_by==='Jack'||mine);
   var vaCls = b.assigned_to==='Mera'?'mera' : b.assigned_to==='Suz'?'suz'
-            : b.assigned_to==='Both'?'both' : mine?'jack':'none';
-  // bare emoji buttons said nothing about what they'd do — label them
+            : b.assigned_to==='Both'?'both' : b.assigned_to==='All'?'all'
+            : mine?'jack':'none';
   var keepa=b.keepa_url
     ? '<a class="sbr-key" href="'+String(b.keepa_url).replace(/"/g,'&quot;')+'" target="_blank" '
       +'title="Opens all '+(b.asin_count||0)+' ASINs in one Keepa list">&#128200; Keepa <b>'+(b.asin_count||0)+'</b> &#8599;</a>'
-    : '<span class="sbr-key off" title="No Keepa link on this batch yet">&#128200; No Keepa link</span>';
+    : '<span class="sbr-key off" title="No Keepa link on this batch yet">&#128200; No link</span>';
   var copy='<button class="sbr-copy" title="Copy the ASIN list to your clipboard" onclick="sbCopyAsins(\''+b.id+'\')">&#128203; Copy</button>';
 
   var state = doneB ? '<span class="sbr-st done">Done</span>'
@@ -15459,39 +15885,43 @@ function sbRowHTML(b){
   var actions='';
   if(isDraft||(!started&&!doneB)){
     // Routing isn't the only verdict on a Draft — "checked it, it's rubbish" is just as
-    // valid, and there was no way to say it. Bin sits at the end, styled as destructive.
+    // valid. Bin completes the 2x3 grid, styled destructive.
     var binBtn=(isDraft||!started)
       ? '<button class="sbr-b bin" title="Delete this batch and its ASINs — nobody gets asked to work it" '
-        +'onclick="sbScrapBatch(\''+b.id+'\')">&#10005;</button>' : '';
-    actions='<span class="sbr-route">'
-      +['Mera','Suz','Both','All'].map(function(v){
-          var lbl=(v==='All')?'All 3':(v==='Both')?'Both':vaDisp(v);
-          return '<button class="sbr-b'+(b.assigned_to===v?' on':'')+'" title="'
-            +(v==='All'?'Mera, Suz and you':v==='Both'?'Mera and Suz':escHtml(vaDisp(v)))+'" '
-            +'onclick="sbAssign(\''+b.id+'\',\''+v+'\')">'+escHtml(lbl)+'</button>';
+        +'onclick="sbScrapBatch(\''+b.id+'\')">&#10005; Bin</button>' : '';
+    actions='<div class="sbr-route">'
+      +[['Mera',''],['Suz',''],['Both','Both'],['All','All 3'],['Jack','Me']].map(function(v){
+          var who=v[0], lbl=v[1]||vaDisp(who);
+          var tip=who==='All'?'Mera, Suz and you':who==='Both'?'Mera and Suz':who==='Jack'?'You':vaDisp(who);
+          return '<button class="sbr-b'+(b.assigned_to===who?' on':'')+'" data-w="'+who+'" title="'
+            +escHtml(tip)+'" onclick="sbAssign(\''+b.id+'\',\''+who+'\')">'+escHtml(lbl)+'</button>';
         }).join('')
-      +'<button class="sbr-b'+(mine?' on':'')+'" onclick="sbAssign(\''+b.id+'\',\'Jack\')">'
-        +(b.assigned_to&&!mine?'&#8592; Me':'Me')+'</button>'
-      +(mine?'<button class="sbr-b go" onclick="sbJackStart(\''+b.id+'\')">&#9654; Start</button>'
+      +binBtn+'</div>'
+      +(mine?'<div class="sbr-act">'
+            +'<button class="sbr-b go" onclick="sbJackStart(\''+b.id+'\')">&#9654; Start</button>'
             +'<button class="sbr-b done" title="Mark it finished without timing it" '
-            +'onclick="sbJackComplete(\''+b.id+'\')">&#10003; Done</button>':'')
-      +binBtn
-      +'</span>';
+            +'onclick="sbJackComplete(\''+b.id+'\')">&#10003; Done</button></div>':'');
   } else if(jackOn){
-    actions='<span class="sbr-route"><button class="sbr-b go" onclick="sbJackComplete(\''+b.id+'\')">&#10003; Done</button></span>';
+    actions='<div class="sbr-act one"><button class="sbr-b go" onclick="sbJackComplete(\''+b.id+'\')">&#10003; Done</button></div>';
   } else if(started){
-    actions='<span class="sbr-lock">&#128274; locked</span>';
+    actions='<div class="sbr-lock">&#128274; locked</div>';
   }
 
-  return '<div class="sbr sbr-'+vaCls+(doneB?' is-done':'')+(isDraft?' is-draft':'')+'">'
-    +'<span class="sbr-tag">'+escHtml(b.storefront_name||'—')
-      +(b.batch_number>1?'<i>#'+b.batch_number+'</i>':'')+'</span>'
-    +'<span class="sbr-day'+(b.date===t?'':' old')+'">'+escHtml(b.date===t?'Today':sbDayLabel(b.date))+'</span>'
-    +'<span class="sbr-n"><b>'+(b.asin_count||0)+'</b> ASINs</span>'
-    +((state.indexOf('sbr-st with')>=0 && String(b.storefront_name||'').toLowerCase()===String(b.assigned_to||'').toLowerCase())
-        ? '' : state)   // "Jack · Jack" — don't say the same name twice
-    +'<span class="sbr-sp"></span>'
-    +keepa+copy
+  var nm=b.storefront_name||'—';
+  return '<div class="sbr sbr-'+vaCls+(doneB?' is-done':'')+(isDraft?' is-draft':'')+(isDraft&&SB_ROUTE_SEL[b.id]?' picked':'')+'">'
+    +'<div class="sbr-hd">'
+      +(isDraft?'<label class="sbr-pick"><input type="checkbox"'+(SB_ROUTE_SEL[b.id]?' checked':'')
+        +' onchange="sbRSel(\''+b.id+'\',this.checked)"><i></i></label>':'')
+      +'<span class="sbr-tag" title="'+escHtml(nm)+'">'+escHtml(nm)
+        +(b.batch_number>1?'<i>#'+b.batch_number+'</i>':'')+'</span>'
+      +'<span class="sbr-day'+(b.date===t?'':' old')+'">'+escHtml(b.date===t?'Today':sbDayLabel(b.date))+'</span>'
+    +'</div>'
+    +'<div class="sbr-meta">'
+      +'<span class="sbr-n"><b>'+(b.asin_count||0)+'</b> ASINs</span>'
+      +((state.indexOf('sbr-st with')>=0 && String(nm).toLowerCase()===String(b.assigned_to||'').toLowerCase())
+          ? '' : state)   // "Jack · Jack" — don't say the same name twice
+    +'</div>'
+    +'<div class="sbr-tools">'+keepa+copy+'</div>'
     +actions
     +'</div>';
 }
@@ -15529,10 +15959,15 @@ function sbTodayHTML(){
     if(!rows.length) return '';
     return '<div class="mgr-section">'+title
       +(note?'<span style="margin-left:auto;font-size:10.5px;font-weight:600;color:var(--muted-2);">'+note+'</span>':'')
-      +'</div><div class="'+(tiles?'sbr-tiles':'sbr-list')+'">'+rows.map(sbRowHTML).join('')+'</div>';
+      +'</div>'+sbGrpBody(rows,title.replace(/[^a-z]/gi,'').toLowerCase(),tiles?'sbr-tiles':'sbr-list');
   }
   var mineA=mineQ.reduce(function(a,b){ return a+(b.asin_count||0); },0);
-  out+=group('Needs routing', toRoute, toRoute.length+' waiting on you');
+  if(toRoute.length){
+    out+='<div class="mgr-section">Needs routing<span style="margin-left:auto;font-size:10.5px;font-weight:600;color:var(--muted-2);">'
+      +toRoute.length+' waiting on you</span></div>'
+      +sbRouteBarHTML(toRoute)
+      +sbGrpBody(toRoute,'needsrouting','sbr-tiles');
+  }
   out+=group('Being worked',  going,   '');
   // his own queue gets its own headline with the size of it, because that is a to-do list
   out+=group('\u{1F535} Yours to work', mineQ,
@@ -15549,10 +15984,15 @@ async function sbCopyAsins(batchId){
        showToast(list.length+' ASINs copied — paste straight into Keepa ✓'); }
   catch(e){ showToast('Couldn\'t reach the clipboard',true); }
 }
-async function sbAssign(batchId, who){
+/* `quiet` is for the bulk router — 30 individual toasts and 30 re-renders would be
+   worse than the clicking it replaces. The caller reports once at the end. */
+async function sbAssign(batchId, who, quiet){
   var b=(SB_BATCHES||[]).filter(function(x){return x.id===batchId;})[0];
   if(!b) return;
-  if(b.status==='Started'||b.status==='Completed'){ showToast('That batch is locked — it\'s already been started',true); return; }
+  if(b.status==='Started'||b.status==='Completed'){
+    if(!quiet) showToast('That batch is locked — it\'s already been started',true);
+    return;
+  }
   if(who==='Both'){
     var asins=await sbBatchAsins(batchId);
     var ok=await sbPatch(batchId,{assigned_to:'Mera',status:'Assigned'});
@@ -15572,11 +16012,11 @@ async function sbAssign(batchId, who){
       }
     }
     SB_BATCHES=null;
-    showToast('Sent to '+vaDisp('Mera')+' and '+vaDisp('Suz')+' ✓');
+    if(!quiet) showToast('Sent to '+vaDisp('Mera')+' and '+vaDisp('Suz')+' ✓');
   } else {
     var ok2=await sbPatch(batchId,{assigned_to:who, status:'Assigned'});
     if(!ok2){ showToast('Couldn\'t send that — check your connection',true); return; }
-    showToast(who==='Jack'?'Kept for you ✓':('Sent to '+vaDisp(who)+' ✓'));
+    if(!quiet) showToast(who==='Jack'?'Kept for you ✓':('Sent to '+vaDisp(who)+' ✓'));
   }
   sbRefreshJack();
 }
