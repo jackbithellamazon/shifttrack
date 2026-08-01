@@ -1542,6 +1542,28 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .jbcard-head{align-items:flex-start;gap:14px;padding:15px 18px 14px;}
 .jbcard-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
 .jbcard-tags{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+/* the matrix explained as the lookup it actually is, not four invented components */
+.d-mx-step{display:grid;grid-template-columns:88px auto 1fr;gap:6px 10px;align-items:baseline;
+  padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12.5px;}
+.d-mx-l{color:var(--muted-2);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+.d-mx-v{font-family:var(--font-mono);font-weight:800;color:var(--text);}
+.d-mx-c{color:var(--muted);} .d-mx-c b{color:var(--text);}
+.d-mx-w{grid-column:2/-1;color:var(--muted-2);font-size:11.5px;margin-top:-2px;}
+.d-mx-cell{margin:11px 0 9px;padding:10px 12px;border-radius:10px;
+  background:rgba(255,255,255,.035);border:1px solid var(--line-2);}
+.d-mx-cell-top{display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:8px;}
+.d-mx-cell-top b{color:var(--text);}
+.d-mx-pts{font-family:var(--font-mono);font-weight:800;font-size:15px;color:var(--text);}
+.d-mx-verdict{margin-top:9px;padding:9px 12px;border-radius:9px;font-size:12.5px;line-height:1.5;
+  color:var(--text);background:color-mix(in srgb,var(--accent) 11%,transparent);
+  border-left:2px solid var(--accent);}
+.d-mx-none{color:var(--muted-2);font-size:12.5px;padding:8px 0;}
+.jbcard-pri{font-size:9px;font-weight:900;letter-spacing:.06em;padding:2px 7px;border-radius:999px;
+  color:#ff6b7f;background:color-mix(in srgb,#f5455f 18%,transparent);
+  border:1px solid color-mix(in srgb,#f5455f 45%,transparent);white-space:nowrap;}
+.jbcard-own{font-size:9px;font-weight:900;letter-spacing:.06em;padding:2px 7px;border-radius:999px;
+  color:#10d99a;background:color-mix(in srgb,#10d99a 15%,transparent);
+  border:1px solid color-mix(in srgb,#10d99a 38%,transparent);white-space:nowrap;}
 .jbcard-from{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:900;letter-spacing:.9px;text-transform:uppercase;color:#fff;padding:3px 9px 3px 7px;border-radius:20px;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 2px 10px -4px var(--accent);}
 .jbcard-from svg{width:12px;height:12px;}
 .jbcard-type{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:color-mix(in srgb,var(--jbc) 62%,var(--text));padding:3px 9px;border-radius:20px;background:color-mix(in srgb,var(--jbc) 15%,transparent);border:1px solid color-mix(in srgb,var(--jbc) 35%,transparent);}
@@ -1762,6 +1784,22 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
   font-size:12px;font-weight:800;padding:6px 13px;border-radius:8px;cursor:pointer;}
 #lead-undo-bar button:hover{border-color:var(--cyan);color:var(--cyan);}
 @media(prefers-reduced-motion:reduce){#view-leads .litem-leaving{animation-duration:.01s;}}
+.vres-srcrow{display:flex;gap:8px;flex-wrap:wrap;}
+.vres-src{flex:1 1 0;min-width:74px;background:rgba(255,255,255,.04);border:1px solid var(--line-2);
+  border-radius:10px;padding:8px 10px;text-align:center;}
+.vres-src b{display:block;font-family:var(--font-mono);font-size:18px;font-weight:800;line-height:1.2;}
+.vres-src span{font-size:10px;color:var(--muted-2);font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+.vres-cmt{background:rgba(255,255,255,.035);border-left:2px solid var(--accent);border-radius:0 8px 8px 0;
+  padding:7px 11px;margin-bottom:6px;}
+.vres-cmt-t{display:block;font-size:11.5px;font-weight:700;color:var(--text);}
+.vres-cmt-t i{font-style:normal;font-weight:600;color:var(--muted-2);font-size:10.5px;}
+.vres-cmt-b{display:block;font-size:12px;color:var(--muted);line-height:1.5;margin-top:2px;}
+.vres-iss{display:flex;gap:9px;align-items:baseline;font-size:11.5px;padding:5px 0;
+  border-bottom:1px solid rgba(255,255,255,.05);}
+.vres-iss b{color:var(--amber);white-space:nowrap;font-family:var(--font-mono);font-size:11px;}
+.vres-iss span{color:var(--muted);}
+.d-rowref{font-family:var(--font-mono);font-size:10.5px;font-weight:700;color:var(--muted-2);
+  background:rgba(255,255,255,.06);border-radius:999px;padding:2px 8px;margin-left:7px;text-transform:none;letter-spacing:0;}
 /* ── Your results (VA feedback loop) ── */
 .vres{background:linear-gradient(135deg,color-mix(in srgb,var(--green) 9%,var(--panel)),var(--panel));
   border:1px solid color-mix(in srgb,var(--green) 26%,var(--line));border-radius:14px;padding:14px 16px;margin-bottom:12px;}
@@ -2446,6 +2484,8 @@ body.has-save-bar{padding-bottom:64px;}
 .sbi-chip.dest-both:hover{border-color:#f472b6;box-shadow:0 3px 12px color-mix(in srgb,#f472b6 25%,transparent);}
 .sbi-chip.dest-all{border-color:color-mix(in srgb,#10d99a 36%,transparent);}
 .sbi-chip.dest-all:hover{border-color:#10d99a;box-shadow:0 3px 12px color-mix(in srgb,#10d99a 25%,transparent);}
+.sbi-note{font-size:11.5px;color:var(--muted);background:rgba(255,255,255,.04);
+  border-left:2px solid var(--accent);border-radius:0 8px 8px 0;padding:7px 11px;margin:-4px 0 10px;line-height:1.5;}
 .sbi-chip.dest-review{border-color:color-mix(in srgb,#8b93a8 40%,transparent);border-style:dashed;}
 .sbi-chip.dest-review:hover{border-color:#8b93a8;box-shadow:0 3px 12px color-mix(in srgb,#8b93a8 25%,transparent);}
 .sbi-chip.dest-jack{border-color:color-mix(in srgb,var(--jack) 32%,transparent);}
@@ -2751,7 +2791,8 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
    siblings positioned by flex-wrap and a spacer, which is what let the day pill,
    the count and the status print on top of each other. */
 .sbr-list,.sbr-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(244px,1fr));
-  gap:9px;margin-bottom:16px;align-items:start;}
+  gap:9px;margin-bottom:16px;align-items:stretch;}
+.sbr-tools{margin-top:auto;}   /* notes vary in length — keep every tile's buttons on one line */
 @media(max-width:700px){.sbr-list,.sbr-tiles{grid-template-columns:1fr;}}
 .sbr-more{display:block;width:100%;margin:-8px 0 16px;padding:9px;border-radius:10px;
   background:rgba(255,255,255,.04);border:1px dashed var(--line-2);color:var(--muted);
@@ -2775,9 +2816,27 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 .sbr-tag{flex:1 1 auto;min-width:0;font-size:14px;font-weight:800;color:var(--text);
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .sbr-tag i{font-style:normal;font-size:10px;color:var(--muted-2);margin-left:4px;}
+/* "Process 4" says nothing about what is in it — the note does */
+.sbr-note{font-size:10.5px;color:var(--muted-2);line-height:1.4;margin-top:-3px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .sbr-day{flex:0 0 auto;font-size:10px;font-weight:700;color:var(--muted-2);white-space:nowrap;
   background:rgba(255,255,255,.06);padding:3px 8px;border-radius:999px;}
+.sbr-day.fresh{color:#10d99a;background:color-mix(in srgb,#10d99a 15%,transparent);}
 .sbr-day.old{color:var(--amber);background:color-mix(in srgb,var(--amber) 15%,transparent);}
+.sbr-day.stale{color:#ff6b7f;background:color-mix(in srgb,#f5455f 17%,transparent);}
+/* High priority earns a red edge and a lift — it should be findable without reading */
+.sbr.pri-hi{border-color:color-mix(in srgb,#f5455f 42%,transparent);
+  box-shadow:0 0 0 1px color-mix(in srgb,#f5455f 16%,transparent);}
+.sbr.pri-hi .sbr-tag::before{content:'\25B2';color:#f5455f;font-size:8px;margin-right:5px;vertical-align:1px;}
+.sbr .sb-pri{font-size:8.5px;padding:2px 7px;margin-left:auto;}
+.sbr .sb-pri-normal{border-color:transparent;color:var(--muted-2);opacity:.55;}
+.sbr .sb-pri-normal:hover{border-color:var(--line-2);opacity:1;}
+/* On "Yours to work" every tile is already yours, so a lit Me button just restates the
+   heading. Keep it readable, let Start/Done carry the weight. */
+.sbr-jack .sbr-b[data-w="Jack"].on{background:color-mix(in srgb,var(--jack) 22%,transparent);
+  color:var(--jack);border-color:color-mix(in srgb,var(--jack) 45%,transparent);}
+.sbr-jack .sbr-b.go{background:color-mix(in srgb,var(--green) 30%,transparent);
+  border-color:color-mix(in srgb,var(--green) 60%,transparent);color:#7ef2c4;}
 
 .sbr-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
 .sbr-n{font-size:11px;color:var(--muted-2);white-space:nowrap;}
@@ -4792,7 +4851,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v25.0';
+var APP_VERSION='v25.6';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -6295,6 +6354,8 @@ function buildJackTaskEl(task, i, isExtra){
       + '<div class="task-name jbcard-title">'+title+skipTag
         + '<span class="jbcard-from" title="Sent by Jack">'+JB_ICON_SVG+'Jack</span>'
         + '<span class="jbcard-type">'+m[1]+'</span>'
+        + (task.sbPriority==='High' ? '<span class="jbcard-pri" title="Jack marked this high priority — do it first">\u25B2 HIGH</span>' : '')
+        + (task.sbOwn ? '<span class="jbcard-own" title="Your own storefront list">YOURS</span>' : '')
         + ((task.jbCarried&&!task.done)?'<span class="jbcard-carry'+(task.jbCarryDays>=3?' overdue':'')+'" title="Sent '+(task.jbAddedOn||'earlier')+' — still open">'+(task.jbCarryDays>=3?'&#9888; '+task.jbCarryDays+'d':'&#8635; '+(task.jbCarryDays?task.jbCarryDays+'d':'carried'))+'</span>':'')
         + '</div>'
       + '<div class="'+metaCls+' task-sub"><span>'+meta+'</span></div>'
@@ -7136,6 +7197,40 @@ function vaMyLeads(va, days){
     var y=vaYmd(l.date); return y && y>=cut;
   });
 }
+/* ── A2A vs OA, worked out rather than asked for ─────────────────────────────
+   Jack: "a2a is amazon to amazon so either a2a uk or a2a eu", and "it should be
+   automated". The supplier LINK is the strongest evidence and wins outright: 35 of
+   his leads have a blank store but an amazon.de/fr/it/es link, and 4 say Amazon.UK
+   while linking to a retailer. Where there is no link, the store field decides —
+   and a blank supplier link is exactly what A2A UK looks like, because the source
+   IS the Amazon UK page. Evidence order: link, then store, then unknown. */
+var A2A_EU_HOSTS=['amazon.de','amazon.fr','amazon.it','amazon.es','amazon.nl','amazon.se','amazon.pl','amazon.be'];
+function leadHost(u){
+  var m=String(u||'').match(/^https?:\/\/([^\/]+)/i);
+  return m?m[1].toLowerCase().replace(/^www\./,''):'';
+}
+function leadSource(l){
+  if(!l) return '';
+  var h=leadHost(l.sup)||leadHost(l.sup2);   // a few leads only fill the second link
+  if(A2A_EU_HOSTS.indexOf(h)>=0) return 'A2A EU';
+  if(h==='amazon.co.uk') return 'A2A UK';
+  if(h) return 'OA';                                  // a real retailer link
+  var st=String(l.store||'').trim().toLowerCase();
+  if(st.indexOf('amazon.')===0) return st.indexOf('uk')>=0?'A2A UK':'A2A EU';
+  if(st) return 'OA';
+  return '';                                          // nothing to go on
+}
+/* Things on the sheet a VA can actually fix, with the row to fix them on. */
+function leadSheetIssues(rows){
+  var out=[];
+  (rows||[]).forEach(function(l){
+    var why='';
+    if(!/^B0[0-9A-Z]{8}$/i.test(String(l.asin||'').trim())) why='ASIN doesn’t look right';
+    else if(!leadSource(l)) why='no store and no supplier link — can’t tell A2A from OA';
+    if(why) out.push({row:l.sheetRow, tab:l.sheetTab, title:l.title, why:why});
+  });
+  return out;
+}
 function vaResultsHTML(va){
   var mine=vaMyLeads(va,30);
   if(!mine.length) return '';
@@ -7179,6 +7274,40 @@ function vaResultsHTML(va){
         +'<div class="vres-tip">Worth checking these before you add one — it saves you the work.</div>'
         +'</div>'
       : '')
+    +(function(){                                    // where her leads come from
+        var c={'A2A UK':0,'A2A EU':0,'OA':0}, unk=0;
+        mine.forEach(function(l){ var k=leadSource(l); if(k) c[k]++; else unk++; });
+        if(!(c['A2A UK']+c['A2A EU']+c['OA'])) return '';
+        var cell=function(k,col){ return '<div class="vres-src"><b style="color:'+col+'">'+c[k]+'</b><span>'+k+'</span></div>'; };
+        return '<div class="vres-sec"><div class="vres-lbl">Where yours came from</div>'
+          +'<div class="vres-srcrow">'+cell('A2A UK','#38bdf8')+cell('A2A EU','#10d99a')+cell('OA','#f2c200')
+          +(unk?'<div class="vres-src"><b style="color:var(--muted-2)">'+unk+'</b><span>can’t tell</span></div>':'')
+          +'</div></div>';
+      })()
+    +(function(){                                    // what Jack actually said
+        var cm=mine.filter(function(l){ return String(l.notes||'').trim(); })
+                   .sort(function(a,b){ return (vaYmd(b.date)||'').localeCompare(vaYmd(a.date)||''); })
+                   .slice(0,3);
+        if(!cm.length) return '';
+        return '<div class="vres-sec"><div class="vres-lbl">What Jack said on yours</div>'
+          + cm.map(function(l){
+              return '<div class="vres-cmt"><span class="vres-cmt-t">'+escHtml(String(l.title||'').slice(0,52))
+                +(l.sheetRow?' <i>row '+l.sheetRow+(l.sheetTab?' · '+escHtml(l.sheetTab):'')+'</i>':'')+'</span>'
+                +'<span class="vres-cmt-b">'+escHtml(String(l.notes).slice(0,180))+'</span></div>';
+            }).join('')
+          +'</div>';
+      })()
+    +(function(){                                    // fixable, with the row number
+        var iss=leadSheetIssues(mine);
+        if(!iss.length) return '';
+        return '<div class="vres-sec"><div class="vres-lbl">Needs fixing on your sheet ('+iss.length+')</div>'
+          + iss.slice(0,4).map(function(x){
+              return '<div class="vres-iss"><b>'+(x.row?'Row '+x.row:'?')+(x.tab?' · '+escHtml(x.tab):'')+'</b>'
+                +'<span>'+escHtml(String(x.title||'').slice(0,44))+' — '+x.why+'</span></div>';
+            }).join('')
+          +(iss.length>4?'<div class="vres-tip">'+(iss.length-4)+' more like this.</div>':'')
+          +'</div>';
+      })()
     +'</div>';
 }
 function renderVaResults(){
@@ -13100,7 +13229,7 @@ async function loadLeadsFromDB(){
         store:r.store||'', title:r.title||'(untitled)', asin:r.asin||'', cat:r.category||'', src:r.source_method||'',
         sheetRow:r.row_index||null, sheetTab:r.tab||'',
         buy:parseFloat(r.buy)||0, sell:parseFloat(r.sell)||0, spm:spm, profit:profit, roi:roi, margin:margin, fba:fba,
-        sup:r.supplier_url||'#', amz:r.amazon_url||'#', screenshot:r.screenshot||'', discount:r.discount_code||'',
+        sup:r.supplier_url||'#', sup2:r.supplier_url2||'', amz:r.amazon_url||'#', screenshot:r.screenshot||'', discount:r.discount_code||'',
         notes:r.jack_comment||'', vanote:r.va_note||'',
         status:mapStatusIn(r.status), islead:r.islead==='LEAD'?true:(r.islead==='NOT LEAD'?false:null),
         seen:!!_seenIds[r.id], hrs:hrs,
@@ -13580,14 +13709,40 @@ function emptyDetail(){return`<div class="detail-empty">${ICO.inbox}<div style="
 function detailH(l){
   const s=l._sc,col=scCol(s.total);
   const [stxt,scls]=statusInfo(l);
-  const reasonList=[
-    l.roi>=20?['Strong ROI potential','var(--green)']:l.roi>=12?['Decent ROI','var(--amber)']:['ROI below target','var(--red)'],
-    l.profit>=30?['Healthy net profit','var(--green)']:l.profit>=15?['Modest profit','var(--amber)']:['Profit below target','var(--red)'],
-    (function(){var r=l.fba>0?l.spm/l.fba:l.spm;return r>=20?['Sells fast, low competition','var(--green)']:r>=8?['Balanced demand vs competition','var(--amber)']:['Weak demand / crowded','var(--red)'];})(),
-    l.margin>=12?['Good margin','var(--green)']:l.margin>=6?['Slim margin','var(--amber)']:['Low margin','var(--red)']
-  ];
-  const bars=s.bd.map((b,i)=>{const pct=Math.round((b.p/Math.max(1,b.m))*100),bc=pct>=80?'var(--green)':pct>=55?'var(--amber)':'var(--red)';const rz=reasonList[i]||['',''];const out10=Math.round(pct/10);
-    return`<div class="d-sbar-row"><div class="d-sbar-top"><span class="d-sbar-nm">${b.n}</span><span class="d-sbar-pts">${out10}/10</span></div><div class="d-sbar-why" style="color:${rz[1]}">${rz[0]}</div><div class="d-sbar-track"><div class="d-sbar-fill" style="width:${pct}%;background:${bc}"></div></div></div>`;}).join('');
+  /* This panel used to zip s.bd against a HARDCODED four-item reasonList left over from
+     the old weighted-sum score. The matrix emits [Sales, Profit, Volume, ROI]; the list
+     was still [ROI, Profit, Demand, Margin] — so "Sales per month" was captioned
+     "Decent ROI" and "ROI 14.3%" was captioned "Slim margin". It also drew four bars
+     that all read 10/10, two of them the same number twice, because the matrix score is
+     ONE lookup and not four independent components. Explain the lookup instead. */
+  const bars=(function(){
+    if(s.unscored){
+      return `<div class="d-mx-none">Not scored yet — needs both sales per month and profit per unit.</div>`;
+    }
+    const pTier=s.tier==='high'?'£9+':s.tier==='mid'?'£3–£9':'under £3';
+    const spmTxt=(l.spm===null||l.spm===undefined||l.spm==='')?'—':(typeof l.spm==='number'?l.spm.toLocaleString():String(l.spm));
+    const step=(n,val,chip,why)=>`<div class="d-mx-step"><div class="d-mx-l">${n}</div>`
+      +`<div class="d-mx-v">${val}</div><div class="d-mx-c">${chip}</div>`
+      +(why?`<div class="d-mx-w">${why}</div>`:'')+`</div>`;
+    let out=step('Sales / month', spmTxt, `band <b>${s.band}</b>`, s.bandLabel||'')
+          + step('Profit / unit', '£'+(parseFloat(l.profit)||0).toFixed(2),
+                 `<b>${s.tierLabel||s.tier}</b> (${pTier})`, '');
+    const barCol=s.base>=8?'var(--green)':s.base>=5?'var(--amber)':'var(--red)';
+    out+=`<div class="d-mx-cell"><div class="d-mx-cell-top"><span><b>${s.band}</b> × <b>${s.tierLabel||s.tier}</b></span>`
+       +`<span class="d-mx-pts">${s.base}/10</span></div>`
+       +`<div class="d-sbar-track"><div class="d-sbar-fill" style="width:${s.base*10}%;background:${barCol}"></div></div></div>`;
+    // ROI only ever ADJUSTS the cell — say what it did, including when it did nothing
+    let roiTxt, roiCol;
+    if(s.roiBlank){ roiTxt='not entered — the 10% check hasn’t run'; roiCol='var(--muted-2)'; }
+    else if(s.roiExempt){ roiTxt=s.note||'below 10% but let off'; roiCol='var(--amber)'; }
+    else if(s.roiPenalty){ roiTxt=s.note||'below 10% — docked'; roiCol='var(--red)'; }
+    else { roiTxt='above 10% — no adjustment'; roiCol='var(--green)'; }
+    out+=step('ROI', (s.roiBlank?'—':(Math.round((parseFloat(l.roi)||0)*10)/10)+'%'),
+              `<span style="color:${roiCol}">${s.total===s.base?'no change':s.base+' → '+s.total}</span>`, '')
+       + `<div class="d-mx-w" style="color:${roiCol};margin:-4px 0 10px;">${roiTxt}</div>`;
+    if(s.verdict) out+=`<div class="d-mx-verdict">${s.verdict}</div>`;
+    return out;
+  })();
   let decH='';
   if(l.islead===null){
     decH=`<div class="d-dec-row d-dec-stack"><button class="d-dec-btn dec-lead" onclick="setL(${l.id},true)">✓ Approve Lead</button><button class="d-dec-btn dec-notlead" onclick="setL(${l.id},false)">✕ Reject Lead</button></div>`;
@@ -13683,7 +13838,7 @@ function detailH(l){
         <div class="d-score-rubric">${bars}</div>
       </div>
       <div class="d-sec" style="margin-bottom:0">
-        <div class="d-sec-lbl">Notes</div>
+        <div class="d-sec-lbl">Notes${l.sheetRow?` <span class="d-rowref" title="Where this sits on the Google Sheet">row ${l.sheetRow}${l.sheetTab?' · '+l.sheetTab:''}</span>`:''}</div>
         <textarea class="notes" id="mn" placeholder="Add notes for this lead…">${l.notes}</textarea>
         <div class="note-row">
           <button class="note-save" onclick="saveN(${l.id})">Save note</button>
@@ -14876,7 +15031,16 @@ function sbParseAsins(raw){
   String(raw||'').split(/[\s,;]+/).forEach(function(tok){
     tok=String(tok||'').trim().toUpperCase();
     if(!tok) return;
-    if(!/^B0[0-9A-Z]{8}$/.test(tok)){ if(tok.length>3) bad.push(tok.slice(0,14)); return; }
+    if(!/^B0[0-9A-Z]{8}$/.test(tok)){
+      /* Sarah works off storefront PAGES, so copying product links is at least as
+         likely as copying a bare ASIN column. Pulling the ASIN out of a URL is the
+         difference between "12 added" and a dead end reading
+         "I saw things like HTTPS://WWW.AM". Only ever taken from a recognised
+         product path, so a stray B0-looking string in a title can't sneak in. */
+      var m=tok.match(/(?:\/DP\/|\/GP\/PRODUCT\/|\/GP\/AW\/D\/|\/PRODUCT\/|[?&]ASIN=)(B0[0-9A-Z]{8})/);
+      if(m) tok=m[1];
+      else { if(tok.length>3) bad.push(tok.length>28?tok.slice(0,26)+'\u2026':tok); return; }
+    }
     if(seen[tok]){ dupes++; return; }           // duplicates stripped WITHIN this paste only
     seen[tok]=1; out.push(tok);
   });
@@ -14929,7 +15093,7 @@ var DB_EXPECT = [
   ['reports',                ['id','va','type','text','resolved']],
   ['storefront_sessions',    ['va','name','date','seconds','leads']],
   ['sheet_tabs',             []],
-  ['storefronts',            ['id','name','default_assignee','manual_review','priority','active','pos']],
+  ['storefronts',            ['id','name','default_assignee','manual_review','priority','active','pos','notes']],
   ['storefront_batches',     ['id','storefront_id','date','batch_number','status','assigned_to','priority','keepa_url','asin_count']],
   ['storefront_batch_items', ['batch_id','asin']]
 ];
@@ -15134,6 +15298,26 @@ function sbIsBackdated(){ return sbWorkDate()!==sbToday(); }
 function sbToISO(uk){ var m=String(uk||'').match(/^(\d{2})\/(\d{2})\/(\d{4})$/); return m?(m[3]+'-'+m[2]+'-'+m[1]):''; }
 function sbFromISO(iso){ var m=String(iso||'').match(/^(\d{4})-(\d{2})-(\d{2})$/); return m?(m[3]+'/'+m[2]+'/'+m[1]):''; }
 /* "Tue 28 Jul" — so a backdated import can never be mistaken for today's at a glance */
+function sbAgeDays(uk){
+  var iso=sbToISO(uk); if(!iso) return null;
+  var d=new Date(iso+'T12:00:00'), n=new Date();
+  n=new Date(n.getFullYear(),n.getMonth(),n.getDate(),12,0,0);
+  return Math.round((n-d)/86400000);
+}
+function sbAgeCls(n){
+  if(n===null) return '';
+  if(n<=0) return ' fresh';
+  if(n<=2) return '';
+  if(n<=5) return ' old';
+  return ' stale';
+}
+function sbAgeLabel(uk){
+  var n=sbAgeDays(uk);
+  if(n===null) return uk||'';
+  if(n<=0) return 'Today';
+  if(n===1) return 'Yesterday';
+  return n+' days old';
+}
 function sbDayLabel(uk){
   var iso=sbToISO(uk); if(!iso) return uk||'';
   try{ return new Date(iso+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}); }
@@ -15404,7 +15588,8 @@ function sbChipsHTML(){
     var n=slot.batch?(slot.batch.asin_count||0):0;
     var started=(!slot.batch && slot.nextNumber>1);
     return '<button class="sbi-chip '+sbDestCls(q)+(SB_PICKED===q.id?' on':'')+(slot.batch?' has':'')+(started?' started':'')+'"'
-      +' onclick="sbPick(\''+q.id+'\')" title="'+escHtml(q.name)+' → '+escHtml(sbDestName(q))+'">'
+      +' onclick="sbPick(\''+q.id+'\')" title="'+escHtml(q.name)+' → '+escHtml(sbDestName(q))
+      +(String(q.notes||'').trim()?'\u000A'+escHtml(q.notes):'')+'">'
       +'<i class="sbi-dot"></i>'+escHtml(q.name)
       +(n?'<span class="sbi-chip-n">'+n+'</span>':(started?'<span class="sbi-chip-tick">✓</span>':''))
       +'</button>';
@@ -15529,6 +15714,8 @@ function sbImportHTML(){
     paste='<div class="sbi-paste">'
       +'<div class="sbi-step"><span class="sbi-num">2</span>'
         +'<span class="sbi-step-t">Paste the ASINs for <b>'+escHtml(q.name)+'</b></span>'+state+'</div>'
+      +(String(q.notes||'').trim()
+         ? '<div class="sbi-note">\u270E '+escHtml(q.notes)+'</div>' : '')
       +'<div class="sbi-dest-row">'+dest
         +(slot.batch
             ? '<div class="sbi-open-note">Anything you paste now <b>joins Batch '+(slot.batch.batch_number||1)+'</b>'
@@ -15908,16 +16095,22 @@ function sbRowHTML(b){
   }
 
   var nm=b.storefront_name||'—';
-  return '<div class="sbr sbr-'+vaCls+(doneB?' is-done':'')+(isDraft?' is-draft':'')+(isDraft&&SB_ROUTE_SEL[b.id]?' picked':'')+'">'
+  var hi=(b.priority==='High' && !doneB)?' pri-hi':'';
+  return '<div class="sbr sbr-'+vaCls+hi+(doneB?' is-done':'')+(isDraft?' is-draft':'')+(isDraft&&SB_ROUTE_SEL[b.id]?' picked':'')+'">'
     +'<div class="sbr-hd">'
       +(isDraft?'<label class="sbr-pick"><input type="checkbox"'+(SB_ROUTE_SEL[b.id]?' checked':'')
         +' onchange="sbRSel(\''+b.id+'\',this.checked)"><i></i></label>':'')
       +'<span class="sbr-tag" title="'+escHtml(nm)+'">'+escHtml(nm)
         +(b.batch_number>1?'<i>#'+b.batch_number+'</i>':'')+'</span>'
-      +'<span class="sbr-day'+(b.date===t?'':' old')+'">'+escHtml(b.date===t?'Today':sbDayLabel(b.date))+'</span>'
+      +'<span class="sbr-day'+sbAgeCls(sbAgeDays(b.date))+'" title="'+escHtml(sbDayLabel(b.date))+'">'
+        +escHtml(sbAgeLabel(b.date))+'</span>'
     +'</div>'
+    +(function(){ var q=(SB_QUEUES||[]).filter(function(x){ return x.id===b.storefront_id; })[0];
+        var nt=String((q&&q.notes)||'').trim();
+        return nt?'<div class="sbr-note" title="'+escHtml(nt)+'">'+escHtml(nt)+'</div>':''; })()
     +'<div class="sbr-meta">'
       +'<span class="sbr-n"><b>'+(b.asin_count||0)+'</b> ASINs</span>'
+      +(doneB?'':sbPriPill(b))
       +((state.indexOf('sbr-st with')>=0 && String(nm).toLowerCase()===String(b.assigned_to||'').toLowerCase())
           ? '' : state)   // "Jack · Jack" — don't say the same name twice
     +'</div>'
@@ -15935,7 +16128,9 @@ function sbTodayHTML(){
   var order={High:0,Normal:1,Low:2};
   var sortFn=function(a,b){
     var pa=order[a.priority||'Normal'], pb=order[b.priority||'Normal'];
-    if(pa!==pb) return pa-pb;
+    if(pa!==pb) return pa-pb;                          // High always floats
+    var da=sbToISO(a.date)||'', db2=sbToISO(b.date)||'';
+    if(da!==db2) return db2<da?-1:1;                   // then newest first
     return String(a.storefront_name||'').localeCompare(String(b.storefront_name||''));
   };
   var toRoute=live.filter(function(b){ return b.status==='Draft'; }).sort(sortFn);
@@ -16090,9 +16285,11 @@ function sbQueueRowHTML(q){
     +'<td><input class="sb-inp sb-inp-name" value="'+escHtml(q.name||'')+'" onchange="sbQueueSet(\''+q.id+'\',\'name\',this.value)"></td>'
     +'<td>'+destSel+'</td>'
     +'<td>'+sel('priority', q.priority||'Normal', SB_PRIORITY)+'</td>'
+    +'<td><input class="sb-inp sb-inp-note" value="'+escHtml(q.notes||'')
+      +'" placeholder="e.g. household brands \u00b7 Sarah builds it Mondays" '
+      +'onchange="sbQueueSet(\''+q.id+'\',\'notes\',this.value)"></td>'
     +(SB_SHOW_DETAILS
        ? '<td><input class="sb-inp" value="'+escHtml(q.frequency||'')+'" placeholder="Daily" onchange="sbQueueSet(\''+q.id+'\',\'frequency\',this.value)"></td>'
-        +'<td><input class="sb-inp" value="'+escHtml(q.notes||'')+'" placeholder="—" onchange="sbQueueSet(\''+q.id+'\',\'notes\',this.value)"></td>'
        : '')
     +'<td class="sb-ctr"><label class="sb-chk"><input type="checkbox"'+(q.active!==false?' checked':'')
       +' onchange="sbQueueSet(\''+q.id+'\',\'active\',this.checked)"><i></i></label></td>'
@@ -16238,7 +16435,8 @@ function sbQueuesHTML(){
       +'<th title="Sarah’s tag chips appear in this order">#</th>'
       +'<th>Tag</th><th>Where a paste ends up</th>'
       +'<th>Priority</th>'
-      +(SB_SHOW_DETAILS?'<th>Frequency</th><th>Notes</th>':'')
+      +'<th title="What is actually in this tag — brands, who is in it, how it is built">What&rsquo;s in it</th>'
+      +(SB_SHOW_DETAILS?'<th>Frequency</th>':'')
       +'<th>Active</th><th></th></tr></thead>'
     +'<tbody id="sbq-body">'+sbQueueRowsHTML()+'</tbody>'
     +'</table>'
@@ -16867,7 +17065,8 @@ function sbBatchTask(b){
   var n=b.asin_count||0;
   var pri=(b.priority==='High')?' — HIGH PRIORITY':'';
   return {
-    id:'sbatch-'+b.id, sbBatchId:b.id, sbStatus:b.status,
+    id:'sbatch-'+b.id, sbBatchId:b.id, sbStatus:b.status, sbPriority:b.priority||'Normal',
+    sbOwn:false, sbNote:'',
     // The tag name alone read as a person ("Mera · 8 ASINs" looked like a task FOR Mera).
     // Lead with what it is, then the tag, then the size.
     name:'Storefront · '+(b.storefront_name||'Queue')+(b.batch_number>1?' (Batch '+b.batch_number+')':'')+' — '+n+' ASIN'+(n===1?'':'s')+pri,
@@ -16888,8 +17087,21 @@ function sbInjectBatchTasks(va, tasks){
     return sbGoesTo(b,va) && (b.status==='Assigned'||b.status==='Started');
   });
   if(!mine.length) return 0;
+  /* Jack's rule, in his words: "anything high priority beats rest of storefronts —
+     then hers — then whatever else I sent. Hers auto goes above anything else I've
+     sent unless it's high priority." So: priority first, then her OWN tag (the queue
+     named after her), then the rest, newest first inside each band. */
   var order={High:0,Normal:1,Low:2};
-  mine.sort(function(a,b){ return (order[a.priority||'Normal'])-(order[b.priority||'Normal']); });
+  function ownRank(b){ return String(b.storefront_name||'').toLowerCase()===String(va||'').toLowerCase()?0:1; }
+  mine.sort(function(a,b){
+    var pa=order[a.priority||'Normal'], pb=order[b.priority||'Normal'];
+    if(pa!==pb) return pa-pb;                                  // High beats everything
+    var oa=ownRank(a), ob=ownRank(b);
+    if(oa!==ob) return oa-ob;                                  // then her own storefronts
+    var da=sbToISO(a.date)||'', db2=sbToISO(b.date)||'';
+    if(da!==db2) return db2<da?-1:1;                           // then newest first
+    return String(a.storefront_name||'').localeCompare(String(b.storefront_name||''));
+  });
   // Batches used to be appended to the END of the shift list, which put them miles away
   // from the "Storefronts" task in Jack's recurring ticklist — so a VA saw storefront work
   // in two unrelated places. Slot them in directly AFTER that host task instead: one
@@ -16902,7 +17114,14 @@ function sbInjectBatchTasks(va, tasks){
   }
   var fresh=mine.filter(function(b){
     return !tasks.some(function(t){ return t.id==='sbatch-'+b.id; });
-  }).map(sbBatchTask);
+  }).map(function(b){
+    var t=sbBatchTask(b);
+    t.sbOwn=(ownRank(b)===0);
+    var q=(SB_QUEUES||[]).filter(function(x){ return x.id===b.storefront_id; })[0];
+    t.sbNote=String((q&&q.notes)||'').trim();
+    if(t.sbNote) t.hint=t.sbNote+' \u2014 '+t.hint;
+    return t;
+  });
   if(!fresh.length) return mine.length;
   if(hostAt>=0){
     // keep them together under the host, in the priority order set above
