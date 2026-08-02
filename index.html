@@ -730,6 +730,50 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .sflt-day{background:rgba(255,255,255,.04);border:1px solid var(--line-2);color:var(--muted-2);
   border-radius:7px;padding:4px 0;min-width:38px;text-align:center;font-family:inherit;font-size:10.5px;
   font-weight:700;cursor:pointer;transition:all .12s;white-space:nowrap;}
+.sflt-ico.pinned{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,transparent);}
+.sflt-ico.pinned b{font-size:9.5px;margin-left:3px;}
+.sflt-tp-vas{display:flex;gap:6px;margin:10px 0 8px;}
+.sflt-tp-va{flex:1;padding:7px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid var(--line-2);
+  color:var(--muted);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;}
+.sflt-tp-va.on{background:color-mix(in srgb,var(--accent) 22%,transparent);border-color:var(--accent);color:#fff;}
+.sflt-tp-list{max-height:320px;overflow-y:auto;border:1px solid var(--line-2);border-radius:9px;}
+.sflt-tp-row{display:flex;align-items:center;gap:9px;padding:8px 11px;cursor:pointer;font-size:12.5px;
+  border-bottom:1px solid rgba(255,255,255,.05);color:var(--muted);}
+.sflt-tp-row:last-child{border-bottom:none;}
+.sflt-tp-row:hover{background:rgba(255,255,255,.04);color:var(--text);}
+.sflt-tp-row.on{background:color-mix(in srgb,var(--accent) 13%,transparent);color:var(--text);}
+.sflt-tp-cb{width:16px;height:16px;border-radius:5px;border:1.5px solid var(--line-2);flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--accent);}
+.sflt-tp-row.on .sflt-tp-cb{border-color:var(--accent);}
+.sflt-tp-nm{flex:1 1 auto;}
+.sflt-tp-m{font-size:9.5px;color:var(--muted-2);}
+.sflt-tp-foot{margin-top:9px;font-size:11px;color:var(--muted-2);}
+.sflt-where{background:rgba(255,255,255,.05);border:1px solid var(--line-2);color:var(--muted-2);
+  border-radius:7px;padding:4px 9px;font-family:inherit;font-size:10.5px;font-weight:700;cursor:pointer;
+  white-space:nowrap;transition:all .12s;}
+.sflt-where b{color:var(--muted);font-weight:800;}
+.sflt-where:hover{border-color:var(--accent);color:var(--text);}
+.sflt-where.set{border-color:color-mix(in srgb,var(--accent) 45%,transparent);
+  background:color-mix(in srgb,var(--accent) 14%,transparent);color:#cfc6ff;}
+.sflt-where.set b{color:#fff;}
+.sflt-tp-mode{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:11px 0 4px;}
+.sflt-tp-mode button{padding:9px 10px;border-radius:9px;background:rgba(255,255,255,.04);
+  border:1px solid var(--line-2);color:var(--muted);font-family:inherit;font-size:12px;font-weight:700;
+  cursor:pointer;text-align:left;line-height:1.35;}
+.sflt-tp-mode button span{display:block;font-size:10px;font-weight:600;color:var(--muted-2);margin-top:2px;}
+.sflt-tp-mode button.on{background:color-mix(in srgb,var(--accent) 20%,transparent);
+  border-color:var(--accent);color:#fff;}
+.sflt-tp-mode button.on span{color:#cfc6ff;}
+.sflt-rp{background:rgba(255,255,255,.03);border:1px solid var(--line-2);border-radius:11px;
+  padding:11px 13px;margin-bottom:12px;}
+.sflt-rp-h{font-size:11px;font-weight:700;color:var(--muted-2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+.sflt-rp-h em{font-style:normal;color:var(--accent);text-transform:none;letter-spacing:0;}
+.sflt-rp-va{margin-bottom:7px;font-size:12px;}
+.sflt-rp-va>b{display:block;color:var(--text);font-size:11.5px;margin-bottom:3px;}
+.sflt-rp-l{color:var(--muted);padding:2px 0 2px 4px;}
+.sflt-rp-l i{font-style:normal;margin-right:6px;color:var(--accent);}
+.sflt-rp-l span{color:var(--muted-2);margin-left:6px;font-size:11px;}
+.sflt-rp-none{color:var(--muted-2);font-size:11.5px;padding-left:4px;}
 .sflt-poalbl{font-size:9.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;
   padding:3px 8px;border-radius:999px;background:rgba(255,255,255,.05);color:var(--muted-2);
   border:1px solid var(--line-2);white-space:nowrap;}
@@ -4970,7 +5014,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v26.9';
+var APP_VERSION='v27.3';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -10111,6 +10155,7 @@ function mgr_renderFilters(){
   var html='<div class="mgr-sec2"><div><div class="s-ttl">Saved filters</div>'
     +'<div class="s-sub">Your KPF / Keepa library. Your VAs get this as a searchable panel at the top of their shift — nothing here is ever binned automatically.</div></div>'
     +'<div class="s-right"><a class="s-act" onclick="mgr_switchTab(\'trends\')">Full lead insights →</a></div></div>';
+  try{ html+=sfltRunsPreviewHTML(); }catch(e){}
   html+='<div class="kpi-row" style="margin-bottom:14px;">'
     +mgr_kpi({icon:'layers',label:'In your library',value:all.length,tone:all.length?'purple':'off',
        badge:{t:live+' live',tone:live?'green':'off'}, sub:arch?('<b>'+arch+'</b> archived (hidden from VAs)'):'all visible to your VAs'})
@@ -14205,7 +14250,12 @@ function sfltHostTaskIds(va){
 function sfltTodayKey(){
   var now=new Date(new Date().toLocaleString('en-US',{timeZone:'Europe/London'}));
   var m=SFLT_DAYS.filter(function(d){ return d.dow===now.getDay(); })[0];
-  return m?m.k:null;                                     // null at the weekend
+  if(m) return m.k;
+  return 'mon';        // Sat/Sun: no shift is scheduled, so preview the coming Monday
+}
+function sfltIsWeekend(){
+  var d=new Date(new Date().toLocaleString('en-US',{timeZone:'Europe/London'})).getDay();
+  return d===0||d===6;
 }
 function sfltSlotKeys(f){
   if(f && Array.isArray(f.slots) && f.slots.length) return f.slots.slice();
@@ -14243,11 +14293,31 @@ function sfltSlotChipsHTML(sel,onclickTpl){
 }
 /* every filter this VA should run on the POA task with this id, today */
 function sfltTaskIds(f){ return Array.isArray(f&&f.taskIds)?f.taskIds:[]; }
+/* HOW a filter shows up on the VA's list:
+     'in'  -> nested inside the task it is pinned to (a link on that task)
+     'own' -> its own task row, sitting directly after the task it is pinned to
+   Jack: "put these into where I want them on their task list". */
+function sfltMode(f){ return (f&&f.mode==='own')?'own':'in'; }
+function sfltWhereLabel(f){
+  var ids=sfltTaskIds(f);
+  if(!ids.length) return 'by day';
+  var nm=null;
+  ['Mera','Suz'].forEach(function(va){
+    try{ (getTaskTemplateSource(va)||[]).forEach(function(t){ if(!nm && t.id===ids[0]) nm=t.name; }); }catch(e){}
+  });
+  var base=nm?String(nm).replace(/\s*[-–(].*$/,'').trim().slice(0,20):(ids.length+' tasks');
+  return (sfltMode(f)==='own'?'after ':'in ')+base+(ids.length>1?' +'+(ids.length-1):'');
+}
+function sfltSetMode(id,m){
+  var arr=getSavedFilters(); var f=arr.filter(function(x){return x.id===id;})[0]; if(!f) return;
+  f.mode=(m==='own')?'own':'in'; saveSavedFilters(arr);
+  try{ sfltTaskPickBody(); }catch(e){}
+}
 function sfltForTask(va,taskId){
   return getSavedFilters().filter(function(f){
     if(f.archived||!f.url) return false;
     // explicit link to this exact task wins — survives renaming/reordering the ticklist
-    if(sfltTaskIds(f).indexOf(taskId)>=0) return true;
+    if(sfltTaskIds(f).indexOf(taskId)>=0) return sfltMode(f)!=='own';
     // legacy: assigned to the VA with a day-slot that maps to this task
     if(!sfltHasVA(f,va)) return false;
     // does it run TODAY, and is this the task that hosts this VA's filters today?
@@ -14314,6 +14384,69 @@ function sfltUnlinkAll(taskId){
    Attaching used to be one filter at a time through a datalist box. With 100s of
    filters that's unusable, so this is a searchable tick-list: filter, tick as many
    as you want, attach the lot in one go. */
+/* From a FILTER, pick the tasks it should sit on. Lists each VA's real ticklist,
+   so Jack picks by the name he sees on their shift rather than an internal id. */
+var SFLT_TPICK={id:'',va:'Mera'};
+function sfltTaskPickOpen(id){
+  var f=getSavedFilters().filter(function(x){return x.id===id;})[0]; if(!f) return;
+  var vas=sfltVAs(f);
+  SFLT_TPICK={id:id, va:(vas[0]||'Mera')};
+  var m=document.createElement('div');
+  m.className='sbq-modal'; m.id='sflt-tpick';
+  m.innerHTML='<div class="sbq-box" style="max-width:520px;">'
+    +'<div class="sbq-t">Put “'+escHtml(f.title||'Filter')+'” on a task</div>'
+    +'<div class="sbq-b">Pinning it to a task puts it on that task every time the task appears — '
+      +'the day chips are ignored for a pinned filter. Leave nothing pinned to use the days instead.</div>'
+    +'<div id="sflt-tpick-body"></div>'
+    +'<div class="sbq-row"><button class="btn btn-ghost" onclick="sfltTaskPickClose()">Done</button></div>'
+  +'</div>';
+  document.body.appendChild(m);
+  m.addEventListener('click',function(e){ if(e.target===m) sfltTaskPickClose(); });
+  sfltTaskPickBody();
+}
+function sfltTaskPickClose(){
+  var m=document.getElementById('sflt-tpick'); if(m) m.remove();
+  try{ sfltMgrRepaint(); }catch(e){}
+}
+function sfltTaskPickVA(va){ SFLT_TPICK.va=va; sfltTaskPickBody(); }
+function sfltTaskPickBody(){
+  var host=document.getElementById('sflt-tpick-body'); if(!host) return;
+  var f=getSavedFilters().filter(function(x){return x.id===SFLT_TPICK.id;})[0]; if(!f) return;
+  var ids=sfltTaskIds(f);
+  var tabs=['Mera','Suz'].map(function(v){
+    return '<button class="sflt-tp-va'+(SFLT_TPICK.va===v?' on':'')+'" onclick="sfltTaskPickVA(\''+v+'\')">'+escHtml(vaDisp(v))+'</button>';
+  }).join('');
+  var mode=sfltMode(f);
+  var modeSw='<div class="sflt-tp-mode">'
+    +'<button class="'+(mode==='in'?'on':'')+'" onclick="sfltSetMode(\''+f.id+'\',\'in\')">Inside the task<span>a link on that task</span></button>'
+    +'<button class="'+(mode==='own'?'on':'')+'" onclick="sfltSetMode(\''+f.id+'\',\'own\')">Its own task<span>a new row right after it</span></button>'
+    +'</div>';
+  var tasks=[];
+  try{ tasks=getTaskTemplateSource(SFLT_TPICK.va)||[]; }catch(e){}
+  var rows=tasks.filter(function(t){ return t && t.id && t.name; }).map(function(t){
+    var on=ids.indexOf(t.id)>=0;
+    return '<div class="sflt-tp-row'+(on?' on':'')+'" onclick="sfltTaskPickToggle(\''+t.id+'\')">'
+      +'<span class="sflt-tp-cb">'+(on?'&#10003;':'')+'</span>'
+      +'<span class="sflt-tp-nm">'+escHtml(t.name)+'</span>'
+      +(t.mandatory?'<span class="sflt-tp-m">every shift</span>':'')
+      +'</div>';
+  }).join('');
+  host.innerHTML=modeSw
+    +'<div class="sflt-tp-vas">'+tabs+'</div>'
+    +'<div class="sflt-tp-list">'+(rows||'<div class="sp-empty">No tasks on this list yet.</div>')+'</div>'
+    +(ids.length?'<div class="sflt-tp-foot">Pinned to '+ids.length+' task'+(ids.length===1?'':'s')
+        +' · <button class="sflt-ico" onclick="sfltTaskPickClear()">unpin all</button></div>':'');
+}
+function sfltTaskPickToggle(taskId){
+  var arr=getSavedFilters(); var f=arr.filter(function(x){return x.id===SFLT_TPICK.id;})[0]; if(!f) return;
+  var ids=sfltTaskIds(f).slice(), i=ids.indexOf(taskId);
+  if(i>=0) ids.splice(i,1); else ids.push(taskId);
+  f.taskIds=ids; saveSavedFilters(arr); sfltTaskPickBody();
+}
+function sfltTaskPickClear(){
+  var arr=getSavedFilters(); var f=arr.filter(function(x){return x.id===SFLT_TPICK.id;})[0]; if(!f) return;
+  f.taskIds=[]; saveSavedFilters(arr); sfltTaskPickBody();
+}
 var SFLT_PICK={task:'',q:'',tag:'all',sel:{}};
 function sfltPickOpen(taskId){
   SFLT_PICK={task:taskId,q:'',tag:'all',sel:{}};
@@ -14435,11 +14568,30 @@ function sfltToggleVA(id,va){
 /* Fill a POA task's link rows with the filters assigned to that slot. Each filter
    becomes a pre-filled link with its own leads box, so the VA just runs it and types
    the number — and we can attribute leads back to the exact filter. */
+/* Insert 'own task' filters as their own row directly after the task they are
+   pinned to — walking backwards so earlier splices don't shift later indexes. */
+function sfltInsertOwnRows(tasks,va){
+  var added=[];
+  if(!tasks||!tasks.length) return added;
+  for(var i=tasks.length-1;i>=0;i--){
+    var tid=tasks[i]&&tasks[i].id; if(!tid) continue;
+    var here=getSavedFilters().filter(function(f){
+      if(f.archived||!f.url) return false;
+      if(sfltMode(f)!=='own') return false;
+      if(sfltTaskIds(f).indexOf(tid)<0) return false;
+      return tasks.every(function(t){ return t.id!=='pfilt-'+f.id; });
+    });
+    if(!here.length) continue;
+    tasks.splice.apply(tasks,[i+1,0].concat(here.map(sfltPoaTask)));
+    here.forEach(function(f){ added.push(f.id); });
+  }
+  return added;
+}
 function sfltAttachToPoa(tasks,va){
-  var attached=[];
+  var attached=sfltInsertOwnRows(tasks,va);
   if(!tasks||!tasks.length) return attached;
   tasks.forEach(function(t){
-    var mine=sfltForTask(va,t.id);
+    var mine=sfltForTask(va,t.id).filter(function(f){ return sfltMode(f)!=='own'; });
     if(!mine.length) return;
     t.hasLinks=true;
     t.links=t.links||[]; t.linkLeads=t.linkLeads||[]; t.linkFilterIds=t.linkFilterIds||[]; t.linkNames=t.linkNames||[];
@@ -14563,8 +14715,23 @@ function sfltLoadCloud(){
           return mig;
         });
       }
-      sfltCacheSet(rows);
-      return rows;
+      // table rows carry the filter itself; the blob carries WHO it is for and WHEN.
+      // Merge, or every assignment is lost on the next load.
+      var byId={};
+      (legacy||[]).forEach(function(f){ if(f&&f.id) byId[f.id]=f; });
+      try{ var cached=sfltCacheGet()||[]; cached.forEach(function(f){ if(f&&f.id&&!byId[f.id]) byId[f.id]=f; }); }catch(e){}
+      var merged=rows.map(function(r){
+        var keep=byId[r.id];
+        if(!keep) return r;
+        var out=Object.assign({},r);
+        if(Array.isArray(keep.vas))     out.vas=keep.vas;
+        if(Array.isArray(keep.days))    out.days=keep.days;
+        else if(keep.slots||keep.slot){ out.slots=keep.slots; out.slot=keep.slot; }
+        if(Array.isArray(keep.taskIds)) out.taskIds=keep.taskIds;
+        return out;
+      });
+      sfltCacheSet(merged);
+      return merged;
     })
     .catch(function(){ return getSavedFilters(); });
 }
@@ -14588,12 +14755,15 @@ function sfltNewDayTgl(btn,k){
   var on=wrap.querySelectorAll('.sflt-day[data-day].on').length;   // none is a valid choice
   var all=wrap.querySelector('.sflt-all'); if(all) all.classList.toggle('on', on===5);
 }
-function sfltNewAllDays(btn,on){
+function sfltNewAllDays(btn){
+  // The {ON} in the onclick is baked at RENDER time, and the add form never
+  // re-renders — so a baked value made this a one-way switch (it could turn all
+  // days on, never off). Read the live DOM instead of trusting the argument.
   var wrap=btn.parentNode;
-  [].forEach.call(wrap.querySelectorAll('.sflt-day[data-day]'),function(b){
-    b.classList.toggle('on', !!on);
-  });
-  btn.classList.toggle('on', !!on);
+  var days=[].slice.call(wrap.querySelectorAll('.sflt-day[data-day]'));
+  var on=days.filter(function(b2){return b2.classList.contains('on');}).length!==days.length;
+  days.forEach(function(b2){ b2.classList.toggle('on', on); });
+  btn.classList.toggle('on', on);
 }
 function sfltNewSlotTgl(btn,which,k){
   var wrap=btn.parentNode;
@@ -14665,6 +14835,40 @@ function sfltMgrToggleArch(){ sfltMgrArch=!sfltMgrArch; sfltMgrPage=0; sfltMgrRe
 function sfltMgrSetPoa(v){ sfltMgrPoa=(sfltMgrPoa===v?'':v); sfltMgrPage=0; sfltMgrRepaint(); }
 function sfltMgrGo(p){ sfltMgrPage=p; sfltMgrRepaint(); var h=document.getElementById('sflt-list-host'); if(h) h.scrollIntoView({block:'start',behavior:'smooth'}); }
 function sfltMgrEditRow(id){ sfltMgrEdit=(sfltMgrEdit===id?'':id); sfltMgrRepaint(); }
+/* Proof it lands, without waiting for the day to come round. */
+function sfltRunsPreviewHTML(){
+  var today=sfltTodayKey(), wknd=sfltIsWeekend();
+  var lbl=(SFLT_DAYS.filter(function(d){return d.k===today;})[0]||{}).full||'today';
+  var body=['Mera','Suz'].map(function(va){
+    var names={}, tasks=[];
+    try{ tasks=getTaskTemplateSource(va)||[]; }catch(e){}
+    tasks.forEach(function(t){ names[t.id]=t.name; });
+    var lines=[], seen={};
+    getSavedFilters().forEach(function(f){          // pinned ride their task any day
+      if(f.archived||!f.url) return;
+      sfltTaskIds(f).forEach(function(tid){
+        if(names[tid]){ lines.push({t:names[tid],f:f.title,pin:true,own:sfltMode(f)==='own'}); seen[f.id+'|'+tid]=1; }
+      });
+    });
+    sfltHostTaskIds(va).forEach(function(tid){
+      if(!names[tid]) return;
+      sfltForTask(va,tid).forEach(function(f){
+        if(seen[f.id+'|'+tid]) return;
+        lines.push({t:names[tid],f:f.title,pin:false});
+      });
+    });
+    return '<div class="sflt-rp-va"><b>'+escHtml(vaDisp(va))+'</b>'
+      +(lines.length
+        ? lines.map(function(l){ return '<div class="sflt-rp-l">'+(l.pin?'<i>&#128204;</i>':'<i>&#8226;</i>')
+            +escHtml(l.f)+'<span>'+(l.own?'own task after':'inside')+' “'+escHtml(String(l.t).slice(0,40))+'”</span></div>'; }).join('')
+        : '<div class="sflt-rp-none">nothing lands on their list</div>')
+      +'</div>';
+  }).join('');
+  return '<div class="sflt-rp"><div class="sflt-rp-h">What lands on their task list '
+    +(wknd?'<em>on Monday</em> — it’s the weekend, so there is no shift today'
+          :'<em>'+escHtml(String(lbl).toLowerCase())+'</em>')
+    +'</div>'+body+'</div>';
+}
 function sfltMgrRepaint(){
   var host=document.getElementById('sflt-list-host'); if(host) host.innerHTML=sfltRowsHTML();
   var bar=document.getElementById('sflt-toolbar'); if(bar) bar.innerHTML=sfltToolbarHTML();
@@ -14779,6 +14983,11 @@ function sfltRowsHTML(){
       +'<span class="sflt-acts">'
         +'<a class="sflt-ico open" href="'+String(f.url||'#').replace(/"/g,'&quot;')+'" target="_blank" title="Open filter" onclick="event.stopPropagation()">Open ↗</a>'
         +'<button class="sflt-ico" title="Edit" onclick="event.stopPropagation();sfltMgrEditRow(\''+f.id+'\')">'+(open?'▴':'✎')+'</button>'
+        +(function(){
+            var n=sfltTaskIds(f).length, where=sfltWhereLabel(f);
+            return '<button class="sflt-where'+(n?' set':'')+'" title="Choose which task on their list this sits on, and whether it sits inside that task or becomes its own task" '
+              +'onclick="event.stopPropagation();sfltTaskPickOpen(\''+f.id+'\')">Where&nbsp;&#9656; <b>'+escHtml(where)+'</b></button>';
+          })()
         +'<button class="sflt-ico" title="'+(f.archived?'Show to VAs again':'Hide from VAs (keeps it)')+'" onclick="event.stopPropagation();sfltArchive(\''+f.id+'\','+(f.archived?'false':'true')+')">'+(f.archived?'⊕':'⊘')+'</button>'
       +'</span></div>';
     var edit=open?('<div class="sflt-edit">'
