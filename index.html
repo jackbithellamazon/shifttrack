@@ -335,7 +335,7 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
    targeted `.vares-*` — a name I invented. The real classes are `.vres-*`, so every
    rule silently did nothing and the panel stayed full height. Verified against the
    markup this time. */
-#va-results .vres{padding:11px 14px!important;}
+#va-results .vres{padding:0!important;}
 #va-results .vres-head{margin-bottom:8px!important;}
 #va-results .vres-row{gap:7px!important;margin-bottom:8px!important;}
 #va-results .vres-k{padding:7px 12px!important;}
@@ -727,6 +727,27 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .sflt-newhint{font-size:11px;color:var(--muted-2);}
 .sflt-newva{width:28px;height:26px;}
 .sflt-days{display:inline-flex;gap:4px;flex-wrap:wrap;}
+.oag{display:flex;align-items:center;gap:11px;flex-wrap:wrap;background:rgba(255,255,255,.035);
+  border:1px solid var(--line-2);border-radius:10px;padding:8px 13px;margin-bottom:10px;font-size:11.5px;}
+.oag.done{background:color-mix(in srgb,#10d99a 9%,transparent);border-color:color-mix(in srgb,#10d99a 32%,transparent);}
+.oag-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted-2);}
+.oag-v{font-family:var(--font-mono);font-size:12px;color:var(--muted);}
+.oag-v b{font-size:18px;font-weight:800;}
+.oag-bar{flex:1 1 120px;height:6px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden;min-width:90px;}
+.oag-bar i{display:block;height:100%;border-radius:4px;transition:width .4s;}
+.oag-h{color:var(--muted-2);font-size:10.5px;white-space:nowrap;}
+.sflt-line{display:block;padding:9px 12px;}
+.sflt-r1{display:flex;align-items:center;gap:10px;min-width:0;}
+.sflt-r2{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:7px;
+  padding-top:7px;border-top:1px solid rgba(255,255,255,.05);}
+.sflt-line.unassigned .sflt-r2{border-top-color:transparent;padding-top:2px;}
+.sflt-name{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  font-size:13.5px;font-weight:700;color:var(--text);}
+.sflt-note2{font-size:11px;color:var(--muted-2);margin:3px 0 0 46px;line-height:1.45;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.sflt-r2 .sflt-acts{margin-left:auto;display:flex;align-items:center;gap:6px;}
+.sflt-dlbl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;
+  color:var(--muted-2);margin-right:2px;}
 .sflt-day{background:rgba(255,255,255,.04);border:1px solid var(--line-2);color:var(--muted-2);
   border-radius:7px;padding:4px 0;min-width:38px;text-align:center;font-family:inherit;font-size:10.5px;
   font-weight:700;cursor:pointer;transition:all .12s;white-space:nowrap;}
@@ -764,6 +785,31 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .sflt-tp-mode button.on{background:color-mix(in srgb,var(--accent) 20%,transparent);
   border-color:var(--accent);color:#fff;}
 .sflt-tp-mode button.on span{color:#cfc6ff;}
+.sfp{background:rgba(255,255,255,.03);border:1px solid var(--line-2);border-radius:11px;
+  padding:11px 13px;margin-bottom:12px;}
+.sfp-h{font-size:11px;font-weight:700;color:var(--muted-2);text-transform:uppercase;letter-spacing:.5px;
+  margin-bottom:8px;display:flex;align-items:baseline;gap:9px;}
+.sfp-h i{font-style:normal;font-weight:600;text-transform:none;letter-spacing:0;font-size:10.5px;}
+.sfp-kpis{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.sfp-k{background:rgba(255,255,255,.04);border:1px solid var(--line-2);border-radius:8px;
+  padding:6px 10px;font-size:10.5px;color:var(--muted-2);white-space:nowrap;}
+.sfp-k b{display:inline-block;font-family:var(--font-mono);font-size:16px;font-weight:800;
+  color:var(--text);margin-right:5px;}
+.sfp-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:760px){.sfp-cols{grid-template-columns:1fr;}}
+.sfp-t{font-size:9.5px;font-weight:700;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;}
+.sfp-r{display:flex;align-items:baseline;gap:9px;padding:3px 0;font-size:11.5px;
+  border-bottom:1px solid rgba(255,255,255,.04);}
+.sfp-r:last-child{border-bottom:none;}
+.sfp-n{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text);}
+.sfp-v{font-family:var(--font-mono);font-weight:800;font-size:13px;}
+.sfp-v.good{color:#10d99a;} .sfp-v.bad{color:#ff6b7f;}
+.sfp-s{color:var(--muted-2);font-size:10.5px;white-space:nowrap;}
+.sfp-none,.sfp-empty{color:var(--muted-2);font-size:11.5px;line-height:1.5;}
+.sflt-pill.hot{background:color-mix(in srgb,#10d99a 16%,transparent);
+  border:1px solid color-mix(in srgb,#10d99a 38%,transparent);color:#7ef2c4;}
+.sflt-pill b{font-family:var(--font-mono);font-weight:800;}
+.sflt-pill i{font-style:normal;opacity:.6;margin-left:5px;font-size:9.5px;}
 .sflt-rp{background:rgba(255,255,255,.03);border:1px solid var(--line-2);border-radius:11px;
   padding:11px 13px;margin-bottom:12px;}
 .sflt-rp-h{font-size:11px;font-weight:700;color:var(--muted-2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
@@ -1018,7 +1064,7 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .sflt-row2:hover{background:color-mix(in srgb,#fff 3%,var(--panel));}
 .sflt-row2.open{background:color-mix(in srgb,var(--accent,#7c5cff) 7%,var(--panel));}
 .sflt-row2.is-arch{opacity:.55;}
-.sflt-line{display:grid;grid-template-columns:32px 74px minmax(0,1fr) max-content 92px max-content max-content;gap:10px;align-items:center;padding:7px 12px;cursor:pointer;min-height:0;}
+.sflt-line{cursor:pointer;min-height:0;}
 .sflt-num{font-family:var(--font-mono);font-size:11px;color:var(--muted-2);text-align:right;}
 .sflt-tagp{font-size:9.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;text-align:center;padding:3px 0;border-radius:6px;background:var(--panel-2);border:1px solid var(--line-2);color:var(--muted);}
 .sflt-tagp.t-KPF{color:#4fc3f7;border-color:rgba(79,195,247,.35);background:rgba(79,195,247,.1);}
@@ -1053,7 +1099,7 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 @media(max-width:900px){
   /* narrow: drop the host + usage columns and give the buttons a real fixed width,
      otherwise the actions column collapses and the three buttons stack vertically */
-  .sflt-line{grid-template-columns:24px 58px minmax(0,1fr) max-content max-content;gap:8px;}
+  .sflt-line{padding:8px 10px;}
   .sflt-host{display:none;}
   .sflt-pill{display:none;}
   .sflt-note{display:none;}
@@ -1940,9 +1986,40 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .vres-iss span{color:var(--muted);}
 .d-rowref{font-family:var(--font-mono);font-size:10.5px;font-weight:700;color:var(--muted-2);
   background:rgba(255,255,255,.06);border-radius:999px;padding:2px 8px;margin-left:7px;text-transform:none;letter-spacing:0;}
+.vres{background:rgba(255,255,255,.028);border:1px solid var(--line-2);border-radius:11px;
+  margin-bottom:10px;overflow:hidden;padding:0;}   /* the ORIGINAL .vres rule further
+       down still applied 14px top+bottom, adding 28px to a collapsed one-line strip */
+.vres[open]{background:rgba(255,255,255,.04);}
+.vr-head{list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:13px;flex-wrap:wrap;
+  padding:7px 12px;font-size:11.5px;color:var(--muted);line-height:1.5;}
+.vr-head::-webkit-details-marker{display:none;}
+.vr-head:hover{background:rgba(255,255,255,.03);}
+.vr-t{font-weight:800;color:var(--text);font-size:12.5px;}
+.vr-s{white-space:nowrap;color:var(--muted-2);font-size:11px;}
+.vr-s b{font-family:var(--font-mono);font-size:13.5px;font-weight:800;color:var(--text);margin-right:4px;}
+.vr-sp{flex:1 1 auto;}
+.vr-flag{font-size:10.5px;font-weight:700;color:#ffb84d;background:rgba(255,184,77,.12);
+  border:1px solid rgba(255,184,77,.3);border-radius:999px;padding:2px 9px;white-space:nowrap;}
+.vr-cx{color:var(--muted-2);font-size:11px;transition:transform .15s;}
+.vres[open] .vr-cx{transform:rotate(180deg);}
+.vres:not([open]) .vr-body{display:none;}   /* overflow:hidden on the wrapper let a
+       closed <details> still reserve ~30px for its body — hide it outright */
+.vr-body{padding:2px 13px 11px;border-top:1px solid rgba(255,255,255,.05);}
+.vr-sec{margin-top:9px;font-size:11.5px;color:var(--muted);line-height:1.6;}
+.vr-sec>b{display:block;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;
+  color:var(--muted-2);margin-bottom:3px;}
+.vr-why{background:rgba(255,255,255,.05);border-radius:6px;padding:2px 8px;margin-right:6px;color:var(--text);}
+.vr-why i{font-style:normal;color:var(--muted-2);}
+.vr-src{display:inline-block;margin-right:7px;padding:2px 9px;border-radius:6px;font-size:11px;
+  background:color-mix(in srgb,var(--c) 12%,transparent);border:1px solid color-mix(in srgb,var(--c) 28%,transparent);
+  color:var(--muted);}
+.vr-src b{font-family:var(--font-mono);color:var(--c);font-weight:800;margin-left:3px;}
+.vr-c{padding:2px 0;color:var(--muted-2);}
+.vr-c span{color:var(--text);font-weight:600;}
+.vr-c i{font-style:normal;font-family:var(--font-mono);font-size:10px;color:#ffb84d;margin-right:5px;}
+.vr-more{color:var(--muted-2);font-size:10.5px;padding-top:2px;}
 /* ── Your results (VA feedback loop) ── */
-.vres{background:linear-gradient(135deg,color-mix(in srgb,var(--green) 9%,var(--panel)),var(--panel));
-  border:1px solid color-mix(in srgb,var(--green) 26%,var(--line));border-radius:14px;padding:14px 16px;margin-bottom:12px;}
+.vres-legacy-unused{}
 .vres-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
 .vres-head span{font-family:var(--font-head);font-size:15px;font-weight:800;color:var(--text);}
 .vres-head i{font-style:normal;font-size:11px;color:var(--muted-2);}
@@ -2940,25 +3017,26 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 .sbr-more:hover{border-color:var(--accent);color:var(--text);background:color-mix(in srgb,var(--accent) 12%,transparent);}
 
 .sbr{--o:var(--muted-2);display:flex;flex-direction:column;gap:7px;
-  background:linear-gradient(160deg,color-mix(in srgb,var(--o) 7%,var(--panel)),var(--panel) 62%);
+  background:color-mix(in srgb,var(--o) 4%,var(--panel));
   border:1px solid var(--line-2);
-  border-left:3px solid var(--o);border-radius:11px;padding:9px 11px 10px;
-  transition:border-color .13s,background .13s,transform .13s;}
-.sbr:hover{border-color:color-mix(in srgb,var(--o) 55%,transparent);transform:translateY(-1px);}
+  border-left:3px solid color-mix(in srgb,var(--o) 78%,transparent);
+  border-radius:11px;padding:9px 11px 10px;
+  transition:border-color .13s,background .13s;}
+.sbr:hover{border-color:color-mix(in srgb,var(--o) 38%,var(--line-2));
+  background:color-mix(in srgb,var(--o) 7%,var(--panel));}
 /* the tile that just moved says so in its new home, rather than silently teleporting */
 .sbr.landed{animation:sbrLand .9s ease-out;}
 @keyframes sbrLand{
-  0%  {box-shadow:0 0 0 2px var(--o), 0 6px 22px color-mix(in srgb,var(--o) 45%,transparent);transform:scale(.97);}
-  35% {box-shadow:0 0 0 2px var(--o), 0 6px 22px color-mix(in srgb,var(--o) 40%,transparent);transform:scale(1);}
-  100%{box-shadow:0 0 0 0 transparent;transform:scale(1);}
+  0%  {background:color-mix(in srgb,var(--o) 20%,var(--panel));}
+  100%{background:color-mix(in srgb,var(--o) 4%,var(--panel));}
 }
 @media (prefers-reduced-motion:reduce){ .sbr.landed{animation:none;outline:2px solid var(--o);} }
 .sbr-mera{--o:var(--mera);} .sbr-suz{--o:var(--suz);} .sbr-jack{--o:var(--jack);}
 .sbr-both{--o:#f472b6;} .sbr-all{--o:#10d99a;} .sbr-none{--o:#8b93a8;}
 .sbr.is-draft{border-left-width:4px;}
 .sbr.is-done{opacity:.45;} .sbr.is-done:hover{opacity:.85;}
-.sbr.picked{background:color-mix(in srgb,var(--accent) 16%,var(--panel));
-  border-color:color-mix(in srgb,var(--accent) 55%,transparent);}
+.sbr.picked{background:color-mix(in srgb,var(--accent) 12%,var(--panel));
+  border-color:color-mix(in srgb,var(--accent) 40%,transparent);}
 
 .sbr-hd{display:flex;align-items:center;gap:7px;min-width:0;}
 .sbr-tag{flex:1 1 auto;min-width:0;font-size:14px;font-weight:800;color:var(--text);
@@ -2977,6 +3055,7 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 .sbr-day.old{color:var(--muted-2);}
 .sbr-day.stale{color:#ff6b7f;font-weight:700;}   /* 6+ days is the ONLY age worth a colour */
 /* High priority earns a red edge and a lift — it should be findable without reading */
+.sbr.pri-hi{border-left-color:#f5455f;}
 .sbr.pri-hi .sbr-tag::before{content:'\25B2';color:#f5455f;font-size:9px;margin-right:6px;vertical-align:1px;}
 .sbr .sb-pri{font-size:10px;padding:2px 7px;margin-left:auto;}
 /* Normal is the default: a dot you can click, not a word that shouts */
@@ -3036,7 +3115,8 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
   overflow:hidden;text-overflow:ellipsis;}
 .sbr-b:hover,.sbr-b:focus-visible{background:color-mix(in srgb,var(--b) 26%,transparent);
   border-color:var(--b);color:#fff;outline:none;}
-.sbr-b.on{background:var(--b);border-color:var(--b);color:#0a0d14;font-weight:800;}
+.sbr-b.on{background:color-mix(in srgb,var(--b) 72%,#0a0d14);
+  border-color:color-mix(in srgb,var(--b) 80%,transparent);color:#0a0d14;font-weight:800;}
 .sbr-b[data-w="Mera"]{--b:var(--mera);}
 .sbr-b[data-w="Suz"]{--b:var(--suz);}
 .sbr-b[data-w="Both"]{--b:#f472b6;}
@@ -3840,6 +3920,7 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
     <div id="jack-adds"></div>
     <div id="from-jack"></div>
     <div id="va-filters"></div>
+    <div id="shift-oa"></div>
     <div id="shift-momentum"></div>
     <div id="va-results"></div>
     <div class="stats-head">
@@ -5021,7 +5102,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v27.4';
+var APP_VERSION='v28.0';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -5108,7 +5189,8 @@ function getAppSettings(){
       if(saved[k] !== undefined) settings[k] = saved[k]?1:0;
     });
     if(saved.idleMins){ var im=parseInt(saved.idleMins); if(!isNaN(im)&&im>=15) settings.idleMins=im; }
-    ['goalMera','goalSuz'].forEach(function(k){ var n=parseInt(saved[k]); if(!isNaN(n)&&n>0) settings[k]=n; });
+    ['goalMera','goalSuz','oaGoalMera','oaGoalSuz'].forEach(function(k){
+      var n=parseInt(saved[k]); if(!isNaN(n)&&n>=0) settings[k]=n; });
     // min leads/week were saved but never copied back here, so they snapped back to 60 on every read
     ['minLeadsMera','minLeadsSuz'].forEach(function(k){ var n=parseInt(saved[k]); if(!isNaN(n)&&n>=0) settings[k]=n; });
     // who's on which pay run — same trap: written by the settings card, dropped on read
@@ -6209,6 +6291,13 @@ function startShift(va, newsletterDay, previewVA) {
         if(TYPE_ORDER.indexOf(ty)>=0) return;                 // anything unexpected still shows
         groups[ty].forEach(function(it){ _jbTasks.push(jb_itemTask(it)); });
       });
+      // items that belong to an existing task ride INSIDE it; drop their loose rows
+      try{
+        var _used=jb_attachItemsToTasks(tasks,_openItems);
+        if(Object.keys(_used).length){
+          _jbTasks=_jbTasks.filter(function(t){ return !(t.jbIid && _used[t.jbIid]); });
+        }
+      }catch(e){}
     })();
     state._jbItemCount=_openItems.length;
     // storefront batches assigned to this VA arrive as ordinary tasks (High first)
@@ -7091,7 +7180,9 @@ function sfSummary(){
    Storefronts task, filters inside the filters task. Shared by shift start AND
    the mid-shift cloud pull — they used to disagree, which is how every item
    ended up on screen twice (once bundled, once as its own card). */
-var JB_ROUTE={ sf:['storefronts','suz-storefronts'], kpf:['kpf-daily','suz-kpf-daily'], eu:['suz-eu','eu-sheet'] };
+var JB_ROUTE={ sf:['storefronts','suz-storefronts'],
+               kpf:['kpf-daily','suz-kpf-daily','ht-filters'],
+               eu:['eu-sheets','suz-eu'] };
 function jb_findHost(tasks,ty){
   var ids=JB_ROUTE[ty]; if(!ids) return null;
   for(var i=0;i<ids.length;i++){
@@ -7151,6 +7242,35 @@ function jb_groupTask(ty,items){
     done:false, skipped:false, skipReason:'', time:'', timeHrs:0, timeMins:0, leads:'', context:'',
     jbUrl:'', jbAsin:'', jbTimer:true, jbLeads:true,
     timerSec:0, timerRun:false, timerStart:null };
+}
+/* Jack: "when I press EU sheet it should go in there when I add them."
+   An item whose type has a matching host task on this VA's list becomes a LINK ROW
+   on that task instead of a loose row of its own — so EU sheets collect under
+   "EU Sheets → Complete them", storefronts under Storefronts, filters under KPF.
+   Anything with no matching host (ASIN, Message) still gets its own row. */
+function jb_attachItemsToTasks(tasks,items){
+  var used={};
+  if(!tasks||!tasks.length||!items||!items.length) return used;
+  items.forEach(function(it){
+    var hosts=JB_ROUTE[it.t]; if(!hosts) return;
+    for(var h=0;h<tasks.length;h++){
+      var t=tasks[h];
+      if(hosts.indexOf(t.id)<0) continue;
+      var nm=jb_cleanLabel(it);
+      var url=/^https?:\/\//i.test(it.v)?it.v:'';
+      t.hasLinks=true;
+      t.links=t.links||[]; t.linkLeads=t.linkLeads||[]; t.linkNames=t.linkNames||[]; t.linkJbIids=t.linkJbIids||[];
+      var iid=it.iid||nm;
+      if(t.linkJbIids.indexOf(iid)>=0){ used[iid]=1; return; }
+      t.links.push(url); t.linkLeads.push(0); t.linkNames.push(nm); t.linkJbIids.push(iid);
+      if(it.r && String(it.r).trim()){
+        t.hint=(t.hint?t.hint+' ':'')+'“'+String(it.r).trim()+'”';
+      }
+      used[iid]=1;
+      return;
+    }
+  });
+  return used;
 }
 function jb_itemTask(it,i){
   var TY={sf:['\u{1F3EC}','Storefront'],kpf:['\u{1F3AF}','KPF filter'],eu:['\u{1F1EA}\u{1F1FA}','EU sheet'],asin:['#','ASIN'],msg:['\u{1F4AC}','From Jack']};
@@ -7422,64 +7542,56 @@ function vaResultsHTML(va){
 
   var wins=bought.slice().sort(function(a,b){ return (vaYmd(b.date)||'').localeCompare(vaYmd(a.date)||''); }).slice(0,3);
 
-  return '<div class="vres">'
-    +'<div class="vres-head"><span>&#127942; Your results</span><i>last 30 days &middot; what Jack actually did with your leads</i></div>'
-    +'<div class="vres-row">'
-      +'<div class="vres-k vres-buy"><b>'+bought.length+'</b><span>bought</span></div>'
-      +'<div class="vres-k"><b>'+basket.length+'</b><span>in the basket</span></div>'
-      +'<div class="vres-k"><b>'+(rate===null?'&#8211;':rate+'%')+'</b><span>hit rate</span></div>'
-      +'<div class="vres-k vres-wait"><b>'+waiting+'</b><span>still to review</span></div>'
-    +'</div>'
-    /* The itemised buys and their profit are GONE (Jack, 31/07): a VA does not need to
-       see which products he bought or what he made on each — that is his commercial
-       position, and the count plus the hit rate already give her the feedback the panel
-       exists for. What survives is the part that teaches: why hers get turned down. */
-    +(false
-      ? ''
-      : '')
+  /* This panel had grown to a full screen before the VA could see a single task:
+     four big KPI tiles, a reason block, four source tiles, three comment cards and
+     five issue rows. It is CONTEXT, not the job. Now one dense summary line that is
+     always visible, and everything else behind a click. */
+  var srcC={'A2A UK':0,'A2A EU':0,'OA':0}, srcU=0;
+  mine.forEach(function(l){ var k=leadSource(l); if(k) srcC[k]++; else srcU++; });
+  var comments=mine.filter(function(l){ return String(l.notes||'').trim(); })
+                   .sort(function(a,b){ return (vaYmd(b.date)||'').localeCompare(vaYmd(a.date)||''); });
+  var issues=leadSheetIssues(mine);
+
+  function st(v,l,c){ return '<span class="vr-s"><b'+(c?' style="color:'+c+'"':'')+'>'+v+'</b>'+l+'</span>'; }
+  var head='<summary class="vr-head">'
+    +'<span class="vr-t">&#127942; Your results</span>'
+    +st(bought.length,'bought','#10d99a')
+    +(rate===null?'':st(rate+'%','hit rate','#38bdf8'))
+    +st(waiting,'to review','#f2c200')
+    +(basket.length?st(basket.length,'in basket'):'')
+    +'<span class="vr-sp"></span>'
+    +(issues.length?'<span class="vr-flag">'+issues.length+' to fix on your sheet</span>':'')
+    +'<span class="vr-cx">&#9662;</span></summary>';
+
+  var body='<div class="vr-body">'
     +(topReasons.length
-      ? '<div class="vres-sec"><div class="vres-lbl">Most common reason yours get turned down</div>'
-        + topReasons.map(function(r){
-            return '<div class="vres-why"><b>'+escHtml(r)+'</b><i>&times;'+reasons[r]+'</i></div>';
+      ? '<div class="vr-sec"><b>Most common reason yours get turned down</b> '
+        + topReasons.map(function(r){ return '<span class="vr-why">'+escHtml(r)+' <i>&times;'+reasons[r]+'</i></span>'; }).join('')
+        +'</div>' : '')
+    +'<div class="vr-sec"><b>Where yours came from</b> '
+      +'<span class="vr-src" style="--c:#38bdf8">A2A UK <b>'+srcC['A2A UK']+'</b></span>'
+      +'<span class="vr-src" style="--c:#10d99a">A2A EU <b>'+srcC['A2A EU']+'</b></span>'
+      +'<span class="vr-src" style="--c:#f2c200">OA <b>'+srcC['OA']+'</b></span>'
+      +(srcU?'<span class="vr-src" style="--c:#7c8598">can&rsquo;t tell <b>'+srcU+'</b></span>':'')
+    +'</div>'
+    +(comments.length
+      ? '<div class="vr-sec"><b>What Jack said on yours</b>'
+        + comments.slice(0,3).map(function(l){
+            return '<div class="vr-c"><span>'+escHtml(String(l.title||'').slice(0,44))+'</span>'
+              +(l.sheetRow?'<i>row '+l.sheetRow+'</i>':'')+' &mdash; '+escHtml(String(l.notes).slice(0,110))+'</div>';
           }).join('')
-        +'<div class="vres-tip">Worth checking these before you add one — it saves you the work.</div>'
-        +'</div>'
-      : '')
-    +(function(){                                    // where her leads come from
-        var c={'A2A UK':0,'A2A EU':0,'OA':0}, unk=0;
-        mine.forEach(function(l){ var k=leadSource(l); if(k) c[k]++; else unk++; });
-        if(!(c['A2A UK']+c['A2A EU']+c['OA'])) return '';
-        var cell=function(k,col){ return '<div class="vres-src"><b style="color:'+col+'">'+c[k]+'</b><span>'+k+'</span></div>'; };
-        return '<div class="vres-sec"><div class="vres-lbl">Where yours came from</div>'
-          +'<div class="vres-srcrow">'+cell('A2A UK','#38bdf8')+cell('A2A EU','#10d99a')+cell('OA','#f2c200')
-          +(unk?'<div class="vres-src"><b style="color:var(--muted-2)">'+unk+'</b><span>can’t tell</span></div>':'')
-          +'</div></div>';
-      })()
-    +(function(){                                    // what Jack actually said
-        var cm=mine.filter(function(l){ return String(l.notes||'').trim(); })
-                   .sort(function(a,b){ return (vaYmd(b.date)||'').localeCompare(vaYmd(a.date)||''); })
-                   .slice(0,3);
-        if(!cm.length) return '';
-        return '<div class="vres-sec"><div class="vres-lbl">What Jack said on yours</div>'
-          + cm.map(function(l){
-              return '<div class="vres-cmt"><span class="vres-cmt-t">'+escHtml(String(l.title||'').slice(0,52))
-                +(l.sheetRow?' <i>row '+l.sheetRow+(l.sheetTab?' · '+escHtml(l.sheetTab):'')+'</i>':'')+'</span>'
-                +'<span class="vres-cmt-b">'+escHtml(String(l.notes).slice(0,180))+'</span></div>';
-            }).join('')
-          +'</div>';
-      })()
-    +(function(){                                    // fixable, with the row number
-        var iss=leadSheetIssues(mine);
-        if(!iss.length) return '';
-        return '<div class="vres-sec"><div class="vres-lbl">Needs fixing on your sheet ('+iss.length+')</div>'
-          + iss.slice(0,4).map(function(x){
-              return '<div class="vres-iss"><b>'+(x.row?'Row '+x.row:'?')+(x.tab?' · '+escHtml(x.tab):'')+'</b>'
-                +'<span>'+escHtml(String(x.title||'').slice(0,44))+' — '+x.why+'</span></div>';
-            }).join('')
-          +(iss.length>4?'<div class="vres-tip">'+(iss.length-4)+' more like this.</div>':'')
-          +'</div>';
-      })()
+        +(comments.length>3?'<div class="vr-more">'+(comments.length-3)+' more</div>':'')
+        +'</div>' : '')
+    +(issues.length
+      ? '<div class="vr-sec"><b>Needs fixing on your sheet</b>'
+        + issues.slice(0,3).map(function(x){
+            return '<div class="vr-c"><i>Row '+(x.row||'?')+'</i> '+escHtml(String(x.title||'').slice(0,40))+' &mdash; '+x.why+'</div>';
+          }).join('')
+        +(issues.length>3?'<div class="vr-more">'+(issues.length-3)+' more like this</div>':'')
+        +'</div>' : '')
     +'</div>';
+
+  return '<details class="vres">'+head+body+'</details>';
 }
 function renderVaResults(){
   try{
@@ -7535,6 +7647,25 @@ function showBigCheer(title,sub){
    every caller wrapped it in try/catch with `||12`, so the throw was swallowed and
    both VAs silently got 12 no matter what was set in Settings. The goals had never
    actually applied. Named to match those callers. */
+/* how many of today's leads should be OA (retailer sourcing), per VA */
+function vaOaGoal(va){
+  var s; try{ s=getAppSettings(); }catch(e){ return 0; }
+  if(va==='Mera'||va==='VA M') return parseInt(s.oaGoalMera)||0;
+  if(va==='Suz' ||va==='VA S') return parseInt(s.oaGoalSuz) ||0;
+  return 0;
+}
+/* today's OA count for a VA, straight off the lead list — same classifier as
+   everywhere else, so this can never disagree with the Insights split */
+function vaOaToday(va){
+  try{
+    var code=(typeof vaCode==='function')?vaCode(va):(va==='Mera'?'VA M':va==='Suz'?'VA S':null);
+    if(!code||!window.leads) return 0;
+    var today=ukDateShort();
+    return window.leads.filter(function(l){
+      return l && l.va===code && String(l.date||'').slice(0,10)===today && leadSource(l)==='OA';
+    }).length;
+  }catch(e){ return 0; }
+}
 function vaGoal(va){
   var s; try{ s=getAppSettings(); }catch(e){ return 12; }
   if(va==='Mera'||va==='VA M') return parseInt(s.goalMera)||12;
@@ -7552,7 +7683,25 @@ function shiftGoal(){
   var s=getAppSettings(); var va=(window.state&&(state._previewAs||state.currentVA))||'';
   return va==='Mera'?(s.goalMera||12):va==='Suz'?(s.goalSuz||12):12;
 }
+/* A small strip under the shift KPIs: OA today vs target. Only shown when Jack has
+   actually set an OA target, so it never nags about a goal that doesn't exist. */
+function renderOaGoal(){
+  var host=document.getElementById('shift-oa'); if(!host) return;
+  var va=(window.state&&(state._previewAs||state.currentVA))||'';
+  var goal=vaOaGoal(va);
+  if(!goal||!state.shiftStart){ host.innerHTML=''; return; }
+  var got=vaOaToday(va);
+  var pct=Math.min(100,Math.round(got/goal*100));
+  var tone=got>=goal?'#10d99a':(got>=goal*0.5?'#f2c200':'#ff6b7f');
+  host.innerHTML='<div class="oag'+(got>=goal?' done':'')+'">'
+    +'<span class="oag-l">OA leads today</span>'
+    +'<span class="oag-v" style="color:'+tone+'"><b>'+got+'</b> / '+goal+'</span>'
+    +'<span class="oag-bar"><i style="width:'+pct+'%;background:'+tone+'"></i></span>'
+    +'<span class="oag-h">'+(got>=goal?'target hit ✓':(goal-got)+' more OA to hit today’s target')+'</span>'
+    +'</div>';
+}
 function updateMomentum(leads){
+  try{ renderOaGoal(); }catch(e){}
   var el=document.getElementById('shift-momentum'); if(!el) return;
   if(!state.shiftStart){ el.innerHTML=''; return; }
   var s=getAppSettings(); var goal=shiftGoal();
@@ -10163,6 +10312,7 @@ function mgr_renderFilters(){
     +'<div class="s-sub">Your KPF / Keepa library. Your VAs get this as a searchable panel at the top of their shift — nothing here is ever binned automatically.</div></div>'
     +'<div class="s-right"><a class="s-act" onclick="mgr_switchTab(\'trends\')">Full lead insights →</a></div></div>';
   try{ html+=sfltRunsPreviewHTML(); }catch(e){}
+  try{ html+=sfltPerfHTML(); }catch(e){}
   html+='<div class="kpi-row" style="margin-bottom:14px;">'
     +mgr_kpi({icon:'layers',label:'In your library',value:all.length,tone:all.length?'purple':'off',
        badge:{t:live+' live',tone:live?'green':'off'}, sub:arch?('<b>'+arch+'</b> archived (hidden from VAs)'):'all visible to your VAs'})
@@ -10905,6 +11055,8 @@ function mgr_renderSettings(){
       +'<div class="settings-sub">Per-VA daily lead goals, identity colours, lead-score weighting and Discord quiet hours.</div>'
       +'<div class="settings-grid">'
         +'<div class="settings-field"><label class="settings-label">Mera &mdash; daily lead goal</label><input class="settings-input" id="setting-goal-mera" type="number" min="1" value="'+(settings.goalMera||12)+'"></div>'
+        +'<div class="settings-field"><label class="settings-label">Mera &mdash; of those, OA</label><input class="settings-input" id="setting-oagoal-mera" type="number" min="0" value="'+(settings.oaGoalMera||0)+'"></div>'
+        +'<div class="settings-field"><label class="settings-label">Suz &mdash; of those, OA</label><input class="settings-input" id="setting-oagoal-suz" type="number" min="0" value="'+(settings.oaGoalSuz||0)+'"></div>'
         +'<div class="settings-field"><label class="settings-label">Suz &mdash; daily lead goal</label><input class="settings-input" id="setting-goal-suz" type="number" min="1" value="'+(settings.goalSuz||12)+'"></div>'
         +'<div class="settings-field"><label class="settings-label">Mera &mdash; min leads / week</label><input class="settings-input" id="setting-minwk-mera" type="number" min="0" value="'+(settings.minLeadsMera!==undefined?settings.minLeadsMera:60)+'"></div>'
         +'<div class="settings-field"><label class="settings-label">Suz &mdash; min leads / week</label><input class="settings-input" id="setting-minwk-suz" type="number" min="0" value="'+(settings.minLeadsSuz!==undefined?settings.minLeadsSuz:60)+'"></div>'
@@ -11122,7 +11274,8 @@ function mgr_saveSettings(){
   if(idleEl){ var iv=parseInt(idleEl.value); if(!isNaN(iv)&&iv>=15) settings.idleMins=iv; }
   var didEl=document.getElementById('setting-discord-id');
   if(didEl) settings.discordUserId=didEl.value.replace(/[^0-9]/g,'');
-  [['setting-goal-mera','goalMera'],['setting-goal-suz','goalSuz']].forEach(function(pp){
+  [['setting-goal-mera','goalMera'],['setting-goal-suz','goalSuz'],
+   ['setting-oagoal-mera','oaGoalMera'],['setting-oagoal-suz','oaGoalSuz']].forEach(function(pp){
     var el=document.getElementById(pp[0]); if(el){ var n=parseInt(el.value); if(!isNaN(n)&&n>0) settings[pp[1]]=n; }
   });
   [['setting-minwk-mera','minLeadsMera'],['setting-minwk-suz','minLeadsSuz']].forEach(function(pp){
@@ -14850,6 +15003,51 @@ function sfltMgrSetPoa(v){ sfltMgrPoa=(sfltMgrPoa===v?'':v); sfltMgrPage=0; sflt
 function sfltMgrGo(p){ sfltMgrPage=p; sfltMgrRepaint(); var h=document.getElementById('sflt-list-host'); if(h) h.scrollIntoView({block:'start',behavior:'smooth'}); }
 function sfltMgrEditRow(id){ sfltMgrEdit=(sfltMgrEdit===id?'':id); sfltMgrRepaint(); }
 /* Proof it lands, without waiting for the day to come round. */
+/* Which filters actually produce. Jack: "wanna get insight and stats from there on
+   how they are used and how much and success rate — unsure where it goes."
+   Two places: the leads-per-open figure on every row (so it is there while he works),
+   and this ranked block at the top of the Filters tab for the overview. */
+function sfltPerfHTML(){
+  var stats=(typeof fuStatsAll==='function')?fuStatsAll():{};
+  var all=getSavedFilters().filter(function(f){ return !f.archived && f.url; });
+  if(!all.length) return '';
+  var rows=all.map(function(f){
+    var st=stats[f.id]||{uses:0,leads:0,last:''};
+    return {f:f, uses:st.uses, leads:st.leads, last:st.last, rate:st.uses?st.leads/st.uses:0};
+  });
+  var used=rows.filter(function(r){ return r.uses>0; });
+  var never=rows.filter(function(r){ return !r.uses; });
+  var totOpens=used.reduce(function(a,r){return a+r.uses;},0);
+  var totLeads=used.reduce(function(a,r){return a+r.leads;},0);
+  var dead=used.filter(function(r){ return r.leads===0; });
+  if(!totOpens){
+    return '<div class="sfp"><div class="sfp-h">Filter performance</div>'
+      +'<div class="sfp-empty">No filter has been opened yet. The moment a VA opens one from their shift panel, '
+      +'opens and leads start collecting here — and each row shows its leads per open.</div></div>';
+  }
+  var best=used.slice().sort(function(a,b){ return b.rate-a.rate || b.leads-a.leads; }).slice(0,3);
+  var worst=dead.slice().sort(function(a,b){ return b.uses-a.uses; }).slice(0,3);
+  function line(r,tone){
+    return '<div class="sfp-r"><span class="sfp-n">'+escHtml(String(r.f.title||'Filter').slice(0,46))+'</span>'
+      +'<span class="sfp-v '+tone+'">'+(Math.round(r.rate*10)/10)+'</span>'
+      +'<span class="sfp-s">'+r.leads+' leads · '+r.uses+' opens</span></div>';
+  }
+  return '<div class="sfp">'
+    +'<div class="sfp-h">Filter performance<i>'+used.length+' of '+all.length+' ever opened</i></div>'
+    +'<div class="sfp-kpis">'
+      +'<span class="sfp-k"><b>'+totOpens+'</b>opens</span>'
+      +'<span class="sfp-k"><b>'+totLeads+'</b>leads</span>'
+      +'<span class="sfp-k"><b style="color:#10d99a">'+(Math.round(totLeads/totOpens*10)/10)+'</b>leads per open</span>'
+      +(dead.length?'<span class="sfp-k"><b style="color:#ff6b7f">'+dead.length+'</b>opened, never produced</span>':'')
+      +(never.length?'<span class="sfp-k"><b style="color:#7c8598">'+never.length+'</b>never opened</span>':'')
+    +'</div>'
+    +'<div class="sfp-cols">'
+      +'<div><div class="sfp-t">Best performing</div>'+(best.map(function(r){return line(r,'good');}).join('')||'<div class="sfp-none">—</div>')+'</div>'
+      +'<div><div class="sfp-t">Opened but never produced</div>'
+        +(worst.length?worst.map(function(r){return line(r,'bad');}).join('')
+          :'<div class="sfp-none">none — every opened filter has produced at least one lead</div>')+'</div>'
+    +'</div></div>';
+}
 function sfltRunsPreviewHTML(){
   var today=sfltTodayKey(), wknd=sfltIsWeekend();
   var lbl=(SFLT_DAYS.filter(function(d){return d.k===today;})[0]||{}).full||'today';
@@ -14968,8 +15166,11 @@ function sfltRowsHTML(){
   var stats=(typeof fuStatsAll==='function')?fuStatsAll():{};
   var rows=slice.map(function(f,n){
     var st=stats[f.id]||{uses:0,leads:0};
+    var rate=st.uses?(st.leads/st.uses):0;
     var perf=st.uses
-      ? '<span class="sflt-pill'+(st.leads===0?' cold':' warm')+'">'+st.leads+' lead'+(st.leads===1?'':'s')+' · '+st.uses+' open'+(st.uses===1?'':'s')+'</span>'
+      ? '<span class="sflt-pill'+(st.leads===0?' cold':(rate>=1?' hot':' warm'))+'" title="'
+          +st.leads+' leads from '+st.uses+' opens'+(st.last?' · last used '+st.last:'')+'">'
+        +'<b>'+(Math.round(rate*10)/10)+'</b> per open <i>'+st.leads+'L / '+st.uses+'&#8599;</i></span>'
       : '<span class="sflt-pill none">never opened</span>';
     var open=sfltMgrEdit===f.id;
     var host=''; try{ host=(String(f.url||'').match(/^https?:\/\/(www\.)?([^\/]+)/i)||[])[2]||''; }catch(e){}
@@ -14979,31 +15180,33 @@ function sfltRowsHTML(){
         var on=sfltHasVA(f,v);
         return '<button class="sflt-va'+(on?' on v-'+v:'')+'" title="'+(on?'On ':'Add to ')+vaDisp(v)+"'s POA"+'" onclick="event.stopPropagation();sfltToggleVA(\''+f.id+'\',\''+v+'\')">'+vaDisp(v).charAt(0)+'</button>';
       }).join('')
-      +(assigned?'<span class="sflt-poalbl'+(sfltOnPoa(f)?' on':'')+'" title="'
-          +(sfltOnPoa(f)?'On the POA — runs '+sfltDaysLabel(f):'In their saved filters only — no days picked, so it never lands on the plan')+'">'
-          +(sfltOnPoa(f)?'on POA':'library')+'</span>'
+      +(assigned?'<span class="sflt-dlbl" title="'
+          +(sfltOnPoa(f)?'Runs '+sfltDaysLabel(f):'No days picked — it stays in their saved filters and never lands on the plan')+'">'
+          +(sfltOnPoa(f)?'runs':'library only')+'</span>'
         +sfltDayChipsHTML(sfltDays(f),
           "event.stopPropagation();sfltToggleDay('"+f.id+"','{K}')",
           "event.stopPropagation();sfltSetAllDays('"+f.id+"',{ON})"):'')
       +'</span>';
-    var head='<div class="sflt-line" onclick="sfltMgrEditRow(\''+f.id+'\')">'
-      +'<span class="sflt-num">'+(page*SFLT_PER_PAGE+n+1)+'</span>'
-      +'<span class="sflt-tagp t-'+(f.tag||'KPF')+'">'+(f.tag||'KPF')+'</span>'
-      +'<span class="sflt-name">'+escHtml(f.title||'Untitled')+(f.archived?'<span class="sflt-archtag">archived</span>':'')
-        +(f.note?'<span class="sflt-note">'+escHtml(f.note)+'</span>':'')+'</span>'
-      +perf
-      +'<span class="sflt-host">'+escHtml(host)+'</span>'
+    var head='<div class="sflt-line'+(assigned?'':' unassigned')+'" onclick="sfltMgrEditRow(\''+f.id+'\')">'
+      +'<div class="sflt-r1">'
+        +'<span class="sflt-num">'+(page*SFLT_PER_PAGE+n+1)+'</span>'
+        +'<span class="sflt-tagp t-'+(f.tag||'KPF')+'">'+(f.tag||'KPF')+'</span>'
+        +'<span class="sflt-name">'+escHtml(f.title||'Untitled')+(f.archived?'<span class="sflt-archtag">archived</span>':'')+'</span>'
+        +perf
+        +'<a class="sflt-ico open" href="'+String(f.url||'#').replace(/"/g,'&quot;')+'" target="_blank" title="'+escHtml(host||'Open filter')+'" onclick="event.stopPropagation()">Open ↗</a>'
+      +'</div>'
+      +(f.note?'<div class="sflt-note2">'+escHtml(f.note)+'</div>':'')
+      +'<div class="sflt-r2">'
       +poaBtns
       +'<span class="sflt-acts">'
-        +'<a class="sflt-ico open" href="'+String(f.url||'#').replace(/"/g,'&quot;')+'" target="_blank" title="Open filter" onclick="event.stopPropagation()">Open ↗</a>'
-        +'<button class="sflt-ico" title="Edit" onclick="event.stopPropagation();sfltMgrEditRow(\''+f.id+'\')">'+(open?'▴':'✎')+'</button>'
         +(function(){
             var n=sfltTaskIds(f).length, where=sfltWhereLabel(f);
             return '<button class="sflt-where'+(n?' set':'')+'" title="Choose which task on their list this sits on, and whether it sits inside that task or becomes its own task" '
               +'onclick="event.stopPropagation();sfltTaskPickOpen(\''+f.id+'\')">Where&nbsp;&#9656; <b>'+escHtml(where)+'</b></button>';
           })()
+        +'<button class="sflt-ico" title="Edit" onclick="event.stopPropagation();sfltMgrEditRow(\''+f.id+'\')">'+(open?'▴':'✎')+'</button>'
         +'<button class="sflt-ico" title="'+(f.archived?'Show to VAs again':'Hide from VAs (keeps it)')+'" onclick="event.stopPropagation();sfltArchive(\''+f.id+'\','+(f.archived?'false':'true')+')">'+(f.archived?'⊕':'⊘')+'</button>'
-      +'</span></div>';
+      +'</span></div></div>';
     var edit=open?('<div class="sflt-edit">'
       +'<div class="sflt-er1"><input class="settings-input" value="'+escHtml(f.title||'')+'" placeholder="Filter name" oninput="sfltEdit(\''+f.id+'\',\'title\',this.value)">'
         +'<select class="sflt-tag" onchange="sfltEdit(\''+f.id+'\',\'tag\',this.value)">'+SFLT_TAGS.map(function(t){return '<option'+((f.tag||'KPF')===t?' selected':'')+'>'+t+'</option>';}).join('')+'</select></div>'
@@ -16844,7 +17047,8 @@ function sbTodayHTML(){
     var tagCt={}; toRoute.forEach(function(b){ tagCt[b.storefront_name||'—']=1; });
     out+='<div class="mgr-section">Needs routing<span style="margin-left:auto;font-size:10.5px;font-weight:600;color:var(--muted-2);">'
       +Object.keys(tagCt).length+' tag'+(Object.keys(tagCt).length===1?'':'s')+' \u00b7 '+toRoute.length+' batch'+(toRoute.length===1?'':'es')+' \u00b7 high first, then newest</span></div>'
-      +sbTagCardsHTML(toRoute);
+      +sbRouteBarHTML(toRoute)
+      +sbGrpBody(toRoute,'needsrouting','sbr-tiles');
   }
   out+=group('Being worked',  going,   '');
   // his own queue is a WORKLIST: big Start, everything else tucked away
