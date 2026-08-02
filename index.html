@@ -715,7 +715,7 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .jbf-opts{display:flex;flex-wrap:wrap;gap:5px;align-items:center;}
 .jbf-opt{display:inline-flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line-2);border-radius:999px;padding:4px 11px 4px 5px;cursor:pointer;font-family:inherit;max-width:100%;}
 .jbf-opt:hover{border-color:#4fc3f7;background:color-mix(in srgb,#4fc3f7 10%,var(--panel));}
-.jbf-tag{font-size:8.5px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;padding:2px 6px;border-radius:999px;background:var(--panel-2);color:var(--muted-2);}
+.jbf-tag{font-size:10px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;padding:2px 6px;border-radius:999px;background:var(--panel-2);color:var(--muted-2);}
 .jbf-tag.t-KPF{color:#4fc3f7;background:rgba(79,195,247,.14);}
 .jbf-tag.t-Keepa{color:#c98bff;background:rgba(201,139,255,.14);}
 .jbf-tag.t-A2A{color:#f5b544;background:rgba(245,181,68,.14);}
@@ -726,6 +726,13 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .sflt-newlbl{font-size:11.5px;font-weight:800;color:var(--muted);letter-spacing:.2px;}
 .sflt-newhint{font-size:11px;color:var(--muted-2);}
 .sflt-newva{width:28px;height:26px;}
+.sflt-days{display:inline-flex;gap:4px;flex-wrap:wrap;}
+.sflt-day{background:rgba(255,255,255,.04);border:1px solid var(--line-2);color:var(--muted-2);
+  border-radius:7px;padding:4px 9px;font-family:inherit;font-size:10.5px;font-weight:700;cursor:pointer;
+  transition:all .12s;white-space:nowrap;}
+.sflt-day:hover{color:var(--text);border-color:var(--muted-2);}
+.sflt-day.on{background:color-mix(in srgb,var(--accent) 26%,transparent);
+  border-color:var(--accent);color:#fff;}
 .sflt-slot{background:var(--panel-2);border:1px solid var(--line-2);border-radius:7px;color:var(--muted);font-family:inherit;font-size:10.5px;font-weight:700;padding:4px 5px;cursor:pointer;max-width:104px;}
 .pf-link{display:flex;align-items:center;gap:9px;margin-bottom:6px;background:color-mix(in srgb,var(--accent,#7c5cff) 7%,transparent);border:1px solid color-mix(in srgb,var(--accent,#7c5cff) 22%,transparent);border-radius:9px;padding:6px 9px;}
 .pf-n{font-size:10px;color:var(--muted);min-width:16px;text-align:right;font-family:var(--font-mono);}
@@ -769,7 +776,7 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .shcard-stats span{font-size:10px;color:var(--muted-2);background:var(--panel-2);border-radius:6px;padding:3px 7px;white-space:nowrap;}
 .shcard-stats b{color:var(--text);font-weight:700;font-family:var(--font-mono);}
 .shcard-time{margin-top:7px;font-family:var(--font-mono);font-size:9.5px;color:var(--muted-2);}
-.shcard-sec{font-size:8.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted-2);margin:10px 0 4px;}
+.shcard-sec{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted-2);margin:10px 0 4px;}
 .shcard-note{margin-top:9px;font-size:11px;color:var(--muted);line-height:1.6;}
 /* ── Sourcing roll-up ── */
 .pay-actions{display:flex;align-items:center;gap:9px;margin-top:14px;padding-top:13px;border-top:1px solid var(--line);flex-wrap:wrap;}
@@ -1144,7 +1151,7 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .eod-keepa-row{display:flex;gap:10px;}
 .eod-keepa-input{flex:1;min-width:0;background:#0b0c12;border:1px solid var(--line-2);border-radius:10px;color:var(--text);font-family:var(--font-mono);font-size:18px;padding:11px 13px;outline:none;transition:border-color .16s,box-shadow .16s;}
 .eod-keepa-delta{flex-shrink:0;width:118px;display:flex;flex-direction:column;justify-content:center;gap:3px;background:color-mix(in srgb,var(--green) 10%,#0b0c12);border:1px solid color-mix(in srgb,var(--green) 30%,var(--line));border-radius:10px;padding:7px 13px;}
-.eod-keepa-dl{font-size:8.5px;text-transform:uppercase;letter-spacing:.9px;color:var(--muted-2);font-weight:700;}
+.eod-keepa-dl{font-size:10px;text-transform:uppercase;letter-spacing:.9px;color:var(--muted-2);font-weight:700;}
 #keepa-total-val{font-family:var(--font-mono);font-size:17px;font-weight:700;color:#10d99a;line-height:1;}
 .eod-tags{display:flex;flex-wrap:wrap;gap:6px;}
 .eod-tag{background:var(--panel-2);border:1px solid var(--line-2);color:var(--muted);font-family:var(--font);font-size:11.5px;font-weight:600;padding:5px 11px;border-radius:999px;cursor:pointer;transition:all .14s;}
@@ -1230,7 +1237,7 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
   & .rc{--k:var(--accent);position:relative;background:var(--s2);border:1px solid var(--b2);border-left:3px solid var(--k);border-radius:9px;padding:5px 11px;display:flex;flex-direction:column;gap:0;cursor:default;transition:border-color .14s}
   & .rc:hover{border-color:color-mix(in srgb,var(--k) 55%,var(--b2))}
   & .rv{font-size:16px;font-weight:700;font-family:var(--font-head);line-height:1.1;letter-spacing:-.02em;color:var(--k)}
-  & .rl{font-size:8.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--t3);font-weight:700}
+  & .rl{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--t3);font-weight:700}
   & .rsub{font-size:9.5px;font-weight:600;color:var(--t4);margin-top:0}
   & .rc-amber{--k:#f5a524}
   & .rc-green{--k:#10d99a}
@@ -1280,7 +1287,7 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
   & .litem-top{display:flex;align-items:center;gap:8px;margin-bottom:5px}
   & .litem-score{font-size:12px;font-weight:800;font-family:var(--font-mono);letter-spacing:-.5px;padding:2px 8px;border-radius:7px;color:#0a0b10!important}
   & .litem-va{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;display:flex;align-items:center;gap:3px}
-  & .litem-status{margin-left:auto;font-size:8.5px;font-weight:800;padding:3px 8px;border-radius:5px;text-transform:uppercase;letter-spacing:.4px}
+  & .litem-status{margin-left:auto;font-size:10px;font-weight:800;padding:3px 8px;border-radius:5px;text-transform:uppercase;letter-spacing:.4px}
   & .litem-title{font-size:14px;font-weight:600;color:var(--t1);line-height:1.3;margin-bottom:7px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
   & .litem-foot{display:flex;align-items:center;gap:13px;margin-bottom:6px}
   & .litem-store{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
@@ -1303,8 +1310,8 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
   & .st-seen{background:var(--s4);color:var(--t3)}
   & .litem-age{font-size:9.5px;font-weight:600;color:var(--t4);margin-left:4px}
   & .litem.stale{background:linear-gradient(90deg,rgba(245,69,95,.07),transparent)}
-  & .litem-stale-flag{font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:#fff;background:var(--red);padding:2px 7px;border-radius:5px;margin-left:4px}
-  & .litem-fresh-flag{font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--green);background:var(--gd);border:1px solid var(--gb);padding:1px 7px;border-radius:5px;margin-left:4px}
+  & .litem-stale-flag{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:#fff;background:var(--red);padding:2px 7px;border-radius:5px;margin-left:4px}
+  & .litem-fresh-flag{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--green);background:var(--gd);border:1px solid var(--gb);padding:1px 7px;border-radius:5px;margin-left:4px}
   & .list-hint{flex-shrink:0;padding:9px 12px;border-top:1px solid var(--b1);font-size:10.5px;color:var(--t4);text-align:center;background:#0c0d13}
   & .list-hint b{color:var(--t3);font-family:var(--font-mono);background:var(--s4);padding:0 5px;border-radius:3px;font-weight:600}
 
@@ -1354,7 +1361,7 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
   & .d-num:has(.va-c){border-top-color:var(--amber)}
   & .d-num:has(.vr){border-top-color:var(--red)}
   & .d-num:has(.vc){border-top-color:var(--cyan)}
-  & .d-num-l{font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);margin-bottom:2px}
+  & .d-num-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);margin-bottom:2px}
   & .d-num-v{font-size:15px;font-weight:800;font-family:var(--font-mono);letter-spacing:-.5px}
   & .vg{color:var(--green)!important}
   & .va-c{color:var(--amber)!important}
@@ -1542,6 +1549,88 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .jbcard-head{align-items:flex-start;gap:14px;padding:15px 18px 14px;}
 .jbcard-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
 .jbcard-tags{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+/* ── tag cards (Needs routing) ── */
+.sbtc-grid{columns:258px;column-gap:8px;margin-bottom:16px;}
+.sbtc-grid .sbtc{break-inside:avoid;margin-bottom:8px;}
+@media(max-width:640px){.sbtc-grid{columns:1;}}
+.sbtc{--o:#8b93a8;background:linear-gradient(158deg,color-mix(in srgb,var(--o) 14%,var(--panel)),var(--panel) 74%);
+  border:1px solid color-mix(in srgb,var(--o) 24%,var(--line-2));
+  border-left:3px solid var(--o);border-radius:12px;padding:10px 12px 11px;}
+.sbtc.hi{--o:#f5455f;}
+.sbtc-hd{display:flex;align-items:baseline;gap:7px;min-width:0;flex-wrap:wrap;}
+.sbtc-hi{color:#f5455f;font-size:10px;}
+.sbtc-tag{font-size:14px;font-weight:800;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:46%;}
+.sbtc-n{color:var(--muted-2);font-size:11px;white-space:nowrap;}
+.sbtc-n b{font-family:var(--font-mono);font-size:19px;font-weight:800;color:var(--o);letter-spacing:-.03em;margin-right:2px;}
+.sbtc-age{margin-left:auto;font-size:10px;font-weight:600;color:var(--muted-2);white-space:nowrap;}
+.sbtc-age i{font-style:normal;color:var(--muted-2);opacity:.75;}
+.sbtc-age.stale{color:#ff6b7f;font-weight:700;}
+.sbtc-note{font-size:10.5px;color:var(--muted);margin-top:3px;line-height:1.4;
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;}
+.sbtc-rows{margin:6px 0 8px;border-top:1px solid rgba(255,255,255,.06);}
+/* a strict grid: count | age | Keepa | Copy. Nothing can wrap, so every card's rows
+   line up in the same four columns and the board stops looking hand-torn */
+.sbtc-r{display:grid;grid-template-columns:44px 1fr auto auto;gap:8px;align-items:center;
+  padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:11px;}
+.sbtc-r:last-child{border-bottom:none;}
+.sbtc-rn b{font-family:var(--font-mono);font-size:13.5px;font-weight:800;color:var(--text);}
+.sbtc-ra{color:var(--muted-2);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sbtc-k{color:var(--muted);text-decoration:none;font-size:10px;font-weight:700;
+  border:1px solid var(--line-2);border-radius:6px;padding:2px 8px;white-space:nowrap;}
+.sbtc-k:hover{color:var(--text);border-color:var(--accent);}
+.sbtc-cp{background:none;border:1px solid var(--line-2);color:var(--muted-2);border-radius:6px;
+  padding:2px 8px;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.sbtc-cp:hover{color:var(--text);}
+/* single-batch card: Keepa/Copy join the card body, no duplicated row */
+.sbtc-tools{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px;margin:7px 0 8px;}
+.sbtc-k.big,.sbtc-cp.big{font-size:11px;padding:6px 9px;text-align:center;}
+.sbtc-k.big b{font-family:var(--font-mono);}
+.sbtc-rr{grid-column:1/-1;display:flex;gap:3px;padding:2px 0 3px;}
+.sbr-b.sm{flex:1 1 0;padding:4px 0;font-size:9.5px;}
+.sbtc-route{display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) 30px;gap:4px;}
+.sbtc-x{display:block;width:100%;margin-top:6px;padding:4px;border-radius:7px;background:none;
+  border:1px dashed var(--line-2);color:var(--muted-2);font-family:inherit;font-size:9.5px;font-weight:700;cursor:pointer;}
+.sbtc-x:hover{color:var(--text);border-color:var(--muted-2);}
+.sbtc.landed,.sbtc-r.landed{animation:sbrLand .9s ease-out;}
+/* ── worklist (Yours to work) ── */
+.sbw-list{display:flex;flex-direction:column;gap:7px;margin-bottom:18px;}
+.sbwt .sbw-go.big{width:100%;margin-top:2px;}
+.sbwt .sbr-hd .sbw-more{margin-left:2px;}
+.sbwt.pri-hi .sbr-tag u{margin-left:6px;}
+.sbw{display:flex;align-items:center;gap:11px;background:linear-gradient(90deg,color-mix(in srgb,var(--jack) 7%,var(--panel)),var(--panel) 55%);
+  border:1px solid var(--line-2);border-left:3px solid var(--jack);border-radius:10px;padding:7px 12px;}
+.sbw.hi{border-left-color:#f5455f;}
+.sbw-go{flex:0 0 116px;padding:10px 0;border-radius:9px;font-family:inherit;font-size:13px;font-weight:800;
+  cursor:pointer;background:color-mix(in srgb,var(--green) 22%,transparent);
+  border:1px solid color-mix(in srgb,var(--green) 55%,transparent);color:#7ef2c4;transition:all .12s;}
+.sbw-go:hover{background:var(--green);color:#08120e;}
+.sbw-go.done{background:var(--green);color:#08120e;}
+.sbw-tag{flex:0 0 auto;font-size:14.5px;font-weight:800;color:var(--text);min-width:86px;}
+.sbw-hi{font-style:normal;color:#f5455f;font-size:9px;margin-right:5px;vertical-align:1px;}
+.sbw-tag u{text-decoration:none;font-family:var(--font-mono);font-size:9.5px;font-weight:700;color:var(--muted-2);
+  background:rgba(255,255,255,.07);border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:1px;}
+.sbw-n{flex:0 0 auto;color:var(--muted-2);font-size:11px;}
+.sbw-n b{font-family:var(--font-mono);font-size:16px;font-weight:800;color:var(--jack);margin-right:3px;}
+.sbw-age{flex:0 0 auto;font-size:10.5px;color:var(--muted-2);}
+.sbw-age.stale{color:#ff6b7f;font-weight:700;}
+.sbw-note{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  color:var(--muted-2);font-size:11px;text-align:right;padding-right:6px;}
+.sbw-k{flex:0 0 auto;}
+.sbw-more{position:relative;flex:0 0 auto;}
+.sbw-more summary{list-style:none;cursor:pointer;color:var(--muted-2);font-size:16px;font-weight:800;
+  padding:3px 9px;border-radius:7px;border:1px solid transparent;}
+.sbw-more summary::-webkit-details-marker{display:none;}
+.sbw-more summary:hover{border-color:var(--line-2);color:var(--text);}
+.sbw-more[open] summary{border-color:var(--accent);color:var(--text);}
+.sbw-menu{position:absolute;right:0;top:calc(100% + 5px);z-index:30;min-width:172px;
+  background:#141826;border:1px solid var(--line-2);border-radius:10px;padding:5px;
+  box-shadow:0 10px 28px rgba(0,0,0,.5);display:flex;flex-direction:column;gap:2px;}
+.sbw-menu button{background:none;border:none;color:var(--muted);font-family:inherit;font-size:12px;
+  font-weight:600;text-align:left;padding:7px 10px;border-radius:7px;cursor:pointer;}
+.sbw-menu button:hover{background:rgba(255,255,255,.06);color:var(--text);}
+.sbw-menu button.danger{color:#ff6b7f;}
+.sbw.landed{animation:sbrLand .9s ease-out;}
+@media(max-width:860px){ .sbw{flex-wrap:wrap;} .sbw-note{display:none;} }
 /* the matrix explained as the lookup it actually is, not four invented components */
 .d-mx-step{display:grid;grid-template-columns:88px auto 1fr;gap:6px 10px;align-items:baseline;
   padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12.5px;}
@@ -1730,7 +1819,7 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 /* ── LEADS DETAIL: 3-column workspace + decision rail ── */
 #view-leads .d-badges{display:flex;flex-wrap:wrap;gap:7px;margin:-4px 0 14px;}
 /* duplicate leads — same VA is noise (dim it); both VAs is a signal (tint, don't dim) */
-#view-leads .dup-tag{font-size:8px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:5px;margin-left:4px;white-space:nowrap;}
+#view-leads .dup-tag{font-size:9.5px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:5px;margin-left:4px;white-space:nowrap;}
 #view-leads .dup-tag.dup-same{color:var(--t3);background:rgba(255,255,255,.12);
   border:1px solid rgba(255,255,255,.14);}
 #view-leads .dup-tag.dup-cross{color:#04141a;background:var(--cyan);}
@@ -1742,7 +1831,7 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 #view-leads .litem.litem-decided{background:color-mix(in srgb,var(--green) 9%,transparent);
   box-shadow:inset 3px 0 0 var(--green);}
 #view-leads .litem.litem-decided .litem-title::after{content:'DECIDED \2014 still open';
-  margin-left:8px;font-size:8px;font-weight:900;letter-spacing:.5px;color:var(--green);
+  margin-left:8px;font-size:9.5px;font-weight:900;letter-spacing:.5px;color:var(--green);
   background:color-mix(in srgb,var(--green) 16%,transparent);padding:2px 6px;border-radius:5px;
   vertical-align:middle;white-space:nowrap;}
 #view-leads .litem.dup-row-same{background:rgba(255,255,255,.028);
@@ -2022,13 +2111,13 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .nav-clocks{margin-left:auto;display:flex;gap:8px;align-items:center;flex-shrink:0;}
 .nav-clocks .tb-clock{padding:4px 11px;border-radius:9px;gap:9px;}
 .nav-clocks .tb-flag{font-size:16px;}
-.nav-clocks .tb-l{font-size:8px;letter-spacing:1.3px;margin-bottom:2px;}
+.nav-clocks .tb-l{font-size:9.5px;letter-spacing:1.3px;margin-bottom:2px;}
 .nav-clocks .tb-t{font-size:15px;letter-spacing:.5px;}
 .nav-clocks .tb-d{font-size:10px;padding-bottom:1px;}
 @media(max-width:900px){.nav-clocks{display:none;}}
 .mgr-clock{display:flex;align-items:center;gap:9px;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:6px 13px;}
 .mgr-clock > span{font-size:16px;line-height:1;}
-.mgr-clock .mc-l{font-size:8.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted-2);line-height:1;}
+.mgr-clock .mc-l{font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted-2);line-height:1;}
 .mgr-clock .mc-t{font-family:var(--font-mono);font-size:14px;font-weight:500;color:var(--text);font-variant-numeric:tabular-nums;line-height:1.35;}
 @media(max-width:640px){.mgr-clock .mc-l{display:none;}}
 /* manager tiles → refined neutral panels w/ coloured value */
@@ -2168,8 +2257,8 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .kbd-wk{margin-left:auto;font-size:10.5px;font-weight:700;padding:2px 10px;border-radius:999px;background:color-mix(in srgb,currentColor 14%,transparent);border:1px solid color-mix(in srgb,currentColor 32%,transparent);}
 .kbd-row{display:grid;grid-template-columns:minmax(64px,96px) minmax(38px,46px) minmax(48px,1fr) minmax(50px,66px) minmax(46px,60px);gap:10px;align-items:center;padding:6px 0;border-top:1px solid rgba(255,255,255,.05);font-size:12.5px;}
 @media(max-width:1180px){.kbd-row{gap:7px;}}
-.kbd-hrow{border-top:none;font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted-2);padding-bottom:2px;}
-.kbd-date{color:var(--muted);white-space:nowrap;font-size:11.5px;} .kbd-today{font-size:8px;background:var(--accent-soft);color:#fff;padding:1px 5px;border-radius:4px;font-weight:800;}
+.kbd-hrow{border-top:none;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted-2);padding-bottom:2px;}
+.kbd-date{color:var(--muted);white-space:nowrap;font-size:11.5px;} .kbd-today{font-size:9.5px;background:var(--accent-soft);color:#fff;padding:1px 5px;border-radius:4px;font-weight:800;}
 .kbd-add{font-weight:800;font-variant-numeric:tabular-nums;}
 .kbd-bar{height:6px;border-radius:3px;background:rgba(255,255,255,.06);overflow:hidden;} .kbd-bar i{display:block;height:100%;border-radius:3px;}
 .kbd-tot{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);}
@@ -2520,7 +2609,7 @@ body.has-save-bar{padding-bottom:64px;}
 .sb-tiles{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0 10px;}
 .sb-tile{display:flex;flex-direction:column;gap:1px;background:rgba(255,255,255,.045);
   border:1px solid var(--line-2);border-radius:8px;padding:5px 9px;min-width:52px;}
-.sb-tile em{font-style:normal;font-size:8.5px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;color:var(--muted-2);}
+.sb-tile em{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;color:var(--muted-2);}
 .sb-tile b{font-family:var(--font-head);font-size:14px;font-weight:800;color:var(--text);line-height:1.1;}
 .sb-tile.none b{color:var(--amber);}
 .sb-tile.none{border-color:color-mix(in srgb,var(--amber) 38%,transparent);}
@@ -2799,12 +2888,20 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
   font-family:inherit;font-size:11.5px;font-weight:700;cursor:pointer;transition:all .12s;}
 .sbr-more:hover{border-color:var(--accent);color:var(--text);background:color-mix(in srgb,var(--accent) 12%,transparent);}
 
-.sbr{--o:var(--muted-2);display:flex;flex-direction:column;gap:8px;
-  background:linear-gradient(158deg,color-mix(in srgb,var(--o) 14%,var(--panel)),var(--panel) 74%);
-  border:1px solid color-mix(in srgb,var(--o) 24%,var(--line-2));
-  border-left:3px solid var(--o);border-radius:12px;padding:10px 12px 11px;
+.sbr{--o:var(--muted-2);display:flex;flex-direction:column;gap:7px;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--o) 7%,var(--panel)),var(--panel) 62%);
+  border:1px solid var(--line-2);
+  border-left:3px solid var(--o);border-radius:11px;padding:9px 11px 10px;
   transition:border-color .13s,background .13s,transform .13s;}
 .sbr:hover{border-color:color-mix(in srgb,var(--o) 55%,transparent);transform:translateY(-1px);}
+/* the tile that just moved says so in its new home, rather than silently teleporting */
+.sbr.landed{animation:sbrLand .9s ease-out;}
+@keyframes sbrLand{
+  0%  {box-shadow:0 0 0 2px var(--o), 0 6px 22px color-mix(in srgb,var(--o) 45%,transparent);transform:scale(.97);}
+  35% {box-shadow:0 0 0 2px var(--o), 0 6px 22px color-mix(in srgb,var(--o) 40%,transparent);transform:scale(1);}
+  100%{box-shadow:0 0 0 0 transparent;transform:scale(1);}
+}
+@media (prefers-reduced-motion:reduce){ .sbr.landed{animation:none;outline:2px solid var(--o);} }
 .sbr-mera{--o:var(--mera);} .sbr-suz{--o:var(--suz);} .sbr-jack{--o:var(--jack);}
 .sbr-both{--o:#f472b6;} .sbr-all{--o:#10d99a;} .sbr-none{--o:#8b93a8;}
 .sbr.is-draft{border-left-width:4px;}
@@ -2816,21 +2913,26 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 .sbr-tag{flex:1 1 auto;min-width:0;font-size:14px;font-weight:800;color:var(--text);
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .sbr-tag i{font-style:normal;font-size:10px;color:var(--muted-2);margin-left:4px;}
+/* "2/3" = the second of three batches sitting together on this tag */
+.sbr-tag u{text-decoration:none;font-family:var(--font-mono);font-size:9.5px;font-weight:700;
+  color:var(--muted-2);background:rgba(255,255,255,.07);border-radius:4px;padding:1px 5px;margin-left:5px;
+  vertical-align:1px;}
 /* "Process 4" says nothing about what is in it — the note does */
 .sbr-note{font-size:10.5px;color:var(--muted-2);line-height:1.4;margin-top:-3px;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.sbr-day{flex:0 0 auto;font-size:10px;font-weight:700;color:var(--muted-2);white-space:nowrap;
-  background:rgba(255,255,255,.06);padding:3px 8px;border-radius:999px;}
-.sbr-day.fresh{color:#10d99a;background:color-mix(in srgb,#10d99a 15%,transparent);}
-.sbr-day.old{color:var(--amber);background:color-mix(in srgb,var(--amber) 15%,transparent);}
-.sbr-day.stale{color:#ff6b7f;background:color-mix(in srgb,#f5455f 17%,transparent);}
+.sbr-day{flex:0 0 auto;font-size:10.5px;font-weight:600;color:var(--muted-2);white-space:nowrap;
+  background:none;padding:0;}
+.sbr-day.fresh{color:var(--muted);}
+.sbr-day.old{color:var(--muted-2);}
+.sbr-day.stale{color:#ff6b7f;font-weight:700;}   /* 6+ days is the ONLY age worth a colour */
 /* High priority earns a red edge and a lift — it should be findable without reading */
-.sbr.pri-hi{border-color:color-mix(in srgb,#f5455f 42%,transparent);
-  box-shadow:0 0 0 1px color-mix(in srgb,#f5455f 16%,transparent);}
-.sbr.pri-hi .sbr-tag::before{content:'\25B2';color:#f5455f;font-size:8px;margin-right:5px;vertical-align:1px;}
-.sbr .sb-pri{font-size:8.5px;padding:2px 7px;margin-left:auto;}
-.sbr .sb-pri-normal{border-color:transparent;color:var(--muted-2);opacity:.55;}
-.sbr .sb-pri-normal:hover{border-color:var(--line-2);opacity:1;}
+.sbr.pri-hi .sbr-tag::before{content:'\25B2';color:#f5455f;font-size:9px;margin-right:6px;vertical-align:1px;}
+.sbr .sb-pri{font-size:10px;padding:2px 7px;margin-left:auto;}
+/* Normal is the default: a dot you can click, not a word that shouts */
+.sbr .sb-pri-normal{border-color:transparent;background:none;color:var(--muted-2);opacity:.4;
+  padding:2px 6px;font-size:13px;line-height:1;}
+.sbr .sb-pri-normal:hover{opacity:1;color:var(--text);}
+.sbr .sb-pri-high{background:color-mix(in srgb,#f5455f 15%,transparent);}
 /* On "Yours to work" every tile is already yours, so a lit Me button just restates the
    heading. Keep it readable, let Start/Done carry the weight. */
 .sbr-jack .sbr-b[data-w="Jack"].on{background:color-mix(in srgb,var(--jack) 22%,transparent);
@@ -2840,8 +2942,8 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 
 .sbr-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
 .sbr-n{font-size:11px;color:var(--muted-2);white-space:nowrap;}
-.sbr-n b{font-family:var(--font-mono);font-size:17px;font-weight:800;color:var(--o);
-  margin-right:4px;letter-spacing:-.02em;}
+.sbr-n b{font-family:var(--font-mono);font-size:19px;font-weight:800;color:var(--o);
+  margin-right:4px;letter-spacing:-.03em;}
 .sbr-st{font-size:9.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
   padding:3px 8px;border-radius:999px;white-space:nowrap;}
 .sbr-st.route{color:var(--amber);background:color-mix(in srgb,var(--amber) 17%,transparent);}
@@ -2851,8 +2953,8 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 
 .sbr-tools{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px;}
 .sbr-key{display:inline-flex;align-items:center;justify-content:center;gap:5px;
-  background:color-mix(in srgb,var(--accent) 16%,transparent);
-  border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);color:var(--accent);border-radius:8px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--line-2);color:var(--muted);border-radius:8px;
   padding:6px 8px;font-size:11px;font-weight:700;text-decoration:none;white-space:nowrap;
   overflow:hidden;text-overflow:ellipsis;transition:all .12s;}
 .sbr-key b{font-family:var(--font-mono);font-weight:800;}
@@ -2867,15 +2969,22 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 /* Destinations carry the SAME colour as the person, everywhere in the app, so the
    button you press and the tile it produces are visibly the same thing. */
 .sbr-route{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;}
+/* Out-with-the-VAs and Finished are for reading, not doing. The controls still
+   exist for the rare re-route, but they stay folded until the tile is engaged -
+   focus-within keeps them reachable by keyboard, so this is not a hover-only trap. */
+.sbr-tiles.calm .sbr-route,.sbr-tiles.calm .sbr-act{display:none;}
+.sbr-tiles.calm .sbr:hover .sbr-route,.sbr-tiles.calm .sbr:focus-within .sbr-route{display:grid;}
+.sbr-tiles.calm .sbr:hover .sbr-act,.sbr-tiles.calm .sbr:focus-within .sbr-act{display:grid;}
 .sbr-act{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
 .sbr-act.one{grid-template-columns:1fr;}
-.sbr-b{--b:var(--muted-2);background:color-mix(in srgb,var(--b) 11%,transparent);
-  border:1px solid color-mix(in srgb,var(--b) 30%,transparent);
-  color:color-mix(in srgb,var(--b) 72%,var(--text));
+.sbr-b{--b:var(--muted-2);background:rgba(255,255,255,.03);
+  border:1px solid var(--line-2);
+  color:color-mix(in srgb,var(--b) 70%,var(--text));
   font-family:inherit;font-size:10.5px;font-weight:700;padding:6px 3px;border-radius:7px;
-  cursor:pointer;transition:all .12s;text-align:center;white-space:nowrap;
+  cursor:pointer;transition:all .1s;text-align:center;white-space:nowrap;
   overflow:hidden;text-overflow:ellipsis;}
-.sbr-b:hover{background:color-mix(in srgb,var(--b) 28%,transparent);border-color:var(--b);color:#fff;}
+.sbr-b:hover,.sbr-b:focus-visible{background:color-mix(in srgb,var(--b) 26%,transparent);
+  border-color:var(--b);color:#fff;outline:none;}
 .sbr-b.on{background:var(--b);border-color:var(--b);color:#0a0d14;font-weight:800;}
 .sbr-b[data-w="Mera"]{--b:var(--mera);}
 .sbr-b[data-w="Suz"]{--b:var(--suz);}
@@ -2965,7 +3074,7 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 .spx-k{background:rgba(255,255,255,.04);border:1px solid var(--line-2);border-radius:9px;padding:8px 11px;
   display:flex;flex-direction:column;gap:1px;}
 .spx-k b{font-family:var(--font-head);font-size:19px;font-weight:800;color:var(--green);line-height:1.1;}
-.spx-k em{font-style:normal;font-size:8.5px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--muted-2);}
+.spx-k em{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--muted-2);}
 .spx-k.off b{color:var(--muted-2);}
 .spx-note{font-size:9.5px;color:var(--muted-2);margin-top:2px;}
 .spx-mini{display:block;height:3px;background:rgba(255,255,255,.07);border-radius:99px;margin-top:5px;overflow:hidden;}
@@ -3024,7 +3133,7 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 .sbq-tbl.lean{min-width:660px;}
 .sbq-move{display:inline-flex;flex-direction:column;gap:2px;}
 .sbq-move button{background:transparent;border:1px solid var(--line-2);color:var(--muted-2);
-  font-size:7px;line-height:1;padding:2px 5px;border-radius:4px;cursor:pointer;transition:all .12s;}
+  font-size:9.5px;line-height:1;padding:2px 5px;border-radius:4px;cursor:pointer;transition:all .12s;}
 .sbq-move button:hover{border-color:var(--accent);color:var(--accent);}
 .sbq-wrap{background:var(--panel);border:1px solid var(--line-2);border-radius:14px;padding:6px 8px 12px;margin-bottom:12px;overflow-x:auto;}
 .sbq-tbl{width:100%;border-collapse:collapse;min-width:880px;}
@@ -3059,6 +3168,9 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 .sbk-note b{color:var(--amber);}
 .sbk-hint{font-size:11px;color:var(--muted-2);margin-top:7px;line-height:1.7;}
 .sbk-hint code{background:var(--panel-2);border-radius:4px;padding:1px 5px;font-family:var(--font-mono);font-size:10.5px;color:var(--accent-2);}
+.sbh-fold summary::-webkit-details-marker{display:none;}
+.sbh-fold summary{list-style:none;}
+.sbh-fold[open] summary{margin-bottom:4px;}
 .sbh-wrap{background:var(--panel);border:1px solid var(--line-2);border-radius:14px;padding:6px 14px 14px;margin-bottom:14px;}
 .sbh-day{padding:9px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 55%,transparent);}
 .sbh-day:last-of-type{border-bottom:none;}
@@ -3184,7 +3296,7 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 .tf-head b{color:var(--accent,#7c5cff);}
 .tf-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:7px;}
 .tf-chip{display:inline-flex;align-items:center;gap:6px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:999px;padding:3px 5px 3px 5px;}
-.tf-tag{font-size:8px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;padding:2px 6px;border-radius:999px;background:rgba(255,255,255,.06);color:var(--muted-2);}
+.tf-tag{font-size:9.5px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;padding:2px 6px;border-radius:999px;background:rgba(255,255,255,.06);color:var(--muted-2);}
 .tf-tag.t-KPF{color:#4fc3f7;background:rgba(79,195,247,.14);}
 .tf-tag.t-Keepa{color:#c98bff;background:rgba(201,139,255,.14);}
 .tf-tag.t-A2A{color:#f5b544;background:rgba(245,181,68,.14);}
@@ -3278,7 +3390,7 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 .tabpick-head .ct{font-size:10.5px;color:var(--muted-2);font-weight:600;}
 .tabpick-chip{display:inline-flex;align-items:center;gap:7px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:999px;padding:6px 13px;margin:0 6px 6px 0;cursor:pointer;font-size:12.5px;color:var(--text);}
 .tabpick-chip.cur{border-color:var(--green);box-shadow:0 0 0 1px var(--green) inset;}
-.tabpick-chip .curpill{font-size:8.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--green);border:1px solid var(--green);border-radius:5px;padding:1px 5px;}
+.tabpick-chip .curpill{font-size:10px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--green);border:1px solid var(--green);border-radius:5px;padding:1px 5px;}
 .tabpick-chip.off-tab{opacity:.55;}
 .teach-band{display:flex;align-items:center;gap:10px;margin-bottom:6px;font-size:12.5px;}
 .teach-band .lbl{width:96px;flex-shrink:0;color:var(--muted);font-weight:600;}
@@ -3307,7 +3419,7 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 .sc-mode{display:inline-flex;gap:3px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:10px;padding:3px;margin-bottom:12px;}
 .sc-mode button{background:transparent;border:none;color:var(--muted);font-family:inherit;font-size:12px;font-weight:700;padding:7px 13px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .13s;}
 .sc-mode button.on{background:var(--accent);color:#fff;}
-.sc-mode .beta{font-size:8.5px;font-weight:800;padding:1px 5px;border-radius:10px;background:rgba(255,255,255,.18);letter-spacing:.5px;}
+.sc-mode .beta{font-size:10px;font-weight:800;padding:1px 5px;border-radius:10px;background:rgba(255,255,255,.18);letter-spacing:.5px;}
 .learn-box{background:linear-gradient(150deg,color-mix(in srgb,#8b5cff 10%,var(--panel)),var(--panel) 74%);border:1px solid color-mix(in srgb,#8b5cff 30%,var(--line-2));border-radius:12px;padding:14px 15px;margin-bottom:6px;font-size:12.5px;line-height:1.55;color:var(--muted);}
 .learn-box b{color:var(--text);}
 .learn-hd{display:flex;align-items:center;gap:13px;margin-bottom:12px;}
@@ -4851,7 +4963,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v25.6';
+var APP_VERSION='v26.7';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -7778,6 +7890,39 @@ function tabBannerHTML(){
   }
   return out;
 }
+/* Jack: "popup if by start of Monday morning a VA is under hours — it's important
+   I know, I'll need to speak to the VA." The week closes Friday night (VAs work
+   Mon–Fri), so from Saturday through Monday the Overview carries a red bar naming
+   anyone whose LAST week came in under the weekly target. Same numbers as the
+   Hours & Time strip: sum of hoursWorked across that Mon–Fri, vs weeklyHoursTarget. */
+function hoursBannerHTML(){
+  try{
+    var now=new Date(new Date().toLocaleString('en-US',{timeZone:'Europe/London'}));
+    var dow=now.getDay();                       // Sat 6 · Sun 0 · Mon 1
+    if(dow!==6 && dow!==0 && dow!==1) return '';
+    // Monday of LAST week
+    var backToMon=(dow===6)?5:(dow===0)?6:7;
+    var mon=new Date(now.getFullYear(),now.getMonth(),now.getDate()-backToMon);
+    var days={};
+    for(var i=0;i<5;i++){ var d=new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()+i);
+      days[('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear()]=1; }
+    var target=(getAppSettings().weeklyHoursTarget)||40;
+    var log=mgr_getLog();
+    var out='';
+    ['Mera','Suz'].forEach(function(va){
+      var hrs=log.filter(function(r){ return r.va===va && days[r.date]; })
+                 .reduce(function(s,r){ return s+(parseFloat(r.hoursWorked)||0); },0);
+      if(hrs>=target) return;
+      var lbl=(dow===1?'last week':'this past week');
+      out+='<div class="pay-bar due late"><b>⚠ '+escHtml(vaDisp(va))+' finished '+lbl+' under hours</b>'
+        +' — <b>'+hrs.toFixed(1)+'h</b> of '+target+'h ('+Math.round(hrs/target*100)+'%), '
+        +(target-hrs).toFixed(1)+'h short. Worth a chat before the week gets going.'
+        +'<span style="margin-left:auto;"><button class="btn btn-ghost" style="font-size:11px;padding:4px 10px;" '
+        +'onclick="mgr_switchTab(\''+(va==='Mera'?'mera':'suz')+'\')">See her week →</button></span></div>';
+    });
+    return out;
+  }catch(e){ return ''; }
+}
 async function mgr_syncFromDB(){
   if(!DB_ENABLED){ window._mgrSyncedOnce=true; return; }
   try{ await sheetTabsAutoSync(); }catch(e){}
@@ -7973,7 +8118,7 @@ function mgr_collapsibleNotes(allRecs,vc){
     var inner='<div style="display:flex;flex-direction:column;padding:8px 10px;cursor:'+(hasNote?'pointer':'default')+';min-height:52px;box-sizing:border-box;justify-content:space-between;">'
       +'<div style="display:flex;align-items:center;justify-content:space-between;">'
       +'<div style="width:7px;height:7px;border-radius:50%;background:'+dotCol+';flex-shrink:0;"></div>'
-      +(hasNote?'<span style="font-size:8px;color:'+dotCol+'88;">▾</span>':'')
+      +(hasNote?'<span style="font-size:9.5px;color:'+dotCol+'88;">▾</span>':'')
       +'</div>'
       +'<span style="font-family:var(--font-head);font-size:11px;font-weight:800;color:'+accentCol+';">'+r.va+'</span>'
       +'<span style="font-size:9px;color:'+(hasNote?'#aaa':'#444')+';">'+dayLabel+'</span>'
@@ -7984,7 +8129,7 @@ function mgr_collapsibleNotes(allRecs,vc){
         +'<div style="display:flex;flex-direction:column;padding:8px 10px;cursor:pointer;min-height:52px;box-sizing:border-box;justify-content:space-between;">'
         +'<div style="display:flex;align-items:center;justify-content:space-between;">'
         +'<div style="width:7px;height:7px;border-radius:50%;background:'+dotCol+';"></div>'
-        +'<span class="na" style="font-size:8px;color:#2a4a3a;">▾</span>'
+        +'<span class="na" style="font-size:9.5px;color:#2a4a3a;">▾</span>'
         +'</div>'
         +'<span style="font-family:var(--font-head);font-size:11px;font-weight:800;color:'+accentCol+';">'+r.va+'</span>'
         +'<span style="font-size:9px;color:#aaa;">'+dayLabel+'</span>'
@@ -8074,17 +8219,17 @@ function mgr_shiftCard(r,expanded){
     +'<div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">'
     +'<div style="text-align:right;">'
     +'<div style="font-family:var(--font-mono);font-size:30px;font-weight:700;color:'+leadsCol+';line-height:1;">'+r.totalLeads+'</div>'
-    +'<div style="font-size:8.5px;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:1px;">leads</div>'
+    +'<div style="font-size:10px;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:1px;">leads</div>'
     +'</div>'
     +mgr_deleteBtn(r.id)
     +'</div></div>'
     +'<div class="shift-card-body'+(expanded?' open':'')+'" id="'+bodyId+'" style="border-top:1px solid rgba(255,255,255,0.12);padding:0 16px 10px;" onclick="event.stopPropagation()">'
-    +(hasNote?'<div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:10px 12px;font-size:12px;line-height:1.6;color:rgba(255,255,255,0.75);margin-top:10px;"><div style="font-size:8.5px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Notes</div>'+r.notes+'</div>':'')
+    +(hasNote?'<div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:10px 12px;font-size:12px;line-height:1.6;color:rgba(255,255,255,0.75);margin-top:10px;"><div style="font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Notes</div>'+r.notes+'</div>':'')
     +(function(){ var sf=r.storefronts; if(!sf||!sf.list||!sf.list.length) return '';
         var rows=sf.list.map(function(s){ var hrs=(s.mins||0)/60, lph=(hrs>0.02&&s.leads>0)?(s.leads/hrs).toFixed(1):'—';
           return '<div style="display:flex;justify-content:space-between;gap:8px;padding:2.5px 0;border-top:1px solid rgba(255,255,255,0.07);font-size:10.5px;"><span style="color:#b8b8c8;flex:1;">'+String(s.name||'(unnamed)').replace(/</g,'&lt;')+'</span><span style="color:#8b93a8;">'+(s.mins||0)+'m</span><span style="color:#10d99a;font-weight:700;">'+(s.leads||0)+' leads</span><span style="color:#18c8f0;min-width:52px;text-align:right;">'+lph+'/hr</span></div>'; }).join('');
-        return '<div style="font-size:8.5px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:1px;margin:8px 0 3px;">&#127978; Storefronts · '+sf.leads+' leads · '+sf.mins+'m</div>'+rows; })()
-    +(taskRows?'<div style="font-size:8.5px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:1px;margin:8px 0 3px;">Tasks</div>'+taskRows:'')
+        return '<div style="font-size:10px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:1px;margin:8px 0 3px;">&#127978; Storefronts · '+sf.leads+' leads · '+sf.mins+'m</div>'+rows; })()
+    +(taskRows?'<div style="font-size:10px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:1px;margin:8px 0 3px;">Tasks</div>'+taskRows:'')
     +'</div></div>';
 }
 function mgr_toggleCard(id){var el=document.getElementById(id);if(el) el.classList.toggle('open');}
@@ -8112,7 +8257,7 @@ function mgr_shiftGroup(recs,vaFilter){
     var leadsCol=parseInt(r.totalLeads)>0?'#fff':'#ff8888';
     var p=r.date.split('/');
     var dateStr=dayNames[new Date(parseInt(p[2]),parseInt(p[1])-1,parseInt(p[0])).getDay()]+' '+p[0]+' '+months[parseInt(p[1])-1];
-    var flags=r.tasksSkipped>0?'<span style="background:rgba(242,100,127,0.4);border-radius:3px;padding:1px 5px;font-size:8px;color:#ffbbbb;margin-left:4px;">skipped</span>':'';;
+    var flags=r.tasksSkipped>0?'<span style="background:rgba(242,100,127,0.4);border-radius:3px;padding:1px 5px;font-size:9.5px;color:#ffbbbb;margin-left:4px;">skipped</span>':'';;
     var bodyId='scb-'+r.id;
     var taskRows='';
     (r.tasks||[]).filter(function(t){return t.done||t.skipped;}).forEach(function(t){
@@ -8772,9 +8917,9 @@ function mgr_dayByDay(weekRecs,va,monStr){
     html+='<div style="width:58px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px 6px;background:'+dayGrad+';border-right:3px solid '+dayBorderCol+';position:relative;">'
       +'<div style="position:absolute;inset:0;background:transparent;pointer-events:none;"></div>'
       +'<div style="font-family:var(--font-head);font-size:14px;font-weight:800;color:'+dayNameCol+';line-height:1;position:relative;z-index:1;">'+dayName+'</div>'
-      +'<div style="font-size:8px;color:'+dayNameCol+'bb;position:relative;z-index:1;">'+shortDate+'</div>'
-      +(isBest?'<div style="font-size:7px;border-radius:3px;padding:1px 5px;font-weight:700;margin-top:1px;position:relative;z-index:1;background:rgba(45,212,163,0.25);color:#10d99a;border:1px solid rgba(45,212,163,0.3);">BEST</div>'
-        :isLow?'<div style="font-size:7px;border-radius:3px;padding:1px 5px;font-weight:700;margin-top:1px;position:relative;z-index:1;background:rgba(242,100,127,0.25);color:#f2647f;border:1px solid rgba(242,100,127,0.3);">LOW</div>':'')
+      +'<div style="font-size:9.5px;color:'+dayNameCol+'bb;position:relative;z-index:1;">'+shortDate+'</div>'
+      +(isBest?'<div style="font-size:9.5px;border-radius:3px;padding:1px 5px;font-weight:700;margin-top:1px;position:relative;z-index:1;background:rgba(45,212,163,0.25);color:#10d99a;border:1px solid rgba(45,212,163,0.3);">BEST</div>'
+        :isLow?'<div style="font-size:9.5px;border-radius:3px;padding:1px 5px;font-weight:700;margin-top:1px;position:relative;z-index:1;background:rgba(242,100,127,0.25);color:#f2647f;border:1px solid rgba(242,100,127,0.3);">LOW</div>':'')
       +'</div>';
 
     // Mid
@@ -8829,17 +8974,17 @@ function mgr_dayByDay(weekRecs,va,monStr){
     html+='<div style="display:flex;flex-shrink:0;padding:6px 8px;background:#12141f;border-left:1px solid rgba(255,255,255,0.07);align-items:center;gap:4px;">';
     // Hours
     html+='<div style="border-radius:7px;padding:5px 9px;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:52px;background:'+hBg+';border:1px solid rgba('+hRgba+',0.25);border-top:2px solid '+hBord+';">'
-      +'<div style="font-size:8px;text-transform:uppercase;letter-spacing:1.1px;font-weight:600;color:'+hBord+'88;">Hours</div>'
+      +'<div style="font-size:9.5px;text-transform:uppercase;letter-spacing:1.1px;font-weight:600;color:'+hBord+'88;">Hours</div>'
       +'<div style="font-family:var(--font-head);font-size:17px;font-weight:800;line-height:1.1;color:'+hCol+';">'+r.hoursWorked+'h</div>'
       +'</div>';
     // Leads
     html+='<div style="border-radius:7px;padding:5px 9px;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:54px;background:#0e4a2e;border:1px solid rgba(16,217,154,.35);border-top:2px solid #10d99a;">'
-      +'<div style="font-size:8px;text-transform:uppercase;letter-spacing:1.1px;font-weight:600;color:#10d99a88;">Leads</div>'
+      +'<div style="font-size:9.5px;text-transform:uppercase;letter-spacing:1.1px;font-weight:600;color:#10d99a88;">Leads</div>'
       +'<div style="font-family:var(--font-head);font-size:17px;font-weight:800;line-height:1.1;color:#10d99a;">'+lVal+'</div>'
       +'</div>';
     // Tasks
     html+='<div style="border-radius:7px;padding:5px 9px;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:52px;background:'+tileTaskBg+';border:1px solid rgba('+tileTaskRgba+',0.2);border-top:2px solid '+tileTaskBord+';">'
-      +'<div style="font-size:8px;text-transform:uppercase;letter-spacing:1.1px;font-weight:600;color:'+tileTaskBord+'88;">Tasks</div>'
+      +'<div style="font-size:9.5px;text-transform:uppercase;letter-spacing:1.1px;font-weight:600;color:'+tileTaskBord+'88;">Tasks</div>'
       +'<div style="font-family:var(--font-head);font-size:17px;font-weight:800;line-height:1.1;color:'+tileTaskCol+';">'+taskStr+'</div>'
       +'</div>';
     html+='</div>'; // end stats
@@ -9092,7 +9237,7 @@ function mgr_renderOverview(){
     +'<button onclick="mgr_changeWeek(1)"'+(mgr_weekOffset>=0?' disabled':'')+'>Next ›</button>'
     +(mgr_weekOffset!==0?'<button onclick="mgr_weekOffset=0;mgr_changeWeek(0)">This week</button>':'')+'</div>';
 
-  var html=tabBannerHTML()+payBannerHTML();
+  var html=tabBannerHTML()+hoursBannerHTML()+payBannerHTML();
   html+='<div id="spend-tile">'+(_spendCache?'':spendSkeleton(true))+'</div>';
 
   // ── Weekly performance (neutral cards, colour = status, direct actions) ──
@@ -9410,16 +9555,19 @@ function mgr_renderVA(va,containerId){
   html+='<div style="border-radius:9px;overflow:hidden;border:1px solid '+vaBorder+';background:'+vaBg+';margin-bottom:10px;">';
   html+='<div style="display:grid;grid-template-columns:170px 1fr auto;align-items:center;gap:10px;padding:9px 11px;border-left:3px solid '+vaAccent+';">';
   html+='<div style="background:rgba(0,0,0,0.28);border:1px solid '+vaAccent+'2e;border-radius:8px;padding:8px 10px;">';
-  html+='<div style="font-size:7px;color:'+vaAccent+'88;letter-spacing:1.3px;text-transform:uppercase;margin-bottom:3px;">'+va+' · Week Hours</div>';
-  html+='<div style="font-family:var(--font-mono);font-size:26px;font-weight:700;color:'+vaAccent+';line-height:1;">'+weekHrs.toFixed(1)+'<span style="font-size:11px;color:'+vaAccent+'66;margin-left:2px;">h</span></div>';
-  html+='<div style="font-size:8px;color:'+vaAccent+'55;margin-top:2px;">target '+targetHrs+'h · '+hrsPct+'%</div>';
+  html+='<div style="font-size:10px;color:'+vaAccent+';font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">'+va+' · Week Hours</div>';
+  html+='<div style="font-family:var(--font-mono);font-size:30px;font-weight:800;color:'+vaAccent+';line-height:1;">'+weekHrs.toFixed(1)+'<span style="font-size:13px;opacity:.6;margin-left:2px;">h</span></div>';
+  html+='<div style="font-size:11px;color:var(--muted);margin-top:3px;">target <b style="color:var(--text);">'+targetHrs+'h</b> · '+hrsPct+'%</div>';
   html+='</div>';
   html+='<div style="display:grid;grid-template-columns:repeat(3,minmax(58px,1fr));gap:6px;align-items:center;">';
-  html+='<div style="text-align:center;background:rgba(0,0,0,0.22);border-radius:7px;padding:6px 8px;"><div style="font-size:7px;color:#555;letter-spacing:0.8px;margin-bottom:1px;">LEADS</div><div style="font-family:var(--font-mono);font-size:17px;font-weight:700;color:#10d99a;">'+weekLeads+'</div></div>';
-  html+='<div style="text-align:center;background:rgba(0,0,0,0.22);border-radius:7px;padding:6px 8px;"><div style="font-size:7px;color:#555;letter-spacing:0.8px;margin-bottom:1px;">L/HR</div><div style="font-family:var(--font-mono);font-size:17px;font-weight:700;color:#38bdf8;">'+weekLph+'</div></div>';
-  html+='<div style="text-align:center;background:rgba(0,0,0,0.22);border-radius:7px;padding:6px 8px;"><div style="font-size:7px;color:#555;letter-spacing:0.8px;margin-bottom:1px;">SHIFTS</div><div style="font-family:var(--font-mono);font-size:17px;font-weight:700;color:'+vaAccent+';">'+weekShifts+'</div></div>';
+  function whCell(lbl,val,col){ return '<div style="text-align:center;background:rgba(0,0,0,0.22);border-radius:8px;padding:8px 8px;">'
+    +'<div style="font-size:10px;color:var(--muted-2);font-weight:700;letter-spacing:.8px;margin-bottom:2px;">'+lbl+'</div>'
+    +'<div style="font-family:var(--font-mono);font-size:21px;font-weight:800;color:'+col+';">'+val+'</div></div>'; }
+  html+=whCell('LEADS',weekLeads,'#10d99a');
+  html+=whCell('L/HR',weekLph,'#38bdf8');
+  html+=whCell('SHIFTS',weekShifts,vaAccent);
   html+='</div>';
-  html+='<div style="background:'+statusBg+';border:1px solid '+statusCol+';border-radius:8px;padding:6px 9px;text-align:center;min-width:82px;"><div style="font-size:9px;color:'+statusCol+';font-weight:800;">'+statusTxt+'</div>'+(hrsRemaining>0?'<div style="font-size:7px;color:'+statusCol+'88;margin-top:1px;">'+hrsRemaining.toFixed(1)+'h to go</div>':'')+'</div>';
+  html+='<div style="background:'+statusBg+';border:1px solid '+statusCol+';border-radius:9px;padding:8px 12px;text-align:center;min-width:96px;"><div style="font-size:12px;color:'+statusCol+';font-weight:800;">'+statusTxt+'</div>'+(hrsRemaining>0?'<div style="font-size:10.5px;color:'+statusCol+';opacity:.85;margin-top:2px;">'+hrsRemaining.toFixed(1)+'h to go</div>':'')+'</div>';
   html+='</div>';
   html+='<div style="padding:0 11px 5px;">';
   html+='<div style="height:7px;background:rgba(255,255,255,0.05);border-radius:5px;position:relative;overflow:visible;">';
@@ -9427,10 +9575,10 @@ function mgr_renderVA(va,containerId){
   // Pro-rata marker line
   if(proRataTarget>0&&proRataTarget<targetHrs){
     html+='<div style="position:absolute;top:0;left:'+markerPct+'%;width:2px;height:100%;background:rgba(255,255,255,0.5);"></div>';
-    html+='<div style="position:absolute;top:-12px;left:'+markerPct+'%;transform:translateX(-50%);font-size:7px;color:#555;white-space:nowrap;">pace</div>';
+    html+='<div style="position:absolute;top:-14px;left:'+markerPct+'%;transform:translateX(-50%);font-size:9.5px;color:var(--muted);font-weight:700;white-space:nowrap;">pace</div>';
   }
   html+='</div>';
-  html+='<div style="display:flex;justify-content:space-between;font-size:7px;color:#28283a;padding-top:2px;"><span>0h</span><span style="color:'+hrsColourProRata+';">'+hrsPct+'%</span><span>'+targetHrs+'h</span></div>';
+  html+='<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted-2);padding-top:3px;"><span>0h</span><span style="color:'+hrsColourProRata+';font-weight:800;">'+hrsPct+'%</span><span>'+targetHrs+'h</span></div>';
   html+='</div>';
   html+='</div>';
   // ── NEW DAY BY DAY (approved design) ────────────────────
@@ -10160,7 +10308,7 @@ async function mgr_renderLive(){
         {l:'Break',v:(s.totalBreakMins||0)+'m',c:'#f2c200'}
       ].map(function(x){
         return '<div style="background:rgba(0,0,0,0.3);border-radius:7px;padding:6px;text-align:center;">'
-          +'<div style="font-size:8.5px;color:#8b93a8;text-transform:uppercase;letter-spacing:0.7px;font-weight:700;margin-bottom:3px;">'+x.l+'</div>'
+          +'<div style="font-size:10px;color:#8b93a8;text-transform:uppercase;letter-spacing:0.7px;font-weight:700;margin-bottom:3px;">'+x.l+'</div>'
           +'<div style="font-family:var(--font-mono);font-size:16px;font-weight:700;color:'+x.c+';">'+x.v+'</div>'
           +'</div>';
       }).join('')+'</div>'
@@ -10197,7 +10345,7 @@ function mgr_popoutLive(){
     '<style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#0d0d1a;color:#f4f4ff;font-family:"DM Mono",monospace;padding:20px;min-width:600px;}',
     '.card{border-radius:12px;padding:18px 20px;margin-bottom:12px;border-top:3px solid #222;}',
     '.stat{background:rgba(0,0,0,0.4);border-radius:6px;padding:8px 10px;text-align:center;flex:1;}',
-    '.sl{font-size:8px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}',
+    '.sl{font-size:9.5px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}',
     '.sv{font-size:18px;font-weight:700;}</style></head><body>',
     '<div id="hdr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">',
     '<div style="font-family:Syne,sans-serif;font-size:18px;font-weight:800;">BDL VA HQ Live</div>',
@@ -13975,12 +14123,44 @@ var SFLT_SLOTS=[
   {k:'tue',   label:'Tuesdays',  task:{Mera:'kpf-tue'}},
   {k:'thu',   label:'Thursdays', task:{Mera:'kpf-thu'}}
 ];
-function sfltSlot(f){ var k=(f&&f.slot)||'daily'; return SFLT_SLOTS.filter(function(s){return s.k===k;})[0]||SFLT_SLOTS[0]; }
-function sfltSlotLabel(f){ return sfltSlot(f).label; }
-function sfltSetSlot(id,k){
+/* A filter can sit on SEVERAL days of a POA — Jack: "I want to be able to choose
+   multiple days this filter is on their POA". Stored as `slots:[...]`; anything saved
+   before this still has the old single `slot` string, so read through a shim rather
+   than migrating (nothing to lose if a write fails). "Every day" is exclusive with
+   the named days — running daily AND on Tuesdays is the same thing as running daily. */
+function sfltSlotKeys(f){
+  if(f && Array.isArray(f.slots) && f.slots.length) return f.slots.slice();
+  if(f && f.slot) return [f.slot];
+  return ['daily'];
+}
+function sfltHasSlot(f,k){ return sfltSlotKeys(f).indexOf(k)>=0; }
+function sfltSlot(f){ var k=sfltSlotKeys(f)[0]; return SFLT_SLOTS.filter(function(s){return s.k===k;})[0]||SFLT_SLOTS[0]; }
+function sfltSlotLabel(f){
+  var ks=sfltSlotKeys(f);
+  var lbls=SFLT_SLOTS.filter(function(s){ return ks.indexOf(s.k)>=0; }).map(function(s){ return s.label; });
+  if(!lbls.length) return SFLT_SLOTS[0].label;
+  if(lbls.length===1) return lbls[0];
+  return lbls.slice(0,-1).join(', ')+' and '+lbls[lbls.length-1];
+}
+function sfltToggleSlot(id,k){
   var arr=getSavedFilters(); var f=arr.filter(function(x){return x.id===id;})[0]; if(!f) return;
-  f.slot=k; saveSavedFilters(arr); sfltMgrRepaint();
+  var ks=sfltSlotKeys(f), i=ks.indexOf(k);
+  if(i>=0){ ks.splice(i,1); if(!ks.length) ks=['daily']; }      // never leave it on no day at all
+  else if(k==='daily') ks=['daily'];                            // daily replaces the named days
+  else { ks=ks.filter(function(x){return x!=='daily';}); ks.push(k); }
+  ks=SFLT_SLOTS.map(function(s){return s.k;}).filter(function(x){ return ks.indexOf(x)>=0; });  // keep order
+  f.slots=ks; delete f.slot;
+  saveSavedFilters(arr); sfltMgrRepaint();
   showToast('"'+(f.title||'Filter')+'" now runs '+sfltSlotLabel(f).toLowerCase());
+}
+/* the day chips, shared by the manager row and the add form */
+function sfltSlotChipsHTML(sel,onclickTpl){
+  return '<span class="sflt-days">'+SFLT_SLOTS.map(function(sl){
+    var on=sel.indexOf(sl.k)>=0;
+    return '<button type="button" class="sflt-day'+(on?' on':'')+'" data-slot="'+sl.k+'"'
+      +' title="'+sl.label+'" onclick="'+onclickTpl.replace('{K}',sl.k)+'">'
+      +(sl.k==='daily'?'Every day':sl.label.replace(/s$/,''))+'</button>';
+  }).join('')+'</span>';
 }
 /* every filter this VA should run on the POA task with this id, today */
 function sfltTaskIds(f){ return Array.isArray(f&&f.taskIds)?f.taskIds:[]; }
@@ -13991,7 +14171,10 @@ function sfltForTask(va,taskId){
     if(sfltTaskIds(f).indexOf(taskId)>=0) return true;
     // legacy: assigned to the VA with a day-slot that maps to this task
     if(!sfltHasVA(f,va)) return false;
-    return sfltSlot(f).task[va]===taskId;
+    return sfltSlotKeys(f).some(function(k){
+      var sl=SFLT_SLOTS.filter(function(x){return x.k===k;})[0];
+      return sl && sl.task[va]===taskId;
+    });
   }).sort(function(a,b){ return (a.pos||0)-(b.pos||0); });
 }
 /* link/unlink a filter to a specific ticklist task */
@@ -14310,11 +14493,22 @@ function sfltPoaPickerHTML(which){
   return '<div class="sflt-newpoa">'
     +'<span class="sflt-newlbl">Add to a POA</span>'
     +'<span class="sflt-poa">'+vaBtns+'</span>'
-    +'<select class="sflt-slot" id="sflt-'+which+'-slot">'
-      +SFLT_SLOTS.map(function(sl){ return '<option value="'+sl.k+'">'+sl.label+'</option>'; }).join('')
-    +'</select>'
+    +sfltSlotChipsHTML(['daily'],"sfltNewSlotTgl(this,'"+which+"','{K}')")
     +'<span class="sflt-newhint">optional — leave blank to just save it to the library</span>'
     +'</div>';
+}
+function sfltNewSlotTgl(btn,which,k){
+  var wrap=btn.parentNode;
+  var all=[].slice.call(wrap.querySelectorAll('.sflt-day'));
+  var on=btn.classList.contains('on');
+  if(k==='daily'){ all.forEach(function(b){ b.classList.toggle('on', b===btn ? !on : false); }); }
+  else{
+    btn.classList.toggle('on');
+    var d=wrap.querySelector('.sflt-day[data-slot="daily"]'); if(d) d.classList.remove('on');
+  }
+  if(!wrap.querySelector('.sflt-day.on')){                       // never end on nothing
+    var dd=wrap.querySelector('.sflt-day[data-slot="daily"]'); if(dd) dd.classList.add('on');
+  }
 }
 function sfltNewVaTgl(btn){
   var v=btn.getAttribute('data-va');
@@ -14323,8 +14517,11 @@ function sfltNewVaTgl(btn){
 function sfltNewPoa(which){
   var vas=[].filter.call(document.querySelectorAll('.sflt-newva[data-w="'+which+'"].on'),function(b){return true;})
              .map(function(b){ return b.getAttribute('data-va'); });
-  var sl=(document.getElementById('sflt-'+which+'-slot')||{}).value||'daily';
-  return {vas:vas, slot:sl};
+  var host=document.querySelector('.sflt-newva[data-w="'+which+'"]');
+  var wrap=host?host.closest('.sflt-newpoa'):null;
+  var ks=wrap?[].map.call(wrap.querySelectorAll('.sflt-day.on'),function(b){return b.getAttribute('data-slot');}):[];
+  if(!ks.length) ks=['daily'];
+  return {vas:vas, slots:ks, slot:ks[0]};
 }
 function sfltAdd(){
   var t=(document.getElementById('sflt-title')||{}).value||''; var u=(document.getElementById('sflt-url')||{}).value||''; var n=(document.getElementById('sflt-note')||{}).value||'';
@@ -14332,7 +14529,7 @@ function sfltAdd(){
   var arr=getSavedFilters();
   var poa=sfltNewPoa('add');
   var f={id:sfltUid(),title:t.slice(0,160),url:u,note:n.trim().slice(0,300),tag:(document.getElementById('sflt-tag')||{}).value||'KPF',pos:arr.length,archived:false,
-         vas:poa.vas,slot:poa.slot};
+         vas:poa.vas,slots:poa.slots,slot:poa.slot};
   arr.push(f);
   saveSavedFilters(arr); sfltUpsert(f,arr.length-1);
   if(typeof mgr_currentTab!=='undefined'&&mgr_currentTab==='filters') mgr_renderFilters(); else mgr_renderSettings();
@@ -14467,9 +14664,7 @@ function sfltRowsHTML(){
         var on=sfltHasVA(f,v);
         return '<button class="sflt-va'+(on?' on v-'+v:'')+'" title="'+(on?'On ':'Add to ')+vaDisp(v)+"'s POA"+'" onclick="event.stopPropagation();sfltToggleVA(\''+f.id+'\',\''+v+'\')">'+vaDisp(v).charAt(0)+'</button>';
       }).join('')
-      +(assigned?'<select class="sflt-slot" title="Which POA it runs with" onclick="event.stopPropagation()" onchange="sfltSetSlot(\''+f.id+'\',this.value)">'
-        +SFLT_SLOTS.map(function(sl){ return '<option value="'+sl.k+'"'+(sfltSlot(f).k===sl.k?' selected':'')+'>'+sl.label+'</option>'; }).join('')
-        +'</select>':'')
+      +(assigned?sfltSlotChipsHTML(sfltSlotKeys(f),"event.stopPropagation();sfltToggleSlot('"+f.id+"','{K}')"):'')
       +'</span>';
     var head='<div class="sflt-line" onclick="sfltMgrEditRow(\''+f.id+'\')">'
       +'<span class="sflt-num">'+(page*SFLT_PER_PAGE+n+1)+'</span>'
@@ -15423,14 +15618,14 @@ async function sbBatchAsins(batchId){
   }catch(e){ return []; }
 }
 /* ── lifecycle ──────────────────────────────────────────────────────────────*/
-async function sbPatch(batchId, patch){
+async function sbPatch(batchId, patch, keepLocal){
   if(IS_PREVIEW) return true;
   try{
     var r=await dbWrite('A storefront batch', SUPABASE_URL+'/rest/v1/storefront_batches?id=eq.'+encodeURIComponent(batchId),{method:'PATCH',
       headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
                'Content-Type':'application/json',Prefer:'return=minimal'},
       body:JSON.stringify(patch)});
-    if(r.ok) SB_BATCHES=null;
+    if(r.ok && !keepLocal) SB_BATCHES=null;   // keepLocal: the caller already applied it
     return r.ok;
   }catch(e){ return false; }
 }
@@ -15890,7 +16085,7 @@ function sbBadge(status){
 function sbPriPill(b){
   var p=b.priority||'Normal';
   return '<button class="sb-pri sb-pri-'+p.toLowerCase()+'" onclick="sbCyclePriority(\''+b.id+'\')" '
-    +'title="Click to change priority">'+p+'</button>';
+    +'title="Priority: '+p+' \u2014 click to change">'+(p==='Normal'?'\u00b7':p)+'</button>';
 }
 function sbCardHTML(b, forVA){
   // dimmed = "not actionable by you". Jack's OWN in-progress batch is very much
@@ -15974,13 +16169,13 @@ function sbCardHTML(b, forVA){
    the same way, route them in one action. Tag-level shortcuts too, because in
    practice everything under one tag usually goes to the same person. */
 var SB_ROUTE_SEL={};
-function sbRSel(id,on){ SB_ROUTE_SEL[id]=!!on; sbRefreshJack(); }
+function sbRSel(id,on){ SB_ROUTE_SEL[id]=!!on; sbPaintJack(); }
 function sbRSelAll(on,ids){
   (ids||[]).forEach(function(i){ SB_ROUTE_SEL[i]=!!on; });
-  sbRefreshJack();
+  sbPaintJack();                        // selection is local — never hit the network for it
 }
 function sbRSelTag(tag,ids){ sbRSelAll(true,ids); }
-function sbRSelClear(){ SB_ROUTE_SEL={}; sbRefreshJack(); }
+function sbRSelClear(){ SB_ROUTE_SEL={}; sbPaintJack(); }
 function sbRSelIds(){ var a=[]; for(var k in SB_ROUTE_SEL) if(SB_ROUTE_SEL[k]) a.push(k); return a; }
 async function sbRouteBulk(who){
   var ids=sbRSelIds(); if(!ids.length) return;
@@ -15992,7 +16187,7 @@ async function sbRouteBulk(who){
     if(!ok) return;
     for(var i=0;i<ids.length;i++){ try{ await sbScrapBatchSilent(ids[i]); }catch(e){} }
     SB_ROUTE_SEL={};
-    await sbLoadBatches(true); sbRefreshJack();
+    sbRefreshJack();                    // rows were deleted server-side — one refetch
     showToast(ids.length+' binned \u2713'); return;
   }
   var done=0;
@@ -16000,7 +16195,8 @@ async function sbRouteBulk(who){
     try{ await sbAssign(ids[j], who, true); done++; }catch(e){}
   }
   SB_ROUTE_SEL={};
-  await sbLoadBatches(true); sbRefreshJack();
+  sbPaintJack();                        // each sbAssign already applied locally
+  sbSyncSoon();
   showToast(done+' batch'+(done===1?'':'es')+' sent to '+(who==='All'?'all 3 of you':who==='Both'?'both VAs':vaDisp(who))+' \u2713');
 }
 /* same delete as sbScrapBatch but without its own confirm — the bulk one already asked */
@@ -16039,7 +16235,7 @@ function sbRouteBarHTML(drafts){
 // Groups are capped so a 300-batch day is a page, not a wall. Nothing is hidden
 // permanently — the count in the button is the honest total.
 var SB_GRP_ALL={};
-function sbGrpAll(k){ SB_GRP_ALL[k]=true; sbRefreshJack(); }
+function sbGrpAll(k){ SB_GRP_ALL[k]=true; sbPaintJack(); }
 var SB_GRP_CAP=24;
 function sbGrpBody(rows,key,cls){
   var show=rows, more=0;
@@ -16047,6 +16243,132 @@ function sbGrpBody(rows,key,cls){
   return '<div class="'+cls+'">'+show.map(sbRowHTML).join('')+'</div>'
     +(more?'<button class="sbr-more" onclick="sbGrpAll(\''+key+'\')">Show all '+rows.length
       +' &mdash; '+more+' more hidden &#8595;</button>':'');
+}
+/* ── NEEDS ROUTING: one card per TAG ─────────────────────────────────────────*/
+var SB_TAG_OPEN={};
+function sbTagToggle(k){ SB_TAG_OPEN[k]=!SB_TAG_OPEN[k]; sbPaintJack(); }
+async function sbRouteTag(tag, who){
+  var ids=(SB_BATCHES||[]).filter(function(b){ return b.status==='Draft' && (b.storefront_name||'—')===tag; })
+                          .map(function(b){ return b.id; });
+  if(!ids.length) return;
+  if(who==='bin'){
+    var ok=await askConfirm({title:'Bin all '+ids.length+' '+tag+' batch'+(ids.length===1?'':'es')+'?',
+      body:'Their ASINs go too — nobody gets asked to work them.', yes:'Bin them', danger:true});
+    if(!ok) return;
+    for(var i=0;i<ids.length;i++){ try{ await sbScrapBatchSilent(ids[i]); }catch(e){} }
+    sbRefreshJack(); showToast(ids.length+' binned ✓'); return;
+  }
+  var done=0;
+  for(var j=0;j<ids.length;j++){ try{ await sbAssign(ids[j], who, true); done++; }catch(e){} }
+  sbLand(ids[0]); sbPaintJack(); sbSyncSoon();
+  showToast(done+' × '+tag+' → '+(who==='All'?'all 3 of you':who==='Both'?'both VAs':who==='Jack'?'you':vaDisp(who))+' ✓');
+}
+function sbTagCardsHTML(drafts){
+  /* Jack on v1 of these cards: "where can I copy asins and view keepa" (they were
+     hidden behind Split), "what is the order" (I sorted by newest batch but DISPLAYED
+     the oldest age, so the order read as random), "so much wasted space", and the
+     per-row route buttons overflowed the card edge. So:
+     - every batch row is ALWAYS visible with its own Keepa + Copy + date
+     - Split only reveals the per-row route buttons (the rare case), on their own line
+     - the age shown is the NEWEST batch (what the sort uses); oldest shown beside it
+     - the note is its own line, never squeezed out */
+  var seen=[], by={};
+  drafts.forEach(function(b){ var k=b.storefront_name||'—';
+    if(!by[k]){ by[k]=[]; seen.push(k); } by[k].push(b); });
+  return '<div class="sbtc-grid">'+seen.map(function(k){
+    var rows=by[k];
+    var tot=rows.reduce(function(a,b){ return a+(b.asin_count||0); },0);
+    var hi=rows.some(function(b){ return b.priority==='High'; });
+    var ages=rows.map(function(b){ return sbAgeDays(b.date)||0; });
+    var newest=Math.min.apply(null,ages), oldest=Math.max.apply(null,ages);
+    var ageTxt=(newest<=0?'Today':newest===1?'Yesterday':newest+'d old')
+             +(oldest>newest?' <i>· oldest '+oldest+'d</i>':'');
+    var q=(SB_BATCHES&&rows[0])?(SB_QUEUES||[]).filter(function(x){ return x.id===rows[0].storefront_id; })[0]:null;
+    var note=String((q&&q.notes)||'').trim();
+    var kid=k.replace(/[^a-z0-9]/gi,'_');
+    var open=!!SB_TAG_OPEN[kid];
+    var esc=escHtml(k).replace(/'/g,'\\\'');
+
+    var head='<div class="sbtc-hd">'
+      +(hi?'<span class="sbtc-hi" title="High priority tag">▲</span>':'')
+      +'<span class="sbtc-tag" title="'+escHtml(k)+'">'+escHtml(k)+'</span>'
+      +'<span class="sbtc-n"><b>'+tot+'</b> ASINs'+(rows.length>1?' · '+rows.length+' batches':'')+'</span>'
+      +'<span class="sbtc-age'+(oldest>=6?' stale':'')+'">'+ageTxt+'</span>'
+      +'</div>'
+      +(note?'<div class="sbtc-note" title="'+escHtml(note)+'">✎ '+escHtml(note)+'</div>':'');
+
+    var single=(rows.length===1);
+    var inner=single
+      ? '<div class="sbtc-tools">'
+          +(rows[0].keepa_url?'<a class="sbtc-k big" href="'+String(rows[0].keepa_url).replace(/"/g,'&quot;')+'" target="_blank">\u{1F4C8} Keepa <b>'+(rows[0].asin_count||0)+'</b> ↗</a>':'')
+          +'<button class="sbtc-cp big" onclick="sbCopyAsins(\''+rows[0].id+'\')">\u{1F4CB} Copy</button>'
+        +'</div>'
+      : rows.map(function(b){
+      return '<div class="sbtc-r'+(SB_LANDED===b.id?' landed':'')+'">'
+        +'<span class="sbtc-rn"><b>'+(b.asin_count||0)+'</b></span>'
+        +'<span class="sbtc-ra" title="'+escHtml(sbDayLabel(b.date))+'">'+escHtml(sbAgeLabel(b.date))+'</span>'
+        +(b.keepa_url?'<a class="sbtc-k" href="'+String(b.keepa_url).replace(/"/g,'&quot;')+'" target="_blank" title="Open '+(b.asin_count||0)+' in Keepa">Keepa ↗</a>':'<span></span>')
+        +'<button class="sbtc-cp" onclick="sbCopyAsins(\''+b.id+'\')">Copy</button>'
+        +(open
+          ?'<span class="sbtc-rr">'
+            +[['Mera','M'],['Suz','S'],['Both','B'],['All','A3'],['Jack','Me']].map(function(v){
+                return '<button class="sbr-b sm" data-w="'+v[0]+'" title="Just this batch → '+v[0]+'" '
+                  +'onclick="sbAssign(\''+b.id+'\',\''+v[0]+'\')">'+v[1]+'</button>'; }).join('')
+            +'<button class="sbr-b sm bin" title="Bin just this batch" onclick="sbScrapBatch(\''+b.id+'\')">✕</button>'
+            +'</span>'
+          :'')
+        +'</div>';
+    }).join('');
+
+    var route='<div class="sbtc-route">'
+      +[['Mera',''],['Suz',''],['Both','Both'],['All','All 3'],['Jack','Me']].map(function(v){
+          var who=v[0];
+          return '<button class="sbr-b" data-w="'+who+'" title="Send '+(rows.length===1?'it':'all '+rows.length)+' to '
+            +(who==='All'?'all 3':who==='Both'?'both VAs':who==='Jack'?'you':escHtml(vaDisp(who)))
+            +'" onclick="sbRouteTag(\''+esc+'\',\''+who+'\')">'+escHtml(v[1]||vaDisp(who))+'</button>';
+        }).join('')
+      +'<button class="sbr-b bin" title="Bin the whole tag" onclick="sbRouteTag(\''+esc+'\',\'bin\')">✕</button>'
+      +'</div>';
+
+    var split=rows.length>1
+      ? '<button class="sbtc-x" onclick="sbTagToggle(\''+kid+'\')">'
+          +(open?'Done splitting ▴':'Split · route batches separately ▾')+'</button>'
+      : '';
+
+    return '<div class="sbtc'+(hi?' hi':'')+'">'+head
+      +(single?inner:'<div class="sbtc-rows">'+inner+'</div>')
+      +route+split+'</div>';
+  }).join('')+'</div>';
+}
+/* ── YOURS TO WORK: the same tile, led by a big Start ────────────────────────*/
+function sbWorkRowHTML(b){
+  var started=(b.status==='Started');
+  var q=(SB_QUEUES||[]).filter(function(x){ return x.id===b.storefront_id; })[0];
+  var note=String((q&&q.notes)||'').trim();
+  return '<div class="sbr sbr-jack sbwt'+(b.priority==='High'?' pri-hi':'')+(SB_LANDED===b.id?' landed':'')+'">'
+    +'<div class="sbr-hd">'
+      +'<span class="sbr-tag">'+(b.priority==='High'?'<i class="sbw-hi">▲</i>':'')
+        +escHtml(b.storefront_name||'—')
+        +(b._tagSize>1?'<u>'+b._tagIdx+'/'+b._tagSize+'</u>':'')+'</span>'
+      +'<span class="sbr-day'+((sbAgeDays(b.date)||0)>=6?' stale':'')+'" title="'+escHtml(sbDayLabel(b.date))+'">'
+        +escHtml(sbAgeLabel(b.date))+'</span>'
+      +'<details class="sbw-more"><summary title="More">⋯</summary><div class="sbw-menu">'
+        +(started?'':'<button onclick="sbJackComplete(\''+b.id+'\')">✓ Done without timing</button>')
+        +[['Mera','→ Mera'],['Suz','→ Suz'],['Both','→ Both VAs'],['All','→ All 3']].map(function(v){
+            return '<button onclick="sbAssign(\''+b.id+'\',\''+v[0]+'\')">'+v[1]+'</button>'; }).join('')
+        +'<button class="danger" onclick="sbScrapBatch(\''+b.id+'\')">✕ Bin this batch</button>'
+      +'</div></details>'
+    +'</div>'
+    +(note?'<div class="sbr-note" title="'+escHtml(note)+'">'+escHtml(note)+'</div>':'')
+    +'<div class="sbr-meta"><span class="sbr-n"><b>'+(b.asin_count||0)+'</b> ASINs</span></div>'
+    +'<div class="sbr-tools">'
+      +(b.keepa_url?'<a class="sbr-key" href="'+String(b.keepa_url).replace(/"/g,'&quot;')+'" target="_blank">\u{1F4C8} Keepa <b>'+(b.asin_count||0)+'</b> ↗</a>':'<span></span>')
+      +'<button class="sbr-copy" onclick="sbCopyAsins(\''+b.id+'\')">\u{1F4CB} Copy</button>'
+    +'</div>'
+    +(started
+      ?'<button class="sbw-go done big" onclick="sbJackComplete(\''+b.id+'\')">✓ Done</button>'
+      :'<button class="sbw-go big" onclick="sbJackStart(\''+b.id+'\')">▶ Start</button>')
+    +'</div>';
 }
 function sbRowHTML(b){
   var t=sbToday();
@@ -16064,9 +16386,12 @@ function sbRowHTML(b){
     : '<span class="sbr-key off" title="No Keepa link on this batch yet">&#128200; No link</span>';
   var copy='<button class="sbr-copy" title="Copy the ASIN list to your clipboard" onclick="sbCopyAsins(\''+b.id+'\')">&#128203; Copy</button>';
 
-  var state = doneB ? '<span class="sbr-st done">Done</span>'
+  // A "NEEDS ROUTING" pill on every tile inside a section headed "Needs routing" is
+  // the loudest thing on the tile and says nothing. Same for a "JACK" pill under the
+  // heading "Yours to work". Only badge what the heading does not already tell him.
+  var state = doneB ? ''
             : started ? '<span class="sbr-st going">'+(jackOn?'You&rsquo;re on it':escHtml(vaDisp(b.started_by||b.assigned_to||''))+' working')+'</span>'
-            : isDraft ? '<span class="sbr-st route">Needs routing</span>'
+            : isDraft ? ''
             : '<span class="sbr-st with">'+escHtml(vaDisp(b.assigned_to||'—'))+'</span>';
 
   var actions='';
@@ -16096,11 +16421,13 @@ function sbRowHTML(b){
 
   var nm=b.storefront_name||'—';
   var hi=(b.priority==='High' && !doneB)?' pri-hi':'';
+  if(SB_LANDED===b.id) hi+=' landed';
   return '<div class="sbr sbr-'+vaCls+hi+(doneB?' is-done':'')+(isDraft?' is-draft':'')+(isDraft&&SB_ROUTE_SEL[b.id]?' picked':'')+'">'
     +'<div class="sbr-hd">'
       +(isDraft?'<label class="sbr-pick"><input type="checkbox"'+(SB_ROUTE_SEL[b.id]?' checked':'')
         +' onchange="sbRSel(\''+b.id+'\',this.checked)"><i></i></label>':'')
       +'<span class="sbr-tag" title="'+escHtml(nm)+'">'+escHtml(nm)
+        +(b._tagSize>1?'<u title="'+b._tagSize+' batches on this tag">'+b._tagIdx+'/'+b._tagSize+'</u>':'')
         +(b.batch_number>1?'<i>#'+b.batch_number+'</i>':'')+'</span>'
       +'<span class="sbr-day'+sbAgeCls(sbAgeDays(b.date))+'" title="'+escHtml(sbDayLabel(b.date))+'">'
         +escHtml(sbAgeLabel(b.date))+'</span>'
@@ -16126,19 +16453,49 @@ function sbTodayHTML(){
     return '<div class="sb-empty">Nothing imported today yet.<span>When Sarah pastes a list it appears here straight away.</span></div>';
   }
   var order={High:0,Normal:1,Low:2};
-  var sortFn=function(a,b){
-    var pa=order[a.priority||'Normal'], pb=order[b.priority||'Normal'];
-    if(pa!==pb) return pa-pb;                          // High always floats
-    var da=sbToISO(a.date)||'', db2=sbToISO(b.date)||'';
-    if(da!==db2) return db2<da?-1:1;                   // then newest first
-    return String(a.storefront_name||'').localeCompare(String(b.storefront_name||''));
+  /* ── GROUP BY TAG ────────────────────────────────────────────────────────────
+     Jack: "not a massive fan of how they are grouped... super messy."
+     He was right, and the board was contradicting itself. The bulk bar groups by
+     TAG ("10's 3 | HH 2 | Process 2 3") because a tag is how he actually decides -
+     "all the Process 2 ones go to Suz". But the tiles underneath were sorted purely
+     by priority then date, so three Process 2 batches scattered across three
+     different rows with 10's and HH interleaved between them.
+     Now the tiles cluster by tag, and the TAGS are ordered by urgency: a tag holding
+     a High batch comes first, then the tag with the freshest work. Inside a tag it is
+     still High first, then newest. So the grid reads the same way the bar does. */
+  function tagOf(b){ return String(b.storefront_name||'—'); }
+  function priOf(b){ return order[b.priority||'Normal']; }
+  var sortFn=function(rows){
+    var g={};
+    (rows||[]).forEach(function(b){ var k=tagOf(b); (g[k]=g[k]||[]).push(b); });
+    Object.keys(g).forEach(function(k){
+      g[k].sort(function(a,b){
+        if(priOf(a)!==priOf(b)) return priOf(a)-priOf(b);
+        var da=sbToISO(a.date)||'', db=sbToISO(b.date)||'';
+        if(da!==db) return db<da?-1:1;
+        return (a.batch_number||0)-(b.batch_number||0);
+      });
+    });
+    var keys=Object.keys(g).sort(function(x,y){
+      var px=Math.min.apply(null,g[x].map(priOf)), py=Math.min.apply(null,g[y].map(priOf));
+      if(px!==py) return px-py;                        // a tag containing High work leads
+      var dx=g[x].map(function(b){return sbToISO(b.date)||'';}).sort().pop()||'';
+      var dy=g[y].map(function(b){return sbToISO(b.date)||'';}).sort().pop()||'';
+      if(dx!==dy) return dy<dx?-1:1;                   // then the freshest tag
+      return x.localeCompare(y);
+    });
+    var out=[];
+    keys.forEach(function(k){
+      g[k].forEach(function(b,i){ b._tagFirst=(i===0); b._tagSize=g[k].length; b._tagIdx=i+1; out.push(b); });
+    });
+    return out;
   };
-  var toRoute=live.filter(function(b){ return b.status==='Draft'; }).sort(sortFn);
-  var going  =live.filter(function(b){ return b.status==='Started'; }).sort(sortFn);
+  var toRoute=sortFn(live.filter(function(b){ return b.status==='Draft'; }));
+  var going  =sortFn(live.filter(function(b){ return b.status==='Started'; }));
   // Jack's own batches were interleaved with the VAs' — five "Jack" rows sitting among
   // Mera/Suz, so his own queue was the hardest thing on his own board to find.
-  var mineQ  =live.filter(function(b){ return b.status==='Assigned' && b.assigned_to==='Jack'; }).sort(sortFn);
-  var out2   =live.filter(function(b){ return b.status==='Assigned' && b.assigned_to!=='Jack'; }).sort(sortFn);
+  var mineQ  =sortFn(live.filter(function(b){ return b.status==='Assigned' && b.assigned_to==='Jack'; }));
+  var out2   =sortFn(live.filter(function(b){ return b.status==='Assigned' && b.assigned_to!=='Jack'; }));
   var older  =live.filter(function(b){ return b.date!==t; }).length;
   var totA   =live.reduce(function(a,b){ return a+(b.asin_count||0); },0);
 
@@ -16154,22 +16511,33 @@ function sbTodayHTML(){
     if(!rows.length) return '';
     return '<div class="mgr-section">'+title
       +(note?'<span style="margin-left:auto;font-size:10.5px;font-weight:600;color:var(--muted-2);">'+note+'</span>':'')
-      +'</div>'+sbGrpBody(rows,title.replace(/[^a-z]/gi,'').toLowerCase(),tiles?'sbr-tiles':'sbr-list');
+      +'</div>'+sbGrpBody(rows,title.replace(/[^a-z]/gi,'').toLowerCase(),
+          tiles==='calm'?'sbr-tiles calm':(tiles?'sbr-tiles':'sbr-list'));
   }
   var mineA=mineQ.reduce(function(a,b){ return a+(b.asin_count||0); },0);
   if(toRoute.length){
+    var tagCt={}; toRoute.forEach(function(b){ tagCt[b.storefront_name||'—']=1; });
     out+='<div class="mgr-section">Needs routing<span style="margin-left:auto;font-size:10.5px;font-weight:600;color:var(--muted-2);">'
-      +toRoute.length+' waiting on you</span></div>'
-      +sbRouteBarHTML(toRoute)
-      +sbGrpBody(toRoute,'needsrouting','sbr-tiles');
+      +Object.keys(tagCt).length+' tag'+(Object.keys(tagCt).length===1?'':'s')+' \u00b7 '+toRoute.length+' batch'+(toRoute.length===1?'':'es')+' \u00b7 high first, then newest</span></div>'
+      +sbTagCardsHTML(toRoute);
   }
   out+=group('Being worked',  going,   '');
-  // his own queue gets its own headline with the size of it, because that is a to-do list
-  out+=group('\u{1F535} Yours to work', mineQ,
-        mineQ.length?mineA.toLocaleString()+' ASINs across '+mineQ.length+' batch'+(mineQ.length===1?'':'es'):'');
+  // his own queue is a WORKLIST: big Start, everything else tucked away
+  if(mineQ.length){
+    var mineFlat=mineQ.slice().sort(function(a,b){
+      var pa=(a.priority==='High')?0:1, pb=(b.priority==='High')?0:1;
+      if(pa!==pb) return pa-pb;
+      var da=sbToISO(a.date)||'', db=sbToISO(b.date)||'';
+      if(da!==db) return db<da?-1:1;
+      return String(a.storefront_name||'').localeCompare(String(b.storefront_name||''));
+    });
+    out+='<div class="mgr-section">\u{1F535} Yours to work<span style="margin-left:auto;font-size:10.5px;font-weight:600;color:var(--muted-2);">'
+      +mineA.toLocaleString()+' ASINs across '+mineQ.length+' batch'+(mineQ.length===1?'':'es')+' \u00b7 high first, then newest</span></div>'
+      +'<div class="sbr-tiles">'+mineFlat.map(sbWorkRowHTML).join('')+'</div>';
+  }
   // the VAs' batches are reference, not action — tiles fit far more per row
-  out+=group('Out with the VAs', out2, older?older+' carried over from an earlier day':'', true);
-  out+=group('Finished today', doneToday, '', true);
+  out+=group('Out with the VAs', out2, older?older+' carried over from an earlier day':'', 'calm');
+  out+=group('Finished today', doneToday, '', 'calm');
   return out;
 }
 async function sbCopyAsins(batchId){
@@ -16208,12 +16576,23 @@ async function sbAssign(batchId, who, quiet){
     }
     SB_BATCHES=null;
     if(!quiet) showToast('Sent to '+vaDisp('Mera')+' and '+vaDisp('Suz')+' ✓');
+    sbRefreshJack();                       // a NEW row exists server-side — must refetch
+    return;
   } else {
-    var ok2=await sbPatch(batchId,{assigned_to:who, status:'Assigned'});
-    if(!ok2){ showToast('Couldn\'t send that — check your connection',true); return; }
-    if(!quiet) showToast(who==='Jack'?'Kept for you ✓':('Sent to '+vaDisp(who)+' ✓'));
+    // paint first: the tile moving to its new section IS the confirmation, so there is
+    // no toast on a single route either. A popup per click, thirty times a day, is noise.
+    var prevWho=b.assigned_to, prevSt=b.status;
+    b.assigned_to=who; b.status='Assigned';
+    delete SB_ROUTE_SEL[batchId];
+    if(!quiet){ sbLand(batchId); sbPaintJack(); }
+    var ok2=await sbPatch(batchId,{assigned_to:who, status:'Assigned'}, true);
+    if(!ok2){
+      b.assigned_to=prevWho; b.status=prevSt;      // put it back exactly as it was
+      if(!quiet){ sbPaintJack(); showToast('Couldn\'t save that route — put it back',true); }
+      return;
+    }
+    sbSyncSoon();
   }
-  sbRefreshJack();
 }
 async function sbCyclePriority(batchId){
   var b=(SB_BATCHES||[]).filter(function(x){return x.id===batchId;})[0]; if(!b) return;
@@ -16222,21 +16601,32 @@ async function sbCyclePriority(batchId){
   b.priority=next;                              // optimistic — it's one field, instantly reversible
   var host=document.getElementById('mgr-storefronts-content');
   if(host) host.innerHTML=sbJackHTML();
-  await sbPatch(batchId,{priority:next});
+  await sbPatch(batchId,{priority:next}, true);
+  sbSyncSoon();
 }
 /* Jack's own lifecycle. The VA versions stamp state.currentVA, which Jack never has
    (he doesn't start a shift), and they refresh the VA panel rather than his board. */
 async function sbJackStart(batchId){
-  var ok=await sbPatch(batchId,{status:'Started', started_by:'Jack', started_at:new Date().toISOString()});
-  if(!ok){ showToast('Couldn\'t start it — check your connection',true); return; }
-  showToast('Started — locked to you \u2713');
-  try{ sbRefreshJack(); }catch(e){}
+  var b=(SB_BATCHES||[]).filter(function(x){return x.id===batchId;})[0];
+  var prev=b?{s:b.status,by:b.started_by}:null;
+  if(b){ b.status='Started'; b.started_by='Jack'; sbLand(batchId); sbPaintJack(); }
+  var ok=await sbPatch(batchId,{status:'Started', started_by:'Jack', started_at:new Date().toISOString()}, true);
+  if(!ok){
+    if(b&&prev){ b.status=prev.s; b.started_by=prev.by; sbPaintJack(); }
+    showToast('Couldn\'t start it — check your connection',true); return;
+  }
+  sbSyncSoon();
 }
 async function sbJackComplete(batchId){
-  var ok=await sbPatch(batchId,{status:'Completed', completed_by:'Jack', completed_at:new Date().toISOString()});
-  if(!ok){ showToast('Couldn\'t save that — check your connection',true); return; }
-  showToast('Batch complete \u2713');
-  try{ sbRefreshJack(); }catch(e){}
+  var b=(SB_BATCHES||[]).filter(function(x){return x.id===batchId;})[0];
+  var prev=b?{s:b.status,by:b.completed_by}:null;
+  if(b){ b.status='Completed'; b.completed_by='Jack'; sbLand(batchId); sbPaintJack(); }
+  var ok=await sbPatch(batchId,{status:'Completed', completed_by:'Jack', completed_at:new Date().toISOString()}, true);
+  if(!ok){
+    if(b&&prev){ b.status=prev.s; b.completed_by=prev.by; sbPaintJack(); }
+    showToast('Couldn\'t save that — check your connection',true); return;
+  }
+  sbSyncSoon();
 }
 async function sbStart(batchId){
   var ok=await sbPatch(batchId,{status:'Started', started_by:(state.currentVA||'VA'), started_at:new Date().toISOString()});
@@ -16250,11 +16640,35 @@ async function sbComplete(batchId){
   showToast('Batch complete ✓');
   try{ sbRefreshVA(); }catch(e){}
 }
-function sbRefreshJack(){
-  sbLoadBatches(true).then(function(){
-    var host=document.getElementById('mgr-storefronts-content');
-    if(host) host.innerHTML=sbJackHTML();
-  });
+/* ── ROUTING FELT LAGGY, AND IT GENUINELY WAS ────────────────────────────────
+   Jack: "when I route things it's a bit laggy, like popups and moving."
+   Every click ran: PATCH (network) -> SB_BATCHES=null -> GET the whole list again
+   (network) -> rebuild the entire board. Two sequential round-trips before ANYTHING
+   moved on screen, then a toast on top. Ticking a bulk-select checkbox did the same:
+   one full refetch PER TICK, so selecting 30 rows meant 30 network fetches.
+   Now: mutate locally, paint instantly, save in the background, and put it back if
+   the save fails. The DB stops being in the click path. */
+function sbPaintJack(){                              // instant, local state only
+  var host=document.getElementById('mgr-storefronts-content');
+  if(host) host.innerHTML=sbJackHTML();
+}
+function sbRefreshJack(){                            // refetch THEN paint — for the
+  sbLoadBatches(true).then(sbPaintJack);             // cases that really changed server-side
+}
+/* One reconcile after a burst of edits rather than one per click. */
+var _sbSyncT=null;
+function sbSyncSoon(){
+  clearTimeout(_sbSyncT);
+  _sbSyncT=setTimeout(function(){
+    try{ sbLoadBatches(true).then(sbPaintJack); }catch(e){}
+  }, 5000);
+}
+/* Which tile just moved, so it can announce itself in its new section instead of
+   silently teleporting — that was the other half of "moving". */
+var SB_LANDED=null;
+function sbLand(id){
+  SB_LANDED=id;
+  setTimeout(function(){ if(SB_LANDED===id){ SB_LANDED=null; } }, 1400);
 }
 /* ── QUEUE ADMIN (replaces the master Google Sheet) ─────────────────────────*/
 function sbQueueRowHTML(q){
@@ -16662,7 +17076,7 @@ function sbHistoryHTML(){
   var dates=Object.keys(byDate).sort(function(a,b){
     function k(x){ var q=String(x).split('/'); return q.length===3?(q[2]+q[1]+q[0]):''; }
     return k(b).localeCompare(k(a));
-  }).slice(0, window._sbHistAll ? 60 : 5);
+  }).slice(0, window._sbHistAll ? 60 : 1);
   var rows=dates.map(function(d){
     var items=byDate[d].slice().sort(function(a,b){ return String(a.storefront_name||'').localeCompare(String(b.storefront_name||'')); });
     return '<div class="sbh-day"><div class="sbh-date">'+escHtml(d)+'</div>'
@@ -16682,10 +17096,10 @@ function sbHistoryHTML(){
       +'</div>';
   }).join('');
   var moreDays=Object.keys(byDate).length-dates.length;
-  return '<div class="mgr-section">Earlier batches<span style="margin-left:auto;font-size:10.5px;font-weight:600;color:var(--muted-2);">who imported it, who ran it, when</span></div>'
+  return '<details class="sbh-fold"><summary class="mgr-section" style="cursor:pointer;">Earlier batches<span style="margin-left:auto;font-size:10.5px;font-weight:600;color:var(--muted-2);">who imported it, who ran it, when · click to open</span></summary>'
     +'<div class="sbh-wrap">'+rows
-    +(moreDays>0?'<button class="btn btn-ghost" style="margin-top:10px;" onclick="window._sbHistAll=1;sbRefreshJack()">Show '+moreDays+' earlier day'+(moreDays===1?'':'s')+'</button>':'')
-    +'</div>';
+    +(moreDays>0?'<button class="btn btn-ghost" style="margin-top:10px;" onclick="window._sbHistAll=1;sbPaintJack()">Show '+moreDays+' earlier day'+(moreDays===1?'':'s')+'</button>':'')
+    +'</div></details>';
 }
 /* ── WHAT'S ACTUALLY PRODUCING ─────────────────────────────────────────────
    The module captured everything and analysed nothing. A batch becomes a task
@@ -16784,7 +17198,7 @@ function sbPerf(days, log){
   });
 }
 var SB_PERF_DAYS=30;
-function sbPerfSet(d){ SB_PERF_DAYS=d; try{ sbRefreshJack(); }catch(e){} }
+function sbPerfSet(d){ SB_PERF_DAYS=d; try{ sbPaintJack(); }catch(e){} }
 function sbPerfHTML(){
   var rows=sbPerf(SB_PERF_DAYS);
   var head='<div class="mgr-section">What’s producing'
