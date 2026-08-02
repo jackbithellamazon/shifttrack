@@ -3356,6 +3356,13 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 .tf-x{background:none;border:none;color:var(--muted-2);font-size:11px;cursor:pointer;padding:0 3px;}
 .tf-x:hover{color:#ff6680;}
 .tf-none{font-size:11px;color:var(--muted-2);margin-bottom:7px;}
+.tf-mode{background:rgba(255,255,255,.06);border:1px solid var(--line-2);color:var(--muted-2);
+  border-radius:6px;padding:2px 7px;margin-left:6px;font-family:inherit;font-size:9.5px;font-weight:800;
+  cursor:pointer;text-transform:uppercase;letter-spacing:.3px;}
+.tf-mode:hover{color:var(--text);border-color:var(--muted-2);}
+.tf-mode.own{background:color-mix(in srgb,var(--accent) 22%,transparent);
+  border-color:color-mix(in srgb,var(--accent) 50%,transparent);color:#cfc6ff;}
+.tf-legend{font-style:normal;font-weight:600;font-size:9.5px;color:var(--muted-2);margin-left:8px;}
 .tf-add{display:flex;gap:6px;align-items:center;}
 .tf-input{flex:1;max-width:340px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:8px;color:var(--text);font-family:inherit;font-size:12px;padding:6px 10px;outline:none;}
 .tf-input:focus{border-color:color-mix(in srgb,var(--accent,#7c5cff) 55%,var(--line-2));}
@@ -5014,7 +5021,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v27.3';
+var APP_VERSION='v27.4';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -14355,12 +14362,19 @@ function sfltTaskStripHTML(taskId,i){
   var linked=sfltFiltersForTaskId(taskId);
   var pool=getSavedFilters().filter(function(f){ return !f.archived && f.url; }).length;
   var chips=linked.map(function(f){
+    var own=sfltMode(f)==='own';
     return '<span class="tf-chip"><span class="tf-tag t-'+(f.tag||'KPF')+'">'+(f.tag||'KPF')+'</span>'
       +'<span class="tf-name">'+escHtml(f.title||'Filter')+'</span>'
+      +'<button class="tf-mode'+(own?' own':'')+'" title="'
+        +(own?'Its own task row, straight after this one — click to nest it inside instead'
+             :'A link inside this task — click to make it its own task row instead')+'" '
+      +'onclick="sfltSetMode(\''+f.id+'\',\''+(own?'in':'own')+'\');mgr_repaintTicklist();">'
+      +(own?'own row':'inside')+'</button>'
       +'<button class="tf-x" title="Unlink" onclick="sfltUnlinkTask(\''+f.id+'\',\''+taskId+'\')">&#10005;</button></span>';
   }).join('');
   return '<div class="tf-strip">'
-    +'<div class="tf-head">&#127919; Saved filters on this task'+(linked.length?' <b>'+linked.length+'</b>':'')+'</div>'
+    +'<div class="tf-head">&#127919; Saved filters on this task'+(linked.length?' <b>'+linked.length+'</b>':'')
+      +'<i class="tf-legend">inside = a link on this task · own row = its own task right after</i></div>'
     +(chips?'<div class="tf-chips">'+chips+'</div>':'<div class="tf-none">None yet &mdash; the VA just gets the task on its own.</div>')
     +(pool
       ? '<div class="tf-add"><button class="tf-btn tf-btn-big" onclick="sfltPickOpen(\''+taskId+'\')">+ Attach filters</button>'
