@@ -728,8 +728,10 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .sflt-newva{width:28px;height:26px;}
 .sflt-days{display:inline-flex;gap:4px;flex-wrap:wrap;}
 .sflt-day{background:rgba(255,255,255,.04);border:1px solid var(--line-2);color:var(--muted-2);
-  border-radius:7px;padding:4px 9px;font-family:inherit;font-size:10.5px;font-weight:700;cursor:pointer;
-  transition:all .12s;white-space:nowrap;}
+  border-radius:7px;padding:4px 0;min-width:38px;text-align:center;font-family:inherit;font-size:10.5px;
+  font-weight:700;cursor:pointer;transition:all .12s;white-space:nowrap;}
+.sflt-day.sflt-all{min-width:58px;border-style:dashed;}
+.sflt-day.sflt-all.on{border-style:solid;}
 .sflt-day:hover{color:var(--text);border-color:var(--muted-2);}
 .sflt-day.on{background:color-mix(in srgb,var(--accent) 26%,transparent);
   border-color:var(--accent);color:#fff;}
@@ -4963,7 +4965,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v26.7';
+var APP_VERSION='v26.8';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -14123,11 +14125,75 @@ var SFLT_SLOTS=[
   {k:'tue',   label:'Tuesdays',  task:{Mera:'kpf-tue'}},
   {k:'thu',   label:'Thursdays', task:{Mera:'kpf-thu'}}
 ];
-/* A filter can sit on SEVERAL days of a POA — Jack: "I want to be able to choose
-   multiple days this filter is on their POA". Stored as `slots:[...]`; anything saved
-   before this still has the old single `slot` string, so read through a shim rather
-   than migrating (nothing to lose if a write fails). "Every day" is exclusive with
-   the named days — running daily AND on Tuesdays is the same thing as running daily. */
+/* The five working days. VAs work Mon-Fri, so there is no Sat/Sun. */
+var SFLT_DAYS=[
+  {k:'mon',label:'Mon',full:'Mondays',dow:1},
+  {k:'tue',label:'Tue',full:'Tuesdays',dow:2},
+  {k:'wed',label:'Wed',full:'Wednesdays',dow:3},
+  {k:'thu',label:'Thu',full:'Thursdays',dow:4},
+  {k:'fri',label:'Fri',full:'Fridays',dow:5}
+];
+var SFLT_ALLDAYS=['mon','tue','wed','thu','fri'];
+/* Read shim: new filters carry days[]; ones saved before this carry the old
+   slot/slots keys, which map cleanly onto weekdays. Nothing is migrated on disk,
+   so a failed write can never lose a filter. */
+function sfltDays(f){
+  if(f && Array.isArray(f.days) && f.days.length) return f.days.slice();
+  var legacy=[];
+  if(f && Array.isArray(f.slots) && f.slots.length) legacy=f.slots.slice();
+  else if(f && f.slot) legacy=[f.slot];
+  if(!legacy.length) return SFLT_ALLDAYS.slice();
+  if(legacy.indexOf('daily')>=0) return SFLT_ALLDAYS.slice();
+  var out=legacy.filter(function(k){ return SFLT_ALLDAYS.indexOf(k)>=0; });
+  return out.length?out:SFLT_ALLDAYS.slice();
+}
+function sfltHasDay(f,k){ return sfltDays(f).indexOf(k)>=0; }
+function sfltDaysLabel(f){
+  var d=sfltDays(f);
+  if(d.length===5) return 'Every day';
+  var lbls=SFLT_DAYS.filter(function(x){ return d.indexOf(x.k)>=0; }).map(function(x){ return x.label; });
+  return lbls.join(', ');
+}
+function sfltToggleDay(id,k){
+  var arr=getSavedFilters(); var f=arr.filter(function(x){return x.id===id;})[0]; if(!f) return;
+  var d=sfltDays(f), i=d.indexOf(k);
+  if(i>=0) d.splice(i,1); else d.push(k);
+  if(!d.length) d=[k];                                  // can't run on no day — keep the one just clicked
+  d=SFLT_ALLDAYS.filter(function(x){ return d.indexOf(x)>=0; });   // Mon..Fri order
+  f.days=d; delete f.slot; delete f.slots;
+  saveSavedFilters(arr); sfltMgrRepaint();
+  showToast('"'+(f.title||'Filter')+'" runs '+sfltDaysLabel(f));
+}
+function sfltSetAllDays(id,on){
+  var arr=getSavedFilters(); var f=arr.filter(function(x){return x.id===id;})[0]; if(!f) return;
+  f.days=on?SFLT_ALLDAYS.slice():['mon']; delete f.slot; delete f.slots;
+  saveSavedFilters(arr); sfltMgrRepaint();
+  showToast('"'+(f.title||'Filter')+'" runs '+sfltDaysLabel(f));
+}
+/* five day buttons + an all/none shortcut */
+function sfltDayChipsHTML(sel,onclickTpl,allTpl){
+  var all=sel.length===5;
+  return '<span class="sflt-days">'
+    +(allTpl?'<button type="button" class="sflt-day sflt-all'+(all?' on':'')+'" title="'
+        +(all?'Clear back to one day':'Run it every working day')+'" onclick="'+allTpl.replace('{ON}',all?'false':'true')+'">Mon–Fri</button>':'')
+    +SFLT_DAYS.map(function(d){
+      var on=sel.indexOf(d.k)>=0;
+      return '<button type="button" class="sflt-day'+(on?' on':'')+'" data-day="'+d.k+'"'
+        +' title="'+d.full+'" onclick="'+onclickTpl.replace('{K}',d.k)+'">'+d.label+'</button>';
+    }).join('')+'</span>';
+}
+/* Which POA task hosts this VA's filters TODAY: prefer a day-specific KPF task if
+   their ticklist has one, else the daily KPF task. */
+function sfltHostTaskIds(va){
+  var ids=[];
+  SFLT_SLOTS.forEach(function(sl){ if(sl.task[va]) ids.push(sl.task[va]); });
+  return ids;
+}
+function sfltTodayKey(){
+  var now=new Date(new Date().toLocaleString('en-US',{timeZone:'Europe/London'}));
+  var m=SFLT_DAYS.filter(function(d){ return d.dow===now.getDay(); })[0];
+  return m?m.k:null;                                     // null at the weekend
+}
 function sfltSlotKeys(f){
   if(f && Array.isArray(f.slots) && f.slots.length) return f.slots.slice();
   if(f && f.slot) return [f.slot];
@@ -14151,7 +14217,7 @@ function sfltToggleSlot(id,k){
   ks=SFLT_SLOTS.map(function(s){return s.k;}).filter(function(x){ return ks.indexOf(x)>=0; });  // keep order
   f.slots=ks; delete f.slot;
   saveSavedFilters(arr); sfltMgrRepaint();
-  showToast('"'+(f.title||'Filter')+'" now runs '+sfltSlotLabel(f).toLowerCase());
+  showToast('"'+(f.title||'Filter')+'" now runs '+sfltDaysLabel(f));
 }
 /* the day chips, shared by the manager row and the add form */
 function sfltSlotChipsHTML(sel,onclickTpl){
@@ -14171,10 +14237,16 @@ function sfltForTask(va,taskId){
     if(sfltTaskIds(f).indexOf(taskId)>=0) return true;
     // legacy: assigned to the VA with a day-slot that maps to this task
     if(!sfltHasVA(f,va)) return false;
-    return sfltSlotKeys(f).some(function(k){
-      var sl=SFLT_SLOTS.filter(function(x){return x.k===k;})[0];
-      return sl && sl.task[va]===taskId;
-    });
+    // does it run TODAY, and is this the task that hosts this VA's filters today?
+    var today=sfltTodayKey();
+    if(!today || !sfltHasDay(f,today)) return false;
+    var hosts=sfltHostTaskIds(va);
+    if(hosts.indexOf(taskId)<0) return false;
+    // a day-specific KPF task wins over the daily one when both are in the ticklist
+    var dayTask=(SFLT_SLOTS.filter(function(x){return x.k===today;})[0]||{}).task;
+    var pref=dayTask&&dayTask[va];
+    if(pref && hosts.indexOf(pref)>=0) return taskId===pref;
+    return taskId===(SFLT_SLOTS[0].task[va]);
   }).sort(function(a,b){ return (a.pos||0)-(b.pos||0); });
 }
 /* link/unlink a filter to a specific ticklist task */
@@ -14493,9 +14565,23 @@ function sfltPoaPickerHTML(which){
   return '<div class="sflt-newpoa">'
     +'<span class="sflt-newlbl">Add to a POA</span>'
     +'<span class="sflt-poa">'+vaBtns+'</span>'
-    +sfltSlotChipsHTML(['daily'],"sfltNewSlotTgl(this,'"+which+"','{K}')")
+    +sfltDayChipsHTML(SFLT_ALLDAYS,"sfltNewDayTgl(this,'{K}')","sfltNewAllDays(this,{ON})")
     +'<span class="sflt-newhint">optional — leave blank to just save it to the library</span>'
     +'</div>';
+}
+function sfltNewDayTgl(btn,k){
+  btn.classList.toggle('on');
+  var wrap=btn.parentNode;
+  if(!wrap.querySelector('.sflt-day[data-day].on')) btn.classList.add('on');   // never none
+  var on=wrap.querySelectorAll('.sflt-day[data-day].on').length;
+  var all=wrap.querySelector('.sflt-all'); if(all) all.classList.toggle('on', on===5);
+}
+function sfltNewAllDays(btn,on){
+  var wrap=btn.parentNode;
+  [].forEach.call(wrap.querySelectorAll('.sflt-day[data-day]'),function(b,i){
+    b.classList.toggle('on', on ? true : i===0);
+  });
+  btn.classList.toggle('on', !!on);
 }
 function sfltNewSlotTgl(btn,which,k){
   var wrap=btn.parentNode;
@@ -14519,9 +14605,9 @@ function sfltNewPoa(which){
              .map(function(b){ return b.getAttribute('data-va'); });
   var host=document.querySelector('.sflt-newva[data-w="'+which+'"]');
   var wrap=host?host.closest('.sflt-newpoa'):null;
-  var ks=wrap?[].map.call(wrap.querySelectorAll('.sflt-day.on'),function(b){return b.getAttribute('data-slot');}):[];
-  if(!ks.length) ks=['daily'];
-  return {vas:vas, slots:ks, slot:ks[0]};
+  var ds=wrap?[].map.call(wrap.querySelectorAll('.sflt-day[data-day].on'),function(b){return b.getAttribute('data-day');}):[];
+  if(!ds.length) ds=SFLT_ALLDAYS.slice();
+  return {vas:vas, days:ds};
 }
 function sfltAdd(){
   var t=(document.getElementById('sflt-title')||{}).value||''; var u=(document.getElementById('sflt-url')||{}).value||''; var n=(document.getElementById('sflt-note')||{}).value||'';
@@ -14529,12 +14615,12 @@ function sfltAdd(){
   var arr=getSavedFilters();
   var poa=sfltNewPoa('add');
   var f={id:sfltUid(),title:t.slice(0,160),url:u,note:n.trim().slice(0,300),tag:(document.getElementById('sflt-tag')||{}).value||'KPF',pos:arr.length,archived:false,
-         vas:poa.vas,slots:poa.slots,slot:poa.slot};
+         vas:poa.vas,days:poa.days};
   arr.push(f);
   saveSavedFilters(arr); sfltUpsert(f,arr.length-1);
   if(typeof mgr_currentTab!=='undefined'&&mgr_currentTab==='filters') mgr_renderFilters(); else mgr_renderSettings();
   showToast(poa.vas.length
-    ? 'Saved ✓ — on '+poa.vas.map(function(v){return vaDisp(v);}).join(' + ')+"'s POA, "+sfltSlotLabel(f).toLowerCase()
+    ? 'Saved ✓ — on '+poa.vas.map(function(v){return vaDisp(v);}).join(' + ')+"'s POA, "+sfltDaysLabel(f)
     : 'Filter saved ✓ — in your library, not on a POA yet');
 }
 function sfltDel(id){
@@ -14664,7 +14750,9 @@ function sfltRowsHTML(){
         var on=sfltHasVA(f,v);
         return '<button class="sflt-va'+(on?' on v-'+v:'')+'" title="'+(on?'On ':'Add to ')+vaDisp(v)+"'s POA"+'" onclick="event.stopPropagation();sfltToggleVA(\''+f.id+'\',\''+v+'\')">'+vaDisp(v).charAt(0)+'</button>';
       }).join('')
-      +(assigned?sfltSlotChipsHTML(sfltSlotKeys(f),"event.stopPropagation();sfltToggleSlot('"+f.id+"','{K}')"):'')
+      +(assigned?sfltDayChipsHTML(sfltDays(f),
+          "event.stopPropagation();sfltToggleDay('"+f.id+"','{K}')",
+          "event.stopPropagation();sfltSetAllDays('"+f.id+"',{ON})"):'')
       +'</span>';
     var head='<div class="sflt-line" onclick="sfltMgrEditRow(\''+f.id+'\')">'
       +'<span class="sflt-num">'+(page*SFLT_PER_PAGE+n+1)+'</span>'
