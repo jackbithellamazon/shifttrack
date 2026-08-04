@@ -727,6 +727,26 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .sflt-newhint{font-size:11px;color:var(--muted-2);}
 .sflt-newva{width:28px;height:26px;}
 .sflt-days{display:inline-flex;gap:4px;flex-wrap:wrap;}
+.ql-open{background:none;border:1px dashed var(--line-2);color:var(--muted-2);border-radius:7px;
+  padding:3px 9px;font-family:inherit;font-size:10.5px;font-weight:600;cursor:pointer;margin-top:3px;}
+.ql-open:hover{border-color:var(--accent);color:var(--text);}
+.tk-sec-jack.has-urgent > .tk-sec-h{color:#ff8f9f;}
+.tk-sec-jack.has-urgent{border-left:3px solid #f5455f;padding-left:9px;margin-left:-12px;}
+.jbu{background:color-mix(in srgb,#f5455f 13%,var(--panel));
+  border:1px solid color-mix(in srgb,#f5455f 45%,transparent);
+  border-left:4px solid #f5455f;border-radius:11px;padding:10px 14px;margin-bottom:11px;}
+.jbu-h{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:800;color:#ff8f9f;
+  text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.jbu-dot{width:8px;height:8px;border-radius:50%;background:#f5455f;flex:0 0 auto;
+  animation:jbuPulse 1.6s ease-in-out infinite;}
+@keyframes jbuPulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+@media (prefers-reduced-motion:reduce){.jbu-dot{animation:none;}}
+.jbu-i{padding:4px 0;border-top:1px solid rgba(245,69,95,.18);font-size:12.5px;line-height:1.5;}
+.jbu-i:first-of-type{border-top:none;}
+.jbu-i b{color:var(--text);font-weight:700;}
+.jbu-i span{display:block;color:var(--muted);font-size:11.5px;margin-top:1px;}
+.jbu-i i{font-style:normal;display:inline-block;font-size:10px;font-weight:700;color:#ffb84d;
+  background:rgba(255,184,77,.14);border-radius:5px;padding:1px 6px;margin-top:3px;}
 .oag{display:flex;align-items:center;gap:11px;flex-wrap:wrap;background:rgba(255,255,255,.035);
   border:1px solid var(--line-2);border-radius:10px;padding:8px 13px;margin-bottom:10px;font-size:11.5px;}
 .oag.done{background:color-mix(in srgb,#10d99a 9%,transparent);border-color:color-mix(in srgb,#10d99a 32%,transparent);}
@@ -1064,6 +1084,8 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .sflt-row2:hover{background:color-mix(in srgb,#fff 3%,var(--panel));}
 .sflt-row2.open{background:color-mix(in srgb,var(--accent,#7c5cff) 7%,var(--panel));}
 .sflt-row2.is-arch{opacity:.55;}
+.jbp-b.jbp-urgent{color:#ff8f9f;border-color:color-mix(in srgb,#f5455f 40%,transparent);}
+.jbp-b.jbp-urgent.on{background:#f5455f;border-color:#f5455f;color:#fff;}
 .sflt-line{cursor:pointer;min-height:0;}
 .sflt-num{font-family:var(--font-mono);font-size:11px;color:var(--muted-2);text-align:right;}
 .sflt-tagp{font-size:9.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;text-align:center;padding:3px 0;border-radius:6px;background:var(--panel-2);border:1px solid var(--line-2);color:var(--muted);}
@@ -1691,8 +1713,17 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .sbtc.landed,.sbtc-r.landed{animation:sbrLand .9s ease-out;}
 /* ── worklist (Yours to work) ── */
 .sbw-list{display:flex;flex-direction:column;gap:7px;margin-bottom:18px;}
-.sbwt .sbw-go.big{width:100%;margin-top:2px;}
+.sbwt .sbw-go.big{width:100%;flex:0 0 auto;height:38px;padding:0;margin-top:2px;font-size:13px;}
 .sbwt .sbr-hd .sbw-more{margin-left:2px;}
+.sbwt-go{display:grid;grid-template-columns:1fr auto;gap:5px;margin-top:2px;}
+.sbwt-move{position:relative;}
+.sbwt-move summary{list-style:none;cursor:pointer;height:38px;display:flex;align-items:center;
+  padding:0 11px;border-radius:9px;border:1px solid var(--line-2);background:rgba(255,255,255,.04);
+  color:var(--muted);font-size:11.5px;font-weight:700;white-space:nowrap;}
+.sbwt-move summary::-webkit-details-marker{display:none;}
+.sbwt-move summary:hover{border-color:var(--accent);color:var(--text);}
+.sbwt-move[open] summary{border-color:var(--accent);color:var(--text);}
+.sbwt-move .sbw-menu{right:0;left:auto;}
 .sbwt.pri-hi .sbr-tag u{margin-left:6px;}
 .sbw{display:flex;align-items:center;gap:11px;background:linear-gradient(90deg,color-mix(in srgb,var(--jack) 7%,var(--panel)),var(--panel) 55%);
   border:1px solid var(--line-2);border-left:3px solid var(--jack);border-radius:10px;padding:7px 12px;}
@@ -1984,6 +2015,39 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
   border-bottom:1px solid rgba(255,255,255,.05);}
 .vres-iss b{color:var(--amber);white-space:nowrap;font-family:var(--font-mono);font-size:11px;}
 .vres-iss span{color:var(--muted);}
+.tm-rz{margin-top:14px;border-top:1px solid var(--line-2);padding-top:12px;}
+.tm-rz.none{color:var(--muted-2);font-size:12px;}
+.tm-rz-h{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted-2);margin-bottom:9px;}
+.tm-rz-g{margin-bottom:11px;}
+.tm-rz-t{display:block;font-size:11.5px;color:var(--muted);margin-bottom:4px;}
+.tm-rz-t.warn{color:#ffb84d;}
+.tm-rz-l{display:flex;align-items:baseline;gap:9px;padding:3px 0;font-size:12px;}
+.tm-rz-l b{font-family:var(--font-mono);font-size:14px;font-weight:800;color:var(--text);min-width:22px;}
+.tm-rz-l.warn b{color:#ffb84d;}
+.tm-rz-l span{color:var(--text);}
+.tm-rz-l i{font-style:normal;color:var(--muted-2);font-size:10.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.tm-rz-n{font-size:11px;color:var(--muted-2);line-height:1.5;margin-top:3px;}
+.dup-why{margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,.08);
+  font-size:12px;line-height:1.5;color:var(--muted);}
+.dup-why b{color:var(--text);}
+.dup-why.none{color:var(--muted-2);font-style:italic;}
+.dup-both{margin-top:7px;padding-top:7px;border-top:1px solid rgba(255,255,255,.08);
+  font-size:12px;color:var(--muted);display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.dup-both.done b{color:var(--text);}
+.dup-b{background:color-mix(in srgb,var(--accent) 22%,transparent);
+  border:1px solid color-mix(in srgb,var(--accent) 50%,transparent);color:#fff;
+  border-radius:7px;padding:4px 10px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;}
+.dup-b:hover{background:var(--accent);}
+.dup-b.ghost{background:none;border-color:var(--line-2);color:var(--muted);}
+.dup-b.ghost:hover{border-color:var(--accent);color:var(--text);}
+.dup-armed{outline:2px solid var(--accent);outline-offset:2px;border-radius:10px;}
+.d-shot{display:block;margin-top:9px;border:1px solid var(--line-2);border-radius:10px;overflow:hidden;
+  text-decoration:none;background:rgba(255,255,255,.03);}
+.d-shot img{display:block;width:100%;max-height:230px;object-fit:cover;object-position:top;}
+.d-shot span{display:block;padding:6px 10px;font-size:11px;color:var(--muted-2);}
+.d-shot:hover{border-color:var(--accent);}
+.d-shot.d-shot-fail img{display:none;}
+.d-shot.d-shot-fail span::after{content:' — preview unavailable, opens in a new tab';}
 .d-rowref{font-family:var(--font-mono);font-size:10.5px;font-weight:700;color:var(--muted-2);
   background:rgba(255,255,255,.06);border-radius:999px;padding:2px 8px;margin-left:7px;text-transform:none;letter-spacing:0;}
 .vres{background:rgba(255,255,255,.028);border:1px solid var(--line-2);border-radius:11px;
@@ -3917,6 +3981,7 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
       </div>
     </div>
 
+    <div id="jack-urgent"></div>
     <div id="jack-adds"></div>
     <div id="from-jack"></div>
     <div id="va-filters"></div>
@@ -5102,7 +5167,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v28.0';
+var APP_VERSION='v29.1';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -5737,7 +5802,16 @@ function showVAView() {
       var el=document.getElementById(id); return el && el.style.display==='block';
     });
     var shiftUp=!!(window.state && state.shiftStart);
-    if(ls && !shiftUp && !setupOpen) ls.style.display='flex';
+    // …but it must be EXCLUSIVE with the shift screen. This only ever set the login
+    // screen visible and never hid #shift-screen, so a running shift could end up
+    // rendered directly beneath "Who's starting their shift?" — both on screen at once.
+    var ss=document.getElementById('shift-screen');
+    if(shiftUp||setupOpen){
+      if(ls) ls.style.display='none';
+    }else{
+      if(ls) ls.style.display='flex';
+      if(ss) ss.style.display='none';
+    }
   }catch(e){}
   updateNavBtn();
 }
@@ -6161,6 +6235,7 @@ function selectVA(va) {
 
       if (restored === 'restored') {
         // Draft found — go straight into shift, skip setup
+        document.getElementById('login-screen').style.display = 'none';
         document.getElementById('mera-setup').style.display = 'none';
         document.getElementById('suz-setup').style.display = 'none';
         document.getElementById('shift-screen').style.display = 'block';
@@ -6264,7 +6339,7 @@ function startShift(va, newsletterDay, previewVA) {
     }
     var _openItems = (_op && _op.items) ? _op.items.filter(function(it){return !it.done;}).sort(function(a,b){
       // High first, then oldest first — importance beats age
-      var R={High:0,Medium:1,Low:2};
+      var R={Urgent:-1,High:0,Medium:1,Low:2};
       var d=(R[a.pri||'Medium'])-(R[b.pri||'Medium']);
       return d!==0?d:jb_byAge(a,b);
     }) : [];
@@ -6291,13 +6366,7 @@ function startShift(va, newsletterDay, previewVA) {
         if(TYPE_ORDER.indexOf(ty)>=0) return;                 // anything unexpected still shows
         groups[ty].forEach(function(it){ _jbTasks.push(jb_itemTask(it)); });
       });
-      // items that belong to an existing task ride INSIDE it; drop their loose rows
-      try{
-        var _used=jb_attachItemsToTasks(tasks,_openItems);
-        if(Object.keys(_used).length){
-          _jbTasks=_jbTasks.filter(function(t){ return !(t.jbIid && _used[t.jbIid]); });
-        }
-      }catch(e){}
+
     })();
     state._jbItemCount=_openItems.length;
     // storefront batches assigned to this VA arrive as ordinary tasks (High first)
@@ -6360,6 +6429,7 @@ function startShift(va, newsletterDay, previewVA) {
   renderTasks();
   try{ renderStorefronts(); }catch(e){}
   try{ jb_addsBanner(tmplVA); }catch(e){}
+  try{ jb_urgentBanner(tmplVA); }catch(e){}
   try{ if(typeof renderFromJack==='function') renderFromJack(tmplVA); }catch(e){}
   try{ if(typeof renderSavedFiltersVA==='function') renderSavedFiltersVA(); }catch(e){}
   try{ if(typeof refreshSavedFiltersFromCloud==='function') refreshSavedFiltersFromCloud(); }catch(e){}   // fetch newest filters
@@ -6418,11 +6488,19 @@ function renderTasks() {
     list.forEach(function(r){ body.appendChild(buildTaskEl(r.t,r.i,r.extra)); });
     return sec;
   }
+  if(fromJack.length){
+    var PR={Urgent:0,High:1,Medium:2,Low:3};
+    fromJack.sort(function(a,b){
+      var pa=PR[(a.t&&a.t.jbPri)||'Medium'], pb=PR[(b.t&&b.t.jbPri)||'Medium'];
+      if(pa!==pb) return pa-pb;
+      return a.i-b.i;
+    });
+    var urgent=fromJack.filter(function(r){ return (r.t&&r.t.jbPri)==='Urgent'; }).length;
+    mandEl.appendChild(fill(taskSectionEl('📣 From Jack — today only'+(urgent?' · '+urgent+' urgent':''),
+      fromJack.length,'tk-sec-jack'+(urgent?' has-urgent':'')),fromJack));
+  }
   if(mand.length){
     mandEl.appendChild(fill(taskSectionEl('Still to do',mand.length),mand));
-  }
-  if(fromJack.length){
-    mandEl.appendChild(fill(taskSectionEl('📣 From Jack',fromJack.length,'tk-sec-jack'),fromJack));
   }
   if(own.length){
     extEl.appendChild(fill(taskSectionEl('Their own work',own.length,'tk-sec-own'),own));
@@ -6619,7 +6697,9 @@ function buildJackTaskEl(task, i, isExtra){
         + ((task.jbCarried&&!task.done)?'<span class="jbcard-carry'+(task.jbCarryDays>=3?' overdue':'')+'" title="Sent '+(task.jbAddedOn||'earlier')+' — still open">'+(task.jbCarryDays>=3?'&#9888; '+task.jbCarryDays+'d':'&#8635; '+(task.jbCarryDays?task.jbCarryDays+'d':'carried'))+'</span>':'')
         + '</div>'
       + '<div class="'+metaCls+' task-sub"><span>'+meta+'</span></div>'
-      + (qlNeeds(task) ? quickLogHTML(task,i,isExtra) : '')
+      + (qlNeeds(task) ? quickLogHTML(task,i,isExtra)
+          : (taskIsTickOnly(task)||task.done||task.skipped ? ''
+             : '<button type="button" class="ql-open" onclick="event.stopPropagation();qlReveal('+i+','+isExtra+')">+ log time / leads</button>'))
     + '</div>'
     + openMini + timerHtml
     + ((task.done && task.tickedAt) ? '<div class="task-done-time">&#10003; '+task.tickedAt+'</div>' : '')
@@ -6681,7 +6761,10 @@ function buildTaskEl(task, i, isExtra) {
   // anything that needs time + leads logged gets the controls here instead of a
   // sentence telling them to go and find the controls
   var subHtml = qlNeeds(task) ? quickLogHTML(task,i,isExtra)
-                              : '<div class="task-sub">'+subIcon+'<span>'+subText+'</span></div>';
+                              : '<div class="task-sub">'+subIcon+'<span>'+subText+'</span>'
+                                +((taskIsTickOnly(task)||task.done||task.skipped)?''
+                                  :'<button type="button" class="ql-open" onclick="event.stopPropagation();qlReveal('+i+','+isExtra+')">+ log time / leads</button>')
+                                +'</div>';
 
   var actHtml;
   if (task.done) {
@@ -6866,7 +6949,17 @@ function updateField(i, isExtra, field, val) {
    Logging used to cost 3+ clicks per task (expand → type hours → type leads).
    The row's subtitle was dead instruction text, so it now carries the controls
    instead: same row height, zero expanding. */
-function qlNeeds(t){ return t && !t.done && !t.skipped && !taskIsTickOnly(t); }
+var QL_OPEN={};   /* task ids the VA has manually opened — NOT on the task object,
+                     which renderTasks rebuilds */
+function qlNeeds(t){
+  if(!t || t.done || t.skipped || taskIsTickOnly(t)) return false;
+  // only once it is in play — started, timing, already logged, or opened by hand
+  return !!(t.timerRun || t.timerSec || taskHasProgress(t) || QL_OPEN[t.id]);
+}
+function qlReveal(i,isExtra){
+  var t=isExtra?state.extraTasks[i]:state.tasks[i]; if(!t) return;
+  QL_OPEN[t.id]=1; renderTasks();
+}
 function quickLogHTML(task,i,isExtra){
   var sfx=(isExtra?'e':'t')+i, st='event.stopPropagation();';
   var h='<div class="ql'+(taskHasProgress(task)?' has':'')+'" id="ql-'+sfx+'" onclick="event.stopPropagation()">'
@@ -7243,35 +7336,6 @@ function jb_groupTask(ty,items){
     jbUrl:'', jbAsin:'', jbTimer:true, jbLeads:true,
     timerSec:0, timerRun:false, timerStart:null };
 }
-/* Jack: "when I press EU sheet it should go in there when I add them."
-   An item whose type has a matching host task on this VA's list becomes a LINK ROW
-   on that task instead of a loose row of its own — so EU sheets collect under
-   "EU Sheets → Complete them", storefronts under Storefronts, filters under KPF.
-   Anything with no matching host (ASIN, Message) still gets its own row. */
-function jb_attachItemsToTasks(tasks,items){
-  var used={};
-  if(!tasks||!tasks.length||!items||!items.length) return used;
-  items.forEach(function(it){
-    var hosts=JB_ROUTE[it.t]; if(!hosts) return;
-    for(var h=0;h<tasks.length;h++){
-      var t=tasks[h];
-      if(hosts.indexOf(t.id)<0) continue;
-      var nm=jb_cleanLabel(it);
-      var url=/^https?:\/\//i.test(it.v)?it.v:'';
-      t.hasLinks=true;
-      t.links=t.links||[]; t.linkLeads=t.linkLeads||[]; t.linkNames=t.linkNames||[]; t.linkJbIids=t.linkJbIids||[];
-      var iid=it.iid||nm;
-      if(t.linkJbIids.indexOf(iid)>=0){ used[iid]=1; return; }
-      t.links.push(url); t.linkLeads.push(0); t.linkNames.push(nm); t.linkJbIids.push(iid);
-      if(it.r && String(it.r).trim()){
-        t.hint=(t.hint?t.hint+' ':'')+'“'+String(it.r).trim()+'”';
-      }
-      used[iid]=1;
-      return;
-    }
-  });
-  return used;
-}
 function jb_itemTask(it,i){
   var TY={sf:['\u{1F3EC}','Storefront'],kpf:['\u{1F3AF}','KPF filter'],eu:['\u{1F1EA}\u{1F1FA}','EU sheet'],asin:['#','ASIN'],msg:['\u{1F4AC}','From Jack']};
   var ty=TY[it.t]||TY.msg;
@@ -7280,7 +7344,7 @@ function jb_itemTask(it,i){
   var iid=it.iid||('x'+(i||0));
   var carried=jb_isCarried(it.addedOn); var cd=carried?jb_carryDays(it.addedOn):0;
   return { id:'jbitem-'+iid, jbIid:iid, name:ty[1]+' · '+nm, jbLabel:nm, jbReason:(it.r||'').trim(),
-    jbAddedOn:it.addedOn||'', jbCarried:carried, jbCarryDays:cd, mandatory:true,
+    jbAddedOn:it.addedOn||'', jbCarried:carried, jbCarryDays:cd, jbPri:(it.pri||'Medium'), mandatory:true,
     hint:(carried?'Carried over from '+it.addedOn+' — still needs doing.':'Sent by Jack today.')+(it.leads?' Log how many leads this gave you.':'')+(it.timer?' Use Start/Stop on the row to time it.':''),
     hasLinks:false, done:false, skipped:false, skipReason:'', time:'', timeHrs:0, timeMins:0, leads:'', context:'', links:[],
     jbType:it.t, jbUrl:isUrl?it.v:'', jbAsin:(it.t==='asin'?String(it.v).trim():''), jbTimer:!!it.timer, jbLeads:!!it.leads,
@@ -7320,6 +7384,32 @@ function ttTickAll(){
   if(!any&&window._ttTick){ clearInterval(window._ttTick); window._ttTick=null; }
 }
 // banner: "Jack added N POA items and M storefronts today"
+/* Jack: "anything we can add for a super time-sensitive high-important task which
+   has a banner on their shift." Sending at Urgent puts a red bar at the very top of
+   that VA's shift, above everything, naming each item — and it stays until they tick
+   it off. Deliberately loud, and deliberately only for Urgent, so it keeps meaning
+   something (the same trap the red priority tiles fell into on the storefront board). */
+function jb_urgentBanner(va){
+  var host=document.getElementById('jack-urgent'); if(!host) return;
+  var o=null; try{ o=jb_open(va); }catch(e){}
+  if(!o){ host.innerHTML=''; return; }
+  var items=(o.items||[]).filter(function(x){ return !x.done && x.pri==='Urgent'; });
+  var tasks=(o.tasks||[]).filter(function(x){ return !x.done && x.pri==='Urgent'; });
+  var all=items.concat(tasks);
+  if(!all.length){ host.innerHTML=''; return; }
+  host.innerHTML='<div class="jbu">'
+    +'<div class="jbu-h"><span class="jbu-dot"></span>'
+      +(all.length===1?'Urgent from Jack — do this first':'Urgent from Jack — '+all.length+' to do first')+'</div>'
+    +all.map(function(it){
+        var nm=(typeof jb_cleanLabel==='function')?jb_cleanLabel(it):(it.v||it.name||'Task');
+        var why=String(it.r||'').trim();
+        return '<div class="jbu-i"><b>'+escHtml(String(nm).slice(0,90))+'</b>'
+          +(why?'<span>'+escHtml(why.slice(0,140))+'</span>':'')
+          +(jb_isCarried(it.addedOn)?'<i>still open from '+escHtml(it.addedOn)+'</i>':'')
+          +'</div>';
+      }).join('')
+    +'</div>';
+}
 function jb_addsBanner(va){
   var host=document.getElementById('jack-adds'); if(!host) return;
   var o=null; try{ o=jb_open(va); }catch(e){}
@@ -8103,6 +8193,55 @@ function tabBannerHTML(){
    Mon–Fri), so from Saturday through Monday the Overview carries a red bar naming
    anyone whose LAST week came in under the weekly target. Same numbers as the
    Hours & Time strip: sum of hoursWorked across that Mon–Fri, vs weeklyHoursTarget. */
+/* Leads stop arriving for two reasons and they look identical from here:
+   the sheet's script stopped, or the rows are being REJECTED on their way in.
+   Mera hit the second: her DATE column is UK d/m/y, she types US m/d/y, so
+   "8/3/2026" became 8 March, fell before the script's 1-July backfill cutoff and
+   all 19 August leads were dropped in silence. Same slip the other way puts a
+   lead in the future — 88 of hers are dated Sep-Dec. So flag BOTH symptoms and
+   never assert a cause the app cannot actually see. */
+function futureDatedLeads(){
+  var out={}; var today=new Date(); today.setHours(23,59,59,0);
+  (window.leads||[]).forEach(function(l){
+    var d=new Date(String(l.date||'').slice(0,10));
+    if(isNaN(d)||d<=today) return;
+    var v=vaDisp(l.va)||l.va; (out[v]=out[v]||[]).push(l);
+  });
+  return out;
+}
+function syncStaleBannerHTML(){
+  try{
+    var all=window.leads||[]; if(all.length<5) return '';
+    var out='';
+    var fut=futureDatedLeads();
+    Object.keys(fut).forEach(function(v){
+      var n=fut[v].length; if(n<2) return;
+      out+='<div class="pay-bar due late"><b>⚠ '+escHtml(v)+' has '+n+' lead'+(n===1?'':'s')+' dated in the future</b>'
+        +' — her DATE column reads day/month but the dates were typed month/day, so they land in the wrong month.'
+        +' Anything typed that way for a day past the 12th flips into a future month;'
+        +' anything on the 12th or before flips into a past month and is <b>dropped before it ever reaches this app</b>.'
+        +' Fix the date format on her sheet, not here.</div>';
+    });
+    var newest={};
+    ['Mera','Suz'].forEach(function(va){
+      var code=(typeof vaCode==='function')?vaCode(va):(va==='Mera'?'VA M':'VA S');
+      var mine=all.filter(function(l){ return l.va===code && typeof l.hrs==='number'; });
+      newest[va]=mine.length?Math.min.apply(null,mine.map(function(l){ return l.hrs; })):null;
+    });
+    ['Mera','Suz'].forEach(function(va){
+      var mine=newest[va], other=newest[va==='Mera'?'Suz':'Mera'];
+      if(mine==null || mine<36) return;
+      if(other==null || other>24) return;
+      var days=Math.round(mine/24), them=vaDisp(va==='Mera'?'Suz':'Mera');
+      out+='<div class="pay-bar due late"><b>⚠ Nothing has arrived from '+escHtml(vaDisp(va))+' for '+days+' day'+(days===1?'':'s')+'</b>'
+        +' — but '+escHtml(them)+'&rsquo;s came through today, so this is her sheet, not her effort. Two things to check,'
+        +' in this order: <b>1.</b> open her sheet&rsquo;s current-month tab and look at the DATE column —'
+        +' if the dates are not really this month, every row is being rejected on the way in.'
+        +' <b>2.</b> if the dates are right, <b>Extensions → Apps Script → Executions</b> for a failing run.</div>';
+    });
+    return out;
+  }catch(e){ return ''; }
+}
 function hoursBannerHTML(){
   try{
     var now=new Date(new Date().toLocaleString('en-US',{timeZone:'Europe/London'}));
@@ -9445,7 +9584,7 @@ function mgr_renderOverview(){
     +'<button onclick="mgr_changeWeek(1)"'+(mgr_weekOffset>=0?' disabled':'')+'>Next ›</button>'
     +(mgr_weekOffset!==0?'<button onclick="mgr_weekOffset=0;mgr_changeWeek(0)">This week</button>':'')+'</div>';
 
-  var html=tabBannerHTML()+hoursBannerHTML()+payBannerHTML();
+  var html=tabBannerHTML()+syncStaleBannerHTML()+hoursBannerHTML()+payBannerHTML();
   html+='<div id="spend-tile">'+(_spendCache?'':spendSkeleton(true))+'</div>';
 
   // ── Weekly performance (neutral cards, colour = status, direct actions) ──
@@ -11106,7 +11245,9 @@ function mgr_renderSettings(){
       +'<div style="border-top:1px solid var(--line-2);margin:16px 0 14px;"></div>'
       +'<div class="settings-title" style="font-size:15px;">Teach the score</div>'
       +'<div style="font-size:12px;color:var(--muted);line-height:1.6;background:var(--panel-2);border:1px solid var(--line-2);border-radius:10px;padding:11px 14px;margin-bottom:4px;">'
-        +'<b style="color:var(--text);">How this works:</b> every lead gets a 0&ndash;10 score from ROI, profit, demand and margin. The bars below group the leads <b style="color:var(--text);">you\'ve already decided</b> into score bands and show what % of each band you actually bought. If the score is doing its job, <b style="color:var(--text);">higher bands should have higher buy-rates</b>. If a low band is buying more than a high band, the scoring weights don\'t match your taste &mdash; hit <b style="color:var(--text);">Auto-tune</b> and it compares your bought leads vs your rejected ones, shifts the four weight sliders (in Targets, Scoring &amp; VAs) toward what actually predicts your buys, then re-scores everything. Sliders can always be reset to 1.0&times;.'
+        +'<b style="color:var(--text);">How the score works:</b> it is a <b style="color:var(--text);">lookup, not a formula</b>. Sales per month picks a volume band, profit per unit picks a tier, and where they meet in your matrix is the score. ROI only ever adjusts it &mdash; under 10% docks a couple of points unless the profit or the speed makes up for it.'
+        +'<br><br><b style="color:var(--text);">It does not learn on its own.</b> Nothing changes the matrix except you. What the grid below does is <b style="color:var(--text);">check it against your actual buying</b>: each cell shows how many decided leads landed there and how many of those you bought. <span style="color:#ffb84d;">Amber</span> = you keep buying a cell the matrix rates low (raise it). <span style="color:#ff6b7f;">Red</span> = the matrix loves a cell you keep passing (lower it). You change it by editing the matrix &mdash; the grid just tells you which cell is wrong.'
+        +'<br><br><b style="color:var(--text);">Passing a 10/10 is not automatically a fault.</b> The score can only see volume, profit and ROI &mdash; it cannot see a bad listing, a gated brand, hazmat or your cash position. So the block underneath splits your high-score passes by the reason you gave: reasons the matrix <i>could</i> act on, and reasons it will never see. Only the first kind means a cell needs changing.'
       +'</div>'
       +'<div id="score-teach" style="margin-top:14px;"></div>'
     +'</div>'
@@ -11412,9 +11553,58 @@ function renderJackInsights(){
    matters more — is whether each CELL of the matrix matches what Jack actually
    buys. Show the grid, mark where his buys landed, and let the cells that
    disagree with him speak for themselves. */
+/* Reject reasons: the Quick Reject buttons write "Rejected: <reason>" into the note,
+   and Jack also types free-text ones. Split them into what the matrix can act on and
+   what it can never see — passing a 10/10 for a poor listing is not a scoring fault. */
+var TEACH_ACTIONABLE={'Low ROI':1,'Low Profit':1,'High Competition':1,'Low Demand':1};
+function teachReason(l){
+  var m=String(l.notes||'').match(/Rejected:\s*([^·\n]+)/i);
+  return m?m[1].trim():'';
+}
+function teachHighPassHTML(decided){
+  var isBuy=function(l){ return l.status==='bought'||l.status==='atbq'||l.status==='atba2a'; };
+  var highPass=decided.filter(function(l){
+    return !isBuy(l) && l._sc && l._sc.total>=8;
+  });
+  if(!highPass.length){
+    return '<div class="tm-rz none">No high scores passed yet &mdash; nothing to explain.</div>';
+  }
+  var groups={}, none=0;
+  highPass.forEach(function(l){
+    var r=teachReason(l);
+    if(!r){ none++; return; }
+    (groups[r]=groups[r]||[]).push(l);
+  });
+  var keys=Object.keys(groups).sort(function(a,b){ return groups[b].length-groups[a].length; });
+  var act=keys.filter(function(k){ return TEACH_ACTIONABLE[k]; });
+  var cant=keys.filter(function(k){ return !TEACH_ACTIONABLE[k]; });
+  function line(k,cls){
+    var g=groups[k];
+    return '<div class="tm-rz-l '+cls+'"><b>'+g.length+'</b><span>'+escHtml(k)+'</span>'
+      +'<i>'+g.slice(0,2).map(function(l){ return escHtml(String(l.title||'').slice(0,30)); }).join(' · ')+'</i></div>';
+  }
+  return '<div class="tm-rz">'
+    +'<div class="tm-rz-h">Why you passed on '+highPass.length+' lead'+(highPass.length===1?'':'s')+' scoring 8+</div>'
+    +(act.length
+      ? '<div class="tm-rz-g"><b class="tm-rz-t warn">The matrix could act on these</b>'
+        +act.map(function(k){ return line(k,'warn'); }).join('')
+        +'<div class="tm-rz-n">These are things the score already measures, so a cell is probably rated too high. Worth changing the matrix.</div></div>'
+      : '')
+    +(cant.length
+      ? '<div class="tm-rz-g"><b class="tm-rz-t">The score can never see these</b>'
+        +cant.map(function(k){ return line(k,''); }).join('')
+        +'<div class="tm-rz-n">Listing quality, gating, brand, your cash position &mdash; nothing to fix in the matrix. These passes are not a scoring failure.</div></div>'
+      : '')
+    +(none
+      ? '<div class="tm-rz-g"><b class="tm-rz-t">'+none+' with no reason given</b>'
+        +'<div class="tm-rz-n">Use the Quick Reject buttons, or start your note with &ldquo;Rejected: &hellip;&rdquo; &mdash; then they land in one of the groups above instead of being invisible here.</div></div>'
+      : '')
+    +'</div>';
+}
 function renderScoreTeach(){
   var host=document.getElementById('score-teach'); if(!host) return;
   var decided=(window.leads||[]).filter(function(l){ return l.islead!==null||l.status; });
+  window._teachDecided=decided;
   var isBuy=function(l){ return l.status==='bought'||l.status==='atbq'||l.status==='atba2a'; };
   if(decided.length<5){
     host.innerHTML='<div class="tm-wait">Decide a few more leads and this shows how the scoring matrix matches your buying.</div>';
@@ -11467,7 +11657,8 @@ function renderScoreTeach(){
       +'<tbody>'+rows+'</tbody></table></div>'
     +(flags.length
         ? '<div class="tm-flags">'+flags.map(function(f){ return '<div>⚠ '+f+'</div>'; }).join('')+'</div>'
-        : '<div class="tm-ok">Nothing disagrees yet — decide more leads and any mismatched cell will show up here.</div>');
+        : '<div class="tm-ok">Nothing disagrees yet — decide more leads and any mismatched cell will show up here.</div>')
+    + teachHighPassHTML(decided);
 }
 function setScoreMode(m){ var st=getAppSettings(); st.scoreMode=m; saveAppSettings(st);
   if(m==='smart'&&!getSmartModel()){ var r=trainSmartModel(); if(r&&r.err){ showToast(r.err,true); } }
@@ -13735,7 +13926,7 @@ function getF(){
   function _pGB(s){var p=String(s||'').split('/');return p.length===3?new Date(+p[2],+p[1]-1,+p[0]):null;}
   const _now=new Date(), _t0=new Date(_now.getFullYear(),_now.getMonth(),_now.getDate());
   return leads.filter(l=>{
-    if(view==='new'&&(l.status||l.islead!==null))return false;   // New = anything Jack hasn't decided yet (seen or not); deciding drops it out
+    if(view==='new'&&(l.status||l.islead!==null)&&l.id!==_pendingLeave)return false;   // New = undecided; a just-decided lead is HELD until he clicks off it
     if(window._staleFilter&&(view==='new'||view==='all')&&!isStale(l))return false;   // "Going stale" ribbon filter
     if(fd!=='all'){ var _d=_pGB(l.date); if(!_d)return false; var _dd=Math.round((_t0-_d)/86400000);
       if(fd==='sheet') return true;   // the ticked tabs already chose the months
@@ -13850,7 +14041,14 @@ function afterDecision(id){
   try{
     var l=(window.leads||[]).find(function(x){ return x.id===id; });
     if(!l) return;
-    if(leadStillBelongs(l)){ renderList(); return; }     // still matches the filter — just repaint
+    if(leadStillBelongs(l)){
+      // renderList() ends by calling selectLead(selId), which repaints the detail —
+      // adding another renderDetail() here is the second paint, i.e. the flicker.
+      renderList();
+      var row0=document.querySelector('.litem[data-lid="'+id+'"]');
+      if(row0) row0.classList.add('litem-decided');
+      return;
+    }
     // hold it on screen while it's the one being looked at
     if(selId===l.id){
       _pendingLeave=l.id;
@@ -14002,15 +14200,61 @@ function dupeBadge(l){
   }
   return '<span class="dup-tag dup-cross" title="'+escHtml(vaDisp(d.otherVA))+' found this '+ago+' too">BOTH VAs</span>';
 }
+function dupeOther(l){
+  var d=dupeOf(l); if(!d||d.otherId==null) return null;
+  return (window.leads||[]).find(function(x){ return x.id===d.otherId; })||null;
+}
+function dupeUndecided(x){ return !!x && !x.status && x.islead===null; }
+/* the VA's reason for re-sending, shown where the question is actually asked */
+function dupeWhy(l){
+  var why=String(l.vanote||'').trim();
+  if(why) return '<div class="dup-why"><b>'+escHtml(vaDisp(l.va))+'&rsquo;s reason:</b> '+escHtml(why.slice(0,220))+'</div>';
+  return '<div class="dup-why none">No reason given &mdash; ask them to put one in the VA Note column when they re-send an ASIN.</div>';
+}
 function dupeNote(l){
   var d=dupeOf(l); if(!d) return '';
   var ago = d.days===0 ? 'earlier the same day' : (d.days===1 ? 'yesterday' : d.days+' days before');
+  var other=dupeOther(l);
   if(d.sameVA){
     return '<div class="dup-note same">&#8635; <b>'+escHtml(vaDisp(l.va))+' already sent this</b> '+ago
-      +' &mdash; same ASIN, so this one is a repeat.</div>';
+      +' &mdash; same ASIN, so this one is a repeat.'+dupeWhy(l)+'</div>';
+  }
+  var both='';
+  if(dupeUndecided(other)){
+    both='<div class="dup-both">'+escHtml(vaDisp(d.otherVA))+'&rsquo;s copy is still undecided'
+      +(other.sheetRow?' (row '+other.sheetRow+')':'')+'. '
+      +'<button class="dup-b" onclick="event.stopPropagation();dupeDecideBoth('+l.id+')">Apply my decision to both</button>'
+      +'<button class="dup-b ghost" onclick="event.stopPropagation();selectLead('+other.id+',true)">Open theirs</button>'
+      +'</div>';
+  }else if(other){
+    both='<div class="dup-both done">'+escHtml(vaDisp(d.otherVA))+'&rsquo;s copy: <b>'+escHtml(decisionLabel(other))+'</b></div>';
   }
   return '<div class="dup-note cross">&#128101; <b>'+escHtml(vaDisp(d.otherVA))+' found this too</b>, '+ago
-    +' &mdash; both of them landed on it independently.</div>';
+    +' &mdash; both of them landed on it independently.'+dupeWhy(l)+both+'</div>';
+}
+/* Decide this lead and the other VA's copy in one go. Arms a flag that setSt reads,
+   so both go through the SAME code path (sheet write-back, logging, learning) —
+   no second implementation to drift out of step. */
+var _decideBoth=null;
+function dupeDecideBoth(id){
+  var other=dupeOther((window.leads||[]).find(function(x){ return x.id===id; }));
+  if(!dupeUndecided(other)){ ldToast('Their copy has already been decided'); return; }
+  _decideBoth=id;
+  ldToast('Pick a decision — it will apply to both copies');
+  try{ var box=document.querySelector('#detail-pane .d-dec-row'); if(box) box.scrollIntoView({block:'center',behavior:'smooth'}); }catch(e){}
+  try{ renderDetail(); }catch(e){}
+}
+function dupeMirror(id,st){
+  if(_decideBoth!==id) return;
+  _decideBoth=null;
+  var src=(window.leads||[]).find(function(x){ return x.id===id; });
+  var other=dupeOther(src);
+  if(!dupeUndecided(other)) return;
+  other.status=st; other.islead=true; other.seen=true;
+  try{ markSeen(other._sid); }catch(e){}
+  try{ db_leadPatch(other,{status:sheetStatusOut(st),islead:'LEAD'}); }catch(e){}
+  try{ logDecision(other); }catch(e){}
+  ldToast('Applied to '+vaDisp(other.va)+'&rsquo;s copy too &mdash; both written to the sheets');
 }
 function litemH(l){
   const s=l._sc,col=scCol(s.total);
@@ -14067,6 +14311,23 @@ function selectLead(id,scroll){
 }
 function ldBack(){ document.getElementById('view-leads').classList.remove('show-detail'); }
 function emptyDetail(){return`<div class="detail-empty">${ICO.inbox}<div style="font-size:15px;font-weight:600">Select a lead to view details</div></div>`;}
+/* Gyazo (and Imgur) hand out PAGE urls; the direct image needs a different host or
+   an extension, otherwise an <img> silently fails. */
+function shotImg(u){
+  u=String(u||'').trim();
+  var g=u.match(/^https?:\/\/(?:www\.)?gyazo\.com\/([a-f0-9]{16,})/i);
+  if(g) return 'https://i.gyazo.com/'+g[1]+'.png';
+  var im=u.match(/^https?:\/\/(?:www\.)?imgur\.com\/([A-Za-z0-9]+)$/i);
+  if(im) return 'https://i.imgur.com/'+im[1]+'.png';
+  return u;
+}
+/* afterDecision/selectLead both wanted this and it was never defined — every call
+   threw and fell back to a whole-list repaint, which is the flicker Jack sees. */
+function renderDetail(){
+  var host=document.getElementById('detail-pane'); if(!host) return;
+  var l=(window.leads||[]).find(function(x){ return x.id===selId; });
+  host.innerHTML = l ? detailH(l) : emptyDetail();
+}
 function detailH(l){
   const s=l._sc,col=scCol(s.total);
   const [stxt,scls]=statusInfo(l);
@@ -14170,8 +14431,13 @@ function detailH(l){
           <a class="d-link" href="https://sas.selleramp.com/sas/lookup?asin=${l.asin}" target="_blank">${ICO.ext} SAS</a>
           <a class="d-link" href="https://keepa.com/#!product/2-${l.asin}" target="_blank">${ICO.ext} Keepa</a>
           ${l.sup&&l.sup!=='#'?`<a class="d-link" href="${l.sup}" target="_blank">${ICO.ext} Supplier</a>`:`<span class="d-link d-link-off" title="No supplier link on the sheet for this lead">${ICO.ext} No supplier link</span>`}
-          ${l.screenshot?`<a class="d-link d-link-shot" href="${String(l.screenshot).replace(/"/g,'&quot;')}" target="_blank">${ICO.ext} 📸 Screenshot</a>`:''}
+          ${l.screenshot?`<a class="d-link d-link-shot" href="${String(l.screenshot).replace(/"/g,'&quot;')}" target="_blank">${ICO.ext} 📸 Screenshot</a>`
+                        :`<span class="d-link d-link-off" title="The VA didn't put a screenshot on this row">${ICO.ext} No screenshot</span>`}
         </div>
+        ${l.screenshot?`<a class="d-shot" href="${String(l.screenshot).replace(/"/g,'&quot;')}" target="_blank" title="Open the full screenshot">
+            <img src="${shotImg(l.screenshot)}" alt="VA screenshot" loading="lazy"
+                 onerror="this.closest('.d-shot').classList.add('d-shot-fail')">
+            <span>📸 VA screenshot — click to open full size</span></a>`:''}
         <div class="d-asin-row">
           <button class="d-asin" onclick="cpA('${l.asin}',event)">${ICO.copy} ${l.asin}</button>
           ${l.discount&&l.discount.trim()?`<button class="d-asin d-code" onclick="cpA('${String(l.discount).replace(/'/g,'').replace(/"/g,'')}',event)" title="Copy discount / code">🏷️ ${String(l.discount).replace(/</g,'&lt;').slice(0,28)}</button>`:''}
@@ -15473,9 +15739,13 @@ function setSt(id,st){
   if(st==='bought'&&l._sc&&l._sc.total<5){ setTimeout(function(){ldToast('You bought a '+l._sc.total+'/10 — the score under-rated it. Auto-tune (Settings → Leads) learns from this');},900); }
   if(st==='passed'&&l._sc&&l._sc.total>=8){ setTimeout(function(){ldToast('You passed on a '+l._sc.total+'/10 — Auto-tune can learn from this too');},900); }
   try{ logDecision(l); }catch(e){}   // log at DECISION time — advanceAfter only fires if he finishes the note step
-  try{ afterDecision(id); }catch(e){}
-}ldToast((st==='bought'?'BOUGHT ✓':st==='passed'?'Marked NOT':st==='waiting'?'Marked WAITING':'ATB ✓')+' — writing to sheet');
-window._noteFor={id:id}; try{selectLead(id,true);}catch(e){renderList();} nbFocus();}
+  try{ dupeMirror(id,st); }catch(e){}   // if he armed "both", the other VA's copy follows
+  window._noteFor={id:id};      // set BEFORE painting so the qty/note panel is there first time
+  _pendingLeave=id;             // hold it on screen until he moves to another lead
+  try{ afterDecision(id); }catch(e){ try{ renderList(); }catch(_){} }
+}
+ldToast((st==='bought'?'BOUGHT ✓':st==='passed'?'Marked NOT':st==='waiting'?'Marked WAITING':'ATB ✓')+' — writing to sheet');
+try{ nbFocus(); }catch(e){}}
 function undoA(id){window._noteFor=null;const l=leads.find(x=>x.id===id);if(l){l.status=null;l.islead=null;l.seen=true;db_leadPatch(l,{status:null,islead:null});}renderList();}
 function saveN(id){const l=leads.find(x=>x.id===id),ta=document.getElementById('mn');if(l&&ta){l.notes=ta.value;db_leadPatch(l,{jack_comment:ta.value});ldToast('Note saved — writing to sheet')}}
 function cpDiscord(id){
@@ -16875,17 +17145,14 @@ function sbWorkRowHTML(b){
   var note=String((q&&q.notes)||'').trim();
   return '<div class="sbr sbr-jack sbwt'+(b.priority==='High'?' pri-hi':'')+(SB_LANDED===b.id?' landed':'')+'">'
     +'<div class="sbr-hd">'
-      +'<span class="sbr-tag">'+(b.priority==='High'?'<i class="sbw-hi">▲</i>':'')
+      +'<span class="sbr-tag">'
         +escHtml(b.storefront_name||'—')
         +(b._tagSize>1?'<u>'+b._tagIdx+'/'+b._tagSize+'</u>':'')+'</span>'
       +'<span class="sbr-day'+((sbAgeDays(b.date)||0)>=6?' stale':'')+'" title="'+escHtml(sbDayLabel(b.date))+'">'
         +escHtml(sbAgeLabel(b.date))+'</span>'
-      +'<details class="sbw-more"><summary title="More">⋯</summary><div class="sbw-menu">'
-        +(started?'':'<button onclick="sbJackComplete(\''+b.id+'\')">✓ Done without timing</button>')
-        +[['Mera','→ Mera'],['Suz','→ Suz'],['Both','→ Both VAs'],['All','→ All 3']].map(function(v){
-            return '<button onclick="sbAssign(\''+b.id+'\',\''+v[0]+'\')">'+v[1]+'</button>'; }).join('')
-        +'<button class="danger" onclick="sbScrapBatch(\''+b.id+'\')">✕ Bin this batch</button>'
-      +'</div></details>'
+      +(started?'':'<details class="sbw-more"><summary title="More">⋯</summary><div class="sbw-menu">'
+        +'<button onclick="sbJackComplete(\''+b.id+'\')">✓ Done without timing</button>'
+      +'</div></details>')
     +'</div>'
     +(note?'<div class="sbr-note" title="'+escHtml(note)+'">'+escHtml(note)+'</div>':'')
     +'<div class="sbr-meta"><span class="sbr-n"><b>'+(b.asin_count||0)+'</b> ASINs</span></div>'
@@ -16893,9 +17160,18 @@ function sbWorkRowHTML(b){
       +(b.keepa_url?'<a class="sbr-key" href="'+String(b.keepa_url).replace(/"/g,'&quot;')+'" target="_blank">\u{1F4C8} Keepa <b>'+(b.asin_count||0)+'</b> ↗</a>':'<span></span>')
       +'<button class="sbr-copy" onclick="sbCopyAsins(\''+b.id+'\')">\u{1F4CB} Copy</button>'
     +'</div>'
-    +(started
-      ?'<button class="sbw-go done big" onclick="sbJackComplete(\''+b.id+'\')">✓ Done</button>'
-      :'<button class="sbw-go big" onclick="sbJackStart(\''+b.id+'\')">▶ Start</button>')
+    +'<div class="sbwt-go">'
+      +(started
+        ?'<button class="sbw-go done big" onclick="sbJackComplete(\''+b.id+'\')">✓ Done</button>'
+        :'<button class="sbw-go big" onclick="sbJackStart(\''+b.id+'\')">▶ Start</button>')
+      +'<details class="sbwt-move"><summary title="Hand this batch to a VA instead">Move&nbsp;&#9662;</summary>'
+        +'<div class="sbw-menu">'
+        +[['Mera','→ '+escHtml(vaDisp('Mera'))],['Suz','→ '+escHtml(vaDisp('Suz'))],
+          ['Both','→ Both VAs'],['All','→ All 3 of us']].map(function(v){
+            return '<button onclick="sbAssign(\''+b.id+'\',\''+v[0]+'\')">'+v[1]+'</button>'; }).join('')
+        +'<button class="danger" onclick="sbScrapBatch(\''+b.id+'\')">✕ Bin this batch</button>'
+        +'</div></details>'
+    +'</div>'
     +'</div>';
 }
 function sbRowHTML(b){
@@ -18258,7 +18534,7 @@ function sfMemPick(va,name){
    common case needs no thought; the VA's list sorts High to the top.
    (Repeat still exists — it lives on PRESETS, where a recurring filter belongs,
    rather than cluttering every one-off send.) */
-var JB_PRI=['High','Medium','Low'];
+var JB_PRI=['Urgent','High','Medium','Low'];
 function jbPri(va){ try{ return jb_pref(va).pri||'Medium'; }catch(e){ return 'Medium'; } }
 function jbPriPickHTML(va){
   var cur=jbPri(va);
