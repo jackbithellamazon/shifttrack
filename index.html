@@ -771,6 +771,11 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .sbwt-done:hover{background:var(--green);color:#08120e;}
 .sbwt-done.solo{grid-column:1 / -1;}
 .sbr.sbwt.running{border-color:color-mix(in srgb,var(--green) 45%,transparent);}
+.lead-warn{background:color-mix(in srgb,#ff6b7f 11%,var(--panel));
+  border:1px solid color-mix(in srgb,#ff6b7f 38%,transparent);border-left:3px solid #ff6b7f;
+  border-radius:10px;padding:9px 14px;margin-bottom:9px;}
+.lead-warn b{display:block;font-size:12.5px;color:#ff9aa8;margin-bottom:2px;}
+.lead-warn span{display:block;font-size:11.5px;color:var(--muted);line-height:1.5;}
 .sbva-old{background:color-mix(in srgb,#ffb84d 13%,transparent);
   border:1px solid color-mix(in srgb,#ffb84d 42%,transparent);border-left:3px solid #ffb84d;
   border-radius:9px;padding:8px 13px;margin-bottom:10px;font-size:12px;line-height:1.5;color:var(--muted);}
@@ -5195,7 +5200,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v29.7';
+var APP_VERSION='v30.2';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -8244,10 +8249,24 @@ function tabBannerHTML(){
    lead in the future — 88 of hers are dated Sep-Dec. So flag BOTH symptoms and
    never assert a cause the app cannot actually see. */
 function futureDatedLeads(){
-  var out={}; var today=new Date(); today.setHours(23,59,59,0);
+  var out={};
+  /* The VAs work in the Philippines — 8h ahead of the UK. When it is Wednesday
+     evening here it is already Thursday for them, so a lead they log today
+     carries TOMORROW's UK date and is perfectly legitimate. Judge against the
+     date where the work actually happened, or this cries wolf every evening. */
+  var phToday;
+  try{
+    var f=new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Manila'});   // yyyy-mm-dd
+    var q=f.split('-'); phToday=(+q[0])*10000+(+q[1])*100+(+q[2]);
+  }catch(e){
+    var n=new Date(); phToday=n.getFullYear()*10000+(n.getMonth()+1)*100+n.getDate();
+  }
   (window.leads||[]).forEach(function(l){
-    var d=new Date(String(l.date||'').slice(0,10));
-    if(isNaN(d)||d<=today) return;
+    var p=String(l.date||'').split('/');            // dd/mm/yyyy — NOT a Date() string
+    if(p.length!==3) return;
+    var dd=+p[0], mm=+p[1], yy=+p[2];
+    if(!dd||!mm||!yy) return;
+    if(yy*10000+mm*100+dd <= phToday) return;
     var v=vaDisp(l.va)||l.va; (out[v]=out[v]||[]).push(l);
   });
   return out;
@@ -8259,11 +8278,10 @@ function syncStaleBannerHTML(){
     var fut=futureDatedLeads();
     Object.keys(fut).forEach(function(v){
       var n=fut[v].length; if(n<2) return;
-      out+='<div class="pay-bar due late"><b>⚠ '+escHtml(v)+' has '+n+' lead'+(n===1?'':'s')+' dated in the future</b>'
-        +' — her DATE column reads day/month but the dates were typed month/day, so they land in the wrong month.'
-        +' Anything typed that way for a day past the 12th flips into a future month;'
-        +' anything on the 12th or before flips into a past month and is <b>dropped before it ever reaches this app</b>.'
-        +' Fix the date format on her sheet, not here.</div>';
+      var soon=fut[v].map(function(l){ return l.date; }).slice(0,3).join(', ');
+      out+='<div class="lead-warn"><b>&#9888; '+escHtml(v)+' has '+n+' lead'+(n===1?'':'s')+' dated in the future</b>'
+        +'<span>'+escHtml(soon)+(n>3?' and '+(n-3)+' more':'')
+        +' &mdash; check the DATE column on her sheet is being typed the way the column reads.</span></div>';
     });
     var newest={};
     ['Mera','Suz'].forEach(function(va){
@@ -11142,6 +11160,7 @@ function mgr_resetTaskSettings(){
 }
 
 function mgr_renderSettings(){
+  try{ wbRenderPending(0); }catch(e){}      // retries until the markup exists
   var el=document.getElementById('mgr-settings-content');
   if(!el) return;
   // keep the scroll position on an in-page edit (add/edit/delete) so it doesn't jump to the top;
@@ -11242,7 +11261,8 @@ function mgr_renderSettings(){
           +'<div class="settings-hint">Writes your decisions into the VA sheets the moment you click, instead of waiting for their Apps Script. Setup steps are in <b>BDL VA HQ - 3 - WRITEBACK WEB APP.gs.txt</b>.</div></div>'
         +'<div class="settings-field wb-field"><label class="settings-label">Sheet writeback &mdash; token</label>'
           +'<input class="settings-input" id="setting-wb-token" type="text" spellcheck="false" placeholder="the same text as TOKEN in the script" value="'+escHtml(settings.wbToken||'')+'">'
-          +'<div class="settings-hint"><button class="wb-btn" onclick="wbTest()">Test connection</button><span id="wb-test-out"></span></div></div>'
+          +'<div class="settings-hint"><button class="wb-btn" onclick="wbTest()">Test connection</button><span id="wb-test-out"></span></div>'
+          +'<div class="settings-hint" id="wb-pending"></div></div>'
         +'<div class="settings-field"><label class="settings-label">Mera &mdash; daily lead goal</label><input class="settings-input" id="setting-goal-mera" type="number" min="1" value="'+(settings.goalMera||12)+'"></div>'
         +'<div class="settings-field"><label class="settings-label">Mera &mdash; of those, OA</label><input class="settings-input" id="setting-oagoal-mera" type="number" min="0" value="'+(settings.oaGoalMera||0)+'"></div>'
         +'<div class="settings-field"><label class="settings-label">Suz &mdash; of those, OA</label><input class="settings-input" id="setting-oagoal-suz" type="number" min="0" value="'+(settings.oaGoalSuz||0)+'"></div>'
@@ -13081,7 +13101,13 @@ function mapStatusIn(st){ st=String(st||'').trim().toUpperCase();
   if(st==='WAITING') return 'waiting';
   if(st==='NOT') return 'passed';
   return null; }
-function sheetStatusOut(st){ return st==='bought'?'BOUGHT':st==='atbq'?'ATB (Q)':st==='atba2a'?'ATB (A2A)':st==='waiting'?'waiting':st==='passed'?'NOT':null; }
+/* These strings must match the sheet's Bought? dropdown EXACTLY — both sheets use
+   ONE_OF_LIST with strict:true, so anything else lands as an invalid entry.
+   Checked against the live validation on 05/08/2026:
+     ['BOUGHT', 'NOT', 'ATB (Q)', 'waiting ', 'ATB (A2A)']
+   Note the TRAILING SPACE on 'waiting ' — it is in the sheet, not a typo here.
+   Column C is ['LEAD', 'NOT LEAD'], which we already match. */
+function sheetStatusOut(st){ return st==='bought'?'BOUGHT':st==='atbq'?'ATB (Q)':st==='atba2a'?'ATB (A2A)':st==='waiting'?'waiting ':st==='passed'?'NOT':null; }
 // The Supabase id is "<sheetId>::<TabName>::<row>" — the tab name is the AUTHORITATIVE month.
 function leadTabMonth(sid){
   var t=String(sid||'').split('::')[1]; if(!t) return null; t=t.toLowerCase();
@@ -14003,6 +14029,66 @@ async function wbPush(l,fields){
     return !!(j&&j.ok&&j.written>0);
   }catch(e){ return false; }
 }
+/* Everything decided while the sheets were unreachable, oldest first. */
+async function wbPending(){
+  try{
+    var r=await fetchT(SUPABASE_URL+'/rest/v1/leads?writeback_pending=eq.true'
+      +'&select=id,va,tab,row_index,status,islead,jack_comment&order=decided_at',
+      {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
+    return r.ok?(await r.json()):[];
+  }catch(e){ return []; }
+}
+/* Send the backlog. Grouped per sheet because the endpoint writes one sheet per call,
+   and only the rows the sheet actually confirms get their flag cleared — a partial
+   failure leaves the rest queued rather than quietly dropping them. */
+async function wbFlushPending(quiet){
+  var c=wbCfg();
+  if(!c.url||!c.token){ if(!quiet) showToast('Set the writeback URL and token first',true); return 0; }
+  var rows=await wbPending();
+  if(!rows.length){ if(!quiet) showToast('Nothing waiting — the sheets are up to date ✓'); return 0; }
+  var bySheet={};
+  rows.forEach(function(l){
+    var sid=String(l.id||'').split('::')[0]; if(!sid||!l.tab||!l.row_index) return;
+    (bySheet[sid]=bySheet[sid]||[]).push(l);
+  });
+  var written=0;
+  for(var sid in bySheet){
+    var group=bySheet[sid];
+    try{
+      var res=await fetch(c.url,{method:'POST',redirect:'follow',
+        headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body:JSON.stringify({token:c.token,sheetId:sid,items:group.map(function(l){
+          return {tab:l.tab,row:l.row_index,status:l.status,islead:l.islead,comment:l.jack_comment}; })})});
+      if(!res.ok) continue;
+      var j=await res.json();
+      if(!j||!j.ok||!j.written) continue;
+      var ids=group.map(function(l){ return '"'+String(l.id).replace(/"/g,'')+'"'; }).join(',');
+      await fetchT(SUPABASE_URL+'/rest/v1/leads?id=in.('+encodeURIComponent(ids)+')',
+        {method:'PATCH',headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+          'Content-Type':'application/json',Prefer:'return=minimal'},
+         body:JSON.stringify({writeback_pending:false})});
+      written+=j.written;
+    }catch(e){}
+  }
+  if(!quiet) showToast(written?(written+' decision'+(written===1?'':'s')+' written into the sheets ✓')
+                              :'Couldn\'t reach the sheets — still queued, nothing lost',!written);
+  try{ wbRenderPending(); }catch(e){}
+  return written;
+}
+/* Settings line: how many decisions have not reached a sheet yet. */
+async function wbRenderPending(tries){
+  var el=document.getElementById('wb-pending');
+  if(!el){                                    // settings markup not painted yet
+    if((tries||0)<12) return setTimeout(function(){ wbRenderPending((tries||0)+1); },120);
+    return;
+  }
+  var rows=await wbPending();
+  if(!rows.length){ el.innerHTML='<span class="wb-t good">✓ Nothing waiting — every decision has reached the sheets.</span>'; return; }
+  var by={}; rows.forEach(function(l){ var v=vaDisp(l.va)||l.va||'?'; by[v]=(by[v]||0)+1; });
+  el.innerHTML='<span class="wb-t bad">'+rows.length+' decision'+(rows.length===1?'':'s')+' waiting to reach the sheets ('
+    +Object.keys(by).map(function(k){ return escHtml(k)+' '+by[k]; }).join(', ')+').</span> '
+    +'<button class="wb-btn" onclick="wbFlushPending()">Send them now</button>';
+}
 /* Settings -> "Test" button: proves the URL + token before Jack relies on it. */
 async function wbTest(){
   var el=document.getElementById('wb-test-out');
@@ -14017,7 +14103,10 @@ async function wbTest(){
   try{
     var r=await fetch(u+'?token='+encodeURIComponent(t),{redirect:'follow'});
     var j=await r.json();
-    if(j&&j.ok){ if(el) el.innerHTML='<span class="wb-t good">✓ Connected — '+(j.sheets||0)+' sheets writable. Save to switch it on.</span>'; }
+    if(j&&j.ok){
+      if(el) el.innerHTML='<span class="wb-t good">✓ Connected — '+(j.sheets||0)+' sheets writable. Save to switch it on.</span>';
+      try{ wbRenderPending(); }catch(e){}
+    }
     else{ if(el) el.innerHTML='<span class="wb-t bad">Reached it, but the token doesn\'t match the one in the script.</span>'; }
   }catch(e){
     if(el) el.innerHTML='<span class="wb-t bad">Couldn\'t reach it. Check the deployment is set to <b>Anyone</b> access.</span>';
@@ -14195,11 +14284,14 @@ function _leadCtx(l, useView, useVa){
   let fd=document.getElementById('f-date')?.value||'all'; if(fd==='day') fd=window._fDay?('d:'+window._fDay):'all';
   if(fd!=='all'){ var p=String(l.date||'').split('/'); var d=p.length===3?new Date(+p[2],+p[1]-1,+p[0]):null; if(!d)return false;
     var now=new Date(), t0=new Date(now.getFullYear(),now.getMonth(),now.getDate()); var dd=Math.round((t0-d)/86400000);
-    if(fd==='sheet') return true;     // ditto — don't second-guess his tab ticks
+    if(fd==='sheet') { /* no date restriction — his tab ticks decide. MUST NOT return
+       true here: that skipped search + every other filter. */ }
+    else {
     if(fd==='month'&&(d.getMonth()!==now.getMonth()||d.getFullYear()!==now.getFullYear()))return false;
     if(fd.slice(0,2)==='m:'){ var ym=fd.slice(2).split('-'); if(d.getFullYear()!==+ym[0]||(d.getMonth()+1)!==+ym[1])return false; }
     if(fd.slice(0,2)==='d:'){ var iso=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2); if(iso!==fd.slice(2))return false; }
-    if(fd==='today'&&dd!==0)return false; if(fd==='yesterday'&&dd!==1)return false; if(fd==='48h'&&(dd<0||dd>1))return false; if(fd==='7d'&&(dd<0||dd>6))return false; }
+    if(fd==='today'&&dd!==0)return false; if(fd==='yesterday'&&dd!==1)return false; if(fd==='48h'&&(dd<0||dd>1))return false; if(fd==='7d'&&(dd<0||dd>6))return false;
+    } }
   if(fs!=='all'&&l.store!==fs)return false;
   if(fc!=='all'&&l.cat!==fc)return false;
   if(fsrc!=='all'&&l.src!==fsrc)return false;
