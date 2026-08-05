@@ -771,6 +771,10 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .sbwt-done:hover{background:var(--green);color:#08120e;}
 .sbwt-done.solo{grid-column:1 / -1;}
 .sbr.sbwt.running{border-color:color-mix(in srgb,var(--green) 45%,transparent);}
+#view-leads .d-next{background:rgba(255,255,255,.06);border:1px solid var(--b2);color:var(--t2);
+  border-radius:7px;padding:3px 10px;font-family:inherit;font-size:10.5px;font-weight:700;
+  cursor:pointer;margin-left:8px;white-space:nowrap;}
+#view-leads .d-next:hover{border-color:var(--acc,#8b5cf6);color:#fff;}
 .lead-warn{background:color-mix(in srgb,#ff6b7f 11%,var(--panel));
   border:1px solid color-mix(in srgb,#ff6b7f 38%,transparent);border-left:3px solid #ff6b7f;
   border-radius:10px;padding:9px 14px;margin-bottom:9px;}
@@ -5200,7 +5204,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v30.2';
+var APP_VERSION='v30.6';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -11421,7 +11425,11 @@ function mgr_renderSettings(){
 // Cloud push with CLOBBER PROTECTION: a browser that has never had the webhook URLs
 // (preview, fresh device) must never wipe them from the shared cloud row. For these keys,
 // an EMPTY local value defers to whatever the cloud already has.
-var SETTINGS_PROTECT=['whMain','whWeekly','whLeadsMera','whLeadsSuz','whTasks','whBreaks','whShiftStart','whPay','appUrl','leadMention','discordUserId','leadsStartDate','jbPresets','jbNoteSnips','payOtRate','payOtHours','payAdminMonthEnd'];
+/* Keys that survive a device swap: pulled DOWN from the cloud when the local copy
+   is blank, and never clobbered by a blank local value on push. wbUrl/wbToken belong
+   here — without them the writeback endpoint silently stays unconfigured on any
+   browser that didn't type it in, which is exactly what happened on 06/08/2026. */
+var SETTINGS_PROTECT=['whMain','whWeekly','whLeadsMera','whLeadsSuz','whTasks','whBreaks','whShiftStart','whPay','appUrl','leadMention','discordUserId','leadsStartDate','jbPresets','jbNoteSnips','payOtRate','payOtHours','payAdminMonthEnd','wbUrl','wbToken'];
 async function pushSettingsCloud(s){
   if(IS_PREVIEW) return;
   try{
@@ -13947,6 +13955,16 @@ async function leadPullOnce(force){
   window.LEAD_PULL_LAST={at:new Date().toISOString(),added:added,checked:checked,errors:errs};
   return window.LEAD_PULL_LAST;
 }
+/* Is he mid-edit in the leads view? Any focused input/textarea there counts —
+   the note box, the big NOTES textarea, the quantity field, the search box. */
+function leadsEditing(){
+  try{
+    var a=document.activeElement; if(!a) return false;
+    var tag=String(a.tagName||'').toLowerCase();
+    if(tag!=='input'&&tag!=='textarea'&&!a.isContentEditable) return false;
+    return !!(a.closest&&a.closest('#view-leads'));
+  }catch(e){ return false; }
+}
 async function loadLeadsFromDB(){
   try{
     if(typeof SUPABASE_URL==='undefined'||typeof DB_ENABLED==='undefined'||!DB_ENABLED) return;
@@ -13980,10 +13998,18 @@ async function loadLeadsFromDB(){
     });
     // Jack's "show leads from" setting — hard cutoff on the REPAIRED date (integer compare, no timezone edge)
     if(_sd){ var cp=_sd.split('-'); var coN=(+cp[0])*10000+(+cp[1])*100+(+cp[2]); if(coN){ leads=leads.filter(function(l){ var p=(l.date||'').split('/'); if(p.length!==3) return true; var dN=(+p[2])*10000+(+p[1])*100+(+p[0]); return !dN||dN>=coN; }); } }
-    if(keepSel){ var again=leads.find(function(x){return x._sid===keepSel;}); selId=again?again.id:null; } else { selId=null; }
+    if(keepSel){ var again=leads.find(function(x){return x._sid===keepSel;}); selId=again?again.id:null; }
+    else if(!leadsEditing()){ selId=null; }
     try{ window.leads=leads; }catch(e){}
     try{ populateMonthFilter(); }catch(e){}
-    renderList();
+    if(leadsEditing()){                       // repaint would delete what he's typing
+      window._leadsRepaintDue=true;
+      if(!window._leadsRepaintT) window._leadsRepaintT=setInterval(function(){
+        if(leadsEditing()) return;            // still typing — keep waiting
+        clearInterval(window._leadsRepaintT); window._leadsRepaintT=null;
+        if(window._leadsRepaintDue){ window._leadsRepaintDue=false; try{ renderList(); }catch(e){} }
+      },1200);
+    } else { renderList(); }
     // keep the VA shift "Leads today" KPI in sync with their live sheet
     try{ if(window.updateStats && window.state && state.shiftStart && !state.submitted){ updateStats(); if(window.renderShiftKpiExtras) renderShiftKpiExtras(); } }catch(e){}
     // swap Jack's overview leads strip out of its loading state
@@ -14180,7 +14206,12 @@ function retryLeadWrites(){
 }
 setTimeout(loadLeadsFromDB,800);
 setTimeout(function(){ try{ loadDecisions(); }catch(e){} },1000);   // pull full decision history for the learning model
-setInterval(function(){ var lv=document.getElementById('view-leads'); var onShift=window.state&&state.shiftStart&&!state.submitted; if((lv&&lv.classList.contains('active'))||onShift) loadLeadsFromDB(); },60000);
+setInterval(function(){
+  if(leadsEditing()) return;                  // mid-note / mid-quantity — leave him alone
+  var lv=document.getElementById('view-leads');
+  var onShift=window.state&&state.shiftStart&&!state.submitted;
+  if((lv&&lv.classList.contains('active'))||onShift) loadLeadsFromDB();
+},60000);
 // prefetch spend in the background on startup so the overview shows instantly (no "loading" wait)
 setTimeout(function(){ try{ loadSpend(); }catch(e){} },1500);
 let view='new',va='all',scoreMin=0,sortBy='score',selId=null;
@@ -14435,15 +14466,24 @@ function renderList(){
   }
   const bd={};fl.forEach(l=>{(bd[l.date]=bd[l.date]||[]).push(l)});
   const ord=Object.keys(bd).sort((a,b)=>{const p=d=>d.split('/').reverse().join('');return p(b).localeCompare(p(a))});
-  let h='';
+  let h=''; const shown=[];                      // the order actually ON SCREEN
   ord.forEach(date=>{
     const lb=date==='04/06/2026'?'Today':date==='03/06/2026'?'Yesterday':date;
     h+=`<div class="ld-date">${lb}<span>${bd[date].length}</span></div>`;
-    bd[date].forEach(l=>{h+=litemH(l)});
+    bd[date].forEach(l=>{h+=litemH(l); shown.push(l);});
   });
   el.innerHTML=h;
-  if(selId===null||!fl.find(l=>l.id===selId)){selId=fl[0].id;}
-  selectLead(selId,false);
+  const stillThere=selId!==null&&fl.find(l=>l.id===selId);
+  if(stillThere){ selectLead(selId,false); }
+  else if(!window._ldPainted){                   // FIRST paint only — open the top one
+    window._ldPainted=true;
+    selId=(shown[0]||fl[0]).id;                  // top of the screen, not top of the sort
+    selectLead(selId,false);
+  } else {
+    /* His selection is gone (decided, filtered out, or a refresh). Do NOT grab a
+       different lead — Jack: "wait for me to click off leads". Leave the pane. */
+    selId=null; try{ renderDetail(); }catch(e){}
+  }
 }
 function leadThumb(asin,cls,imgUrl){
   var ph='<span class="lt-ph"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>';
@@ -14691,7 +14731,10 @@ function detailH(l){
     decH=`<div class="d-dec-row d-dec-stack"><button class="d-dec-btn dec-lead" onclick="setL(${l.id},true)">✓ Approve Lead</button><button class="d-dec-btn dec-notlead" onclick="setL(${l.id},false)">✕ Reject Lead</button></div>`;
   }else if(l.islead===true){
     const vaNm=l.va==='VA M'?vaDisp('Mera'):vaDisp('Suz');
-    const syncNote=l.status?`<div class="d-sync-note">✓ You marked this <b>${stxt}</b> — written back to ${vaNm}'s sheet (syncs within ~1 min)</div>`:`<div class="d-sync-note ok">✓ Approved as <b>LEAD</b> — written to ${vaNm}'s sheet. Now pick what happened:</div>`;
+    const _fast=(typeof wbReady==='function')&&wbReady();
+    const _when=_fast?'written straight into':'queued for';
+    const _tail=_fast?'':' — lands next time her sheet syncs';
+    const syncNote=l.status?`<div class="d-sync-note">✓ You marked this <b>${stxt}</b> — ${_when} ${vaNm}'s sheet${_tail}. <button class="d-next" onclick="ldNextUndecided(${l.id})">Next undecided &rarr;</button></div>`:`<div class="d-sync-note ok">✓ Approved as <b>LEAD</b> — ${_when} ${vaNm}'s sheet. Now pick what happened:</div>`;
     decH=syncNote+`<div class="d-dec-row" style="flex-wrap:wrap"><button class="d-dec-btn dec-buy" onclick="setSt(${l.id},'bought')">BOUGHT</button><button class="d-dec-btn dec-basket" onclick="setSt(${l.id},'atbq')">ATB (Q)</button><button class="d-dec-btn dec-basket" onclick="setSt(${l.id},'atba2a')">ATB (A2A)</button><button class="d-dec-btn dec-basket" onclick="setSt(${l.id},'waiting')">Waiting</button><button class="d-dec-btn dec-pass" onclick="setSt(${l.id},'passed')">NOT</button><button class="d-dec-btn dec-undo" onclick="undoA(${l.id})">↩ Undo</button></div>`;
   }else{
     const vaNm2=l.va==='VA M'?vaDisp('Mera'):vaDisp('Suz');
@@ -16105,6 +16148,18 @@ function moveSel(dir){
 }
 /* after every decision: bump the session counter, re-render, and AUTO-ADVANCE to the
    next undecided lead in the current view — Jack grinds the pile without touching the mouse */
+/* The next undecided lead, on demand. Wraps around, and says so when there are none. */
+function ldNextUndecided(fromId){
+  try{
+    var fl=getF(); var i=fl.findIndex(function(l){ return l.id===fromId; });
+    var nxt=null;
+    for(var k=i+1;k<fl.length;k++){ if(fl[k].islead===null&&!fl[k].status){ nxt=fl[k]; break; } }
+    if(!nxt) for(var k2=0;k2<fl.length;k2++){ if(k2!==i&&fl[k2].islead===null&&!fl[k2].status){ nxt=fl[k2]; break; } }
+    if(!nxt){ ldToast('Nothing else undecided in this view ✓'); return; }
+    selectLead(nxt.id,true);
+    var row=document.querySelector('#view-leads .litem.sel'); if(row) row.scrollIntoView({block:'nearest'});
+  }catch(e){}
+}
 function advanceAfter(id){
   window._sessDecided=(window._sessDecided||0)+1;
   try{ var _dl=leads.find(function(x){return x.id===id;}); if(_dl) logDecision(_dl); }catch(e){}   // log to cloud history
@@ -16114,11 +16169,8 @@ function advanceAfter(id){
     if(m&&!m.err){ leads.forEach(function(l){ l._sc=calcScore({roi:l.roi,profit:l.profit,spm:l.spm,fba:l.fba,margin:l.margin}); }); } } }catch(e){}
   renderList();
   try{
-    var fl=getF(); var i=fl.findIndex(function(l){return l.id===id;});
-    var nxt=null;
-    for(var k=i+1;k<fl.length;k++){ if(fl[k].islead===null&&!fl[k].status){ nxt=fl[k]; break; } }
-    if(!nxt) for(var k2=0;k2<fl.length;k2++){ if(k2!==i&&fl[k2].islead===null&&!fl[k2].status){ nxt=fl[k2]; break; } }
-    if(nxt){ selectLead(nxt.id,true); var row=document.querySelector('#view-leads .litem.sel'); if(row) row.scrollIntoView({block:'nearest'}); }
+    /* deliberately NOT jumping to the next lead — see ldNextUndecided() */
+    selectLead(id,true);
   }catch(e){}
   try{ var sc=document.getElementById('sess-count'); if(sc) sc.textContent='🔥 '+window._sessDecided+' decided this session'; }catch(e){}
 }
