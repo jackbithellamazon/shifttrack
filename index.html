@@ -747,6 +747,34 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .jbu-i span{display:block;color:var(--muted);font-size:11.5px;margin-top:1px;}
 .jbu-i i{font-style:normal;display:inline-block;font-size:10px;font-weight:700;color:#ffb84d;
   background:rgba(255,184,77,.14);border-radius:5px;padding:1px 6px;margin-top:3px;}
+.wb-btn{background:color-mix(in srgb,var(--accent) 22%,transparent);border:1px solid color-mix(in srgb,var(--accent) 50%,transparent);
+  color:#fff;border-radius:7px;padding:4px 11px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;margin-right:9px;}
+.wb-btn:hover{background:var(--accent);}
+.wb-t{font-size:11px;}
+.wb-t.good{color:#10d99a;font-weight:700;}
+.wb-t.bad{color:#ff6b7f;}
+.sbwt-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:6px 0 8px;}
+.sbwt-n{font-size:12px;color:var(--muted);} .sbwt-n b{font-size:19px;font-weight:800;color:var(--text);font-family:var(--font-mono);margin-right:3px;}
+.sbwt-lk{margin-left:auto;background:rgba(255,255,255,.05);border:1px solid var(--line-2);color:var(--muted);
+  border-radius:7px;padding:4px 9px;font-family:inherit;font-size:10.5px;font-weight:700;cursor:pointer;
+  text-decoration:none;white-space:nowrap;}
+.sbwt-lk+.sbwt-lk{margin-left:0;}
+.sbwt-lk:hover{border-color:var(--accent);color:var(--text);}
+.sbwt-run{flex:0 0 100%;font-size:10.5px;font-weight:700;color:#7ef2c4;}
+.sbwt-act{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.sbwt-start,.sbwt-done{height:36px;border-radius:9px;font-family:inherit;font-size:12.5px;font-weight:800;
+  cursor:pointer;transition:all .12s;border:1px solid;}
+.sbwt-start{background:rgba(255,255,255,.05);border-color:var(--line-2);color:var(--muted);}
+.sbwt-start:hover{border-color:var(--accent);color:var(--text);background:rgba(255,255,255,.09);}
+.sbwt-done{background:color-mix(in srgb,var(--green) 26%,transparent);
+  border-color:color-mix(in srgb,var(--green) 60%,transparent);color:#7ef2c4;}
+.sbwt-done:hover{background:var(--green);color:#08120e;}
+.sbwt-done.solo{grid-column:1 / -1;}
+.sbr.sbwt.running{border-color:color-mix(in srgb,var(--green) 45%,transparent);}
+.sbva-old{background:color-mix(in srgb,#ffb84d 13%,transparent);
+  border:1px solid color-mix(in srgb,#ffb84d 42%,transparent);border-left:3px solid #ffb84d;
+  border-radius:9px;padding:8px 13px;margin-bottom:10px;font-size:12px;line-height:1.5;color:var(--muted);}
+.sbva-old b{color:#ffc978;}
 .oag{display:flex;align-items:center;gap:11px;flex-wrap:wrap;background:rgba(255,255,255,.035);
   border:1px solid var(--line-2);border-radius:10px;padding:8px 13px;margin-bottom:10px;font-size:11.5px;}
 .oag.done{background:color-mix(in srgb,#10d99a 9%,transparent);border-color:color-mix(in srgb,#10d99a 32%,transparent);}
@@ -5167,7 +5195,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v29.1';
+var APP_VERSION='v29.7';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -5254,6 +5282,7 @@ function getAppSettings(){
       if(saved[k] !== undefined) settings[k] = saved[k]?1:0;
     });
     if(saved.idleMins){ var im=parseInt(saved.idleMins); if(!isNaN(im)&&im>=15) settings.idleMins=im; }
+    ['wbUrl','wbToken'].forEach(function(k){ if(typeof saved[k]==='string') settings[k]=saved[k]; });
     ['goalMera','goalSuz','oaGoalMera','oaGoalSuz'].forEach(function(k){
       var n=parseInt(saved[k]); if(!isNaN(n)&&n>=0) settings[k]=n; });
     // min leads/week were saved but never copied back here, so they snapped back to 60 on every read
@@ -6596,9 +6625,23 @@ function jb_cleanHost(u){
     if(h.indexOf('selleramp')>=0) return 'SellerAmp';
     return h||String(u); }catch(e){ return String(u); }
 }
+function jbAsinsIn(v){
+  var m=String(v||'').toUpperCase().match(/\bB0[A-Z0-9]{8}\b/g)||[];
+  var seen={},out=[]; m.forEach(function(a){ if(!seen[a]){seen[a]=1;out.push(a);} });
+  return out;
+}
 function jb_cleanLabel(it){
   if(it.n&&String(it.n).trim()) return String(it.n).trim();
   if(it.t==='asin') return String(it.v).trim().toUpperCase();
+  /* Jack sends these in bulk ("i just send a load of EU ASINs in a KPF"), so the
+     useful label is HOW MANY, not the first one or the host. */
+  if(it.t==='euasin'){
+    var a=jbAsinsIn(it.v);
+    if(a.length>1) return a.length+' EU ASINs';
+    if(a.length===1) return 'EU ASIN · '+a[0];
+    if(/^https?:\/\//i.test(it.v)) return 'EU ASINs · '+jb_cleanHost(it.v);
+    return 'EU ASINs';
+  }
   if(/^https?:\/\//i.test(it.v)){
     // Unnamed Keepa links all collapsed to the same word ("Keepa storefront"), so a VA
     // sent eight of them saw eight identical rows. Pull the ASIN out of the link so each
@@ -6615,7 +6658,7 @@ function jb_cleanLabel(it){
 var JB_ICON_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 7v6c0 5 4 8 9 9 5-1 9-4 9-9V7z"/></svg>';
 // distinct card for items Jack sends into the VA to-do list
 function buildJackTaskEl(task, i, isExtra){
-  var META={sf:['\u{1F3EC}','Storefront','var(--accent-2)'],kpf:['\u{1F3AF}','KPF filter','#18c8f0'],eu:['\u{1F1EA}\u{1F1FA}','EU sheet','#4c8dff'],asin:['#','ASIN','#f5a524'],msg:['\u{1F4AC}','Do this','#10d99a']};
+  var META={sf:['\u{1F3EC}','Storefront','var(--accent-2)'],kpf:['\u{1F3AF}','KPF filter','#18c8f0'],eu:['\u{1F1EA}\u{1F1FA}','EU sheet','#4c8dff'],euasin:['\u{1F1EA}\u{1F1FA}','EU ASINs','#7c5cff'],asin:['#','ASIN','#f5a524'],msg:['\u{1F4AC}','Do this','#10d99a']};
   var m=META[task.jbType]||META.msg;
   var inProg = !task.done && !task.skipped && taskHasProgress(task);
   var cls='task-item jbcard';
@@ -7312,7 +7355,7 @@ function jb_attachToHost(host,items){
   return host;
 }
 function jb_groupTask(ty,items){
-  var TY={sf:['\u{1F3EC}','Storefronts'],kpf:['\u{1F3AF}','KPF filters'],eu:['\u{1F1EA}\u{1F1FA}','EU sheets'],
+  var TY={sf:['\u{1F3EC}','Storefronts'],kpf:['\u{1F3AF}','KPF filters'],eu:['\u{1F1EA}\u{1F1FA}','EU sheets'],euasin:['\u{1F1EA}\u{1F1FA}','EU ASIN lists'],
           asin:['#','ASINs'],msg:['\u{1F4AC}','From Jack']};
   var t=TY[ty]||TY.msg;
   var carried=items.filter(function(it){ return jb_isCarried(it.addedOn); }).length;
@@ -7337,7 +7380,7 @@ function jb_groupTask(ty,items){
     timerSec:0, timerRun:false, timerStart:null };
 }
 function jb_itemTask(it,i){
-  var TY={sf:['\u{1F3EC}','Storefront'],kpf:['\u{1F3AF}','KPF filter'],eu:['\u{1F1EA}\u{1F1FA}','EU sheet'],asin:['#','ASIN'],msg:['\u{1F4AC}','From Jack']};
+  var TY={sf:['\u{1F3EC}','Storefront'],kpf:['\u{1F3AF}','KPF filter'],eu:['\u{1F1EA}\u{1F1FA}','EU sheet'],euasin:['\u{1F1EA}\u{1F1FA}','EU ASINs'],asin:['#','ASIN'],msg:['\u{1F4AC}','From Jack']};
   var ty=TY[it.t]||TY.msg;
   var isUrl=/^https?:\/\//i.test(it.v);
   var nm=jb_cleanLabel(it);
@@ -8817,7 +8860,8 @@ function mgr_sourcing(recs,va,useRange){
                'Storefront':{k:'oneoff-sf',  label:'Jack one-offs · Storefronts',  icon:'🏬'},
                'From Jack': {k:'oneoff-msg', label:'Jack one-offs · Other',        icon:'💬'},
                'ASIN':      {k:'oneoff-asin',label:'Jack one-offs · ASINs',        icon:'#'},
-               'EU sheet':  {k:'oneoff-eu',  label:'Jack one-offs · EU sheets',    icon:'🇪🇺'} };
+               'EU sheet':  {k:'oneoff-eu',  label:'Jack one-offs · EU sheets',    icon:'🇪🇺'},
+               'EU ASINs':  {k:'oneoff-euasin',label:'Jack one-offs · EU ASIN lists',icon:'🇪🇺'} };
   function bucketFor(t){
     if(tm[t.id]) return {k:t.id, label:tm[t.id], child:null};
     var nm=String(t.name||'');
@@ -11193,6 +11237,12 @@ function mgr_renderSettings(){
       +'<div class="settings-title">Targets, Scoring &amp; VAs</div>'
       +'<div class="settings-sub">Per-VA daily lead goals, identity colours, lead-score weighting and Discord quiet hours.</div>'
       +'<div class="settings-grid">'
+        +'<div class="settings-field wb-field"><label class="settings-label">Sheet writeback &mdash; web app URL</label>'
+          +'<input class="settings-input" id="setting-wb-url" type="text" spellcheck="false" placeholder="https://script.google.com/…/exec" value="'+escHtml(settings.wbUrl||'')+'">'
+          +'<div class="settings-hint">Writes your decisions into the VA sheets the moment you click, instead of waiting for their Apps Script. Setup steps are in <b>BDL VA HQ - 3 - WRITEBACK WEB APP.gs.txt</b>.</div></div>'
+        +'<div class="settings-field wb-field"><label class="settings-label">Sheet writeback &mdash; token</label>'
+          +'<input class="settings-input" id="setting-wb-token" type="text" spellcheck="false" placeholder="the same text as TOKEN in the script" value="'+escHtml(settings.wbToken||'')+'">'
+          +'<div class="settings-hint"><button class="wb-btn" onclick="wbTest()">Test connection</button><span id="wb-test-out"></span></div></div>'
         +'<div class="settings-field"><label class="settings-label">Mera &mdash; daily lead goal</label><input class="settings-input" id="setting-goal-mera" type="number" min="1" value="'+(settings.goalMera||12)+'"></div>'
         +'<div class="settings-field"><label class="settings-label">Mera &mdash; of those, OA</label><input class="settings-input" id="setting-oagoal-mera" type="number" min="0" value="'+(settings.oaGoalMera||0)+'"></div>'
         +'<div class="settings-field"><label class="settings-label">Suz &mdash; of those, OA</label><input class="settings-input" id="setting-oagoal-suz" type="number" min="0" value="'+(settings.oaGoalSuz||0)+'"></div>'
@@ -11415,6 +11465,8 @@ function mgr_saveSettings(){
   if(idleEl){ var iv=parseInt(idleEl.value); if(!isNaN(iv)&&iv>=15) settings.idleMins=iv; }
   var didEl=document.getElementById('setting-discord-id');
   if(didEl) settings.discordUserId=didEl.value.replace(/[^0-9]/g,'');
+  var wbU=document.getElementById('setting-wb-url');   if(wbU) settings.wbUrl=wbU.value.trim();
+  var wbT=document.getElementById('setting-wb-token'); if(wbT) settings.wbToken=wbT.value.trim();
   [['setting-goal-mera','goalMera'],['setting-goal-suz','goalSuz'],
    ['setting-oagoal-mera','oaGoalMera'],['setting-oagoal-suz','oaGoalSuz']].forEach(function(pp){
     var el=document.getElementById(pp[0]); if(el){ var n=parseInt(el.value); if(!isNaN(n)&&n>0) settings[pp[1]]=n; }
@@ -12507,6 +12559,7 @@ function showToast(msg,isError) {
     if(has('thc')) return J('THC','\u{1F9EA}');
     // NOT 'eu +' / 'eu+' — Jack: those appear in NOTES on ordinary KPF work and would
     // drag normal filter runs into the EU-sheet bucket.
+    if(has('eu asin','eu asins','euasin')) return J('EU ASIN lists','\u{1F1EA}\u{1F1FA}');
     if(has('eu sheet','eu-sheet','suz-eu','eu sheets')) return J('EU sheets','\u{1F1EA}\u{1F1FA}');
     if(has('kpf','keepa product finder')) return J('KPF filters','\u{1F3AF}');
     if(has('profitpath','pp main','pp light','deal watch')) return J('ProfitPath','\u{1F4C9}');
@@ -13759,6 +13812,115 @@ function payBannerHTML(){
    the pings — they just moved to the main channel. Removing the sender is the only
    thing that actually stops them. Lead activity still reaches Jack via the Leads
    tab and the end-of-day summary. */
+/* ─── SHEET → APP INGESTION, DONE BY THE APP ────────────────────────────────
+   Mera's Apps Script stopped firing on 31/07 and nothing arrived for 4 days. The
+   script is a single point of failure sitting on someone else's Google account,
+   and when it dies it dies silently. So the app now reads the VA sheets itself
+   with the Sheets API key and inserts straight into Supabase — same id scheme
+   (sheetId::tab::rowIndex) and the same ignore-duplicates insert the script uses,
+   so the two can run side by side forever without ever duplicating a lead.
+   Writebacks (your Bought/Lead?/comment going back INTO the sheet) still need the
+   Apps Script — an API key can read a sheet but cannot write to one. */
+var LEAD_PULL_KEY=(typeof SPEND_API_KEY!=='undefined')?SPEND_API_KEY:'';
+var _leadPullAt=0, _leadPullBusy=false;
+window.LEAD_PULL_LAST=null;
+
+function pullISO(v){                       // Sheets serial (epoch 1899-12-30) or text
+  if(typeof v==='number' && v>1000){
+    var ms=Date.UTC(1899,11,30)+Math.floor(v)*86400000, d=new Date(ms);
+    return d.getUTCFullYear()+'-'+String(d.getUTCMonth()+1).padStart(2,'0')+'-'+String(d.getUTCDate()).padStart(2,'0');
+  }
+  var t=String(v||'').trim(); if(!t) return '';
+  var m=t.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if(m) return m[3]+'-'+String(m[1]).padStart(2,'0')+'-'+String(m[2]).padStart(2,'0');
+  return t.slice(0,10);
+}
+/* identical rule to the Apps Script's isoDateForTab() and to leadDateFix() */
+function pullISOForTab(v,tab){
+  var s=pullISO(v), p=s.split('-'); if(p.length!==3) return s;
+  var y=+p[0], mo=+p[1], dy=+p[2]; if(!y||!mo||!dy) return s;
+  var tm=leadTabMonth('x::'+tab+'::1'); if(!tm||mo===tm) return s;
+  if(dy!==tm) return s;
+  var dim=new Date(y,tm,0).getDate();
+  if(mo<1||mo>dim) return s;
+  return y+'-'+String(tm).padStart(2,'0')+'-'+String(mo).padStart(2,'0');
+}
+function pullNum(v){
+  if(v===''||v===null||v===undefined) return null;
+  var n=parseFloat(String(v).replace(/[%£>,\s]/g,''));
+  return isNaN(n)?null:n;
+}
+async function leadPullOnce(force){
+  if(_leadPullBusy) return null;
+  if(!force && Date.now()-_leadPullAt < 180000) return null;    // at most every 3 min
+  if(!LEAD_PULL_KEY || typeof SHEET_NAMES==='undefined') return null;
+  _leadPullBusy=true;
+  var added=0, checked=0, errs=0;
+  try{
+    var cut=''; try{ cut=(getAppSettings().leadsStartDate||'').trim(); }catch(e){}
+    var floor=cut||'2026-07-01';
+    var have={};
+    try{
+      var hres=await fetchT(SUPABASE_URL+'/rest/v1/leads?select=id&limit=5000',
+        {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
+      if(hres.ok) (await hres.json()).forEach(function(r){ have[r.id]=1; });
+    }catch(e){ errs++; }
+    for(var sid in SHEET_NAMES){
+      var va=SHEET_NAMES[sid], tabs=[];
+      try{
+        var tres=await fetchT(SUPABASE_URL+'/rest/v1/sheet_tabs?select=tab,included&sheet_id=eq.'+encodeURIComponent(sid),
+          {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
+        if(tres.ok) tabs=(await tres.json()).filter(function(t){ return t.included; }).map(function(t){ return t.tab; });
+      }catch(e){ errs++; continue; }
+      for(var ti=0;ti<tabs.length;ti++){
+        var tab=tabs[ti], rows=[];
+        try{
+          var u='https://sheets.googleapis.com/v4/spreadsheets/'+sid+'/values/'
+               +encodeURIComponent(tab+'!A2:V1000')+'?key='+LEAD_PULL_KEY+'&valueRenderOption=UNFORMATTED_VALUE';
+          var sres=await fetchT(u);
+          if(!sres.ok){ errs++; continue; }
+          rows=(await sres.json()).values||[];
+        }catch(e){ errs++; continue; }
+        var batch=[];
+        for(var i=0;i<rows.length;i++){
+          var r=rows[i].slice(); while(r.length<22) r.push('');
+          var rowIndex=i+2;
+          var asin=String(r[7]||'').trim(), buy=pullNum(r[12]);
+          checked++;
+          if(!asin||buy===null) continue;
+          var iso=pullISOForTab(r[0],tab);
+          if(!/^\d{4}-\d{2}-\d{2}$/.test(iso)||iso<floor) continue;
+          var id=sid+'::'+tab+'::'+rowIndex;
+          if(have[id]) continue;
+          var fba=pullNum(r[19]);
+          batch.push({ id:id, sheet_id:sid, tab:tab, row_index:rowIndex, va:va, date:iso,
+            store:String(r[5]||''), title:String(r[6]||''), asin:asin,
+            category:String(r[10]||''), source_method:String(r[11]||''),
+            buy:buy, sell:pullNum(r[14]), spm:String(r[15]||''), profit:pullNum(r[16]),
+            roi:pullNum(r[17]), margin:pullNum(r[18]),
+            fba:(fba===null?null:Math.round(fba)),          // integer column — 1.0 is rejected
+            supplier_url:String(r[8]||''), supplier_url2:String(r[9]||''), amazon_url:String(r[13]||''),
+            va_note:String(r[4]||''), discount_code:String(r[20]||''), screenshot:String(r[21]||''),
+            islead:String(r[2]||'').trim()||null, status:String(r[1]||'').trim()||null,
+            jack_comment:String(r[3]||'')||null });
+        }
+        if(batch.length){
+          try{
+            var ins=await fetchT(SUPABASE_URL+'/rest/v1/leads',{method:'POST',
+              headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+                'Content-Type':'application/json','Prefer':'resolution=ignore-duplicates,return=representation'},
+              body:JSON.stringify(batch)});
+            if(ins.ok){ added+=(await ins.json()).length; }
+            else errs++;
+          }catch(e){ errs++; }
+        }
+      }
+    }
+  }catch(e){ errs++; }
+  _leadPullAt=Date.now(); _leadPullBusy=false;
+  window.LEAD_PULL_LAST={at:new Date().toISOString(),added:added,checked:checked,errors:errs};
+  return window.LEAD_PULL_LAST;
+}
 async function loadLeadsFromDB(){
   try{
     if(typeof SUPABASE_URL==='undefined'||typeof DB_ENABLED==='undefined'||!DB_ENABLED) return;
@@ -13766,6 +13928,7 @@ async function loadLeadsFromDB(){
     // NOTE: the DB `date` column is unreliable (Mera's rows import day/month-swapped — a lead
     // sourced 11 July stores as "2026-11-07"). So we DON'T filter on it server-side; we repair each
     // date with normLeadISO() then filter client-side below. See also the source fix Jack needs.
+    try{ await leadPullOnce(false); }catch(e){}   // read the sheets ourselves first
     var res=await fetchT(SUPABASE_URL+'/rest/v1/leads?select=*&order=created_at.desc&limit=1500',
       {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
     if(!res.ok) return;
@@ -13804,6 +13967,62 @@ async function loadLeadsFromDB(){
 /* A decision is the whole point of this screen — it must never silently fail.
    This used to fire the PATCH, swallow every error with `.catch(function(){})`,
    never check res.ok, and let the caller toast "written to sheet ✓" regardless. */
+/* ─── WRITEBACK, WITHOUT ANYONE'S TRIGGER ───────────────────────────────────
+   Decisions have to land in the VA's sheet. An API key can't write to a sheet, so
+   this used to ride on each VA's Apps Script timer — and when Mera's died, her
+   writebacks died silently with it, same as her leads.
+   Now the app posts straight to ONE web app owned by Jack that can write to both
+   sheets. It fires on the click, not on a timer. If it isn't set up (or the call
+   fails) we leave writeback_pending=true, so the old Apps Script route still
+   picks it up exactly as before — this is a fast path, never a replacement that
+   can lose a decision. */
+function wbCfg(){
+  try{ var s=getAppSettings(); return {url:String(s.wbUrl||'').trim(), token:String(s.wbToken||'').trim()}; }
+  catch(e){ return {url:'',token:''}; }
+}
+function wbReady(){ var c=wbCfg(); return !!(c.url && c.token); }
+function wbItemFor(l,fields){
+  return { tab:l.sheetTab||'', row:l.sheetRow||0,
+           status:(fields.status!==undefined?fields.status:null),
+           islead:(fields.islead!==undefined?fields.islead:null),
+           comment:(fields.jack_comment!==undefined?fields.jack_comment:null) };
+}
+/* Returns true only when the sheet actually took the write. */
+async function wbPush(l,fields){
+  var c=wbCfg();
+  if(!c.url||!c.token) return false;
+  if(!l||!l.sheetTab||!l.sheetRow) return false;
+  var sid=String(l._sid||'').split('::')[0];
+  if(!sid) return false;
+  try{
+    var res=await fetch(c.url,{method:'POST',redirect:'follow',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},   // avoids the CORS preflight Apps Script can't answer
+      body:JSON.stringify({token:c.token,sheetId:sid,items:[wbItemFor(l,fields)]})});
+    if(!res.ok) return false;
+    var j=await res.json();
+    return !!(j&&j.ok&&j.written>0);
+  }catch(e){ return false; }
+}
+/* Settings -> "Test" button: proves the URL + token before Jack relies on it. */
+async function wbTest(){
+  var el=document.getElementById('wb-test-out');
+  var u=(document.getElementById('setting-wb-url')||{}).value||'';
+  var t=(document.getElementById('setting-wb-token')||{}).value||'';
+  u=u.trim(); t=t.trim();
+  if(el) el.innerHTML='<span class="wb-t">checking…</span>';
+  if(!u||!t){ if(el) el.innerHTML='<span class="wb-t bad">Paste both the URL and the token first.</span>'; return; }
+  if(!/^https:\/\/script\.google\.com\/.*\/exec$/.test(u)){
+    if(el) el.innerHTML='<span class="wb-t bad">That doesn\'t look like a deployment URL — it should end in <b>/exec</b>.</span>'; return;
+  }
+  try{
+    var r=await fetch(u+'?token='+encodeURIComponent(t),{redirect:'follow'});
+    var j=await r.json();
+    if(j&&j.ok){ if(el) el.innerHTML='<span class="wb-t good">✓ Connected — '+(j.sheets||0)+' sheets writable. Save to switch it on.</span>'; }
+    else{ if(el) el.innerHTML='<span class="wb-t bad">Reached it, but the token doesn\'t match the one in the script.</span>'; }
+  }catch(e){
+    if(el) el.innerHTML='<span class="wb-t bad">Couldn\'t reach it. Check the deployment is set to <b>Anyone</b> access.</span>';
+  }
+}
 function db_leadPatch(l,fields){
   if(IS_PREVIEW){
     try{ ldToast('Preview mode \u2014 NOT saved. Open the live app to record decisions.',true); }catch(e){}
@@ -13816,7 +14035,17 @@ function db_leadPatch(l,fields){
       {method:'PATCH',headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,'Content-Type':'application/json',Prefer:'return=minimal'},
        body:JSON.stringify(fields)})
       .then(function(r){
-        if(r.ok){ leadWriteOk(l); return true; }
+        if(r.ok){
+          leadWriteOk(l);
+          // straight into the sheet; on failure the pending flag is still set, so nothing is lost
+          try{ wbPush(l,fields).then(function(done){
+            if(done) fetchT(SUPABASE_URL+'/rest/v1/leads?id=eq.'+encodeURIComponent(l._sid),
+              {method:'PATCH',headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+               'Content-Type':'application/json',Prefer:'return=minimal'},
+               body:JSON.stringify({writeback_pending:false})});
+          }); }catch(e){}
+          return true;
+        }
         leadWriteFailed(l,'the server rejected it ('+r.status+')');
         return false;
       })
@@ -17143,36 +17372,50 @@ function sbWorkRowHTML(b){
   var started=(b.status==='Started');
   var q=(SB_QUEUES||[]).filter(function(x){ return x.id===b.storefront_id; })[0];
   var note=String((q&&q.notes)||'').trim();
-  return '<div class="sbr sbr-jack sbwt'+(b.priority==='High'?' pri-hi':'')+(SB_LANDED===b.id?' landed':'')+'">'
+  var n=(b.asin_count||0);
+  var age=sbAgeDays(b.date)||0;
+  return '<div class="sbr sbr-jack sbwt'+(b.priority==='High'?' pri-hi':'')+(started?' running':'')
+      +(SB_LANDED===b.id?' landed':'')+'">'
     +'<div class="sbr-hd">'
-      +'<span class="sbr-tag">'
-        +escHtml(b.storefront_name||'—')
+      +'<span class="sbr-tag">'+escHtml(b.storefront_name||'—')
         +(b._tagSize>1?'<u>'+b._tagIdx+'/'+b._tagSize+'</u>':'')+'</span>'
-      +'<span class="sbr-day'+((sbAgeDays(b.date)||0)>=6?' stale':'')+'" title="'+escHtml(sbDayLabel(b.date))+'">'
+      +'<span class="sbr-day'+(age>=6?' stale':'')+'" title="'+escHtml(sbDayLabel(b.date))+'">'
         +escHtml(sbAgeLabel(b.date))+'</span>'
-      +(started?'':'<details class="sbw-more"><summary title="More">⋯</summary><div class="sbw-menu">'
-        +'<button onclick="sbJackComplete(\''+b.id+'\')">✓ Done without timing</button>'
-      +'</div></details>')
-    +'</div>'
-    +(note?'<div class="sbr-note" title="'+escHtml(note)+'">'+escHtml(note)+'</div>':'')
-    +'<div class="sbr-meta"><span class="sbr-n"><b>'+(b.asin_count||0)+'</b> ASINs</span></div>'
-    +'<div class="sbr-tools">'
-      +(b.keepa_url?'<a class="sbr-key" href="'+String(b.keepa_url).replace(/"/g,'&quot;')+'" target="_blank">\u{1F4C8} Keepa <b>'+(b.asin_count||0)+'</b> ↗</a>':'<span></span>')
-      +'<button class="sbr-copy" onclick="sbCopyAsins(\''+b.id+'\')">\u{1F4CB} Copy</button>'
-    +'</div>'
-    +'<div class="sbwt-go">'
-      +(started
-        ?'<button class="sbw-go done big" onclick="sbJackComplete(\''+b.id+'\')">✓ Done</button>'
-        :'<button class="sbw-go big" onclick="sbJackStart(\''+b.id+'\')">▶ Start</button>')
-      +'<details class="sbwt-move"><summary title="Hand this batch to a VA instead">Move&nbsp;&#9662;</summary>'
-        +'<div class="sbw-menu">'
+      +'<details class="sbw-more"><summary title="More">⋯</summary><div class="sbw-menu">'
         +[['Mera','→ '+escHtml(vaDisp('Mera'))],['Suz','→ '+escHtml(vaDisp('Suz'))],
           ['Both','→ Both VAs'],['All','→ All 3 of us']].map(function(v){
             return '<button onclick="sbAssign(\''+b.id+'\',\''+v[0]+'\')">'+v[1]+'</button>'; }).join('')
+        +(started?'<button onclick="sbJackUnstart(\''+b.id+'\')">↺ Not started after all</button>':'')
         +'<button class="danger" onclick="sbScrapBatch(\''+b.id+'\')">✕ Bin this batch</button>'
-        +'</div></details>'
+      +'</div></details>'
+    +'</div>'
+    +(note?'<div class="sbr-note" title="'+escHtml(note)+'">'+escHtml(note)+'</div>':'')
+    /* count + the two links on ONE line — they were three stacked rows */
+    +'<div class="sbwt-row">'
+      +'<span class="sbwt-n"><b>'+n+'</b> ASINs</span>'
+      +(b.keepa_url?'<a class="sbwt-lk" href="'+String(b.keepa_url).replace(/"/g,'&quot;')+'" target="_blank" '
+        +'title="Open all '+n+' in Keepa">\u{1F4C8} Keepa ↗</a>':'')
+      +'<button class="sbwt-lk" title="Copy the ASINs" onclick="sbCopyAsins(\''+b.id+'\')">\u{1F4CB} Copy</button>'
+      +(started?'<span class="sbwt-run">● working</span>':'')
+    +'</div>'
+    /* the whole point: Done is always one tap, never behind a menu */
+    +'<div class="sbwt-act">'
+      +(started?'' : '<button class="sbwt-start" title="Time how long this takes" '
+          +'onclick="sbJackStart(\''+b.id+'\')">▶ Start</button>')
+      +'<button class="sbwt-done'+(started?' solo':'')+'" title="Mark this batch finished" '
+        +'onclick="sbJackComplete(\''+b.id+'\')">✓ Done</button>'
     +'</div>'
     +'</div>';
+}
+/* Started something by mistake — put it back rather than being forced to finish it. */
+async function sbJackUnstart(batchId){
+  var b=(SB_BATCHES||[]).filter(function(x){return x.id===batchId;})[0];
+  var prev=b?{s:b.status,by:b.started_by}:null;
+  if(b){ b.status='Routed'; b.started_by=null; sbPaintJack(); }
+  var ok=await sbPatch(batchId,{status:'Routed', started_by:null, started_at:null}, true);
+  if(!ok){ if(b&&prev){ b.status=prev.s; b.started_by=prev.by; sbPaintJack(); }
+    showToast('Couldn\'t undo that — check your connection',true); return; }
+  sbSyncSoon();
 }
 function sbRowHTML(b){
   var t=sbToday();
@@ -18283,16 +18526,27 @@ function sbGoesTo(b, va){
 function sbBatchTask(b){
   var n=b.asin_count||0;
   var pri=(b.priority==='High')?' — HIGH PRIORITY':'';
+  var age=sbAgeDays(b.date);
+  var when=sbDayLabel(b.date)||b.date||'';
+  /* age is the whole point — "8 days old" is what makes someone pick it up */
+  var agePart = (age===null||age===undefined) ? ''
+    : age<=0 ? ' \u00b7 added today'
+    : age===1 ? ' \u00b7 added yesterday'
+    : ' \u00b7 added '+when+' ('+age+' days ago)';
+  var lateNote = (age>=2)
+    ? '\u26a0\ufe0f Waiting '+age+' days \u2014 please clear this one first. '
+    : '';
   return {
     id:'sbatch-'+b.id, sbBatchId:b.id, sbStatus:b.status, sbPriority:b.priority||'Normal',
     sbOwn:false, sbNote:'',
     // The tag name alone read as a person ("Mera · 8 ASINs" looked like a task FOR Mera).
     // Lead with what it is, then the tag, then the size.
     name:'Storefront · '+(b.storefront_name||'Queue')+(b.batch_number>1?' (Batch '+b.batch_number+')':'')+' — '+n+' ASIN'+(n===1?'':'s')+pri,
-    jbLabel:'Storefront: '+(b.storefront_name||'Queue')+' \u00b7 '+n+' ASINs',
+    jbLabel:'Storefront: '+(b.storefront_name||'Queue')+' \u00b7 '+n+' ASINs'+agePart,
+    sbAge:age,
     mandatory:true, hasLinks:false,
     jbUrl:b.keepa_url||'', jbUrlLabel:'Open all '+n+' in Keepa', jbType:'sf', jbTimer:true, jbLeads:true,
-    jbReason:(b.status==='Started'
+    jbReason:lateNote+(b.status==='Started'
         ? 'Locked — you started this, nothing can be added to it now.'
         : 'Press Start when you begin. That locks the list so nothing changes under you.'),
     hint:'Open the '+n+' ASINs in Keepa, work through them, then log your time and how many leads you got. Ticking this marks the batch done for Jack.',
@@ -18363,22 +18617,38 @@ function sbInjectBatchTasks(va, tasks){
   }
   return mine.length;
 }
+/* NOT RENDERED ANYWHERE — and deliberately so. Batches reach the VA as task ROWS
+   via sbInjectBatchTasks(), which is the surface Jack actually uses. This card grid
+   is an older second surface; wiring it up shows every batch twice. Kept only
+   because sbRefreshVA() still references it. */
 function sbVAHTML(va){
   var mine=(SB_BATCHES||[]).filter(function(b){
     return sbGoesTo(b,va) && b.status!=='Completed' && b.status!=='Draft';
   });
   if(!mine.length) return '';
+  /* High first, then OLDEST first. A batch sitting for 8 days is the one that
+     needs doing — burying it under today's is how it got to 8 days old. */
+  mine.sort(function(a,b){
+    var pa=(a.priority==='High')?0:1, pb=(b.priority==='High')?0:1;
+    if(pa!==pb) return pa-pb;
+    return (sbAgeDays(b.date)||0)-(sbAgeDays(a.date)||0);
+  });
+  var stale=mine.filter(function(b){ return (sbAgeDays(b.date)||0)>=2; }).length;
+  var oldest=0; mine.forEach(function(b){ var d=sbAgeDays(b.date)||0; if(d>oldest) oldest=d; });
   return '<div class="sf-section"><div class="sf-head">'
-    +'<span class="sf-title">&#127978; Storefront batches</span>'
-    +'<span class="sf-sub">Press Start when you begin — that locks the list so nothing changes under you.</span></div>'
+    +'<span class="sf-title">\u{1F3EA} Storefront batches</span>'
+    +'<span class="sf-sub">Press Start when you begin \u2014 that locks the list so nothing changes under you.</span></div>'
+    +(stale?'<div class="sbva-old"><b>'+stale+' of these '+(stale===1?'has':'have')+' been waiting'
+        +(oldest>=2?' \u2014 the oldest is '+oldest+' days old':'')+'.</b> Please clear these before anything new.</div>':'')
     +'<div class="sb-grid">'+mine.map(function(b){ return sbCardHTML(b,true); }).join('')+'</div></div>';
 }
 function sbRefreshVA(){
-  var va=state.currentVA; if(!va) return;
+  var va=(state&&(state._previewAs||state.currentVA)); if(!va) return;
+  if(!document.getElementById('sb-va-batches')) return;
   sbLoadBatches(true).then(function(){
-    var host=document.getElementById('sb-va-batches');
-    if(host) host.innerHTML=sbVAHTML(va);
-  });
+    var h=document.getElementById('sb-va-batches');
+    if(h) h.innerHTML=sbVAHTML(va);
+  }).catch(function(){});
 }
 function jbPresets(){ try{ var a=getAppSettings().jbPresets; return Array.isArray(a)?a:[]; }catch(e){ return []; } }
 function jbPresetsSet(a){ try{ var s=getAppSettings(); s.jbPresets=a.slice(0,60); saveAppSettings(s); try{pushSettingsCloud(s);}catch(e){} }catch(e){} }
@@ -18642,6 +18912,7 @@ function jb_editorHTML(va){
         +pill('sf','&#127978; Storefront')
         +pill('kpf','&#127919; KPF filter')
         +pill('eu','\u{1F1EA}\u{1F1FA} EU sheet')
+        +pill('euasin','\u{1F1EA}\u{1F1FA} EU ASINs')
         +pill('asin','# ASIN')
         +pill('msg','&#128172; Message')
       +'</div>'
@@ -18700,7 +18971,7 @@ function jb_doneRows(va){
   return jb_secLabel('&#128202; Results &mdash; how each one went','margin-top:16px;')
     +'<div class="jb-outstanding jb-done-list">'+rows+'</div>';
 }
-var JB_ITYPES={sf:['\u{1F3EC}','Storefront','var(--accent-2)'],kpf:['\u{1F3AF}','KPF filter','#18c8f0'],eu:['\u{1F1EA}\u{1F1FA}','EU sheet','#4c8dff'],asin:['#','ASIN','#f5a524'],msg:['\u{1F4AC}','Do this','#10d99a']};
+var JB_ITYPES={sf:['\u{1F3EC}','Storefront','var(--accent-2)'],kpf:['\u{1F3AF}','KPF filter','#18c8f0'],eu:['\u{1F1EA}\u{1F1FA}','EU sheet','#4c8dff'],euasin:['\u{1F1EA}\u{1F1FA}','EU ASINs','#7c5cff'],asin:['#','ASIN','#f5a524'],msg:['\u{1F4AC}','Do this','#10d99a']};
 function jb_itemsRows(va){
   var items=(jb_open(va).items||[]).filter(function(it){return !it.done;}).sort(jb_byAge);
   if(!items.length) return '';
@@ -18729,6 +19000,7 @@ function jb_placeholder(t){
   return t==='sf'?'Paste the storefront link…'
     : t==='kpf'?'Paste the KPF / SellerAmp filter link…'
     : t==='eu'?'Paste the EU sheet link / type the brand…'
+    : t==='euasin'?'Paste the KPF link, or a whole list of EU ASINs (B0… B0… B0…)'
     : t==='asin'?'Paste or type the ASIN (B0…)'
     : 'Type the message / instruction…';
 }
@@ -18818,7 +19090,8 @@ function jb_addItem(va){
   var tEl=document.getElementById('jb-itype-'+va), vEl=document.getElementById('jb-ival-'+va), nEl=document.getElementById('jb-iname-'+va), rEl=document.getElementById('jb-inote-'+va);
   var v=(vEl&&vEl.value||'').trim(); if(!v){ showToast('Paste a link / ASIN / message first',true); return; }
   var t=tEl?tEl.value:'msg';
-  if(/^B0[0-9A-Z]{8}$/i.test(v)) t='asin';                    // auto-detect a pasted ASIN whatever the dropdown says
+  if(t!=='euasin' && /^B0[0-9A-Z]{8}$/i.test(v)) t='asin';    // auto-detect a pasted ASIN whatever the dropdown says
+                                                              // (but never override a deliberate EU ASINs pick)
   var timer=!!(document.getElementById('jb-itimer-'+va)||{}).checked;
   var wantLeads=!!(document.getElementById('jb-ileads-'+va)||{}).checked;
   var poaEl=document.getElementById('jb-poa-'+va); if(poaEl){ var b=jb_get(va); b.poa=poaEl.value; jb_set(va,b); }
@@ -18978,12 +19251,13 @@ function renderFromJack(va){
   if(hasItems){
     // items are REAL tasks below (own row, Open button, Start/Stop timer that fills time, leads box)
     // — so up here we just summarise the counts instead of repeating them
-    var counts={sf:0,kpf:0,eu:0,asin:0,msg:0}, carried=0;
+    var counts={sf:0,kpf:0,eu:0,euasin:0,asin:0,msg:0}, carried=0;
     items.forEach(function(it){ counts[it.t]=(counts[it.t]||0)+1; if(jb_isCarried(it.addedOn)) carried++; });
     var bits=[];
     if(counts.sf)  bits.push('<b>'+counts.sf+'</b> storefront'+(counts.sf===1?'':'s')+' \u{1F3EC}');
     if(counts.kpf) bits.push('<b>'+counts.kpf+'</b> filter'+(counts.kpf===1?'':'s')+' \u{1F3AF}');
     if(counts.eu)  bits.push('<b>'+counts.eu+'</b> EU sheet'+(counts.eu===1?'':'s')+' \u{1F1EA}\u{1F1FA}');
+    if(counts.euasin)bits.push('<b>'+counts.euasin+'</b> EU ASIN list'+(counts.euasin===1?'':'s')+' \u{1F1EA}\u{1F1FA}');
     if(counts.asin)bits.push('<b>'+counts.asin+'</b> ASIN'+(counts.asin===1?'':'s')+' #');
     if(counts.msg) bits.push('<b>'+counts.msg+'</b> message'+(counts.msg===1?'':'s')+' \u{1F4AC}');
     itemsHtml='<div class="fj-count-bar">\u{1F4E3} <b>'+items.length+'</b> from Jack — '+bits.join(' · ')+' <span class="fj-csub">(in your tasks below)</span>'
