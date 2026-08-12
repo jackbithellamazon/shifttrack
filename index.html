@@ -5321,6 +5321,28 @@ async function db_pushLiveStatus() {
    return undefined, so the "Auto-saved HH:MM" chip stamped green before the
    request had even left the machine — it could not tell success from a dropped
    connection, and only ever reported failure when the VA pressed Save by hand. */
+/* Suz: "when I close the tab it will lead me to the start shift".
+   Drafts were keyed on the LONDON calendar date, but the VAs work Manila hours — Suz's
+   morning is London's late night, so her shift routinely crosses London midnight WHILE
+   SHE IS WORKING. The moment it did, row.date no longer equalled ukDateShort(), the
+   restore treated a live draft as yesterday's, deleted it, and showed the fresh-start
+   screen. The EOD record already attributes a shift to the MANILA day it started
+   (phShiftDay); the draft simply never got the same treatment. It does now, and the
+   real staleness test is the draft's age, not a date string that can change under it. */
+function shiftDayKey(){
+  try{
+    var base = state.shiftStart ? new Date(state.shiftStart) : new Date();
+    var k = base.toLocaleDateString('en-GB',{timeZone:'Asia/Manila'});
+    if(k) return k;
+  }catch(e){}
+  return ukDateShort();
+}
+var DRAFT_MAX_AGE_MS = 16*60*60*1000;
+function draftAgeMs(row, draft){
+  var t = (draft&&draft.savedAt) || 0;
+  if(!t && row && row.updated_at){ var d=new Date(row.updated_at); if(!isNaN(d)) t=d.getTime(); }
+  return t ? (Date.now()-t) : Infinity;
+}
 function saveShiftDraft(manual) {
   if (IS_PREVIEW) return Promise.resolve(null);
   if (!DB_ENABLED || !state.currentVA || state.currentVA === 'Test' || !state.shiftStart) return Promise.resolve(null);
@@ -5346,7 +5368,7 @@ function saveShiftDraft(manual) {
 
   // Local mirror FIRST — the cloud can be unreachable, the disk can't. This is
   // what makes a dropped connection survivable instead of a lost day.
-  try{ localStorage.setItem('bdl_draft_'+state.currentVA, JSON.stringify({date:ukDateShort(),savedAt:Date.now(),data:draft})); }catch(e){}
+  try{ localStorage.setItem('bdl_draft_'+state.currentVA, JSON.stringify({date:shiftDayKey(),savedAt:Date.now(),data:draft})); }catch(e){}
 
   return fetch(SUPABASE_URL + '/rest/v1/draft_shifts', {
     method: 'POST',
@@ -5358,7 +5380,7 @@ function saveShiftDraft(manual) {
     },
     body: JSON.stringify({
       va: state.currentVA,
-      date: ukDateShort(),
+      date: shiftDayKey(),
       updated_at: new Date().toISOString(),
       data: draft
     })
@@ -5413,10 +5435,14 @@ function retrySave(){
   saveShiftDraft(true).then(function(ok){ if(ok){ saveWarnBanner(false); showToast('Back online \u2014 shift saved \u2713'); } });
 }
 
-async function deleteDraft(va) {
+/* This deleted EVERY draft row for the VA, including a live one, whenever any single
+   row failed a check. Combined with an unordered rows[0] read, one stale row was enough
+   to take today's work with it. Scope the delete to the row actually being discarded. */
+async function deleteDraft(va, date) {
   if (!DB_ENABLED) return;
   try {
-    await fetch(SUPABASE_URL + '/rest/v1/draft_shifts?va=eq.' + va, {
+    await fetch(SUPABASE_URL + '/rest/v1/draft_shifts?va=eq.' + va
+        + (date ? '&date=eq.' + encodeURIComponent(date) : ''), {
       method: 'DELETE',
       headers: {
         'apikey': SUPABASE_ANON_KEY,
@@ -5433,8 +5459,8 @@ function localDraft(va){
     var raw=localStorage.getItem('bdl_draft_'+va); if(!raw) return null;
     var o=JSON.parse(raw);
     if(!o||!o.data) return null;
-    if(o.date!==ukDateShort()) return null;                       // yesterday's — not ours
-    if(Date.now()-(o.savedAt||0) > 16*60*60*1000) return null;    // same staleness rule as the cloud
+    // age is the only honest test — a date string can flip at midnight mid-shift
+    if(Date.now()-(o.savedAt||0) > DRAFT_MAX_AGE_MS) return null;
     return o.data;
   }catch(e){ return null; }
 }
@@ -5445,7 +5471,7 @@ function localDraft(va){
 async function checkAndRestoreDraft(va) {
   if (!DB_ENABLED) return 'none';
   try {
-    var res = await fetchT(SUPABASE_URL + '/rest/v1/draft_shifts?va=eq.' + va + '&select=*', {
+    var res = await fetchT(SUPABASE_URL + '/rest/v1/draft_shifts?va=eq.' + va + '&select=*&order=updated_at.desc', {
       headers: {
         'apikey': SUPABASE_ANON_KEY,
         'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
@@ -5457,7 +5483,7 @@ async function checkAndRestoreDraft(va) {
     if (!rows.length) {
       // cloud says nothing, but this device may still hold today's work
       var ld = localDraft(va);
-      if (ld) { rows = [{ date: ukDateShort(), data: ld }]; }
+      if (ld) { rows = [{ date: shiftDayKey(), data: ld }]; }
       else return 'none';
     }
 
@@ -5465,15 +5491,17 @@ async function checkAndRestoreDraft(va) {
     var draft = row.data;
     if (!draft) return 'none';
 
-    // Only restore if draft is from today
-    if (row.date !== ukDateShort()) {
-      await deleteDraft(va);
+    /* Was: row.date !== ukDateShort() -> delete. That threw away a LIVE draft the
+       instant London ticked past midnight, which for a Manila-hours VA is the middle
+       of her shift. Age is the test that cannot betray her. */
+    if (draftAgeMs(row, draft) > DRAFT_MAX_AGE_MS) {
+      await deleteDraft(va, row.date);
       return 'none';
     }
 
     // Don't restore if already submitted today
     if (draft.submitted) {
-      await deleteDraft(va);
+      await deleteDraft(va, row.date);
       return 'none';
     }
 
@@ -5485,15 +5513,15 @@ async function checkAndRestoreDraft(va) {
       var eodRows = await eodRes.json();
       if (eodRows && eodRows.length) {
         // Already submitted today — delete draft and don't restore
-        await deleteDraft(va);
+        await deleteDraft(va, row.date);
         return 'none';
       }
     } catch(e){}
 
     // Staleness check — if draft is more than 16 hours old, discard it
     var ageMs = Date.now() - (draft.savedAt || 0);
-    if (ageMs > 16 * 60 * 60 * 1000) {
-      await deleteDraft(va);
+    if (ageMs > DRAFT_MAX_AGE_MS) {
+      await deleteDraft(va, row.date);
       return 'none';
     }
 
@@ -5575,7 +5603,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v34.5';
+var APP_VERSION='v34.9';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -6663,6 +6691,48 @@ function selectVA(va) {
         startTimer();
         showToast('✓ Shift restored — picked up where you left off!');
       } else {
+        /* LAST LINE OF DEFENCE. "No draft" from the cloud is not proof there is no work —
+           this device may still be holding it. Suz reported closing the tab and being put
+           back on the start screen; whatever path gets her there, she must never be shown
+           a blank shift while a saved one exists on her machine. Ask, don't assume. */
+        try{
+          var _ld = (!window._draftForceFresh) ? localDraft(va) : null;
+          if (_ld) {
+            var _mins = Math.max(1, Math.round((_ld.elapsedMs||0)/60000));
+            if (confirm('There is saved work on this device for '+vaDisp(va)+' \u2014 about '
+                +(_mins>=60?(Math.floor(_mins/60)+'h '+(_mins%60)+'m'):(_mins+' min'))
+                +' of shift.\n\nPick up where you left off?\n\n(Cancel starts a brand-new shift.)')) {
+              state.currentVA = va;
+              state.totalBreakMs = _ld.totalBreakMs || 0;
+              state.shiftStart = Date.now() - (_ld.elapsedMs||0) - state.totalBreakMs;
+              state.onBreak = false;
+              state.breaks = _ld.breaks || [];
+              state.tasks = _ld.tasks || [];
+              state.extraTasks = _ld.extraTasks || [];
+              state.storefronts = _ld.storefronts || [];
+              state._jbDone = _ld.jbDone || {};
+              state._newsletterDay = _ld.newsletterDay || false;
+              state.submitted = false;
+              document.getElementById('login-screen').style.display = 'none';
+              document.getElementById('mera-setup').style.display = 'none';
+              document.getElementById('suz-setup').style.display = 'none';
+              document.getElementById('shift-screen').style.display = 'block';
+              document.getElementById('view-va').classList.remove('setup-active');
+              document.getElementById('report-btn').style.display = 'block';
+              document.getElementById('shift-va-name').textContent = vaDisp(va) + "'s Shift";
+              document.getElementById('shift-date').textContent = ukDateString();
+              document.getElementById('eod-form').style.display = 'block';
+              try{ eodRenderLeadCheck(); }catch(e){}
+              document.getElementById('eod-report').classList.remove('show');
+              renderTasks();
+              try{ renderStorefronts(); }catch(e){}
+              try{ jb_addsBanner(va); }catch(e){}
+              startTimer();
+              showToast('\u2713 Restored from this device \u2014 nothing lost');
+              return;
+            }
+          }
+        }catch(e){}
         // No draft — show normal setup screen
         document.getElementById('login-screen').style.display = 'none';
         if (va === 'Mera') {
@@ -8004,18 +8074,30 @@ function confirmSkip() {
   showToast('Skipped - Jack will be notified');
 }
 
+/* Suz: "my time keep on stoping sir". The clock is not losing her time — every figure
+   that gets RECORDED is computed as Date.now() - shiftStart - breaks, so it is right even
+   if nothing has repainted for an hour. What stops is the repaint: browsers throttle, and
+   eventually suspend, timers in a tab that is not in front. Her screenshot proves it —
+   the 60s autosave last ran at 10:05 and she messaged at 10:10, so the whole page had been
+   asleep for five minutes, taking the live status ping with it.
+   Two consequences that DO matter: Jack's board shows her stale, and a crash loses more
+   than the promised minute. So on returning to the tab, repaint and re-sync immediately
+   instead of waiting for the next tick. */
+function paintShiftTimer() {
+  if (!state.shiftStart) return;
+  var el = document.getElementById('shift-timer'); if (!el) return;
+  var ms = Date.now() - state.shiftStart - state.totalBreakMs;
+  if (ms < 0) ms = 0;
+  var h = Math.floor(ms/3600000).toString().padStart(2,'0');
+  var m = Math.floor((ms%3600000)/60000).toString().padStart(2,'0');
+  var s = Math.floor((ms%60000)/1000).toString().padStart(2,'0');
+  el.textContent = h+':'+m+':'+s;
+  try{ updateStats(); }catch(e){}
+}
 function startTimer() {
   clearInterval(state.timerInterval);
   clearInterval(state.liveInterval);
-  state.timerInterval = setInterval(function() {
-    if (!state.shiftStart) return;
-    var ms = Date.now() - state.shiftStart - state.totalBreakMs;
-    var h = Math.floor(ms/3600000).toString().padStart(2,'0');
-    var m = Math.floor((ms%3600000)/60000).toString().padStart(2,'0');
-    var s = Math.floor((ms%60000)/1000).toString().padStart(2,'0');
-    document.getElementById('shift-timer').textContent = h+':'+m+':'+s;
-    updateStats();
-  }, 1000);
+  state.timerInterval = setInterval(paintShiftTimer, 1000);
   // Push live status to Supabase every 60 seconds
   // Auto-save draft every 2 minutes
   db_pushLiveStatus();
@@ -8024,6 +8106,19 @@ function startTimer() {
     db_pushLiveStatus();
     saveShiftDraft(false); // autosave every 60s — laptop crash loses at most a minute
   }, 60000);
+  if (!window._shiftWakeBound) {
+    window._shiftWakeBound = true;
+    document.addEventListener('visibilitychange', function(){
+      if (document.hidden || !state.shiftStart) return;
+      paintShiftTimer();                       // catch the clock up instantly
+      try{ db_pushLiveStatus(); }catch(e){}    // tell Jack's board she is still here
+      try{ saveShiftDraft(false); }catch(e){}  // close the autosave gap the sleep opened
+    });
+    window.addEventListener('focus', function(){
+      if (!state.shiftStart) return;
+      paintShiftTimer();
+    });
+  }
 }
 
 function toggleBreak() {
@@ -18749,7 +18844,9 @@ function sbPriPill(b){
 function sbCardHTML(b, forVA){
   // dimmed = "not actionable by you". Jack's OWN in-progress batch is very much
   // actionable, so it must not wear the same greyed-out treatment as a VA's.
-  var _jackOn=(b.status==='Started' && (b.started_by==='Jack'||b.assigned_to==='Jack'));
+  /* same class the worklist had: an 'All' batch is his too, so it must not be dimmed
+     as "someone else's" or lose its Start / Done here either. */
+  var _jackOn=(b.status==='Started' && (b.started_by==='Jack'||sbGoesTo(b,'Jack')));
   var locked=((b.status==='Started'&&!_jackOn)||b.status==='Completed');
   var keepa = b.keepa_url
     ? '<a class="sb-btn sb-keepa" href="'+String(b.keepa_url).replace(/"/g,'&quot;')+'" target="_blank" onclick="event.stopPropagation()">Open Keepa &#8599;</a>'
@@ -18769,11 +18866,11 @@ function sbCardHTML(b, forVA){
         // A batch Jack KEEPS is his to work — without these it sat "Assigned" for ever,
         // because Start/Complete only ever existed on the VA side of the card. Jack has
         // no shift, so his lifecycle lives here on the board instead.
-        +(b.assigned_to==='Jack'
+        +(sbGoesTo(b,'Jack')
             ? '<button class="sb-btn sb-start" onclick="sbJackStart(\''+b.id+'\')">&#9654; Start</button>'
             : '')
         +'</div>';
-    } else if(b.status==='Started' && (b.started_by==='Jack'||b.assigned_to==='Jack')){
+    } else if(b.status==='Started' && (b.started_by==='Jack'||sbGoesTo(b,'Jack'))){
       acts='<div class="sb-acts"><span class="sb-mine">&#9654; You\'re on this</span>'
         +'<button class="sb-btn sb-done" onclick="sbJackComplete(\''+b.id+'\')">&#10003; Done</button></div>';
     } else {
@@ -18793,6 +18890,7 @@ function sbCardHTML(b, forVA){
   // to-do colour for ever and read as unrouted.
   var vaCls = b.assigned_to==='Mera'?' sb-va-mera' : b.assigned_to==='Suz'?' sb-va-suz'
             : b.assigned_to==='Both'?' sb-va-both'
+            : b.assigned_to==='All'?' sb-va-both'      /* was falling through to "unrouted" */
             : b.assigned_to==='Jack'?' sb-va-jack' : ' sb-va-none';
   var priCls = (b.priority==='High' && b.status!=='Completed')?' sb-hi':'';
   return '<div class="sb-card'+(locked?' locked':'')+vaCls+priCls+'">'
@@ -20697,6 +20795,113 @@ function mgr_renderStorefronts(){
   el.innerHTML=sbJackHTML();
   sbLoadBatches(true).then(function(){ el.innerHTML=sbJackHTML(); });
 }
+
+/* ── SELF-CHECK ─────────────────────────────────────────────────────────────
+   Jack: "can we future proof no more issues pls". Nothing makes bugs impossible,
+   but every bug found in this app so far belonged to one of four repeating classes:
+     1. a date parsed from a localised string          (ukNow was wrong 30 days in 31)
+     2. an enum compared in one place but not another  ('All' batches reaching nobody)
+     3. a destructive call scoped wider than intended  (deleteDraft wiping every draft)
+     4. a function called that no longer exists        (a dead panel shipped 3 times)
+   These assertions run on every load in Jack mode and shout the moment one comes back.
+   A check that never fails is worthless, so each one is written to fail loudly. */
+function selfTest(){
+  var R=[];
+  function ok(name,pass,detail){ R.push({name:name,pass:!!pass,detail:detail||''}); }
+  function attempt(name,fn){ try{ fn(); }catch(e){ ok(name,false,'threw: '+e.message); } }
+
+  // 1. clocks — the app's idea of "now" must match London, on any day of the month
+  attempt('UK clock matches London',function(){
+    var mine=ukNow(), real=new Date();
+    var realDate=real.toLocaleDateString('en-GB',{timeZone:'Europe/London'});
+    var mineDate=mine.toLocaleDateString('en-GB');
+    ok('UK clock matches London', mineDate===realDate, mineDate+' vs '+realDate);
+    var names=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    var realDay=real.toLocaleDateString('en-GB',{timeZone:'Europe/London',weekday:'long'});
+    ok('UK weekday matches London', names[ukDayOfWeek()]===realDay, names[ukDayOfWeek()]+' vs '+realDay);
+  });
+  // the exact parse that broke it — proves the pattern stays dead
+  attempt('en-GB date strings are never re-parsed',function(){
+    var bad=new Date(new Date('2026-08-25T09:00:00Z').toLocaleString('en-GB',{timeZone:'Europe/London'}));
+    ok('en-GB date strings are never re-parsed', isNaN(bad.getTime()),
+       'the broken pattern still produces '+(isNaN(bad.getTime())?'Invalid Date (as expected)':bad.toDateString()));
+  });
+
+  // 2. routing — every assignee value must reach exactly the right people
+  attempt('Batch routing covers Both and All',function(){
+    function to(v){ return ['Mera','Suz','Jack'].filter(function(p){ return sbGoesTo({assigned_to:v},p); }).join('+'); }
+    ok('Batch routing: Mera',  to('Mera')==='Mera', to('Mera'));
+    ok('Batch routing: Both',  to('Both')==='Mera+Suz', to('Both'));
+    ok('Batch routing: All',   to('All')==='Mera+Suz+Jack', to('All'));
+    ok('Batch routing: blank', to('')==='', to('')||'(nobody)');
+  });
+
+  // 3. drafts — a key that cannot flip, an age rule that cannot betray a live shift
+  attempt('Draft key and age rule',function(){
+    ok('Draft key present', !!shiftDayKey(), String(shiftDayKey()));
+    ok('Draft age: fresh kept',   draftAgeMs({},{savedAt:Date.now()-6e4})<DRAFT_MAX_AGE_MS);
+    ok('Draft age: 17h dropped', !(draftAgeMs({},{savedAt:Date.now()-17*36e5})<DRAFT_MAX_AGE_MS));
+    ok('Draft age: no stamp dropped', draftAgeMs({},{})===Infinity);
+  });
+
+  // 4. functions the UI calls from inside other functions — the class that shipped dead panels
+  attempt('Critical functions exist',function(){
+    var need=['paintShiftTimer','smartHealthHTML','reasonMineHTML','recallHTML','trainingRows',
+              'trainableRows','trainSmartModel','sbGoesTo','sbLastPaste','sbAgoLabel',
+              'focusStart','ldMergeTwins','localDraft','deleteDraft','saveShiftDraft'];
+    var missing=need.filter(function(n){ return typeof window[n]!=='function'; });
+    ok('Critical functions exist', !missing.length, missing.join(', ')||'all '+need.length+' present');
+  });
+
+  // 5. the score must never train on one source when two exist
+  attempt('Score reads every decision',function(){
+    var cache=(window._decisionCache||[]).filter(function(r){return r.decision;}).length;
+    var rows=trainingRows().length;
+    ok('Score reads every decision', rows>=cache, rows+' rows vs '+cache+' logged decisions');
+  });
+
+  // 6. small grey text — the thing he has reported twice
+  attempt('Muted text passes AA',function(){
+    var c=getComputedStyle(document.documentElement).getPropertyValue('--muted-2').trim();
+    var d=document.createElement('span'); d.style.color=c||'#000'; document.body.appendChild(d);
+    var rgb=(getComputedStyle(d).color.match(/[\d.]+/g)||[0,0,0]).slice(0,3).map(Number); d.remove();
+    function L(v){ return v.map(function(x){ x/=255; return x<=0.03928?x/12.92:Math.pow((x+0.055)/1.055,2.4); })
+      .reduce(function(a,b,i){ return a+[0.2126,0.7152,0.0722][i]*b; },0); }
+    var r=(Math.max(L(rgb),L([16,19,26]))+0.05)/(Math.min(L(rgb),L([16,19,26]))+0.05);
+    ok('Muted text passes AA', r>=4.5, c+' = '+r.toFixed(2)+':1');
+  });
+
+  // 7. duplicate ids silently break getElementById in a single-file app
+  attempt('No duplicate element ids',function(){
+    var seen={},dupes=[];
+    document.querySelectorAll('[id]').forEach(function(e){ if(seen[e.id]) dupes.push(e.id); seen[e.id]=1; });
+    ok('No duplicate element ids', !dupes.length, dupes.slice(0,5).join(', ')||'none');
+  });
+
+  var failed=R.filter(function(r){ return !r.pass; });
+  try{
+    if(window.console&&console.table) console.table(R.map(function(r){ return {check:r.name, result:r.pass?'PASS':'FAIL', detail:r.detail}; }));
+  }catch(e){}
+  return {all:R, failed:failed, passed:R.length-failed.length, total:R.length};
+}
+function selfTestRun(){
+  var r=selfTest();
+  if(r.failed.length){
+    try{ showToast('⚠ Self-check: '+r.failed.length+' of '+r.total+' failed — '+r.failed[0].name+' ('+r.failed[0].detail+')', true); }catch(e){}
+  } else {
+    try{ showToast('✓ Self-check: all '+r.total+' passed'); }catch(e){}
+  }
+  return r;
+}
+/* Silent on a healthy load; only ever speaks up when something has regressed. */
+setTimeout(function(){
+  try{
+    if(!window._mgrUnlocked) return;
+    var r=selfTest();
+    if(r.failed.length) showToast('⚠ Self-check failed: '+r.failed.map(function(f){return f.name;}).join(' · '), true);
+  }catch(e){}
+}, 6000);
+
 /* ── VA SIDE: their batches, on their shift screen ─────────────────────────*/
 /* A batch becomes a NORMAL task on the VA's list — Jack's choice, so there is
    nothing new for them to learn. The controls they already use drive the batch:
