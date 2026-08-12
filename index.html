@@ -23,7 +23,7 @@
 
   --text:#eceef6;
   --muted:#9aa1b4;
-  --muted-2:#666d82;
+  --muted-2:#8c94a8;   /* was #666d82 — measured 3.0:1 on chips, failed AA everywhere it was used at 9-11px */
 
   /* accent (themeable via [data-accent]) */
   --accent:#7c6cff;
@@ -775,6 +775,240 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
   border-radius:7px;padding:3px 10px;font-family:inherit;font-size:10.5px;font-weight:700;
   cursor:pointer;margin-left:8px;white-space:nowrap;}
 #view-leads .d-next:hover{border-color:var(--acc,#8b5cf6);color:#fff;}
+.ql-split{font-size:10px;color:var(--muted-2);font-family:var(--font-mono);}
+.ql-kp{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;border-radius:5px;padding:2px 7px;}
+.ql-kp.yes{color:#10d99a;background:color-mix(in srgb,#10d99a 15%,transparent);}
+.ql-kp.no{color:#ff8f9f;background:color-mix(in srgb,#f5455f 15%,transparent);}
+.bpanel{margin-top:12px;display:flex;flex-direction:column;gap:9px;}
+.bp-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.bp-keepa{flex:1 1 200px;display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  background:color-mix(in srgb,var(--accent) 22%,transparent);border:1px solid color-mix(in srgb,var(--accent) 50%,transparent);
+  color:#fff;border-radius:10px;padding:11px 16px;font-size:13px;font-weight:800;text-decoration:none;}
+.bp-keepa:hover{background:var(--accent);}
+.bp-timer{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.04);
+  border:1px solid var(--line-2);border-radius:10px;padding:5px 5px 5px 14px;}
+.bp-timer.on{border-color:#10d99a;background:color-mix(in srgb,#10d99a 10%,transparent);}
+.bp-el{font-family:var(--font-mono);font-size:17px;font-weight:800;color:var(--text);min-width:62px;}
+.bp-timer.on .bp-el{color:#10d99a;}
+.bp-t{background:var(--green,#10d99a);border:none;color:#08120e;border-radius:8px;padding:8px 15px;
+  font-family:inherit;font-size:12.5px;font-weight:800;cursor:pointer;}
+.bp-timer.on .bp-t{background:#f5455f;color:#fff;}
+.bp-row2{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.bp-kp{display:flex;align-items:center;gap:6px;}
+.bp-kp em{font-style:normal;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted-2);margin-right:2px;}
+.bp-yn{background:rgba(255,255,255,.05);border:1px solid var(--line-2);color:var(--muted);border-radius:8px;
+  padding:7px 15px;font-family:inherit;font-size:12.5px;font-weight:800;cursor:pointer;}
+.bp-yn.yes{background:color-mix(in srgb,#10d99a 26%,transparent);border-color:#10d99a;color:#7ef2c4;}
+.bp-yn.no{background:color-mix(in srgb,#f5455f 24%,transparent);border-color:#f5455f;color:#ff9aa8;}
+.bp-how{font-size:12px;color:#ffc978;background:color-mix(in srgb,#ffb84d 10%,transparent);
+  border:1px solid color-mix(in srgb,#ffb84d 30%,transparent);border-radius:9px;padding:8px 13px;line-height:1.45;}
+.bp-leads{display:flex;align-items:center;gap:8px;margin-left:auto;background:rgba(255,255,255,.04);
+  border:1px solid var(--line-2);border-radius:10px;padding:5px 12px;}
+.bp-leads em{font-style:normal;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--muted-2);}
+.bp-leads b{font-family:var(--font-mono);font-size:20px;font-weight:800;color:#10d99a;min-width:26px;text-align:center;}
+.bl-b{width:32px;height:32px;border-radius:8px;border:1px solid var(--line-2);background:rgba(255,255,255,.05);
+  color:var(--text);font-size:17px;font-weight:800;cursor:pointer;line-height:1;}
+.bl-b{width:26px;height:26px;border-radius:7px;border:1px solid var(--line-2);background:rgba(255,255,255,.05);
+  color:var(--text);font-size:15px;font-weight:800;cursor:pointer;line-height:1;}
+.bl-b.plus:hover{border-color:#10d99a;color:#10d99a;}
+.bl-b:hover{border-color:var(--accent);}
+.bl-s b{font-family:var(--font-mono);font-size:16px;font-weight:800;color:var(--text);min-width:18px;text-align:center;}
+.bl-tot{display:flex;align-items:center;gap:6px;}
+.bl-tot em{font-style:normal;font-size:10px;font-weight:800;text-transform:uppercase;color:var(--muted-2);}
+.bl-tot b{font-family:var(--font-mono);font-size:19px;font-weight:800;color:#10d99a;}
+.bp-note{background:#0b0c12;border:1px solid var(--line-2);border-radius:9px;color:var(--text);
+  font-family:inherit;font-size:12.5px;padding:10px 13px;outline:none;}
+.bp-note:focus{border-color:var(--accent);}
+.bp-done{background:var(--accent);border:none;color:#fff;border-radius:10px;padding:11px;
+  font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;}
+.bp-done:hover{filter:brightness(1.12);}
+@media(max-width:760px){ .bp-leads{margin-left:0;} }
+.swx-head{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:9px;margin-bottom:10px;}
+.swx-h{background:var(--panel);border:1px solid var(--line-2);border-radius:11px;padding:11px 14px;}
+.swx-h b{display:block;font-family:var(--font-mono);font-size:21px;font-weight:800;color:var(--text);line-height:1.1;}
+.swx-h em{font-style:normal;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted-2);}
+.swx-h.good b{color:#10d99a;}
+.swx-fix{background:color-mix(in srgb,#f5455f 9%,transparent);border:1px solid color-mix(in srgb,#f5455f 34%,transparent);
+  border-left:3px solid #f5455f;border-radius:10px;padding:10px 14px;margin-top:9px;font-size:11.5px;line-height:1.55;color:var(--muted);}
+.swx-fix>b{display:block;color:#ff9aa8;margin-bottom:5px;font-size:12.5px;}
+.swx-f2{margin-top:4px;} .swx-f2 i{font-style:normal;color:var(--text);}
+.swx-list{width:100%;margin-top:7px;background:#0b0c12;border:1px solid var(--line-2);border-radius:8px;
+  color:var(--text);font-family:var(--font-mono);font-size:11px;padding:8px 10px;height:52px;resize:vertical;}
+.swx-warn{font-size:11.5px;color:#ffc978;background:color-mix(in srgb,#ffb84d 10%,transparent);
+  border:1px solid color-mix(in srgb,#ffb84d 32%,transparent);border-radius:9px;padding:8px 13px;margin-top:9px;line-height:1.5;}
+.swx-warn b{color:#ffd9a0;}
+.swx-note{font-size:10.5px;color:var(--muted-2);margin:7px 0 18px;line-height:1.5;}
+#view-leads #nb-in{width:100%;min-height:60px;max-height:220px;resize:vertical;overflow-y:auto;
+  background:#0b0c12;border:1px solid var(--b2);border-radius:10px;color:#eef1f8;
+  font-family:inherit;font-size:13.5px;line-height:1.5;padding:11px 13px;outline:none;
+  display:block;box-sizing:border-box;}
+#view-leads #nb-in:focus{border-color:#10d99a;box-shadow:0 0 0 3px color-mix(in srgb,#10d99a 16%,transparent);}
+#view-leads #nb-in::placeholder{color:#6b7285;}
+.sm-health{font-size:12px;line-height:1.55;color:var(--muted);background:color-mix(in srgb,#10d99a 8%,transparent);
+  border:1px solid color-mix(in srgb,#10d99a 30%,transparent);border-radius:10px;padding:9px 13px;margin:12px 0;}
+.sm-health b{color:#e8ecf5;}
+.sm-health.off{background:rgba(255,255,255,.04);border-color:var(--line-2);color:#a8b0c2;}
+.sm-health.weak{background:color-mix(in srgb,#ffb84d 10%,transparent);border-color:color-mix(in srgb,#ffb84d 38%,transparent);}
+.sm-warn{display:block;margin-top:4px;color:#ffc978;}
+.sm-ex{display:block;margin-top:4px;color:#7fdcf5;font-size:11px;line-height:1.5;}
+/* reason recall — what your own notes already know about this lead */
+.rc-wrap{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
+.rc-r{display:flex;gap:8px;align-items:flex-start;padding:9px 11px;border-radius:9px;
+  font-size:12.5px;line-height:1.5;border:1px solid;}
+.rc-r b{font-weight:800;}
+.rc-i{flex:0 0 auto;font-size:13px;line-height:1.45;}
+.rc-g{opacity:.75;font-style:italic;font-size:11px;}
+.rc-world{background:rgba(58,196,120,.13);border-color:rgba(58,196,120,.42);color:#c9f5da;}
+.rc-data {background:rgba(255,176,60,.13);border-color:rgba(255,176,60,.42);color:#ffe2b5;}
+.rc-score{background:rgba(255,92,92,.13);border-color:rgba(255,92,92,.42);color:#ffd0d0;}
+.nm-wrap{margin-top:14px;padding-top:12px;border-top:1px solid var(--line-2);}
+.nm-h{font-size:12px;font-weight:800;color:#e8ecf5;margin-bottom:8px;}
+.nm-h span{font-weight:600;color:#8d95aa;margin-left:8px;font-size:10.5px;}
+.nm-empty{font-size:11.5px;color:#a8b0c2;line-height:1.55;}
+.nm-blind{font-size:11.5px;line-height:1.6;color:#a8b0c2;background:color-mix(in srgb,#f5455f 9%,transparent);
+  border:1px solid color-mix(in srgb,#f5455f 32%,transparent);border-radius:9px;padding:9px 13px;margin-bottom:9px;}
+.nm-blind b{color:#ff9aa8;} .nm-blind i{font-style:normal;color:#e8ecf5;font-weight:700;}
+.nm-tbl{border:1px solid var(--line-2);border-radius:9px;overflow:hidden;}
+.nm-hd,.nm-r{display:grid;grid-template-columns:minmax(0,1fr) 66px 72px 120px;gap:8px;padding:7px 12px;align-items:center;}
+.nm-hd{background:rgba(255,255,255,.03);font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:#8d95aa;}
+.nm-r{border-top:1px solid rgba(255,255,255,.05);font-size:12px;}
+.nm-r.good{background:color-mix(in srgb,#10d99a 6%,transparent);}
+.nm-r.bad{background:color-mix(in srgb,#f5455f 6%,transparent);}
+.nm-w{color:#e8ecf5;font-weight:700;overflow:hidden;}
+.nm-w i{display:block;font-style:normal;font-size:10px;font-weight:400;color:#8d95aa;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.nm-v{font-family:var(--font-mono);font-size:14px;font-weight:800;color:#6b7285;}
+.nm-v.good{color:#10d99a;} .nm-v.bad{color:#ff8f9f;}
+.nm-verdict{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:#8d95aa;}
+.nm-verdict.good{color:#10d99a;} .nm-verdict.bad{color:#ff8f9f;}
+.nm-note{font-size:10.5px;color:#8d95aa;margin-top:7px;line-height:1.5;}
+.rm-b{border:1px solid var(--line-2);border-radius:10px;padding:10px 13px;margin-bottom:9px;}
+.rm-b.k-score{border-color:color-mix(in srgb,#ffb84d 38%,transparent);background:color-mix(in srgb,#ffb84d 7%,transparent);}
+.rm-b.k-data{border-color:color-mix(in srgb,#18c8f0 34%,transparent);background:color-mix(in srgb,#18c8f0 6%,transparent);}
+.rm-b.k-world{border-color:var(--line-2);}
+.rm-bt{font-size:12px;font-weight:800;color:#e8ecf5;}
+.rm-bt span{font-family:var(--font-mono);color:#8d95aa;margin-left:6px;}
+.rm-b.k-score .rm-bt{color:#ffc978;} .rm-b.k-data .rm-bt{color:#7fdcf5;}
+.rm-blurb{font-size:10.5px;color:#a8b0c2;line-height:1.5;margin:3px 0 7px;}
+.rm-r{display:grid;grid-template-columns:minmax(0,1fr) 40px minmax(0,1.1fr);gap:8px;align-items:center;
+  padding:4px 0;border-top:1px solid rgba(255,255,255,.06);font-size:11.5px;}
+.rm-l{color:#e8ecf5;font-weight:700;}
+.rm-n{font-family:var(--font-mono);font-size:14px;font-weight:800;color:#e8ecf5;}
+.rm-x{font-size:10.5px;color:#8d95aa;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+@media(max-width:820px){ .nm-hd,.nm-r{grid-template-columns:minmax(0,1fr) 48px 52px;} .nm-verdict{display:none;} }
+.sbb-top{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px;margin-bottom:10px;}
+.sbb-t{background:var(--panel);border:1px solid var(--line-2);border-radius:11px;padding:11px 14px;}
+.sbb-t b{display:block;font-family:var(--font-mono);font-size:22px;font-weight:800;color:var(--text);line-height:1.1;}
+.sbb-t em{font-style:normal;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted-2);}
+.sbb-t.good b{color:#10d99a;}
+.sbb-note{font-size:11px;color:#ffc978;background:color-mix(in srgb,#ffb84d 10%,transparent);
+  border:1px solid color-mix(in srgb,#ffb84d 32%,transparent);border-radius:9px;padding:7px 12px;margin-bottom:9px;line-height:1.5;}
+.sbb-tbl{border:1px solid var(--line-2);border-radius:11px;overflow:hidden;margin-bottom:18px;}
+.sbb-hd,.sbb-r{display:grid;grid-template-columns:minmax(0,1fr) 60px 66px 74px 60px 80px;gap:8px;padding:8px 13px;align-items:center;}
+.sbb-hd{background:rgba(255,255,255,.03);font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted-2);}
+.sbb-r{border-top:1px solid rgba(255,255,255,.05);font-size:12px;}
+.sbb-r.none{opacity:.62;}
+.sbb-r.good{background:color-mix(in srgb,#10d99a 7%,transparent);}
+.sbb-n{color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.sbb-v{font-family:var(--font-mono);font-size:13px;font-weight:800;color:var(--muted);}
+.sbb-v.lead{color:#10d99a;}
+@media(max-width:880px){ .sbb-hd,.sbb-r{grid-template-columns:minmax(0,1fr) 44px 50px 56px;} .sbb-hd span:nth-child(n+5),.sbb-r span:nth-child(n+5){display:none;} }
+.sfl-warn{background:color-mix(in srgb,#ffb84d 12%,transparent);border:1px solid color-mix(in srgb,#ffb84d 40%,transparent);
+  border-left:3px solid #ffb84d;border-radius:9px;padding:8px 13px;margin-bottom:9px;font-size:11.5px;line-height:1.5;color:var(--muted);}
+.sfl-warn b{color:#ffc978;}
+.sfl-tbl{border:1px solid var(--line-2);border-radius:11px;overflow:hidden;}
+.sfl-hd,.sfl-r{display:grid;grid-template-columns:minmax(0,1fr) 62px 62px 78px 128px;gap:8px;align-items:center;padding:8px 13px;}
+.sfl-hd{background:rgba(255,255,255,.03);font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted-2);}
+.sfl-r{border-top:1px solid rgba(255,255,255,.05);font-size:12px;}
+.sfl-r.none{opacity:.62;}
+.sfl-r.good{background:color-mix(in srgb,#10d99a 7%,transparent);}
+.sfl-n{color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.sfl-n i{font-style:normal;margin-left:7px;font-size:9.5px;font-weight:700;color:var(--muted-2);
+  background:rgba(255,255,255,.06);border-radius:5px;padding:1px 6px;}
+.sfl-v{font-family:var(--font-mono);font-size:13px;font-weight:800;color:var(--muted);}
+.sfl-v.lead{color:#10d99a;}
+.sfl-who{font-size:10.5px;color:var(--muted-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.sfl-more{font-size:10.5px;color:var(--muted-2);margin-top:6px;}
+@media(max-width:880px){ .sfl-hd,.sfl-r{grid-template-columns:minmax(0,1fr) 48px 48px 60px;} .sfl-who{display:none;} }
+.spx-grade{margin-left:auto;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;
+  border-radius:6px;padding:2px 8px;white-space:nowrap;}
+.spx-grade.good{color:#10d99a;background:color-mix(in srgb,#10d99a 16%,transparent);}
+.spx-grade.ok{color:var(--muted);background:rgba(255,255,255,.07);}
+.spx-grade.warn{color:#ffb84d;background:color-mix(in srgb,#ffb84d 15%,transparent);}
+.spx-grade.bad{color:#ff8f9f;background:color-mix(in srgb,#f5455f 16%,transparent);}
+.spx-grade.off{color:var(--muted-2);background:rgba(255,255,255,.05);}
+.spx.g-good{border-color:color-mix(in srgb,#10d99a 46%,transparent);
+  background:linear-gradient(180deg,color-mix(in srgb,#10d99a 8%,transparent),transparent 130px);}
+.spx.g-warn{border-color:color-mix(in srgb,#ffb84d 42%,transparent);
+  background:linear-gradient(180deg,color-mix(in srgb,#ffb84d 7%,transparent),transparent 130px);}
+.spx.g-bad{border-color:color-mix(in srgb,#f5455f 44%,transparent);
+  background:linear-gradient(180deg,color-mix(in srgb,#f5455f 8%,transparent),transparent 130px);}
+.spx.g-off{opacity:.66;}
+.spx-tgt{margin-left:14px;font-size:10.5px;font-weight:700;color:var(--muted-2);
+  background:rgba(255,255,255,.05);border:1px solid var(--line-2);border-radius:6px;padding:2px 9px;}
+.spx-tgt b{color:var(--text);font-family:var(--font-mono);}
+/* the two headline KPIs take the grade colour too — the number IS the verdict */
+.spx.g-good .spx-k:first-child b{color:#10d99a;}
+.spx.g-warn .spx-k:first-child b{color:#ffb84d;}
+.spx.g-bad  .spx-k:first-child b{color:#ff8f9f;}
+.spx.g-good .spx-mini i{background:#10d99a;}
+.spx.g-warn .spx-mini i{background:#ffb84d;}
+.spx.g-bad  .spx-mini i{background:#f5455f;}
+.spx-why{display:flex;align-items:center;gap:12px;font-size:11.5px;color:#a8b0c2;line-height:1.5;margin:5px 0 7px;}
+.spx-why>span:first-child{flex:1 1 auto;min-width:0;}
+.spx-share{flex:0 0 118px;display:grid;grid-template-columns:1fr auto;grid-template-areas:"bar val" "lab lab";gap:2px 6px;align-items:center;}
+.spx-share i{grid-area:bar;display:block;height:5px;border-radius:3px;background:#10d99a;min-width:2px;
+  box-shadow:0 0 0 1px rgba(255,255,255,.06);}
+.spx-share b{grid-area:val;font-family:var(--font-mono);font-size:11.5px;font-weight:800;color:#10d99a;}
+.spx-share em{grid-area:lab;font-style:normal;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#8d95aa;}
+.spx-spark{display:flex;align-items:flex-end;gap:9px;margin:0 0 9px;}
+.spx-spark em{font-style:normal;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:#8d95aa;padding-bottom:2px;}
+.spk{display:inline-flex;align-items:flex-end;gap:3px;height:26px;flex:1 1 auto;}
+.spk i{flex:1 1 auto;max-width:14px;background:color-mix(in srgb,#10d99a 62%,transparent);border-radius:3px 3px 0 0;min-height:3px;}
+.spk i:last-child{background:#10d99a;}
+.spx-open-b{width:100%;margin-top:9px;background:rgba(255,255,255,.04);border:1px solid var(--line-2);
+  color:var(--muted);border-radius:9px;padding:6px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;}
+.spx-open-b:hover{border-color:var(--accent);color:var(--text);}
+.spx.open{grid-column:1/-1;}
+.spd{margin-top:10px;padding-top:10px;border-top:1px solid var(--line-2);}
+.spd-vas{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:9px;}
+.spd-va{font-size:11px;color:var(--muted-2);background:rgba(255,255,255,.04);border:1px solid var(--line-2);
+  border-radius:8px;padding:4px 10px;}
+.spd-va b{color:var(--text);margin-right:6px;}
+.spd-tbl{border:1px solid var(--line-2);border-radius:9px;overflow:hidden;}
+.spd-hd,.spd-r{display:grid;grid-template-columns:96px 66px minmax(0,1fr) 62px 62px 70px;gap:8px;padding:6px 11px;align-items:center;}
+.spd-hd{background:rgba(255,255,255,.03);font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--muted-2);}
+.spd-r{border-top:1px solid rgba(255,255,255,.05);font-size:11.5px;color:var(--muted);}
+.spd-r.zero{background:color-mix(in srgb,#f5455f 7%,transparent);}
+.spd-r.pend{opacity:.6;}
+.spd-n{font-family:var(--font-mono);color:var(--text);}
+.spd-r i{font-style:normal;color:var(--muted-2);font-size:10.5px;}
+@media(max-width:820px){ .spd-hd,.spd-r{grid-template-columns:84px 52px 56px 52px 56px;} .spd-hd span:nth-child(3),.spd-r span:nth-child(3){display:none;} }
+.spx-v2{font-size:11.5px;color:var(--muted);margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,.07);line-height:1.5;}
+.spx-v2 b{color:var(--text);}
+.spx-v2.bad b{color:#ff8f9f;}
+.spx-v2.dim2{color:var(--muted-2);}
+.spx-extra{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:7px;font-size:11px;color:#9aa3b7;}
+.spx-bva{color:#a8b0c2;} .spx-bva b{color:#e8ecf5;font-family:var(--font-mono);}
+.spx-tr{font-weight:800;border-radius:5px;padding:1px 7px;}
+.spx-tr.up{color:#10d99a;background:color-mix(in srgb,#10d99a 15%,transparent);}
+.spx-tr.down{color:#ff8f9f;background:color-mix(in srgb,#f5455f 15%,transparent);}
+.spx-last{margin-left:auto;}
+.spx-deep{display:grid;grid-template-columns:repeat(3,1fr);gap:7px 10px;margin-top:8px;padding-top:9px;
+  border-top:1px solid rgba(255,255,255,.06);}
+.spx-deep span{display:flex;flex-direction:column;gap:2px;min-width:0;}
+.spx-deep em{font-style:normal;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#8d95aa;}
+.spx-deep b{font-family:var(--font-mono);font-size:14px;font-weight:800;color:#e8ecf5;}
+.spx-deep b.good{color:#10d99a;} .spx-deep b.warn{color:#ffb84d;} .spx-deep b.bad{color:#ff8f9f;}
+.spx-deep b i{font-style:normal;font-size:11px;font-weight:700;color:#8d95aa;}
+.sb-bin-toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:99999;
+  display:flex;align-items:center;gap:13px;background:#14161f;border:1px solid var(--line-2);
+  border-left:3px solid #f5455f;border-radius:11px;padding:11px 16px;font-size:12.5px;color:var(--muted);
+  box-shadow:0 12px 34px -12px #000;}
+.sb-bin-toast b{color:var(--text);}
+.sb-bin-toast button{background:rgba(255,255,255,.07);border:1px solid var(--line-2);color:#fff;
+  border-radius:8px;padding:5px 13px;font-family:inherit;font-size:11.5px;font-weight:800;cursor:pointer;}
+.sb-bin-toast button:hover{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 26%,transparent);}
 .lead-warn{background:color-mix(in srgb,#ff6b7f 11%,var(--panel));
   border:1px solid color-mix(in srgb,#ff6b7f 38%,transparent);border-left:3px solid #ff6b7f;
   border-radius:10px;padding:9px 14px;margin-bottom:9px;}
@@ -1361,7 +1595,7 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 
   /* ── horizontal views/filter bar (single-sidebar layout) ── */
   & .ld-viewsbar{display:flex;flex-wrap:wrap;align-items:center;gap:5px;padding:6px 16px;border-bottom:1px solid var(--b1);background:var(--bg)}
-  & .nav{display:inline-flex;align-items:center;gap:5px;width:auto;padding:5px 11px;border-radius:999px;border:1px solid var(--b1);background:var(--s2);color:var(--t3);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all .14s;text-align:left;white-space:nowrap}
+  & .nav{display:inline-flex;align-items:center;gap:5px;width:auto;padding:7px 12px;border-radius:999px;border:1px solid var(--b1);background:var(--s2);color:#b8c1d4;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all .14s;text-align:left;white-space:nowrap}
   & .nav:hover{border-color:var(--b3);color:var(--t1)}
   & .nav.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
   & .nav.on .nb{background:rgba(0,0,0,.25);color:#fff}
@@ -1393,8 +1627,8 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
   & .rc{--k:var(--accent);position:relative;background:var(--s2);border:1px solid var(--b2);border-left:3px solid var(--k);border-radius:9px;padding:5px 11px;display:flex;flex-direction:column;gap:0;cursor:default;transition:border-color .14s}
   & .rc:hover{border-color:color-mix(in srgb,var(--k) 55%,var(--b2))}
   & .rv{font-size:16px;font-weight:700;font-family:var(--font-head);line-height:1.1;letter-spacing:-.02em;color:var(--k)}
-  & .rl{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--t3);font-weight:700}
-  & .rsub{font-size:9.5px;font-weight:600;color:var(--t4);margin-top:0}
+  & .rl{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#b8c1d4;font-weight:700}
+  & .rsub{font-size:11px;font-weight:600;color:#a3adc2;margin-top:1px}
   & .rc-amber{--k:#f5a524}
   & .rc-green{--k:#10d99a}
   & .rc-red{--k:#f5455f}
@@ -1563,6 +1797,32 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
   & .dec-pass:hover{background:var(--rd)}
   & .dec-undo{background:var(--s4);color:var(--t2);border:1px solid var(--b2);flex:0 0 auto;padding:14px 18px}
   & .d-dec-current{font-size:12.5px;color:var(--t3);margin-bottom:10px}
+  & .d-actioned{border-radius:11px;padding:11px 13px;margin-bottom:11px;border:1px solid;}
+  & .d-actioned.buy{background:color-mix(in srgb,#10d99a 11%,transparent);border-color:color-mix(in srgb,#10d99a 42%,transparent);}
+  & .d-actioned.no{background:color-mix(in srgb,#f5455f 10%,transparent);border-color:color-mix(in srgb,#f5455f 40%,transparent);}
+  & .d-actioned.wait{background:color-mix(in srgb,#f5a524 11%,transparent);border-color:color-mix(in srgb,#f5a524 42%,transparent);}
+  & .d-act-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  & .d-act-badge{font-size:14px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;color:#fff;}
+  & .d-actioned.buy .d-act-badge{color:#10d99a;}
+  & .d-actioned.no .d-act-badge{color:#ff8f9f;}
+  & .d-actioned.wait .d-act-badge{color:#ffc978;}
+  & .d-act-txt{font-size:11.5px;color:#a8b0c2;flex:1 1 auto;min-width:0;}
+  & .d-act-txt b{color:#e8ecf5;font-family:var(--font-mono);}
+  & .d-why{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:9px;padding-top:9px;
+      border-top:1px solid rgba(255,255,255,.1);}
+  & .d-why em{font-style:normal;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#8d95aa;margin-right:2px;}
+  & .d-why-b{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:#cfd6e4;
+      border-radius:7px;padding:5px 10px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;}
+  & .d-why-b:hover{background:rgba(255,255,255,.16);color:#fff;}
+  & .d-why-b.k-score:hover{border-color:#ffb84d;color:#ffc978;}
+  & .d-why-b.k-data:hover{border-color:#18c8f0;color:#7fdcf5;}
+  & .d-why.set b{font-size:13px;color:#e8ecf5;}
+  & .d-why-kind{font-size:10px;color:#8d95aa;}
+  & .d-why.set.k-score .d-why-kind{color:#ffc978;}
+  & .d-why.set.k-data .d-why-kind{color:#7fdcf5;}
+  & .d-why-x{margin-left:auto;background:none;border:1px solid rgba(255,255,255,.16);color:#8d95aa;
+      border-radius:6px;padding:3px 9px;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;}
+  & .d-why-x:hover{color:#fff;border-color:rgba(255,255,255,.4);}
   & .d-sync-note{font-size:12px;line-height:1.5;color:var(--t2);background:rgba(245,165,36,.09);border:1px solid rgba(245,165,36,.28);border-radius:9px;padding:8px 11px;margin-bottom:10px}
   & .d-sync-note b{color:var(--amber)}
   & .d-sync-note.ok{background:rgba(16,217,154,.08);border-color:rgba(16,217,154,.28)}
@@ -1907,6 +2167,11 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .jb-item-opts .jb-toggle{background:var(--panel);border:1px solid var(--line-2);border-radius:9px;padding:7px 11px;}
 .jb-send-btn{margin-left:auto;display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent-2));border:none;border-radius:10px;padding:10px 20px;cursor:pointer;box-shadow:0 6px 18px -8px var(--accent);transition:filter .13s,transform .13s;}
 .jb-send-btn:hover{filter:brightness(1.12);transform:translateY(-1px);}
+.jb-send-both{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:800;
+  color:var(--muted);background:rgba(255,255,255,.05);border:1px solid var(--line-2);border-radius:10px;
+  padding:10px 15px;cursor:pointer;transition:all .13s;}
+.jb-send-both:hover{border-color:var(--accent);color:#fff;background:color-mix(in srgb,var(--accent) 20%,transparent);}
+.jb-send-both+.jb-send-btn{margin-left:8px;}
 .jb-seccount{white-space:nowrap;}
 .jb-clear-btn{margin-left:auto;background:transparent;border:1px solid var(--line-2);border-radius:7px;color:var(--muted-2);font-size:10px;font-weight:700;padding:3px 9px;cursor:pointer;text-transform:none;letter-spacing:.2px;}
 .jb-clear-btn:hover{color:#f5455f;border-color:rgba(245,69,95,.4);}
@@ -1992,7 +2257,62 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
    and the thumbnail equally, so the row got harder to READ without looking any more
    "already seen". Desaturate the picture, grey the panel, mute the figures — but keep
    the title at full contrast so it stays scannable. */
+/* focus queue — a finite, ranked handful instead of a wall of 600 */
+#view-leads .fq-entry{width:100%;margin:0 0 10px;padding:12px 15px;text-align:left;cursor:pointer;
+  background:color-mix(in srgb,#4da3ff 14%,transparent);border:1.5px solid color-mix(in srgb,#4da3ff 46%,transparent);
+  border-radius:12px;color:#dbeaff;font-family:inherit;font-size:13px;font-weight:600;line-height:1.45;}
+#view-leads .fq-entry:hover{background:color-mix(in srgb,#4da3ff 22%,transparent);}
+#view-leads .fq-entry b{color:#fff;font-weight:800;}
+#view-leads .fq-entry span{color:#9fc4ee;font-weight:600;}
+#view-leads .fq{margin:0 0 10px;padding:11px 14px;border-radius:12px;
+  background:color-mix(in srgb,#4da3ff 12%,transparent);border:1.5px solid color-mix(in srgb,#4da3ff 40%,transparent);}
+#view-leads .fq-done{background:color-mix(in srgb,#3ac478 13%,transparent);border-color:color-mix(in srgb,#3ac478 44%,transparent);}
+#view-leads .fq-t{font-size:13px;font-weight:700;color:#e6f1ff;}
+#view-leads .fq-t b{color:#fff;font-weight:800;}
+#view-leads .fq-sub{font-weight:600;color:#9fc4ee;font-size:11.5px;margin-left:6px;}
+#view-leads .fq-bar{height:6px;border-radius:99px;background:rgba(255,255,255,.12);margin:9px 0 8px;overflow:hidden;}
+#view-leads .fq-bar i{display:block;height:100%;border-radius:99px;background:#4da3ff;transition:width .25s ease;}
+#view-leads .fq-b{display:flex;gap:8px;flex-wrap:wrap;}
+#view-leads .fq-go,#view-leads .fq-x{border-radius:9px;font-family:inherit;font-size:12px;font-weight:700;padding:7px 12px;cursor:pointer;}
+#view-leads .fq-go{background:#3ac478;border:none;color:#06210f;}
+#view-leads .fq-x{background:transparent;border:1.5px solid rgba(255,255,255,.22);color:#cfd8e8;}
+#view-leads .fq-empty{padding:44px 20px;text-align:center;color:#cfe6d8;font-size:14px;font-weight:700;}
+#view-leads .fq-empty div{display:flex;gap:8px;justify-content:center;margin-top:14px;}
 /* held on screen after a decision, until he moves to another lead */
+#view-leads .bk-entry{width:100%;margin:0 0 10px;background:color-mix(in srgb,#ffb84d 12%,transparent);
+  border:1px solid color-mix(in srgb,#ffb84d 40%,transparent);color:#ffc978;border-radius:10px;
+  padding:9px 14px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;text-align:left;}
+#view-leads .bk-entry b{color:#fff;font-family:var(--font-mono);font-size:14px;}
+#view-leads .bk-entry:hover{background:color-mix(in srgb,#ffb84d 20%,transparent);}
+#view-leads #bulk-panel{margin-bottom:12px;}
+#view-leads .bk{background:var(--s1,#12131a);border:1px solid var(--b2);border-radius:12px;padding:14px 16px;}
+#view-leads .bk-h{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+#view-leads .bk-h b{font-size:14px;color:#eef1f8;}
+#view-leads .bk-h span{font-size:11.5px;color:#a8b0c2;}
+#view-leads .bk-h span b{font-family:var(--font-mono);color:#ffc978;font-size:13px;}
+#view-leads .bk-x{margin-left:auto;background:none;border:none;color:#6b7285;font-size:15px;cursor:pointer;}
+#view-leads .bk-rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-bottom:10px;}
+#view-leads .bk-rule{text-align:left;background:rgba(255,255,255,.04);border:1px solid var(--b2);
+  border-radius:10px;padding:9px 12px;cursor:pointer;font-family:inherit;position:relative;}
+#view-leads .bk-rule.on{border-color:#ffb84d;background:color-mix(in srgb,#ffb84d 12%,transparent);}
+#view-leads .bk-rule b{display:block;font-size:12.5px;color:#eef1f8;}
+#view-leads .bk-rule em{display:block;font-style:normal;font-size:10.5px;color:#8d95aa;margin-top:1px;}
+#view-leads .bk-rule u{position:absolute;top:9px;right:12px;text-decoration:none;font-family:var(--font-mono);
+  font-size:13px;font-weight:800;color:#8d95aa;}
+#view-leads .bk-rule.on u{color:#ffc978;}
+#view-leads .bk-who{font-size:11.5px;color:#a8b0c2;line-height:1.5;margin-bottom:10px;}
+#view-leads .bk-who b{color:#ff8f9f;}
+#view-leads .bk-go{width:100%;background:#f5455f;border:none;color:#fff;border-radius:10px;padding:11px;
+  font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;}
+#view-leads .bk-go:hover{filter:brightness(1.1);}
+#view-leads .bk-note{font-size:10.5px;color:#8d95aa;margin-top:7px;text-align:center;}
+#view-leads .litem-why{margin-left:auto;font-size:9px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.3px;border-radius:5px;padding:2px 7px;white-space:nowrap;
+  background:rgba(255,255,255,.07);color:#8d95aa;}
+#view-leads .litem-why.k-score{background:color-mix(in srgb,#ffb84d 18%,transparent);color:#ffc978;}
+#view-leads .litem-why.k-data{background:color-mix(in srgb,#18c8f0 16%,transparent);color:#7fdcf5;}
+#view-leads .d-why-b u{text-decoration:none;display:inline-block;min-width:13px;margin-right:5px;
+  font-size:9.5px;color:#8d95aa;}
 #view-leads .litem.litem-decided{background:color-mix(in srgb,var(--green) 9%,transparent);
   box-shadow:inset 3px 0 0 var(--green);}
 #view-leads .litem.litem-decided .litem-title::after{content:'DECIDED \2014 still open';
@@ -3199,12 +3519,31 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 
 /* Destinations carry the SAME colour as the person, everywhere in the app, so the
    button you press and the tile it produces are visibly the same thing. */
+.sbr-route2{display:grid;grid-template-columns:1fr 1fr 40px;gap:5px;}
+.sbr-go2{height:34px;border-radius:9px;font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;
+  border:1px solid var(--line-2);background:rgba(255,255,255,.05);color:var(--muted);transition:all .12s;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px;}
+.sbr-go2[data-w="Mera"]:hover,.sbr-go2[data-w="Mera"].on{background:color-mix(in srgb,var(--mera) 26%,transparent);border-color:var(--mera);color:#fff;}
+.sbr-go2[data-w="Suz"]:hover,.sbr-go2[data-w="Suz"].on{background:color-mix(in srgb,var(--suz) 26%,transparent);border-color:var(--suz);color:#fff;}
+.sbr-more{position:relative;}
+.sbr-more summary{list-style:none;cursor:pointer;height:34px;display:flex;align-items:center;justify-content:center;
+  border-radius:9px;border:1px solid var(--line-2);background:rgba(255,255,255,.05);color:var(--muted);font-size:15px;font-weight:800;}
+.sbr-more summary::-webkit-details-marker{display:none;}
+.sbr-more summary:hover{border-color:var(--accent);color:var(--text);}
+.sbr-more[open] summary{border-color:var(--accent);color:var(--text);}
+.sbr-more .sbw-menu{right:0;left:auto;}
 .sbr-route{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;}
 /* Out-with-the-VAs and Finished are for reading, not doing. The controls still
    exist for the rare re-route, but they stay folded until the tile is engaged -
    focus-within keeps them reachable by keyboard, so this is not a hover-only trap. */
-.sbr-tiles.calm .sbr-route,.sbr-tiles.calm .sbr-act{display:none;}
-.sbr-tiles.calm .sbr:hover .sbr-route,.sbr-tiles.calm .sbr:focus-within .sbr-route{display:grid;}
+.sbr-tiles.calm .sbr-route,.sbr-tiles.calm .sbr-act,.sbr-tiles.calm .sbr-route2{
+  opacity:0;pointer-events:none;transition:opacity .12s ease;}
+.sbr-tiles.calm .sbr:hover .sbr-route,.sbr-tiles.calm .sbr:focus-within .sbr-route,
+.sbr-tiles.calm .sbr:hover .sbr-act,.sbr-tiles.calm .sbr:focus-within .sbr-act,
+.sbr-tiles.calm .sbr:hover .sbr-route2,.sbr-tiles.calm .sbr:focus-within .sbr-route2{
+  opacity:1;pointer-events:auto;}
+/* the details menu must survive the mouse leaving the tile while it's open */
+.sbr-tiles.calm .sbr-more[open] ~ *,.sbr-tiles.calm .sbr:has(.sbr-more[open]) .sbr-route2{opacity:1;pointer-events:auto;}
 .sbr-tiles.calm .sbr:hover .sbr-act,.sbr-tiles.calm .sbr:focus-within .sbr-act{display:grid;}
 .sbr-act{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
 .sbr-act.one{grid-template-columns:1fr;}
@@ -3227,7 +3566,10 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 .sbr-b.go:hover,.sbr-b.done:hover{color:#08120e;}
 .sbr-b.bin{--b:var(--red);}
 .sbr-b.bin:hover{color:#fff;}
-.sbr-lock{font-size:10.5px;color:var(--muted-2);text-align:center;padding:3px 0;}
+.sbr-lock{display:flex;align-items:center;justify-content:center;gap:8px;font-size:10.5px;color:var(--muted-2);padding:3px 0;}
+.sbr-rel{background:rgba(255,255,255,.06);border:1px solid var(--line-2);color:var(--muted);border-radius:7px;
+  padding:3px 10px;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;}
+.sbr-rel:hover{border-color:#f5455f;color:#ff9aa8;}
 .sb-sum{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:13px;}
 .sb-sum-c{font-size:11.5px;font-weight:700;color:var(--muted);background:rgba(255,255,255,.045);
   border:1px solid var(--line-2);border-radius:999px;padding:5px 12px;}
@@ -3827,6 +4169,8 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
   .jb-item-add2 .jb-iname{flex:1 1 auto;}
   .jb-item-opts{gap:8px;}
   .jb-send-btn{width:100%;justify-content:center;margin-left:0;}
+  .jb-send-both{width:100%;justify-content:center;margin-left:0;margin-bottom:7px;}
+  .jb-send-both+.jb-send-btn{margin-left:0;}
   .jb-orow .jb-ichip{min-width:0;}
   .fj-count-bar{font-size:12px;}
   /* Jack overview */
@@ -4258,6 +4602,9 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
       <button class="nav" data-sc="5" onclick="setScore(this,5)"><span class="dot-ico" style="border-radius:50%;background:var(--amber)"></span>5+</button>
       </div>
     <div class="ribbon" id="ribbon"></div>
+    <div id="focus-entry"></div>
+    <div id="bulk-entry"></div>
+    <div id="bulk-panel" style="display:none"></div>
     <div class="split">
       <div class="list-pane">
         <div class="list-search">
@@ -5190,7 +5537,23 @@ async function checkAndRestoreDraft(va) {
   }
 }
 
-function ukNow() { return new Date(new Date().toLocaleString('en-GB',{timeZone:'Europe/London'})); }
+/* toLocaleString('en-GB') gives "12/08/2026, 09:22:12" and new Date() reads that as
+   US month/day — so this returned 8 December for 12 August. Measured across a 31-day
+   month it was RIGHT on 1 day, silently WRONG on 11, and Invalid Date on 19 (any day
+   past the 12th, where the "month" is out of range). It drives ukDayOfWeek(), which
+   picks Mera's Tuesday/Thursday KPF filter tasks. Read the fields explicitly instead. */
+function ukNow() {
+  try{
+    var g={};
+    new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',year:'numeric',month:'2-digit',
+      day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false})
+      .formatToParts(new Date()).forEach(function(p){ g[p.type]=p.value; });
+    var h=+g.hour; if(h===24) h=0;                      // some engines render midnight as 24
+    var d=new Date(+g.year,(+g.month)-1,+g.day,h,+g.minute,+g.second);
+    if(!isNaN(d.getTime())) return d;
+  }catch(e){}
+  return new Date(new Date().toLocaleString('en-US',{timeZone:'Europe/London'}));
+}
 // Suz colour — locked
 var SUZ_COL='#FFEB3B';
 function ukTimeString() { return new Date().toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:true}); }
@@ -5204,7 +5567,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v30.6';
+var APP_VERSION='v34.3';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -5291,7 +5654,9 @@ function getAppSettings(){
       if(saved[k] !== undefined) settings[k] = saved[k]?1:0;
     });
     if(saved.idleMins){ var im=parseInt(saved.idleMins); if(!isNaN(im)&&im>=15) settings.idleMins=im; }
-    ['wbUrl','wbToken'].forEach(function(k){ if(typeof saved[k]==='string') settings[k]=saved[k]; });
+    ['wbUrl','wbToken','sbHowText'].forEach(function(k){ if(typeof saved[k]==='string') settings[k]=saved[k]; });
+    ['sfLeadsPerDay','sfLeadsPerHr'].forEach(function(k){
+      var n=parseFloat(saved[k]); if(!isNaN(n)&&n>0) settings[k]=n; });
     ['goalMera','goalSuz','oaGoalMera','oaGoalSuz'].forEach(function(k){
       var n=parseInt(saved[k]); if(!isNaN(n)&&n>=0) settings[k]=n; });
     // min leads/week were saved but never copied back here, so they snapped back to 60 on every read
@@ -6618,6 +6983,15 @@ function taskLeadCount(t){
 }
 function taskHasProgress(t){ return (+t.timeHrs||0)>0 || (+t.timeMins||0)>0 || (t.leads!=='' && t.leads!=null && t.leads!==undefined) || (t.context && String(t.context).trim()); }
 function fmtDur(h,m){ h=+h||0; m=+m||0; if(h&&m) return h+'h '+m+'m'; if(h) return h+'h'; if(m) return m+'m'; return ''; }
+/* Jack: "1 min 25 not 1 min :)" — Math.round(85/60) threw the 25 seconds away.
+   The timer already holds the exact seconds, so show them. */
+function fmtSecs(sec){
+  sec=Math.max(0,Math.round(+sec||0));
+  var h=Math.floor(sec/3600), m=Math.floor((sec%3600)/60), s=sec%60;
+  if(h) return h+'h '+m+'m';
+  if(m) return m+'m '+(s?s+'s':'00s');
+  return s+'s';
+}
 function taskTypeLabel(t){ if(taskIsTickOnly(t)) return 'Tick to confirm when done'; if(t.hasLinks) return 'Log your links &amp; leads found'; return 'Log time spent &amp; leads found'; }
 function taskLoggedSummary(t){ var dur=fmtDur(t.timeHrs,t.timeMins); var lc=taskLeadCount(t); var parts=[]; if(dur) parts.push(dur); if(!taskIsTickOnly(t)) parts.push(lc+' lead'+(lc===1?'':'s')); return parts.join(' &#183; '); }
 var SUB_ICON_CLOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
@@ -6898,6 +7272,46 @@ function buildFields(task, i, isExtra) {
     return '<div style="margin-top:14px;padding:14px 16px;background:'+bg+';border:1px solid '+bdr+';border-radius:10px;font-size:12px;color:'+col+';">'+msg+'</div>';
   }
 
+  /* ── STOREFRONT BATCH PANEL ────────────────────────────────────────────────
+     Jack: "make these only start and stop before they mark as complete -- did they
+     get keepa tracks in yes or no a dropdown -- then they get their leads somewhere
+     -- remember a2a uk - a2a eu + take everything to oa -- quick speed speed speed".
+     So: no manual time chips (the timer is the truth), one Keepa yes/no, and leads
+     split the three ways he actually sells — A2A UK, A2A EU, OA. Everything on one
+     row, every control a single tap. */
+  if(task.sbBatchId && !taskIsTickOnly(task)){
+    var bx=(isExtra?'e':'t')+i;
+    var lc=(task.leads===''||task.leads==null)?0:(+task.leads||0);
+    var elapsed=(typeof ttElapsedT==='function')?ttElapsedT(task):0;
+    var running=!!task.timerRun;
+    var kp=task.keepaTracks||'';
+    return '<div class="bpanel">'
+      +'<div class="bp-row">'
+        +'<a class="bp-keepa" href="'+String(task.jbUrl||'#').replace(/"/g,'&quot;')+'" target="_blank">'
+          +'\u{1F4C8} Open all in Keepa &#8599;</a>'
+        +'<div class="bp-timer'+(running?' on':'')+'">'
+          +'<span class="bp-el" id="bp-el-'+bx+'">'+sfFmt(elapsed)+'</span>'
+          +'<button type="button" class="bp-t" onclick="ttToggle('+i+','+isExtra+')">'
+            +(running?'&#9632; Stop':'&#9654; Start')+'</button>'
+        +'</div>'
+      +'</div>'
+      +'<div class="bp-how">'+escHtml(sbHowText())+'</div>'
+      +'<div class="bp-row2">'
+        +'<div class="bp-kp"><em>Keepa tracks in?</em>'
+          +'<button type="button" class="bp-yn'+(kp==='yes'?' yes':'')+'" onclick="sbBatchKeepa('+i+','+isExtra+',\'yes\')">Yes</button>'
+          +'<button type="button" class="bp-yn'+(kp==='no'?' no':'')+'" onclick="sbBatchKeepa('+i+','+isExtra+',\'no\')">No</button>'
+        +'</div>'
+        +'<div class="bp-leads"><em>Leads found</em>'
+          +'<button type="button" class="bl-b" onclick="sbBatchLead('+i+','+isExtra+',-1)">&minus;</button>'
+          +'<b id="bl-n-'+bx+'">'+lc+'</b>'
+          +'<button type="button" class="bl-b plus" onclick="sbBatchLead('+i+','+isExtra+',1)">+</button>'
+        +'</div>'
+      +'</div>'
+      +'<input class="bp-note" type="text" placeholder="Anything worth telling Jack? (optional)" value="'
+        +(task.context||'').replace(/"/g,'&quot;')+'" oninput="updateField('+i+','+isExtra+',\'context\',this.value)">'
+      +'<button type="button" class="bp-done" onclick="markDone('+i+','+isExtra+')">&#10003; Mark Complete</button>'
+    +'</div>';
+  }
   var sfx=(isExtra?'e':'t')+i;
   // The row already carries the time chips, the Start/Stop timer (which fills Time
   // Spent by itself when stopped) and the leads stepper. Repeating all three here
@@ -7014,6 +7428,22 @@ function qlReveal(i,isExtra){
 }
 function quickLogHTML(task,i,isExtra){
   var sfx=(isExtra?'e':'t')+i, st='event.stopPropagation();';
+  /* Storefront batches log through their own panel — timer, Keepa yes/no and the
+     three-way lead split. Showing the generic chips here as well would be a second,
+     conflicting way to enter the same numbers. */
+  if(task.sbBatchId){
+    var tot=(task.leads===''||task.leads==null)?0:(+task.leads||0);
+    var el=(typeof ttElapsedT==='function')?ttElapsedT(task):0;
+    return '<div class="ql'+(tot||el?' has':'')+'" id="ql-'+sfx+'" onclick="event.stopPropagation()">'
+      +'<span class="ql-lab">Time</span><span class="ql-val" id="qlt-'+sfx+'">'
+        +(el?fmtSecs(el):(fmtDur(task.timeHrs,task.timeMins)||'not started'))+'</span>'
+      +'<span class="ql-sep"></span><span class="ql-lab">Leads</span>'
+      +'<span class="ql-auto'+(tot?'':' zero')+'" id="qll-'+sfx+'">'+tot+'</span>'
+
+      +(task.keepaTracks?'<span class="ql-kp '+task.keepaTracks+'">keepa '+task.keepaTracks+'</span>':'')
+      +'<button type="button" class="ql-chip" onclick="'+st+'qlReveal('+i+','+isExtra+')">Open &#8250;</button>'
+    +'</div>';
+  }
   var h='<div class="ql'+(taskHasProgress(task)?' has':'')+'" id="ql-'+sfx+'" onclick="event.stopPropagation()">'
     + '<span class="ql-lab">Time</span>'
     + [15,30,60].map(function(m){
@@ -7052,7 +7482,7 @@ function pfTimerToggle(i,isExtra,li){
   t.linkRun=t.linkRun||[]; t.linkSecs=t.linkSecs||[];
   if(t.linkRun[li]) pfTimerStop(t,li);
   else pfTimerStart(i,isExtra,li);
-  renderTasks(); try{ saveDraftSoon(); }catch(e){}
+  renderTasks(); try{ saveShiftDraft(false); }catch(e){}
 }
 function pfTimerStart(i,isExtra,li){
   var arr=isExtra?state.extraTasks:state.tasks, t=arr[i]; if(!t||t.done) return;
@@ -7061,7 +7491,7 @@ function pfTimerStart(i,isExtra,li){
   for(var z=0;z<t.linkRun.length;z++) if(t.linkRun[z]) pfTimerStop(t,z);   // bank the other one
   t.linkRun[li]=Date.now();
   try{ ttEnsureRunning(i,isExtra); }catch(e){}   // the task timer captures the total
-  renderTasks(); try{ saveDraftSoon(); }catch(e){}
+  renderTasks(); try{ saveShiftDraft(false); }catch(e){}
 }
 function pfTimerStop(t,li){
   if(!t.linkRun||!t.linkRun[li]) return;
@@ -7402,6 +7832,28 @@ function jb_itemTask(it,i){
     jbType:it.t, jbUrl:isUrl?it.v:'', jbAsin:(it.t==='asin'?String(it.v).trim():''), jbTimer:!!it.timer, jbLeads:!!it.leads,
     timerSec:0, timerRun:false, timerStart:null };
 }
+/* Leads split the way Jack actually sells: A2A UK, A2A EU, everything else OA.
+   task.leads stays the TOTAL so every existing report, KPI and sheet write keeps
+   working untouched — the breakdown rides alongside it. */
+function sbBatchLead(i,isExtra,delta){
+  var t=isExtra?state.extraTasks[i]:state.tasks[i]; if(!t) return;
+  var cur=(t.leads===''||t.leads==null)?0:(+t.leads||0);
+  t.leads=Math.max(0,cur+delta);
+  var el=document.getElementById('bl-n-'+((isExtra?'e':'t')+i)); if(el) el.textContent=t.leads;
+  try{ updateStats(); }catch(e){}
+  saveShiftDraft(false);
+}
+/* Jack's standing instruction to the VAs on how to work a batch. Editable in
+   Settings so he can reword it without a new build. */
+function sbHowText(){
+  try{ var v=String(getAppSettings().sbHowText||'').trim(); if(v) return v; }catch(e){}
+  return 'A2A UK first, then A2A EU — take everything else to OA.';
+}
+function sbBatchKeepa(i,isExtra,val){
+  var t=isExtra?state.extraTasks[i]:state.tasks[i]; if(!t) return;
+  t.keepaTracks=(t.keepaTracks===val)?'':val;
+  renderTasks(); saveShiftDraft(false);
+}
 function ttElapsedT(t){ var s=t.timerSec||0; if(t.timerRun&&t.timerStart) s+=(Date.now()-t.timerStart)/1000; return s; }
 function ttToggle(i,isExtra){
   var t=isExtra?state.extraTasks[i]:state.tasks[i]; if(!t) return;
@@ -7413,7 +7865,7 @@ function ttToggle(i,isExtra){
     if(!typed || t._timeFromTimer){
       t.timeHrs=Math.floor(mins/60); t.timeMins=mins%60; t._timeFromTimer=true;
       try{ t.time=fmtDur(t.timeHrs,t.timeMins); }catch(e){ t.time=t.timeHrs+'h '+t.timeMins+'m'; }
-      if(mins>0) showToast('Timer stopped \u2014 '+mins+' min logged \u2713');
+      if(t.timerSec>0) showToast('Timer stopped \u2014 '+fmtSecs(t.timerSec)+' logged \u2713');
     } else if(mins>0){
       showToast('Timer stopped \u2014 '+mins+'m timed, kept your '+typed+'m');
     }
@@ -7429,6 +7881,18 @@ function ttToggle(i,isExtra){
   renderTasks(); try{saveShiftDraft(false);}catch(e){}
 }
 function ttTickAll(){
+  // the panel shows its own live clock — keep it moving without a re-render
+  try{
+    (state.tasks||[]).concat(state.extraTasks||[]).forEach(function(t,n){});
+    ['t','e'].forEach(function(pfx){
+      var arr=pfx==='t'?(state.tasks||[]):(state.extraTasks||[]);
+      arr.forEach(function(t,idx){
+        if(!t||!t.sbBatchId) return;
+        var el=document.getElementById('bp-el-'+pfx+idx);
+        if(el) el.textContent=sfFmt(ttElapsedT(t));
+      });
+    });
+  }catch(e){}
   var any=false;
   function upd(t,i,ex){ if(t&&t.timerRun){ any=true; var el=document.getElementById('tt-'+(ex?'e':'t')+i); if(el) el.textContent=sfFmt(ttElapsedT(t)); } }
   (state.tasks||[]).forEach(function(t,i){upd(t,i,false);});
@@ -8353,6 +8817,39 @@ async function mgr_syncFromDB(){
     if(lr.ok){ var lrows=await lr.json(); window._liveCache={}; (lrows||[]).forEach(function(r){ window._liveCache[r.va]=r; }); window._liveCacheAt=Date.now(); mgr_flagBanner(rows); }
   }catch(e){}
 }
+/* Refresh just the live status (small table) and repaint the banner. Runs while
+   Jack has the dashboard open, on ANY tab — the banner sits above the tabs. */
+async function mgr_liveTick(){
+  if(!DB_ENABLED) return;
+  try{
+    var lr=await fetchT(SUPABASE_URL+'/rest/v1/live_status?select=*',
+      {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
+    if(!lr.ok) return;
+    var lrows=await lr.json();
+    window._liveCache={}; (lrows||[]).forEach(function(r){ window._liveCache[r.va]=r; });
+    window._liveCacheAt=Date.now();
+    mgr_flagBanner(mgr_getLog());
+    if(mgr_currentTab==='overview'){ try{ mgr_renderOverview(); }catch(e){} }
+  }catch(e){}
+}
+function mgr_startLiveTick(){
+  if(window._mgrLiveTick) return;
+  var beat=0;
+  window._mgrLiveTick=setInterval(function(){
+    var mgr=document.getElementById('view-manager');
+    if(!mgr||!mgr.classList.contains('active')) return;   // not looking at it — don't poll
+    if(document.hidden) return;                            // tab in the background
+    beat++;
+    // the banner sits on Overview, so refresh that fast and everything else lazily
+    if(mgr_currentTab==='overview' || beat%3===0) mgr_liveTick();
+  },20000);
+  // coming back to the tab should show the truth immediately, not in 20s
+  document.addEventListener('visibilitychange',function(){
+    if(document.hidden) return;
+    var mgr=document.getElementById('view-manager');
+    if(mgr&&mgr.classList.contains('active')) mgr_liveTick();
+  });
+}
 function mgr_getReports(){try{return JSON.parse(localStorage.getItem('shifttrack_reports')||'[]');}catch(e){return[];}}
 function mgr_ukToday(){return new Date().toLocaleDateString('en-GB',{timeZone:'Europe/London'});}
 function mgr_monthStart(){
@@ -8739,6 +9236,7 @@ function mgr_isWeekend(){
 }
 function mgr_flagBanner(log){
   var today=mgr_ukToday(),flags=[],onShift=[];
+  var _seenAt=window._liveCacheAt?new Date(window._liveCacheAt).toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit'}):'';
   var isWeekend=mgr_isWeekend();
   var live=window._liveCache||{};
   var tgt=getAppSettings().dailyHoursTarget||8;
@@ -8757,8 +9255,13 @@ function mgr_flagBanner(log){
         var updUK=''; try{ if(upd) updUK=upd.toLocaleDateString('en-GB',{timeZone:'Europe/London'}); }catch(e){}
         var d=r.data;
         if(freshMin<45){            // updated within 45 min = genuinely on shift now
+          var hw=parseFloat(d.hoursWorked)||0;
+          var runaway=hw>(tgt+3);   // nobody works 3h past an 8h target — the tab was left open
           onShift.push('<b>'+vaDisp(va)+'</b> is on shift'+(d.onBreak?' <span style="color:#f5a524">(on break \u2615)</span>':'')
-            +' \u2014 <b>'+(d.hoursWorked||'0')+'h</b> of '+tgt+'h \u00b7 '+(d.tasksDone||0)+'/'+(d.totalTasks||0)+' tasks \u00b7 '+(d.totalLeads||0)+' leads');
+            +' \u2014 '+(runaway
+                ? '<b style="color:#ffb84d">'+hw.toFixed(1)+'h</b> <span style="color:#ffb84d">(counter left running overnight \u2014 not real hours)</span>'
+                : '<b>'+(d.hoursWorked||'0')+'h</b> of '+tgt+'h')
+            +' \u00b7 '+(d.tasksDone||0)+'/'+(d.totalTasks||0)+' tasks \u00b7 '+(d.totalLeads||0)+' leads');
           return;
         }
         if(updUK===today){          // started today, just gone quiet — that is NOT "hasn't submitted"
@@ -10530,6 +11033,7 @@ function mgr_renderFilters(){
     +'</div>';
   html+='<div class="filters-shell">'+sfltManageHTML()+'</div>';
   html+='<div id="filters-perf">'+filterPerfPanel('filters')+'</div>';
+  try{ html+=sbFilterLeagueHTML(); }catch(e){}     // leads per filter — belongs here, not on Storefronts
   host.innerHTML=html;
   // usage numbers live in their own table — pull once, then repaint
   try{ if(!window._fuCloud && typeof fuLoadCloud==='function'){ fuLoadCloud().then(function(){ if(mgr_currentTab==='filters') mgr_renderFilters(); }); } }catch(e){}
@@ -11260,6 +11764,16 @@ function mgr_renderSettings(){
       +'<div class="settings-title">Targets, Scoring &amp; VAs</div>'
       +'<div class="settings-sub">Per-VA daily lead goals, identity colours, lead-score weighting and Discord quiet hours.</div>'
       +'<div class="settings-grid">'
+        +'<div class="settings-field"><label class="settings-label">Storefront target &mdash; leads per '
+          +((parseFloat(settings.dailyHoursTarget)||8))+'h shift</label>'
+          +'<input class="settings-input" id="setting-sf-perday" type="number" min="1" step="1" value="'
+          +(settings.sfLeadsPerDay||15)+'">'
+          +'<div class="settings-hint">Every storefront is graded against this. <b>'
+          +(((parseFloat(settings.sfLeadsPerDay)||15)/((parseFloat(settings.dailyHoursTarget)||8))).toFixed(1))
+          +' leads/hr</b> — above it is green, just under is amber, below is red.</div></div>'
+        +'<div class="settings-field"><label class="settings-label">Storefront batches &mdash; how to work them</label>'
+          +'<input class="settings-input" id="setting-sb-how" type="text" value="'+escHtml(sbHowText())+'">'
+          +'<div class="settings-hint">Shown to the VA on every storefront batch, right above the leads box.</div></div>'
         +'<div class="settings-field wb-field"><label class="settings-label">Sheet writeback &mdash; web app URL</label>'
           +'<input class="settings-input" id="setting-wb-url" type="text" spellcheck="false" placeholder="https://script.google.com/…/exec" value="'+escHtml(settings.wbUrl||'')+'">'
           +'<div class="settings-hint">Writes your decisions into the VA sheets the moment you click, instead of waiting for their Apps Script. Setup steps are in <b>BDL VA HQ - 3 - WRITEBACK WEB APP.gs.txt</b>.</div></div>'
@@ -11429,7 +11943,7 @@ function mgr_renderSettings(){
    is blank, and never clobbered by a blank local value on push. wbUrl/wbToken belong
    here — without them the writeback endpoint silently stays unconfigured on any
    browser that didn't type it in, which is exactly what happened on 06/08/2026. */
-var SETTINGS_PROTECT=['whMain','whWeekly','whLeadsMera','whLeadsSuz','whTasks','whBreaks','whShiftStart','whPay','appUrl','leadMention','discordUserId','leadsStartDate','jbPresets','jbNoteSnips','payOtRate','payOtHours','payAdminMonthEnd','wbUrl','wbToken'];
+var SETTINGS_PROTECT=['whMain','whWeekly','whLeadsMera','whLeadsSuz','whTasks','whBreaks','whShiftStart','whPay','appUrl','leadMention','discordUserId','leadsStartDate','jbPresets','jbNoteSnips','payOtRate','payOtHours','payAdminMonthEnd','wbUrl','wbToken','sbHowText','sfLeadsPerDay'];
 async function pushSettingsCloud(s){
   if(IS_PREVIEW) return;
   try{
@@ -11493,6 +12007,8 @@ function mgr_saveSettings(){
   if(idleEl){ var iv=parseInt(idleEl.value); if(!isNaN(iv)&&iv>=15) settings.idleMins=iv; }
   var didEl=document.getElementById('setting-discord-id');
   if(didEl) settings.discordUserId=didEl.value.replace(/[^0-9]/g,'');
+  var sbH=document.getElementById('setting-sb-how');   if(sbH) settings.sbHowText=sbH.value.trim();
+  var sfD=document.getElementById('setting-sf-perday'); if(sfD){ var n1=parseFloat(sfD.value); if(n1>0) settings.sfLeadsPerDay=n1; }
   var wbU=document.getElementById('setting-wb-url');   if(wbU) settings.wbUrl=wbU.value.trim();
   var wbT=document.getElementById('setting-wb-token'); if(wbT) settings.wbToken=wbT.value.trim();
   [['setting-goal-mera','goalMera'],['setting-goal-suz','goalSuz'],
@@ -11681,10 +12197,119 @@ function teachHighPassHTML(decided){
       : '')
     +'</div>';
 }
+/* ── WHAT YOUR NOTES SAY ────────────────────────────────────────────────────
+   Jack: "is it reviewing all the notes too? it should be to help improve the
+   scoring system". It wasn't — smartFeatVec() is seven numbers (ROI, profit,
+   margin, velocity, two interactions, FBA count) and the note text never entered
+   training at all. Rather than pretend to read them, this counts the words HE
+   actually types and shows which ones sit on passes vs buys. A word that keeps
+   appearing on PASSED high scorers is a blind spot: the matrix cannot see it,
+   so no amount of tuning will fix it — it needs a rule or a VA instruction. */
+var NOTE_STOP=('the a an and or of to in on for with is it its this that at by from as be are was'
+  +' but not no you your i we they he she him her them if then than so too very just only also'
+  +' out up down off over under more most less least good bad ok okay yes').split(' ');
+function noteTerms(txt){
+  return String(txt||'').toLowerCase()
+    .replace(/rejected:\s*/g,' ')
+    .replace(/[^a-z0-9£%\s-]/g,' ')
+    .split(/\s+/)
+    .filter(function(w){ return w.length>2 && NOTE_STOP.indexOf(w)<0 && !/^\d+$/.test(w); });
+}
+function reasonMine(){
+  var rows=(typeof trainingRows==='function')?trainingRows().map(function(l){
+      return {id:l._sid, decision:l.status||(l.islead===true?'lead':l.islead===false?'passed':null),
+        is_buy:(l.status==='bought'||l.status==='atbq'||l.status==='atba2a'),
+        note:l.notes, qty:l._decQty, store:l.store, roi:l.roi, profit:l.profit};
+    }).filter(function(r){ return r.decision; })
+    : (window._decisionCache||[]).filter(function(r){ return r.decision; });
+  var by={}, tagged=0, guessed=0;
+  rows.forEach(function(r){
+    var a=reasonAny(r.note), w=a&&a.r; if(!w) return;
+    tagged++; if(a.guessed) guessed++;
+    var t=by[w.c]||(by[w.c]={c:w.c,l:w.l,k:w.k,n:0,hi:0,buys:0,units:0});
+    t.n++;
+    if(r.is_buy){ t.buys++; t.units+=(parseInt(r.qty)||0); }
+    if((+r.score||0)>=8 || (+r.roi>=20&&+r.profit>=8)) t.hi++;   // was it a strong-looking lead?
+  });
+  var list=Object.keys(by).map(function(k){ return by[k]; }).sort(function(a,b){ return b.n-a.n; });
+  return {rows:rows.length, tagged:tagged, guessed:guessed, list:list,
+    score:list.filter(function(t){return t.k==='score';}),
+    data:list.filter(function(t){return t.k==='data';}),
+    world:list.filter(function(t){return t.k==='world';})};
+}
+function reasonMineHTML(){
+  var m=reasonMine();
+  var untagged=m.rows-m.tagged;
+  if(!m.tagged) return '<div class="nm-wrap"><div class="nm-h">Why you decided</div>'
+    +'<div class="nm-empty">No reasons recorded yet. After you mark a lead there are one-tap '
+    +'reasons on the confirmation — that is what tells you whether a pass was the score’s fault, '
+    +'bad lead data, or nothing to do with either.</div></div>';
+  function block(title,arr,cls,blurb){
+    if(!arr.length) return '';
+    var tot=arr.reduce(function(a,t){return a+t.n;},0);
+    return '<div class="rm-b '+cls+'"><div class="rm-bt">'+title+' <span>'+tot+'</span></div>'
+      +'<div class="rm-blurb">'+blurb+'</div>'
+      + arr.map(function(t){
+          return '<div class="rm-r"><span class="rm-l">'+escHtml(t.l)+'</span>'
+            +'<span class="rm-n">'+t.n+'</span>'
+            +'<span class="rm-x">'+(t.buys?t.buys+' bought'+(t.units?' · '+t.units+' units':''):(t.hi?t.hi+' on strong-looking leads':''))+'</span></div>';
+        }).join('')
+      +'</div>';
+  }
+  return '<div class="nm-wrap">'
+    +'<div class="nm-h">Why you decided <span>'+m.tagged+' of '+m.rows+' decisions have a reason'
+      +(m.guessed?' &middot; '+m.guessed+' read from notes you already wrote':'')+'</span></div>'
+    + block('The score could catch these', m.score, 'k-score',
+        'The numbers already measure this, so a cell in your matrix is probably wrong. Worth changing.')
+    + block('The lead information was wrong', m.data, 'k-data',
+        'Nothing wrong with the score — the data it was given was off. This is a VA or sourcing fix.')
+    + block('Nothing to do with the score', m.world, 'k-world',
+        'Stock, gating, shipping, cash. No scoring change will ever catch these, so a 10/10 you passed for one of these is NOT a scoring failure.')
+    +(untagged?'<div class="nm-note">'+untagged+' decision'+(untagged===1?'':'s')+' without a reason — those can’t be explained.</div>':'')
+    +'</div>';
+}
+/* How much the learning score should be trusted — stated plainly, including what was
+   deliberately left OUT of training. A decision only teaches the model something if it
+   was ABOUT the numbers: passing a 10/10 because it was out of stock is not evidence
+   the 10/10 profile is bad, and with ~37 decisions one poisoned row matters. */
+function smartHealthHTML(){
+  var m=(typeof getSmartModel==='function')?getSmartModel():null;
+  var on=false; try{ on=getAppSettings().scoreMode==='smart'; }catch(e){}
+  if(!on) return '<div class="sm-health off">Smart scoring is <b>off</b> — every score comes straight from your matrix.</div>';
+  if(!m||m.acc==null) return '<div class="sm-health off">Smart scoring is on but hasn’t trained yet — it needs at least 6 buys and 6 passes.</div>';
+  var base=m.baseline!=null?m.baseline:50, beats=(m.acc-base);
+  var weak=(beats<5), thin=m.n<70;
+  var ex=(m.skippedWorld||0)+(m.skippedData||0);
+  return '<div class="sm-health'+(weak?' weak':'')+'">'
+    +'<b>Smart scoring is on.</b> Trained on <b>'+m.n+'</b> decisions ('+m.buys+' buys, '+(m.passes||0)+' passes), '
+    +'and on decisions it had <b>never seen</b> it gets <b>'+m.acc+'%</b> right.'
+    +'<span class="sm-ex">Measured properly: fitted on 4/5 of your decisions, graded on the 1/5 held back, five times over. '
+      +'Always guessing the more common answer would score <b>'+base+'%</b>, so it is '
+      +(beats>0?'<b>'+beats+' points better</b> than guessing':beats===0?'<b>no better</b> than guessing':'<b>'+Math.abs(beats)+' points WORSE</b> than guessing')+'. '
+      +'It marked itself at '+m.fitAcc+'% on the rows it was fitted to &mdash; that figure is meaningless and is only here for contrast.</span>'
+    +(m.setName?'<span class="sm-ex">It tried '+((m.tried&&m.tried.length)||1)+' combinations of factors and kept <b>'+escHtml(m.setName)+'</b>'
+      +(m.tried&&m.tried.length>1?' ('+m.tried.map(function(t){ return escHtml(t.short||t.k)+' '+t.acc+'%'; }).join(' &middot; ')+')':'')
+      +', and set its yes/no cut-off at <b>'+m.thr+'</b> rather than assuming halfway.</span>':'')
+    +(ex?'<span class="sm-ex">Left out '+ex+' of '+(m.seen||m.n)+' — '
+       +(m.skippedWorld?m.skippedWorld+' decided for reasons the numbers can’t see (stock, gating, cash, bulk deals)':'')
+       +(m.skippedWorld&&m.skippedData?', and ':'')
+       +(m.skippedData?m.skippedData+' where the lead data itself was wrong':'')
+       +'. Training on those would teach it the opposite of the truth.</span>':'')
+    +((m.skippedContra||m.skippedDupe)?'<span class="sm-ex">Also set aside '
+       +((m.skippedDupe||0)?(m.skippedDupe+' second cop'+(m.skippedDupe===1?'y':'ies')+' of an ASIN both VAs sent'):'')
+       +((m.skippedDupe&&m.skippedContra)?', and ':'')
+       +((m.skippedContra||0)?(m.skippedContra+' where the two copies of the same ASIN were decided opposite ways'):'')
+       +'.</span>':'')
+    +(weak?'<span class="sm-warn">It is not beating a plain guess, so it is nudging your scores on nothing real. '
+        +'Switch to Manual in Settings until it has more decisions to learn from.</span>':'')
+    +(thin&&!weak?'<span class="sm-warn">Still thin — '+(m.idx?m.idx.length:7)+' factors weighed against '+m.n+' decisions.</span>':'')
+    +'</div>';
+}
 function renderScoreTeach(){
   var host=document.getElementById('score-teach'); if(!host) return;
   var decided=(window.leads||[]).filter(function(l){ return l.islead!==null||l.status; });
   window._teachDecided=decided;
+  try{ host.dataset.extra='1'; }catch(e){}
   var isBuy=function(l){ return l.status==='bought'||l.status==='atbq'||l.status==='atba2a'; };
   if(decided.length<5){
     host.innerHTML='<div class="tm-wait">Decide a few more leads and this shows how the scoring matrix matches your buying.</div>';
@@ -11738,7 +12363,9 @@ function renderScoreTeach(){
     +(flags.length
         ? '<div class="tm-flags">'+flags.map(function(f){ return '<div>⚠ '+f+'</div>'; }).join('')+'</div>'
         : '<div class="tm-ok">Nothing disagrees yet — decide more leads and any mismatched cell will show up here.</div>')
-    + teachHighPassHTML(decided);
+    + smartHealthHTML()
+    + teachHighPassHTML(decided)
+    + reasonMineHTML();
 }
 function setScoreMode(m){ var st=getAppSettings(); st.scoreMode=m; saveAppSettings(st);
   if(m==='smart'&&!getSmartModel()){ var r=trainSmartModel(); if(r&&r.err){ showToast(r.err,true); } }
@@ -11917,6 +12544,7 @@ function mgr_renderAll(){
   mgr_flagBanner(mgr_getLog());
   mgr_renderOverview();
   mgr_syncFromDB();
+  try{ mgr_startLiveTick(); }catch(e){}    // keep ON SHIFT NOW live without a hard refresh
   try{ mgr_syncReports(); }catch(e){}
   try{ payCheckCloud(); }catch(e){}                    // VA-reported issues live in the cloud, not his browser
   // saved-filter library + usage stats (own tables) — repaint settings if it's open
@@ -12698,6 +13326,7 @@ function showToast(msg,isError) {
     var leadInsights='<div id="src-mix">'+(function(){ try{ return mgr_sourceMixHTML(); }catch(e){ return ''; } })()+'</div>'
       +'<div id="lead-intel">'+(_leadsReady?mgr_leadIntelHTML():(skTiles(4)+skRows(3)))+'</div>'
       +'<div id="lead-insights">'+(_leadsReady?mgr_leadInsightsHTML():'')+'</div>'
+      +(function(){ try{ return sbBuyHTML()+sbSrcFixHTML(); }catch(e){ return ''; } })()
       // moved out of Settings — your buying data belongs with the rest of the analysis
       +'<div class="mgr-section">Your buying data<span style="margin-left:auto;font-size:10.5px;font-weight:600;color:var(--muted-2);">learned from every decision you make</span></div>'
       +'<div style="background:var(--panel);border:1px solid var(--line-2);border-radius:14px;padding:14px 18px;margin-bottom:10px;"><div id="jack-insights"></div></div>';
@@ -12881,9 +13510,76 @@ const RAW=[]; // demo data removed — real leads arrive via the Sheets wiring
    interaction features (ROI×Velocity, Profit×Velocity): logistic regression trained
    on bought(1) vs passed(0), so each lead is judged in its OWN context. ── */
 var SMART_FEATS=['ROI','Profit','Margin','Velocity','ROI×Velocity','Profit×Velocity','Competition'];
-function smartFeatVec(l){
-  var d=l.fba>0?l.spm/l.fba:l.spm;           // velocity = sales/mo per competing seller
-  return [ +l.roi||0, +l.profit||0, +l.margin||0, d, (+l.roi||0)*d/100, (+l.profit||0)*d/100, +l.fba||0 ];
+function featVecFull(l){
+  var spm=parseFloat(l.spm)||0, fba=+l.fba||0;
+  var d=fba>0?spm/fba:spm;                   // velocity = sales/mo per competing seller
+  // Unit cost was never a factor, yet measured on live data (12/08/2026) it is one of the
+  // clearest splits there is: £40+ leads bought 61% of the time, £10–20 leads 38%.
+  var bp=+l.buy||0;
+  return [ +l.roi||0, +l.profit||0, +l.margin||0, d, (+l.roi||0)*d/100, (+l.profit||0)*d/100, fba,
+           bp, Math.log(1+Math.max(0,bp)) ];
+}
+/* ── CATEGORY / SOURCE / VA ─────────────────────────────────────────────────
+   These are words, not numbers, so they could never enter the model — but on live
+   data they separate harder than some factors that were already in it:
+     Home & Kitchen 75% bought vs PC & Video Games 20%
+     JKPF 64% vs Keepa Tracker 33% vs EU Sheet 25%
+   Each is turned into ONE number: the buy-rate of that group, pulled toward the overall
+   rate when the group is small (m=8), so "1 lead from a category, bought" can't become
+   a 100% signal. Built ONLY from the training slice inside each fold — if it were built
+   from all rows the model would be reading the answers it is about to be graded on. */
+var CAT_KEYS=[['cat','category'],['src','source method'],['va','VA']];
+function _catVal(l,k){
+  var v=(k==='cat')?(l.cat||l.category):(k==='src')?(l.src||l.source_method):l.va;
+  v=String(v||'').trim().toLowerCase();
+  return v||'(blank)';
+}
+function _catMaps(rows,y){
+  var prior=y.reduce(function(a,b){ return a+b; },0)/(y.length||1), m=8, maps={prior:prior};
+  CAT_KEYS.forEach(function(kk){
+    var k=kk[0], agg={};
+    rows.forEach(function(l,i){
+      var v=_catVal(l,k); var a=agg[v]||(agg[v]={n:0,s:0}); a.n++; a.s+=y[i];
+    });
+    var out={};
+    Object.keys(agg).forEach(function(v){ out[v]=(agg[v].s+prior*m)/(agg[v].n+m); });
+    maps[k]=out;
+  });
+  return maps;
+}
+function _catVec(l,maps){
+  if(!maps) return [];
+  return CAT_KEYS.map(function(kk){
+    var t=maps[kk[0]]||{}, v=_catVal(l,kk[0]);
+    return (t[v]!=null)?t[v]:maps.prior;
+  });
+}
+/* Which factors the model is allowed to use. More factors is NOT better on ~100 rows —
+   every extra one is another thing it can fit to noise. The trainer now tries all three
+   and keeps whichever wins on data it did NOT see (see cvAcc below). */
+var FEAT_SETS=[
+  {k:'full', idx:[0,1,2,3,4,5,6], short:'all 7', name:'all seven factors'},
+  {k:'core', idx:[0,1,3,4],       short:'core 4', name:'ROI, profit, velocity + ROI×velocity'},
+  {k:'lean', idx:[1,3,6],         short:'lean 3', name:'profit, velocity, competition'},
+  {k:'cost', idx:[0,1,3,4,8],     short:'core + cost', name:'the core four plus unit cost'},
+  {k:'wide', idx:[0,1,2,3,4,5,6,8], short:'all + cost', name:'all seven factors plus unit cost'},
+  {k:'coreC',idx:[0,1,3,4,8],     cats:true, short:'core + cost + words',
+     name:'core four, unit cost, and category / source / VA'},
+  {k:'wideC',idx:[0,1,2,3,4,5,6,8], cats:true, short:'everything',
+     name:'every factor, unit cost, and category / source / VA'}
+];
+function setByKey(k){ for(var i=0;i<FEAT_SETS.length;i++) if(FEAT_SETS[i].k===k) return FEAT_SETS[i]; return FEAT_SETS[0]; }
+// NB: never pass this straight to .map() — Array.map supplies an index as the 2nd argument.
+function smartFeatVec(l,idx){
+  var v=featVecFull(l);
+  if(!idx||!idx.length||!Array.isArray(idx)) return v;
+  return idx.map(function(i){ return v[i]; });
+}
+function featNames(idx,cats){
+  var all=['ROI','Profit','Margin','Velocity','ROI×Velocity','Profit×Velocity','Competition','Unit cost','Unit cost'];
+  var out=(idx&&idx.length)?idx.map(function(i){ return all[i]; }):all.slice(0,7);
+  if(cats) out=out.concat(CAT_KEYS.map(function(k){ return k[1].charAt(0).toUpperCase()+k[1].slice(1); }));
+  return out;
 }
 /* ── Cross-device learning: every decision is logged to the cloud `lead_decisions`
    table so the model trains on FULL history from any device, even after old leads
@@ -12918,49 +13614,196 @@ function logDecision(l){
     }
   }catch(e){}
 }
+/* Both sources, MERGED — never one or the other.
+   Measured 12/08/2026 against live data: 101 leads carried a decision but lead_decisions
+   held only 46, because anything decided directly in the VA's Google Sheet never passes
+   through logDecision(). The old `if(cache>=12) return cache` silently discarded 55 real
+   decisions — 30 buys and 25 passes — more than half the evidence available. */
 function trainingRows(){
-  var c=window._decisionCache||[];
-  if(c.length>=12){ return c.filter(function(r){return r.decision;}).map(function(r){
-    return {_sid:r.id, roi:+r.roi||0, profit:+r.profit||0, margin:+r.margin||0, spm:+r.spm||0, fba:+r.fba||0,
-      status:r.is_buy?(r.decision||'bought'):r.decision, islead:(r.decision==='lead'||r.is_buy)?true:(r.decision==='passed'?false:null),
-      _decQty:r.na?1:(r.qty!=null?+r.qty:1), title:r.title}; }); }
-  return (window.leads||[]).filter(function(l){return l.islead!==null;});
+  var by={};
+  (window.leads||[]).forEach(function(l){
+    if(l.islead===null && !l.status) return;
+    var k=l._sid||l.id; if(k==null) return;
+    by[k]={_sid:k, roi:+l.roi||0, profit:+l.profit||0, margin:+l.margin||0,
+      spm:parseFloat(l.spm)||0, fba:+l.fba||0, status:l.status, islead:l.islead,
+      buy:+l.buy||0, cat:l.cat||l.category, src:l.src||l.source_method, va:l.va,
+      _decQty:null, title:l.title, notes:l.notes, store:l.store, asin:l.asin, _src:'sheet'};
+  });
+  (window._decisionCache||[]).forEach(function(r){
+    if(!r.decision) return;
+    var prev=by[r.id]||{};
+    by[r.id]={_sid:r.id, roi:+r.roi||0, profit:+r.profit||0, margin:+r.margin||0,
+      spm:+r.spm||0, fba:+r.fba||0,
+      status:r.is_buy?(r.decision||'bought'):r.decision,
+      islead:(r.decision==='lead'||r.is_buy)?true:(r.decision==='passed'?false:null),
+      _decQty:r.na?1:(r.qty!=null?+r.qty:1),
+      buy:+r.buy||prev.buy||0, cat:r.cat||prev.cat, src:r.src||prev.src, va:r.va||prev.va,
+      title:r.title||prev.title, notes:r.note||prev.notes,
+      store:r.store||prev.store, asin:r.asin||prev.asin, _src:'log'};
+  });
+  return Object.keys(by).map(function(k){ return by[k]; });
 }
 function recQty(l){ if(l._decQty!=null) return Math.max(1,Math.min(20,l._decQty)); var m=(typeof ldMeta==='function')?ldMeta(l):{}; return Math.max(1,Math.min(20,m.na?1:(parseInt(m.qty)||1))); }
-function trainSmartModel(){
-  var isBuy=function(l){return l.status==='bought'||l.status==='atbq'||l.status==='atba2a';};
-  var decided=trainingRows().filter(function(l){return l.islead!==null;});
-  var buys=decided.filter(isBuy), passes=decided.filter(function(l){return !isBuy(l);});
-  if(buys.length<6||passes.length<6) return {err:'need ≥6 buys and ≥6 passes (have '+buys.length+' / '+passes.length+')'};
-  var X=decided.map(smartFeatVec), y=decided.map(function(l){return isBuy(l)?1:0;});
-  // sample weight: a lead you bought 10 of is a 10× stronger signal than one you bought 1 of.
-  // (N/A or blank qty = weight 1; passes = weight 1.)
-  var sw=decided.map(function(l){ return isBuy(l)?recQty(l):1; });
+/* Keep only the decisions that were genuinely about the lead's NUMBERS. */
+function trainableRows(all){
+  var kept=[], skipped={world:0,data:0,contra:0,dupe:0};
+  (all||[]).forEach(function(l){
+    var a=(typeof reasonAny==='function')?reasonAny(l.notes):null, w=a&&a.r;
+    if(w&&w.k==='world'){ skipped.world++; return; }   // stock, gating, cash, bulk — not about the numbers
+    if(w&&w.k==='data'){  skipped.data++;  return; }   // wrong item, tanked — the numbers it saw were lies
+    kept.push(l);
+  });
+  /* Both VAs send the same ASIN, so a product can appear twice. Decided the same way it is
+     one piece of evidence counted twice; decided OPPOSITE ways it is a flat contradiction —
+     identical numbers, opposite answers — which can only pull the fit apart.
+     Measured on live data: 5 ASINs decided twice, 2 of them contradictory. */
+  var isBuy=function(l){ return l.status==='bought'||l.status==='atbq'||l.status==='atba2a'; };
+  var byAsin={}, drop={};
+  kept.forEach(function(l){ var a=String(l.asin||'').toUpperCase(); if(!a) return;
+    (byAsin[a]||(byAsin[a]=[])).push(l); });
+  Object.keys(byAsin).forEach(function(a){
+    var g=byAsin[a]; if(g.length<2) return;
+    var seen={}; g.forEach(function(l){ seen[isBuy(l)?1:0]=1; });
+    if(seen[0]&&seen[1]){ g.forEach(function(l){ drop[l._sid]=1; }); skipped.contra+=g.length; }
+    else { g.slice(1).forEach(function(l){ drop[l._sid]=1; skipped.dupe++; }); }
+  });
+  var out=kept.filter(function(l){ return !drop[l._sid]; });
+  out._skipped=skipped;
+  return out;
+}
+/* ── HONEST TRAINING ────────────────────────────────────────────────────────
+   The old accuracy figure was measured on the very rows the model was fitted to —
+   marking its own homework. A model can score 100% that way and still be useless on
+   the next lead. Everything below is now measured out-of-fold: the model is fitted on
+   4/5 of the decisions and graded on the 1/5 it never saw, five times over.
+   That also makes two things possible that were guesswork before:
+     · choosing HOW MANY factors to use (more is not better on ~100 rows)
+     · choosing the yes/no cut-off, instead of assuming 0.5
+   And it is compared against the only benchmark that matters — always guessing the
+   more common answer. A model that can't beat that is worse than a coin with a bias. */
+function _sig(z){ return 1/(1+Math.exp(-Math.max(-30,Math.min(30,z)))); }
+function _standardise(X){
   var k=X[0].length, mean=[], std=[];
-  for(var j=0;j<k;j++){ var col=X.map(function(r){return r[j];}); var m=col.reduce(function(a,b){return a+b;},0)/col.length;
-    var v=col.reduce(function(a,b){return a+(b-m)*(b-m);},0)/col.length; mean[j]=m; std[j]=Math.sqrt(v)||1; }
-  var Xs=X.map(function(r){return r.map(function(v,j){return (v-mean[j])/std[j];});});
-  var swSum=sw.reduce(function(a,b){return a+b;},0)||1;
-  var w=new Array(k+1).fill(0), lr=0.3, lambda=0.08, iters=500;
-  function sig(z){return 1/(1+Math.exp(-Math.max(-30,Math.min(30,z))));}
+  for(var j=0;j<k;j++){
+    var col=X.map(function(r){ return r[j]; });
+    var m=col.reduce(function(a,b){ return a+b; },0)/col.length;
+    var v=col.reduce(function(a,b){ return a+(b-m)*(b-m); },0)/col.length;
+    mean[j]=m; std[j]=Math.sqrt(v)||1;
+  }
+  return {mean:mean, std:std,
+    Xs:X.map(function(r){ return r.map(function(v,j){ return (v-mean[j])/std[j]; }); })};
+}
+function _fitLogit(Xs,y,sw,iters,lambda){
+  var k=Xs[0].length, w=new Array(k+1).fill(0), lr=0.3;
+  var swSum=sw.reduce(function(a,b){ return a+b; },0)||1;
   for(var it=0;it<iters;it++){
     var grad=new Array(k+1).fill(0);
-    for(var i=0;i<Xs.length;i++){ var z=w[0]; for(var a=0;a<k;a++) z+=w[a+1]*Xs[i][a];
-      var e=(sig(z)-y[i])*sw[i]; grad[0]+=e; for(var b=0;b<k;b++) grad[b+1]+=e*Xs[i][b]; }
-    for(var g=0;g<w.length;g++){ w[g]-=lr*(grad[g]/swSum+(g===0?0:lambda*w[g])); }
+    for(var i=0;i<Xs.length;i++){
+      var z=w[0]; for(var a=0;a<k;a++) z+=w[a+1]*Xs[i][a];
+      var e=(_sig(z)-y[i])*sw[i];
+      grad[0]+=e; for(var b=0;b<k;b++) grad[b+1]+=e*Xs[i][b];
+    }
+    for(var g=0;g<w.length;g++) w[g]-=lr*(grad[g]/swSum+(g===0?0:lambda*w[g]));
   }
-  var correct=0; for(var i2=0;i2<Xs.length;i2++){ var z2=w[0]; for(var c=0;c<k;c++) z2+=w[c+1]*Xs[i2][c]; if((sig(z2)>=0.5?1:0)===y[i2]) correct++; }
-  var model={w:w,mean:mean,std:std,acc:Math.round(correct/Xs.length*100),n:decided.length,buys:buys.length,trained:ukDateShort()};
+  return w;
+}
+function _prob(w,x,mean,std){
+  var z=w[0]; for(var j=0;j<x.length;j++) z+=w[j+1]*((x[j]-mean[j])/(std[j]||1));
+  return _sig(z);
+}
+/* out-of-fold probabilities for one candidate feature set. Folds are i%5 on a stable
+   sort, so the same decisions always give the same answer — no Math.random anywhere. */
+function _cvProbs(rows,y,sw,idx,cats){
+  var out=new Array(rows.length);
+  for(var f=0;f<5;f++){
+    var trI=[],teI=[];
+    for(var i=0;i<rows.length;i++){ (i%5===f?teI:trI).push(i); }
+    if(!trI.length||!teI.length) continue;
+    // encodings are built from THIS fold's training rows only — never from the held-out ones
+    var maps=cats?_catMaps(trI.map(function(i){ return rows[i]; }), trI.map(function(i){ return y[i]; })):null;
+    var vec=function(i){ return smartFeatVec(rows[i],idx).concat(cats?_catVec(rows[i],maps):[]); };
+    var trX=trI.map(vec), trY=trI.map(function(i){ return y[i]; }), trW=trI.map(function(i){ return sw[i]; });
+    var st=_standardise(trX);
+    var w=_fitLogit(st.Xs,trY,trW,300,0.08);
+    for(var t=0;t<teI.length;t++) out[teI[t]]=_prob(w,vec(teI[t]),st.mean,st.std);
+  }
+  for(var q=0;q<out.length;q++) if(out[q]==null) out[q]=0.5;
+  return out;
+}
+/* pick the cut-off that gets the most decisions right, judged on BALANCED accuracy so a
+   lopsided buy/pass split can't be gamed by always answering the more common one. */
+function _bestThr(probs,y){
+  var best={thr:0.5,acc:0,bal:0};
+  for(var t=0.30;t<=0.701;t+=0.02){
+    var tp=0,tn=0,np=0,nn=0,ok=0;
+    for(var i=0;i<y.length;i++){
+      var p=probs[i]>=t?1:0; if(p===y[i]) ok++;
+      if(y[i]===1){ np++; if(p===1) tp++; } else { nn++; if(p===0) tn++; }
+    }
+    var bal=((np?tp/np:0)+(nn?tn/nn:0))/2;
+    if(bal>best.bal+1e-9) best={thr:Math.round(t*100)/100, acc:ok/y.length, bal:bal};
+  }
+  return best;
+}
+function trainSmartModel(){
+  var isBuy=function(l){ return l.status==='bought'||l.status==='atbq'||l.status==='atba2a'; };
+  var _all=trainingRows().filter(function(l){ return l.islead!==null||l.status; });
+  var decided=trainableRows(_all);
+  var _skip=decided._skipped||{world:0,data:0,contra:0,dupe:0};
+  // stable order → stable folds → the same number every time he opens the app
+  decided=decided.slice().sort(function(a,b){ return String(a._sid)<String(b._sid)?-1:1; });
+  var buys=decided.filter(isBuy), passes=decided.filter(function(l){ return !isBuy(l); });
+  if(buys.length<6||passes.length<6) return {err:'need ≥6 buys and ≥6 passes (have '+buys.length+' / '+passes.length+')'};
+
+  var y=decided.map(function(l){ return isBuy(l)?1:0; });
+  // sample weight: a lead you bought 10 of is a 10× stronger signal than one you bought 1 of.
+  var sw=decided.map(function(l){ return isBuy(l)?recQty(l):1; });
+  var maj=Math.max(buys.length,passes.length)/decided.length;   // "always say the common one"
+
+  // try each candidate feature set, keep the one that does best on unseen decisions
+  var cand=FEAT_SETS.map(function(fs){
+    var probs=_cvProbs(decided,y,sw,fs.idx,fs.cats);
+    var b=_bestThr(probs,y);
+    return {fs:fs, thr:b.thr, cvAcc:b.acc, cvBal:b.bal};
+  }).sort(function(a,b){
+    if(Math.abs(b.cvBal-a.cvBal)>0.005) return b.cvBal-a.cvBal;
+    // a genuine tie goes to the SIMPLER model — fewer factors, less to fit to noise
+    return (a.fs.idx.length+(a.fs.cats?3:0))-(b.fs.idx.length+(b.fs.cats?3:0));
+  });
+  var win=cand[0];
+
+  // final fit on everything, using the winning set
+  var maps=win.fs.cats?_catMaps(decided,y):null;
+  var X=decided.map(function(l){ return smartFeatVec(l,win.fs.idx).concat(win.fs.cats?_catVec(l,maps):[]); });
+  var st=_standardise(X);
+  var w=_fitLogit(st.Xs,y,sw,500,0.08);
+  var fitOk=0; for(var i=0;i<X.length;i++) if((_prob(w,X[i],st.mean,st.std)>=win.thr?1:0)===y[i]) fitOk++;
+
+  var model={ w:w, mean:st.mean, std:st.std, idx:win.fs.idx, cats:!!win.fs.cats, maps:maps,
+    setKey:win.fs.k, setName:win.fs.name, thr:win.thr,
+    acc:Math.round(win.cvAcc*100),            // the number shown: OUT-OF-FOLD, not self-marked
+    balAcc:Math.round(win.cvBal*100),
+    fitAcc:Math.round(fitOk/X.length*100),    // kept only so the gap can be shown
+    baseline:Math.round(maj*100),
+    beats:Math.round((win.cvAcc-maj)*100),
+    tried:cand.map(function(c){ return {k:c.fs.k, name:c.fs.name, short:c.fs.short, acc:Math.round(c.cvAcc*100)}; }),
+    n:decided.length, buys:buys.length, passes:passes.length,
+    seen:_all.length, skippedWorld:_skip.world, skippedData:_skip.data,
+    skippedContra:_skip.contra||0, skippedDupe:_skip.dupe||0, trained:ukDateShort() };
   try{ localStorage.setItem('bdl_smart_model',JSON.stringify(model)); }catch(e){}
   return model;
+}
+function modelVec(l,model){
+  return smartFeatVec(l,model&&model.idx).concat((model&&model.cats)?_catVec(l,model.maps):[]);
 }
 function getSmartModel(){ try{return JSON.parse(localStorage.getItem('bdl_smart_model')||'null');}catch(e){return null;} }
 function smartScore(l,model){
   model=model||getSmartModel(); if(!model||!model.w) return null;
-  var x=smartFeatVec(l), xs=x.map(function(v,j){return (v-model.mean[j])/(model.std[j]||1);});
+  var NAMES=featNames(model.idx,model.cats);
+  var x=modelVec(l,model), xs=x.map(function(v,j){return (v-model.mean[j])/(model.std[j]||1);});
   var z=model.w[0]; for(var j=0;j<x.length;j++) z+=model.w[j+1]*xs[j];
   var p=1/(1+Math.exp(-Math.max(-30,Math.min(30,z))));
-  var contrib=xs.map(function(v,j){return {n:SMART_FEATS[j], c:model.w[j+1]*v};}).sort(function(a,b){return Math.abs(b.c)-Math.abs(a.c);});
+  var contrib=xs.map(function(v,j){return {n:NAMES[j], c:model.w[j+1]*v};}).sort(function(a,b){return Math.abs(b.c)-Math.abs(a.c);});
   var bd=contrib.slice(0,4).map(function(cc){ return {n:cc.n+(cc.c>=0?' ↑ helps':' ↓ hurts'), p:Math.round(Math.min(10,Math.abs(cc.c)*3)), m:10}; });
   return {total:Math.round(p*100)/10, prob:p, bd:bd, smart:true};
 }
@@ -12968,15 +13811,16 @@ function smartScore(l,model){
 function smartWhy(l,s){
   var model=getSmartModel(); if(!model) return '';
   try{
-    var x=smartFeatVec(l), xs=x.map(function(v,j){return (v-model.mean[j])/(model.std[j]||1);});
-    var contrib=xs.map(function(v,j){return {n:SMART_FEATS[j], c:model.w[j+1]*v};}).sort(function(a,b){return b.c-a.c;});
+    var NAMES=featNames(model.idx,model.cats);
+    var x=modelVec(l,model), xs=x.map(function(v,j){return (v-model.mean[j])/(model.std[j]||1);});
+    var contrib=xs.map(function(v,j){return {n:NAMES[j], c:model.w[j+1]*v};}).sort(function(a,b){return b.c-a.c;});
     var help=contrib.filter(function(c){return c.c>0.15;}).slice(0,2).map(function(c){return c.n;});
     var hurt=contrib.filter(function(c){return c.c<-0.15;}).slice(-2).map(function(c){return c.n;});
     var prob=Math.round((s.prob||0)*100);
     // nearest lead Jack bought, for context
     var isBuy=function(x2){return x2.status==='bought'||x2.status==='atbq'||x2.status==='atba2a';};
     var buys=(window.leads||[]).filter(isBuy);
-    var near=null,nd=1e9; buys.forEach(function(b){ if(b.id===l.id)return; var bx=smartFeatVec(b).map(function(v,j){return (v-model.mean[j])/(model.std[j]||1);});
+    var near=null,nd=1e9; buys.forEach(function(b){ if(b.id===l.id)return; var bx=modelVec(b,model).map(function(v,j){return (v-model.mean[j])/(model.std[j]||1);});
       var d=0; for(var j=0;j<xs.length;j++){d+=(xs[j]-bx[j])*(xs[j]-bx[j]);} if(d<nd){nd=d;near=b;} });
     var msg='<b>'+prob+'% match</b> to your buys.';
     if(help.length) msg+=' In its favour: <span class="sw-help">'+help.join(', ')+'</span>.';
@@ -13889,15 +14733,16 @@ async function leadPullOnce(force){
   if(!force && Date.now()-_leadPullAt < 180000) return null;    // at most every 3 min
   if(!LEAD_PULL_KEY || typeof SHEET_NAMES==='undefined') return null;
   _leadPullBusy=true;
-  var added=0, checked=0, errs=0;
+  var added=0, updated=0, checked=0, errs=0;
   try{
     var cut=''; try{ cut=(getAppSettings().leadsStartDate||'').trim(); }catch(e){}
     var floor=cut||'2026-07-01';
     var have={};
     try{
-      var hres=await fetchT(SUPABASE_URL+'/rest/v1/leads?select=id&limit=5000',
-        {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
-      if(hres.ok) (await hres.json()).forEach(function(r){ have[r.id]=1; });
+      var hres=await fetchT(SUPABASE_URL+'/rest/v1/leads?select=id,store,source_method,va_note,'
+        +'supplier_url,supplier_url2,amazon_url,category,title,discount_code,screenshot,date,buy,sell,spm,profit,roi,margin,fba'
+        +'&limit=5000',{headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
+      if(hres.ok) (await hres.json()).forEach(function(r){ have[r.id]=r; });
     }catch(e){ errs++; }
     for(var sid in SHEET_NAMES){
       var va=SHEET_NAMES[sid], tabs=[];
@@ -13915,7 +14760,7 @@ async function leadPullOnce(force){
           if(!sres.ok){ errs++; continue; }
           rows=(await sres.json()).values||[];
         }catch(e){ errs++; continue; }
-        var batch=[];
+        var batch=[], refresh=[];
         for(var i=0;i<rows.length;i++){
           var r=rows[i].slice(); while(r.length<22) r.push('');
           var rowIndex=i+2;
@@ -13925,9 +14770,8 @@ async function leadPullOnce(force){
           var iso=pullISOForTab(r[0],tab);
           if(!/^\d{4}-\d{2}-\d{2}$/.test(iso)||iso<floor) continue;
           var id=sid+'::'+tab+'::'+rowIndex;
-          if(have[id]) continue;
           var fba=pullNum(r[19]);
-          batch.push({ id:id, sheet_id:sid, tab:tab, row_index:rowIndex, va:va, date:iso,
+          var rec={ id:id, sheet_id:sid, tab:tab, row_index:rowIndex, va:va, date:iso,
             store:String(r[5]||''), title:String(r[6]||''), asin:asin,
             category:String(r[10]||''), source_method:String(r[11]||''),
             buy:buy, sell:pullNum(r[14]), spm:String(r[15]||''), profit:pullNum(r[16]),
@@ -13936,7 +14780,8 @@ async function leadPullOnce(force){
             supplier_url:String(r[8]||''), supplier_url2:String(r[9]||''), amazon_url:String(r[13]||''),
             va_note:String(r[4]||''), discount_code:String(r[20]||''), screenshot:String(r[21]||''),
             islead:String(r[2]||'').trim()||null, status:String(r[1]||'').trim()||null,
-            jack_comment:String(r[3]||'')||null });
+            jack_comment:String(r[3]||'')||null };
+          if(have[id]){ refresh.push(rec); } else { batch.push(rec); }
         }
         if(batch.length){
           try{
@@ -13948,11 +14793,42 @@ async function leadPullOnce(force){
             else errs++;
           }catch(e){ errs++; }
         }
+        /* Rows that already exist: push the columns the SHEET owns back over the top.
+           ONE upsert per tab, not a PATCH per row — a first run has hundreds of stale
+           rows and sequential PATCHes took minutes and left the pull flag stuck.
+           `merge-duplicates` only writes the columns present in the payload, so leaving
+           status / islead / jack_comment OUT of it preserves Jack's decisions. */
+        if(refresh.length){
+          var SHEETCOLS=['store','source_method','va_note','supplier_url','supplier_url2',
+            'amazon_url','category','title','discount_code','screenshot','date','buy','sell','spm',
+            'profit','roi','margin','fba'];
+          var changed=[];
+          refresh.forEach(function(rec2){
+            var cur=have[rec2.id]; if(!cur||cur===true) return;
+            var row={id:rec2.id}, any=false;
+            SHEETCOLS.forEach(function(k){
+              var nv=rec2[k];
+              if(nv===''||nv===null||nv===undefined) return;   // sheet blank → keep what we have
+              if(String(cur[k]==null?'':cur[k])===String(nv)) return;
+              row[k]=nv; any=true;
+            });
+            if(any) changed.push(row);
+          });
+          if(changed.length){
+            try{
+              var up=await fetchT(SUPABASE_URL+'/rest/v1/leads',{method:'POST',
+                headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+                  'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
+                body:JSON.stringify(changed)});
+              if(up.ok) updated+=changed.length; else errs++;
+            }catch(e){ errs++; }
+          }
+        }
       }
     }
   }catch(e){ errs++; }
   _leadPullAt=Date.now(); _leadPullBusy=false;
-  window.LEAD_PULL_LAST={at:new Date().toISOString(),added:added,checked:checked,errors:errs};
+  window.LEAD_PULL_LAST={at:new Date().toISOString(),added:added,updated:updated,checked:checked,errors:errs};
   return window.LEAD_PULL_LAST;
 }
 /* Is he mid-edit in the leads view? Any focused input/textarea there counts —
@@ -14267,6 +15143,14 @@ function populateMonthFilter(){
   sel.value=[].some.call(sel.options,function(o){return o.value===keep;})?keep:'sheet';
 }
 function getF(){
+  var res=getFNoFocus();
+  var f=window._focus;
+  if(!f) return res;
+  // while the queue is running, only its leads are on screen — but a lead he has just
+  // decided stays put until he clicks off it, same as everywhere else.
+  return res.filter(function(l){ return f.set[l.id]; });
+}
+function getFNoFocus(){
   const fs=document.getElementById('f-store')?.value||'all';
   const fc=document.getElementById('f-cat')?.value||'all';
   const fsrc=document.getElementById('f-source')?.value||'all';
@@ -14339,6 +15223,55 @@ function _leadCtx(l, useView, useVa){
   }
   return true;
 }
+/* ── SESSION TILE ───────────────────────────────────────────────────────────
+   This slot used to hold "626 GOING STALE". Jack sees it every time he opens Leads
+   and it cannot be acted on — it is a debt counter, and it was the biggest number
+   on the screen. Replaced with the one number that MOVES when he works. */
+function sessMins(){
+  if(!window._sessStart) return 0;
+  return Math.max(0,(Date.now()-window._sessStart)/60000);
+}
+function sessTileHTML(){
+  var n=window._sessDecided||0;
+  if(!n) return '<div class="rc rc-off"><div class="rv">0</div><div class="rl">Decided today</div>'
+    +'<div class="rsub">about 14 min a day keeps you level</div></div>';
+  var mins=sessMins(), rate=(mins>1)?Math.round(n/(mins/60)):0;
+  var sub=(mins>=1?Math.round(mins)+' min':'just started')+(rate?' \u00b7 '+rate+'/hr':'');
+  return '<div class="rc rc-green"><div class="rv">'+n+'</div><div class="rl">Decided today</div>'
+    +'<div class="rsub">'+sub+'</div></div>';
+}
+/* ── MERGE THE TWIN ROW ─────────────────────────────────────────────────────
+   Both VAs finding the same ASIN shows as two rows even though deciding one decides
+   both. Jack's conditions, exactly: only merge when NEITHER is decided yet, and only
+   when it is genuinely the same deal — same supplier AND same buy price. A different
+   supplier or a different price is a different opportunity and stays its own row.
+   Nothing is deleted; the twin is simply not drawn, and the surviving row says so. */
+function ldSameDeal(a,b){
+  var sa=String(a.sup||'').trim().toLowerCase().replace(/\/+$/,'');
+  var sb=String(b.sup||'').trim().toLowerCase().replace(/\/+$/,'');
+  if(!sa||!sb||sa!==sb) return false;
+  return Math.abs((+a.buy||0)-(+b.buy||0))<0.01;
+}
+function ldMergeTwins(list){
+  var byAsin={};
+  list.forEach(function(l){
+    var k=String(l.asin||'').trim().toUpperCase(); if(!k) return;
+    (byAsin[k]||(byAsin[k]=[])).push(l);
+  });
+  var hide={};
+  list.forEach(function(l){ l._twinN=0; });
+  Object.keys(byAsin).forEach(function(k){
+    var g=byAsin[k]; if(g.length<2) return;
+    if(g.some(function(l){ return l.status||l.islead!==null; })) return;   // any decided → leave alone
+    var keep=g.find(function(l){ return l.id===selId; })||g[0];            // never hide his open lead
+    g.forEach(function(l){
+      if(l===keep) return;
+      if(!ldSameDeal(keep,l)) return;                                      // different deal → own row
+      hide[l.id]=1; keep._twinN=(keep._twinN||0)+1;
+    });
+  });
+  return list.filter(function(l){ return !hide[l.id]; });
+}
 function updateCounts(){
   const ctx=leads.filter(l=>_leadCtx(l,false,false));  // context only, both VAs — for ribbon
   const fSt=leads.filter(l=>_leadCtx(l,false,true));    // context + active VA — for status badges
@@ -14366,7 +15299,7 @@ function updateCounts(){
   function avgVa(v){var a=ctx.filter(l=>l.va===v);return a.length?(a.reduce((x,b)=>x+b._sc.total,0)/a.length).toFixed(1):'-';}
   document.getElementById('ribbon').innerHTML=`
     <div class="rc rc-click ${unAll.length?'rc-purple':'rc-off'}" onclick="gotoView('new')" title="Show new / undecided leads"><div class="rv">${unAll.length}</div><div class="rl">Unseen</div><div class="rsub">Mera ${unM} · Suz ${unS}</div></div>
-    <div class="rc rc-click ${window._staleFilter?'rc-active ':''}${stale?'rc-red':'rc-off'}" onclick="toggleStale()" title="Only leads going stale (36h+ undecided)"><div class="rv">${stale}</div><div class="rl">Going stale ${window._staleFilter?'✓':''}</div><div class="rsub">${window._staleFilter?'filtering — click to clear':(stale?'decide these first':'all clear')}</div></div>
+    ${sessTileHTML()}
     <div class="rc rc-click rc-green" onclick="gotoView('bought')" title="Show bought leads"><div class="rv">${bought.length}</div><div class="rl">Bought</div><div class="rsub">Mera ${bM} · Suz ${bS}</div></div>
     <div class="rc rc-click ${bk?'rc-amber':'rc-off'}" onclick="gotoView('basket')" title="Show ATB / waiting leads"><div class="rv">${bk}</div><div class="rl">ATB / Waiting</div><div class="rsub">${bk?'£'+bkVal.toFixed(0)+' to spend':'nothing waiting'}</div></div>
     <div class="rc rc-cyan"><div class="rv">${buyRate}%</div><div class="rl">Buy rate</div><div class="rsub">${bought.length} of ${decided} decided</div></div>
@@ -14389,14 +15322,31 @@ function leadStillBelongs(l){
    row is marked decided, the list keeps it, and it only leaves when he selects a
    different lead. Nothing is lost between deciding and writing it up. */
 var _pendingLeave=null;
+/* Repaint a single row in place. The list only needs a full rebuild when the SET of
+   rows changes (filter, sort, search, reload) — a decision changes one lead. */
+function ldRowRefresh(id){
+  try{
+    var l=(window.leads||[]).find(function(x){ return x.id===id; });
+    var row=document.querySelector('#view-leads .litem[data-lid="'+id+'"]');
+    if(!l||!row) return false;
+    var wasSel=row.classList.contains('sel');
+    var tmp=document.createElement('div');
+    tmp.innerHTML=litemH(l);
+    var fresh=tmp.firstElementChild;
+    if(!fresh) return false;
+    if(wasSel) fresh.classList.add('sel');
+    row.replaceWith(fresh);
+    try{ updateCounts(); }catch(e){}
+    return true;
+  }catch(e){ return false; }
+}
 function afterDecision(id){
   try{
     var l=(window.leads||[]).find(function(x){ return x.id===id; });
     if(!l) return;
     if(leadStillBelongs(l)){
-      // renderList() ends by calling selectLead(selId), which repaints the detail —
-      // adding another renderDetail() here is the second paint, i.e. the flicker.
-      renderList();
+      // one row, not 655 — a full renderList() here measured 175ms on his real load
+      if(!ldRowRefresh(id)) renderList();
       var row0=document.querySelector('.litem[data-lid="'+id+'"]');
       if(row0) row0.classList.add('litem-decided');
       return;
@@ -14455,11 +15405,19 @@ function renderList(){
   if(!document.getElementById('list-scroll'))return;
   try{ buildDupeMap(); }catch(e){}   // duplicates are recomputed from the current lead set
   updateCounts();
-  const fl=getF();
+  const fl=ldMergeTwins(getF());
   document.getElementById('tt-count').textContent=fl.length+(fl.length===1?' lead':' leads');
   const el=document.getElementById('list-scroll');
   if(!fl.length){
     const q=(document.getElementById('search')?.value||'').trim();
+    if(window._focus){
+      el.innerHTML='<div class="fq-empty">✅ Queue clear — all '+window._focus.total+' decided.'
+        +'<div><button class="fq-go" onclick="focusStart('+FOCUS_N+')">Next '+FOCUS_N+'</button>'
+        +'<button class="fq-x" onclick="focusStop()">Back to everything</button></div></div>';
+      document.getElementById('detail-pane').innerHTML=emptyDetail();
+      try{ document.getElementById('focus-entry').innerHTML=focusEntryHTML(); }catch(e){}
+      return;
+    }
     const msg=q?`No leads match “${q}”.`:{new:'No new leads right now — all caught up.<br><span style="font-size:11px;color:var(--muted-2);">Auto-refreshes every 60s from the VA sheets.</span>',lead:'No confirmed leads yet.',bought:'Nothing bought yet.',basket:'Your basket is empty.',passed:'Nothing passed yet.',notlead:'Nothing marked “not a lead”.',all:'No leads match your filters.'}[view]||'No leads match your filters.';
     el.innerHTML=`<div style="padding:50px 20px;text-align:center;color:var(--t4);font-size:13px">${msg}</div>`;
     document.getElementById('detail-pane').innerHTML=emptyDetail();return;
@@ -14473,6 +15431,21 @@ function renderList(){
     bd[date].forEach(l=>{h+=litemH(l); shown.push(l);});
   });
   el.innerHTML=h;
+  try{
+    var _fe=document.getElementById('focus-entry');
+    if(_fe) _fe.innerHTML=focusEntryHTML();
+  }catch(e){}
+  try{
+    var _be=document.getElementById('bulk-entry');
+    if(_be){
+      var _und=(window.leads||[]).filter(function(l){ return !l.status&&l.islead===null; }).length;
+      var _obv=(window.leads||[]).filter(function(l){ return !l.status&&l.islead===null&&(spmNum(l.spm)<10||(+l.profit||0)<3); }).length;
+      _be.innerHTML=(!window._focus&&_und>=40&&_obv>=15)
+        ? '<button class="bk-entry" onclick="bulkOpen()">'
+            +'⚡ <b>'+_obv+'</b> of your '+_und+' undecided are near-certain no’s — clear them in one go</button>'
+        : '';
+    }
+  }catch(e){}
   const stillThere=selId!==null&&fl.find(l=>l.id===selId);
   if(stillThere){ selectLead(selId,false); }
   else if(!window._ldPainted){                   // FIRST paint only — open the top one
@@ -14562,8 +15535,21 @@ function dupeBadge(l){
   return '<span class="dup-tag dup-cross" title="'+escHtml(vaDisp(d.otherVA))+' found this '+ago+' too">BOTH VAs</span>';
 }
 function dupeOther(l){
-  var d=dupeOf(l); if(!d||d.otherId==null) return null;
-  return (window.leads||[]).find(function(x){ return x.id===d.otherId; })||null;
+  if(!l) return null;
+  var d=dupeOf(l);
+  if(d&&d.otherId!=null){
+    return (window.leads||[]).find(function(x){ return x.id===d.otherId; })||null;
+  }
+  // reverse: the map keys the LATER copy, so the earlier one has no entry of its own
+  try{
+    if(!_dupeMap) buildDupeMap();
+    var backId=null;
+    Object.keys(_dupeMap).forEach(function(k){
+      if(backId==null && _dupeMap[k] && _dupeMap[k].otherId===l.id) backId=+k;
+    });
+    if(backId!=null) return (window.leads||[]).find(function(x){ return x.id===backId; })||null;
+  }catch(e){}
+  return null;
 }
 function dupeUndecided(x){ return !!x && !x.status && x.islead===null; }
 /* the VA's reason for re-sending, shown where the question is actually asked */
@@ -14617,14 +15603,231 @@ function dupeMirror(id,st){
   try{ logDecision(other); }catch(e){}
   ldToast('Applied to '+vaDisp(other.va)+'&rsquo;s copy too &mdash; both written to the sheets');
 }
+/* Copy a note/reason onto the other VA's copy of the same ASIN — but only when they
+   were genuinely decided the same way, so an unrelated pending copy is never touched. */
+function noteMirror(l){
+  try{
+    if(!l||!l.notes) return null;
+    if(!_dupeMap) buildDupeMap();
+    var other=dupeOther(l);
+    if(!other) return null;
+    if(other.status!==l.status || other.islead!==l.islead) return null;   // not decided together
+    if(String(other.notes||'')===String(l.notes||'')) return null;        // already matches
+    other.notes=l.notes;
+    db_leadPatch(other,{jack_comment:l.notes});
+    try{ logDecision(other); }catch(e){}
+    try{ ldRowRefresh(other.id); }catch(e){}
+    return other;
+  }catch(e){ return null; }
+}
+/* ── CLEAR THE OBVIOUS NO'S ─────────────────────────────────────────────────
+   He has 836 undecided leads and gets through ~12 a session. 201 of them are
+   near-certain passes — nothing selling, or under £3 a unit — and they sit
+   between him and the 65 genuinely strong ones. Deciding those one at a time is
+   hours of clicking for a foregone conclusion.
+   This marks them in one pass, with a REASON attached so the analysis still
+   explains itself, and a single Undo that puts every one of them back. */
+/* ── FOCUS QUEUE ────────────────────────────────────────────────────────────
+   Jack: "600+ leads is overwhelming icl". The list has never been the problem —
+   the COUNT is. 639 undecided is not a to-do list, it is a wall, and a wall gets
+   avoided. So: hand him a finite, ranked handful, tell him how long it will take,
+   and show it emptying. Everything else stays exactly where it is; this only
+   narrows what getF() returns while it is running. */
+var FOCUS_N=20, FOCUS_SECS=28;                 // 28s/lead ≈ his measured pace
+window._focus=null;
+/* `leads` is a script-scoped let; window.leads is only a mirror synced at load, so
+   reading the mirror here would count a stale set after any refresh. Prefer the live one. */
+function allLeads(){ try{ return leads||[]; }catch(e){ return window.leads||[]; } }
+function focusUndecided(){
+  return allLeads().filter(function(l){ return !l.status&&l.islead===null; });
+}
+/* pick the ones actually worth his attention: skip anything the bulk rules would
+   kill anyway (that is a one-tap job, not a 28-second job), best score first,
+   freshest as the tiebreak so the queue is stable. */
+function focusPick(n){
+  var pool=(typeof getFNoFocus==='function')?getFNoFocus():focusUndecided();
+  pool=pool.filter(function(l){ return !l.status&&l.islead===null; });
+  var obvious=pool.filter(function(l){ return BULK_RULES.some(function(r){ return r.test(l); }); });
+  var worth=pool.filter(function(l){ return obvious.indexOf(l)<0; });
+  var src=worth.length>=Math.min(5,n)?worth:pool;
+  src=src.slice().sort(function(a,b){
+    var sa=(a._sc&&a._sc.total)||0, sb=(b._sc&&b._sc.total)||0;
+    if(sb!==sa) return sb-sa;
+    var da=sbToISO?(sbToISO(a.date)||''):'', db=sbToISO?(sbToISO(b.date)||''):'';
+    if(da!==db) return db<da?-1:1;
+    return 0;
+  });
+  return src.slice(0,n);
+}
+function focusStart(n){
+  n=n||FOCUS_N;
+  var picked=focusPick(n);
+  if(!picked.length){ ldToast('Nothing undecided to focus on'); return; }
+  var set={}; picked.forEach(function(l){ set[l.id]=1; });
+  window._focus={set:set, ids:picked.map(function(l){ return l.id; }), total:picked.length, done:0};
+  window._ldPainted=false;                     // let it open the first one
+  renderList();
+  try{ document.getElementById('list-scroll').scrollTop=0; }catch(e){}
+  ldToast('Focus: '+picked.length+' leads · about '+focusMins(picked.length));
+}
+function focusStop(){ window._focus=null; renderList(); }
+function focusMins(n){
+  var m=Math.round(n*FOCUS_SECS/60);
+  return m<1?'a minute':(m+' min');
+}
+function focusLeft(){
+  if(!window._focus) return 0;
+  return allLeads().filter(function(l){
+    return window._focus.set[l.id] && !l.status && l.islead===null; }).length;
+}
+function focusEntryHTML(){
+  var f=window._focus;
+  if(f){
+    var left=focusLeft(), done=f.total-left, pct=f.total?Math.round(done/f.total*100):0;
+    if(!left) return '<div class="fq fq-done">'
+      +'<div class="fq-t">✅ That’s '+f.total+' done'+(done?' — about '+focusMins(done)+' of work':'')+'.</div>'
+      +'<div class="fq-b"><button class="fq-go" onclick="focusStart('+FOCUS_N+')">Next '+FOCUS_N+'</button>'
+      +'<button class="fq-x" onclick="focusStop()">Back to everything</button></div></div>';
+    return '<div class="fq">'
+      +'<div class="fq-t">Focus &middot; <b>'+left+'</b> left of '+f.total
+      +' <span class="fq-sub">about '+focusMins(left)+' &mdash; the rest can wait</span></div>'
+      +'<div class="fq-bar"><i style="width:'+pct+'%"></i></div>'
+      +'<div class="fq-b"><button class="fq-x" onclick="focusStop()">Show everything again</button></div></div>';
+  }
+  var und=focusUndecided().length;
+  if(und<FOCUS_N+10) return '';
+  return '<button class="fq-entry" onclick="focusStart('+FOCUS_N+')">'
+    +'🎯 <b>'+und+'</b> undecided is a lot. Do the <b>'+FOCUS_N+'</b> best ones instead '
+    +'<span>&middot; about '+focusMins(FOCUS_N)+'</span></button>';
+}
+var BULK_RULES=[
+  {k:'dead',   label:'Nothing selling',        sub:'under 10 sales a month',  why:'demand',
+   test:function(l){ return spmNum(l.spm)<10; }},
+  {k:'thin',   label:'Under £3 profit',        sub:'not worth the handling',  why:'profit',
+   test:function(l){ return (+l.profit||0)<3; }},
+  {k:'lowroi', label:'ROI under 10%',          sub:'below your floor',        why:'roi',
+   test:function(l){ return (+l.roi||0)<10; }}
+];
+function spmNum(v){ var m=String(v==null?'':v).match(/\d+/); return m?parseInt(m[0],10):0; }
+var BULK_ON={dead:true,thin:true,lowroi:false};
+function bulkToggle(k){ BULK_ON[k]=!BULK_ON[k]; bulkPaint(); }
+function bulkMatches(){
+  var on=BULK_RULES.filter(function(r){ return BULK_ON[r.k]; });
+  if(!on.length) return [];
+  return (window.leads||[]).filter(function(l){
+    if(l.status||l.islead!==null) return false;              // never touch a decided lead
+    return on.some(function(r){ return r.test(l); });
+  });
+}
+function bulkWhyFor(l){
+  var on=BULK_RULES.filter(function(r){ return BULK_ON[r.k] && r.test(l); });
+  return on.length?on[0].why:'demand';
+}
+function bulkPaint(){
+  var host=document.getElementById('bulk-panel'); if(!host) return;
+  host.innerHTML=bulkHTML();
+}
+function bulkHTML(){
+  var m=bulkMatches();
+  var byVa={}; m.forEach(function(l){ var v=vaDisp(l.va)||l.va; byVa[v]=(byVa[v]||0)+1; });
+  var undecided=(window.leads||[]).filter(function(l){ return !l.status&&l.islead===null; }).length;
+  return '<div class="bk">'
+    +'<div class="bk-h"><b>Clear the obvious no’s</b>'
+      +'<span>'+undecided+' undecided · this would clear <b>'+m.length+'</b></span>'
+      +'<button class="bk-x" onclick="bulkClose()">✕</button></div>'
+    +'<div class="bk-rules">'
+      + BULK_RULES.map(function(r){
+          var n=(window.leads||[]).filter(function(l){ return !l.status&&l.islead===null&&r.test(l); }).length;
+          return '<button class="bk-rule'+(BULK_ON[r.k]?' on':'')+'" onclick="bulkToggle(\''+r.k+'\')">'
+            +'<b>'+escHtml(r.label)+'</b><em>'+escHtml(r.sub)+'</em><u>'+n+'</u></button>';
+        }).join('')
+    +'</div>'
+    +(m.length
+      ? '<div class="bk-who">'+Object.keys(byVa).map(function(v){ return escHtml(v)+' '+byVa[v]; }).join(' · ')
+          +' — each gets marked <b>NOT a lead</b> with the reason, written to their sheet.</div>'
+        +'<button class="bk-go" onclick="bulkApply()">Mark all '+m.length+' as NOT ➜</button>'
+      : '<div class="bk-who">Nothing matches those rules right now.</div>')
+    +'<div class="bk-note">You can undo this in one click straight after.</div>'
+  +'</div>';
+}
+function bulkOpen(){
+  var host=document.getElementById('bulk-panel');
+  if(!host){ host=document.createElement('div'); host.id='bulk-panel';
+    var lv=document.getElementById('view-leads'); (lv||document.body).appendChild(host); }
+  host.style.display='block'; bulkPaint();
+}
+function bulkClose(){ var h=document.getElementById('bulk-panel'); if(h) h.style.display='none'; }
+var _bulkUndo=null;
+async function bulkApply(){
+  var m=bulkMatches();
+  if(!m.length) return;
+  if(IS_PREVIEW){ ldToast('Preview mode — nothing was marked',true); return; }
+  _bulkUndo=m.map(function(l){ return {id:l.id,_sid:l._sid,status:l.status,islead:l.islead,notes:l.notes}; });
+  var payload=m.map(function(l){
+    var r=reasonBy(bulkWhyFor(l));
+    l.status='passed'; l.islead=false; l.seen=true;
+    l.notes='[why:'+r.c+'] '+r.l;
+    return {id:l._sid, status:'NOT', islead:'NOT LEAD', jack_comment:l.notes,
+            writeback_pending:true, decided_at:new Date().toISOString()};
+  });
+  try{
+    var res=await fetchT(SUPABASE_URL+'/rest/v1/leads',{method:'POST',
+      headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+        'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
+      body:JSON.stringify(payload)});
+    if(!res.ok){ ldToast('Couldn’t save that — nothing was changed',true); bulkRestore(); return; }
+  }catch(e){ ldToast('Couldn’t save that — nothing was changed',true); bulkRestore(); return; }
+  m.forEach(function(l){ try{ logDecision(l); }catch(e){} });
+  bulkClose(); renderList();
+  ldToast(m.length+' marked NOT — writing to the sheets');
+  try{ if(typeof wbFlushPending==='function') wbFlushPending(true); }catch(e){}
+  bulkUndoToast(m.length);
+}
+function bulkRestore(){
+  if(!_bulkUndo) return;
+  _bulkUndo.forEach(function(u){
+    var l=(window.leads||[]).find(function(x){ return x.id===u.id; });
+    if(l){ l.status=u.status; l.islead=u.islead; l.notes=u.notes; }
+  });
+  renderList();
+}
+function bulkUndoToast(n){
+  var old=document.getElementById('bk-undo'); if(old) old.remove();
+  var d=document.createElement('div'); d.id='bk-undo'; d.className='sb-bin-toast';
+  d.innerHTML='<span>Marked <b>'+n+'</b> as NOT</span><button onclick="bulkUndo()">↺ Undo all</button>';
+  document.body.appendChild(d);
+  clearTimeout(window._bkT);
+  window._bkT=setTimeout(function(){ var x=document.getElementById('bk-undo'); if(x) x.remove(); _bulkUndo=null; },15000);
+}
+async function bulkUndo(){
+  if(!_bulkUndo||!_bulkUndo.length){ ldToast('Too late to undo that',true); return; }
+  var back=_bulkUndo.slice(); _bulkUndo=null;
+  var x=document.getElementById('bk-undo'); if(x) x.remove();
+  var payload=back.map(function(u){ return {id:u._sid,status:null,islead:null,
+    jack_comment:u.notes||'',writeback_pending:true}; });
+  try{
+    await fetchT(SUPABASE_URL+'/rest/v1/leads',{method:'POST',
+      headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+        'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
+      body:JSON.stringify(payload)});
+  }catch(e){}
+  bulkRestore();
+  ldToast(back.length+' put back ✓');
+  try{ if(typeof wbFlushPending==='function') wbFlushPending(true); }catch(e){}
+}
 function litemH(l){
   const s=l._sc,col=scCol(s.total);
+  const _wy=(typeof reasonOf==='function')?reasonOf(l.notes):null;
   const vc=l.va==='VA M'?'va-m':'va-s';
   const vcol=l.va==='VA M'?'var(--mera)':'var(--suz)';
   const [stxt,scls]=statusInfo(l);
   const stale=isStale(l),fresh=isFresh(l)&&l.islead===null&&!l.status;
   const flag=stale?`<span class="litem-stale-flag">⚠ stale</span>`:fresh?`<span class="litem-fresh-flag">● fresh</span>`:`<span class="litem-age">${ageTxt(l.hrs)}</span>`;
-  const dupChip=dupeBadge(l);
+  // when the twin row has been merged away, say so on the survivor
+  const twinChip=(l._twinN>0)
+    ? '<span class="dup-tag dup-cross" title="Both VAs sent this ASIN with the same supplier and the same buy price \u2014 shown once. Deciding it decides both.">BOTH VAs \u00b7 1 row</span>'
+    : '';
+  const dupChip=(l._twinN>0)?twinChip:dupeBadge(l);
   const quick=(l.islead===null&&!l.status)
     ?`<div class="litem-quick">
         <button class="lq-btn lq-yes" title="Mark as Lead (L)" onclick="event.stopPropagation();setL(${l.id},true)">✓</button>
@@ -14651,12 +15854,16 @@ function litemH(l){
     <div class="litem-method">
       <span class="litem-method-pill">${l.src}</span>
       <span class="litem-stat ${fbaC(l.fba)}" style="font-size:9.5px;color:var(--t3)"><span>Sellers</span>${l.fba}</span>
+      ${_wy?`<span class="litem-why k-${_wy.k}" title="${_wy.k==='score'?'the score could catch this':_wy.k==='data'?'the lead info was wrong':'nothing to do with the score'}">${_wy.l}</span>`:''}
     </div>
     </div>
     ${quick}
   </div>`;
 }
 function selectLead(id,scroll){
+  var _same=(selId===id);
+  var _pane0=document.getElementById('detail-pane');
+  var _keepScroll=_same&&_pane0?_pane0.scrollTop:0;
   // moving to a different lead is the signal that he's finished with the decided one
   try{ if(_pendingLeave!=null && _pendingLeave!==id){ var _p=_pendingLeave; _pendingLeave=null;
        var _l=(window.leads||[]).find(function(x){ return x.id===_p; });
@@ -14666,8 +15873,10 @@ function selectLead(id,scroll){
   const l=leads.find(x=>x.id===id);if(!l)return;
   if(!l.seen){l.seen=true;markSeen(l._sid);updateCounts();}
   applyVA(l);
-  document.getElementById('detail-pane').innerHTML=detailH(l);
-  document.getElementById('detail-pane').scrollTop=0;
+  var _pane=document.getElementById('detail-pane');
+  _pane.innerHTML=detailH(l);
+  // moving to a NEW lead starts at the top; restyling the one you're on keeps your place
+  _pane.scrollTop=_same?_keepScroll:0;
   if(scroll && window.innerWidth<=760) document.getElementById('view-leads').classList.add('show-detail');
 }
 function ldBack(){ document.getElementById('view-leads').classList.remove('show-detail'); }
@@ -14734,11 +15943,47 @@ function detailH(l){
     const _fast=(typeof wbReady==='function')&&wbReady();
     const _when=_fast?'written straight into':'queued for';
     const _tail=_fast?'':' — lands next time her sheet syncs';
-    const syncNote=l.status?`<div class="d-sync-note">✓ You marked this <b>${stxt}</b> — ${_when} ${vaNm}'s sheet${_tail}. <button class="d-next" onclick="ldNextUndecided(${l.id})">Next undecided &rarr;</button></div>`:`<div class="d-sync-note ok">✓ Approved as <b>LEAD</b> — ${_when} ${vaNm}'s sheet. Now pick what happened:</div>`;
+    const _why=(typeof reasonOf==='function')?reasonOf(l.notes):null;
+    const _rs=(typeof reasonsFor==='function')?reasonsFor(l):[];
+    const _tone=l.status==='bought'?'buy':(l.status==='passed'?'no':'wait');
+    const _qty=(typeof ldQty==='function')?ldQty(l):null;
+    const syncNote=l.status?`
+      <div class="d-actioned ${_tone}">
+        <div class="d-act-top">
+          <span class="d-act-badge">${stxt}</span>
+          <span class="d-act-txt">${_qty&&_qty!=='na'?`<b>${_qty}</b> unit${_qty==1?'':'s'} · `:''}${_when} ${vaNm}'s sheet${_tail}</span>
+          <button class="d-next" onclick="ldNextUndecided(${l.id})">Next undecided &rarr;</button>
+        </div>
+        ${_why
+          ? `<div class="d-why set k-${_why.k}"><em>Why</em><b>${_why.l}</b>
+               <span class="d-why-kind">${_why.k==='score'?'the score could catch this'
+                 :_why.k==='data'?'the lead info was wrong'
+                 :'nothing to do with the score'}</span>
+               <button class="d-why-x" onclick="reasonSet(${l.id},'')" title="Change it">change</button></div>`
+          : `<div class="d-why"><em>Why?</em>${_rs.map((r,ri)=>
+               `<button class="d-why-b k-${r.k}" onclick="reasonSet(${l.id},'${r.c}')">${ri<9?`<u>${ri+1}</u>`:''}${r.l}</button>`).join('')}</div>`}
+      </div>`
+      :`<div class="d-sync-note ok">✓ Approved as <b>LEAD</b> — ${_when} ${vaNm}'s sheet. Now pick what happened:</div>`;
     decH=syncNote+`<div class="d-dec-row" style="flex-wrap:wrap"><button class="d-dec-btn dec-buy" onclick="setSt(${l.id},'bought')">BOUGHT</button><button class="d-dec-btn dec-basket" onclick="setSt(${l.id},'atbq')">ATB (Q)</button><button class="d-dec-btn dec-basket" onclick="setSt(${l.id},'atba2a')">ATB (A2A)</button><button class="d-dec-btn dec-basket" onclick="setSt(${l.id},'waiting')">Waiting</button><button class="d-dec-btn dec-pass" onclick="setSt(${l.id},'passed')">NOT</button><button class="d-dec-btn dec-undo" onclick="undoA(${l.id})">↩ Undo</button></div>`;
   }else{
     const vaNm2=l.va==='VA M'?vaDisp('Mera'):vaDisp('Suz');
-    decH=`<div class="d-sync-note bad">✕ Marked <b>NOT A LEAD</b> + <b>NOT BOUGHT</b> — both columns written to ${vaNm2}'s sheet</div><div class="d-dec-row"><button class="d-dec-btn dec-undo" onclick="undoA(${l.id})">↩ Reassess this lead</button></div>`;
+    const _why2=(typeof reasonOf==='function')?reasonOf(l.notes):null;
+    const _rs2=LEAD_REASONS.filter(function(r){ return r.for==='no'; });
+    decH=`<div class="d-actioned no">
+        <div class="d-act-top">
+          <span class="d-act-badge">Not a lead</span>
+          <span class="d-act-txt">both columns written to ${vaNm2}'s sheet</span>
+          <button class="d-next" onclick="ldNextUndecided(${l.id})">Next undecided &rarr;</button>
+        </div>
+        ${_why2
+          ? `<div class="d-why set k-${_why2.k}"><em>Why</em><b>${_why2.l}</b>
+               <span class="d-why-kind">${_why2.k==='score'?'the score could catch this'
+                 :_why2.k==='data'?'the lead info was wrong — not a scoring miss'
+                 :'nothing to do with the score'}</span>
+               <button class="d-why-x" onclick="reasonSet(${l.id},'')">change</button></div>`
+          : `<div class="d-why"><em>Why?</em>${_rs2.map((r,ri)=>
+               `<button class="d-why-b k-${r.k}" onclick="reasonSet(${l.id},'${r.c}')">${ri<9?`<u>${ri+1}</u>`:''}${r.l}</button>`).join('')}</div>`}
+      </div><div class="d-dec-row"><button class="d-dec-btn dec-undo" onclick="undoA(${l.id})">↩ Reassess this lead</button></div>`;
   }
   // note bar: appears right under the decision the moment one is clicked — write the
   // why/note here (goes to the sheet's Jack Comment column), then Next jumps on
@@ -14758,7 +16003,9 @@ function detailH(l){
       ${qtyRow}
       <div class="nb-lbl">${isNo?'Why is it a no? — saved to the sheet':'Add a note (optional) — saved to the sheet'}</div>
       ${nbChips?`<div class="nb-chips">${nbChips}</div>`:''}
-      <input id="nb-in" placeholder="type a quick note… (Enter = save & next)" value="${String(l.notes||'').replace(/"/g,'&quot;')}" onkeydown="if(event.key==='Enter'){nbSave();}">
+      <textarea id="nb-in" rows="2" placeholder="type a note… (Enter saves, Shift+Enter for a new line)"
+        oninput="nbGrow(this)"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();nbSave();}">${String(l.notes||'').replace(/</g,'&lt;')}</textarea>
       <div class="nb-row"><button class="nb-save" onclick="nbSave()">Save · next ➜</button><button class="nb-skip" onclick="nbSkip()">skip · next ➜</button></div>
     </div>`;
   }
@@ -14825,6 +16072,7 @@ function detailH(l){
       </div>
       <div class="d-sec">
         <div class="d-sec-lbl">Why this score — ${s.total.toFixed(1)}/10${s.smart?' <span class="smart-badge">🧠 learned</span>':''}</div>
+        ${recallHTML(l,s)}
         ${s.smart?smartWhy(l,s):''}
         <div class="d-score-rubric">${bars}</div>
       </div>
@@ -14872,6 +16120,169 @@ function detailH(l){
     </div>
     </div>
   </div>`;
+}
+/* ── WHY, NOT JUST WHAT ─────────────────────────────────────────────────────
+   Jack: "if things are a lead but i didn't buy as it's OOS then thats why — if i
+   buy 100 of a lead why — if i say no as it's the wrong item but it's a 10/10 lead
+   then that explains it".
+   Counting words in free text was a fudge. A decision needs a REASON, and the
+   reason has a KIND, because that decides who has to act:
+     score → the numbers could have caught it        → change the matrix
+     data  → the lead information was wrong          → VA / sourcing problem
+     world → nothing to do with the numbers          → not a scoring failure at all
+   Stored as "[why:code] free text" in the note, so it survives into the sheet and
+   into lead_decisions with no schema change. */
+var LEAD_REASONS=[
+  // why you BOUGHT
+  {c:'margin', l:'Great margin',        k:'score', for:'buy'},
+  {c:'fast',   l:'Sells fast',          k:'score', for:'buy'},
+  {c:'bulk',   l:'Bulk / stock deal',   k:'world', for:'buy'},
+  {c:'replen', l:'Replen',              k:'world', for:'buy'},
+  {c:'brand',  l:'Brand I trust',       k:'world', for:'buy'},
+  {c:'test',   l:'Testing 1–2 units',   k:'world', for:'buy'},
+  // why you DIDN'T
+  {c:'oos',    l:'Out of stock',        k:'world', for:'no'},
+  {c:'wrong',  l:'Wrong item / no match',k:'data', for:'no'},
+  {c:'tanked', l:'Price tanked',        k:'data',  for:'no'},
+  {c:'badprice',l:'Price doesn’t match',k:'data',  for:'no'},
+  {c:'gated',  l:'Gated / restricted',  k:'world', for:'no'},
+  {c:'hazmat', l:'Hazmat / can’t ship', k:'world', for:'no'},
+  {c:'cash',   l:'Cash tied up',        k:'world', for:'no'},
+  {c:'roi',    l:'Low ROI',             k:'score', for:'no'},
+  {c:'profit', l:'Low profit',          k:'score', for:'no'},
+  {c:'comp',   l:'Too much competition',k:'score', for:'no'},
+  {c:'demand', l:'Too slow to sell',    k:'score', for:'no'},
+  {c:'listing',l:'Poor listing',        k:'data',  for:'no'},
+  // holding
+  {c:'waitprice',l:'Waiting on price',  k:'world', for:'wait'},
+  {c:'waitstock',l:'Waiting on stock',  k:'world', for:'wait'}
+];
+function reasonBy(code){ for(var i=0;i<LEAD_REASONS.length;i++) if(LEAD_REASONS[i].c===code) return LEAD_REASONS[i]; return null; }
+function reasonOf(note){ var m=String(note||'').match(/^\[why:([a-z]+)\]/); return m?reasonBy(m[1]):null; }
+/* ── READING THE NOTES YOU ALREADY WROTE ────────────────────────────────────
+   Reason codes shipped in v33.2, so nothing before that is tagged — but the notes
+   already SAY it: "Banger but OOS", "Gated", "Down more than up", "Not prof enough".
+   Measured on live data, 49% of existing comments name a reason in plain English.
+   This reads them, so the whole recall/training system works on real history instead
+   of starting from zero. A guessed reason is always shown as guessed, never silently
+   treated as something Jack confirmed. */
+var REASON_KW=[
+  ['oos',     ['oos','out of stock','no stock','sold out','none left','stock gone']],
+  ['gated',   ['gated','restricted','ungate','not approved']],
+  ['hazmat',  ['hazmat','battery','flammable','aerosol']],
+  ['tanked',  ['down more than up','tanked','price dropped','price drop','will drop','drop lower','crashed']],
+  ['badprice',['where did you get that price','unsure where you got that price','price doesn\'t match','price does not match','wrong price']],
+  ['wrong',   ['wrong item','not the same','no match','different item','wrong asin']],
+  ['listing', ['listing','no buy box','suppressed','buybox']],
+  ['profit',  ['not prof','low profit','profit too','not enough profit','thin margin']],
+  ['roi',     ['low roi','roi too','roi is low']],
+  ['comp',    ['too many sellers','competition','amazon on the listing','amazon is on']],
+  ['demand',  ['too slow','no sales','doesn\'t sell','does not sell','slow seller','fast enough sales']],
+  ['test',    ['trying 1','only bought 1','only tried','test buy','tester','trying a few']],
+  ['bulk',    ['bulk','case of','pallet','loads of stock','loads left','got some left','plenty of stock']],
+  ['margin',  ['banger','great margin','lovely margin','strong margin']],
+  ['fast',    ['sells fast','fast seller','flies','quick seller']]
+];
+function reasonGuess(note){
+  var s=String(note||'').toLowerCase(); if(!s.trim()) return null;
+  if(/^\[why:/.test(s)) return null;
+  for(var i=0;i<REASON_KW.length;i++){
+    var c=REASON_KW[i][0], ws=REASON_KW[i][1];
+    for(var j=0;j<ws.length;j++) if(s.indexOf(ws[j])>-1) return reasonBy(c);
+  }
+  return null;
+}
+/* the reason to USE anywhere: confirmed first, otherwise the one the words imply */
+function reasonAny(note){
+  var r=reasonOf(note); if(r) return {r:r,guessed:false};
+  var g=reasonGuess(note); return g?{r:g,guessed:true}:null;
+}
+function reasonStrip(note){ return String(note||'').replace(/^\[why:[a-z]+\]\s*/,''); }
+/* ── REASON RECALL ──────────────────────────────────────────────────────────
+   Jack: "it needs to read notes to see why i passed on a 10/10 lead".
+   A logistic model with ~46 rows genuinely cannot learn that — but a LOOKUP can,
+   instantly and with no training data at all. Every reason he has ever recorded is
+   matched against the lead in front of him (same ASIN, same storefront) and stated
+   BEFORE he decides — plus, on a lead already decided, whether a high score he
+   rejected was actually a scoring miss or nothing to do with the score. */
+function recallDom(u){ try{ return String(u||'').replace(/^https?:\/\//,'').split('/')[0].replace(/^www\./,'').toLowerCase(); }catch(e){ return ''; } }
+function recallRows(){
+  var out=[];
+  (window._decisionCache||[]).forEach(function(r){ if(r.decision && reasonAny(r.note)) out.push(r); });
+  // decisions made straight in the VA's sheet never reach lead_decisions — read those too
+  (window.leads||[]).forEach(function(l){
+    if(l.islead===null && !l.status) return;
+    if(!reasonAny(l.notes)) return;
+    var k=l._sid||l.id;
+    if(out.some(function(r){ return r.id===k; })) return;
+    out.push({id:k, decision:l.status||(l.islead?'lead':'passed'),
+      is_buy:(l.status==='bought'||l.status==='atbq'||l.status==='atba2a'),
+      asin:l.asin, store:l.store, note:l.notes, qty:null, updated_at:l.date||''});
+  });
+  return out;
+}
+function reasonRecall(l,score){
+  if(!l) return [];
+  var out=[], rows=recallRows();
+  var _m=reasonAny(l.notes), mine=_m&&_m.r, sc=(score&&score.total!=null)?score.total:null;
+  if(mine&&sc!=null&&sc>=7.5&&l.islead===false){
+    out.push(mine.k==='world'
+      ? {lvl:'self',ico:'✅',kind:'world',txt:'Scored <b>'+sc.toFixed(1)+'</b> and you passed &mdash; but for <b>'+escHtml(mine.l)+'</b>. That is not a scoring miss, so it is left out of training.'}
+      : mine.k==='data'
+      ? {lvl:'self',ico:'&#9888;',kind:'data',txt:'Scored <b>'+sc.toFixed(1)+'</b> on <b>bad lead data</b> ('+escHtml(mine.l)+'). The score was fed the wrong numbers &mdash; a sourcing fix, not a scoring one.'}
+      : {lvl:'self',ico:'&#127919;',kind:'score',txt:'Scored <b>'+sc.toFixed(1)+'</b> and you passed for <b>'+escHtml(mine.l)+'</b> &mdash; the numbers could have caught that. A real scoring miss.'});
+  }
+  if(!rows.length) return out;
+  var asin=String(l.asin||'').toUpperCase();
+  if(asin){
+    var same=rows.filter(function(r){ return String(r.asin||'').toUpperCase()===asin && r.id!==l._sid; });
+    same.sort(function(a,b){ return String(b.updated_at||'')<String(a.updated_at||'')?-1:1; });
+    if(same.length){
+      var r0=same[0], _a0=reasonAny(r0.note), w0=_a0&&_a0.r;
+      if(w0) out.push({lvl:'hit',ico:'&#8617;',kind:w0.k,
+        txt:'You have decided this ASIN before &mdash; <b>'+escHtml(w0.l)+'</b>'
+           +(r0.is_buy?' (bought'+(r0.qty?' '+r0.qty:'')+')':' (passed)')+'.'
+           +(_a0.guessed?' <i class="rc-g">(read from your note)</i>':'')});
+    }
+  }
+  function pattern(label,match){
+    if(!label) return;
+    var hits={},best=null;
+    rows.forEach(function(r){ if(!match(r)) return; var a=reasonAny(r.note), w=a&&a.r;
+      if(!w||w.for==='buy') return;
+      (hits[w.c]||(hits[w.c]={w:w,n:0})).n++; });
+    Object.keys(hits).forEach(function(k){ if(!best||hits[k].n>best.n) best=hits[k]; });
+    if(best&&best.n>=2) out.push({lvl:'pat',ico:'&#8634;',kind:best.w.k,
+      txt:'<b>'+best.n+'</b> leads from <b>'+escHtml(label)+'</b> died on the same thing &mdash; <b>'+escHtml(best.w.l)+'</b>.'});
+  }
+  var store=String(l.store||'').trim().toLowerCase();
+  pattern(l.store, function(r){ return !!store && String(r.store||'').trim().toLowerCase()===store; });
+  return out;
+}
+function recallHTML(l,score){
+  var hits=reasonRecall(l,score); if(!hits.length) return '';
+  return '<div class="rc-wrap">'+hits.map(function(h){
+    return '<div class="rc-r rc-'+h.kind+'"><span class="rc-i">'+h.ico+'</span><span>'+h.txt+'</span></div>';
+  }).join('')+'</div>';
+}
+function reasonSet(id,code){
+  var l=(window.leads||[]).find(function(x){ return x.id===id; }); if(!l) return;
+  var rest=reasonStrip(l.notes||'');
+  var r=reasonBy(code);
+  l.notes = r ? ('[why:'+code+'] '+r.l+(rest?' · '+rest:'')) : rest;
+  try{ db_leadPatch(l,{jack_comment:l.notes}); }catch(e){}
+  try{ logDecision(l); }catch(e){}
+  var tw=noteMirror(l);
+  ldToast(r?('Why: '+r.l+' ✓'+(tw?' · also on '+vaDisp(tw.va)+'’s copy':'')):'Reason cleared');
+  try{ selectLead(id,true); }catch(e){ renderList(); }
+}
+/* which reasons make sense for what he just pressed */
+function reasonsFor(l){
+  if(!l) return [];
+  var isBuy=(l.status==='bought');
+  var wait=(l.status==='atbq'||l.status==='atba2a'||l.status==='waiting');
+  var want=isBuy?'buy':(wait?'wait':'no');
+  return LEAD_REASONS.filter(function(r){ return r.for===want; });
 }
 function qReject(id,reason){const l=leads.find(x=>x.id===id);if(l){l.islead=false;l.status='passed';l.seen=true;l.notes=(l.notes&&l.notes.trim()?l.notes.trim()+' · ':'')+'Rejected: '+reason;markSeen(l._sid);db_leadPatch(l,{islead:'NOT LEAD',status:'NOT',jack_comment:l.notes});}ldToast('Rejected — '+reason+' · both sheet dropdowns set');advanceAfter(id);}
 /* NO decisions ask for a comment right here — the app replaces the sheet as the place
@@ -16069,18 +17480,36 @@ function renderSavedFiltersVA(keepOpen){
     +'</div></details>';
   if(keepOpen){ var s=document.getElementById('vaf-search'); if(s){ s.focus(); s.selectionStart=s.value.length; } }
 }
-function nbChip(el){ var i=document.getElementById('nb-in'); if(!i) return; i.value=(i.value.trim()?i.value.trim()+' · ':'')+el.textContent; i.focus(); }
+function nbChip(el){
+  var i=document.getElementById('nb-in'); if(!i) return;
+  i.value=(i.value.trim()?i.value.trim()+' · ':'')+el.textContent;
+  nbGrow(i); i.focus(); try{ i.selectionStart=i.selectionEnd=i.value.length; }catch(e){}
+}
 function nbSave(){
   var p=window._noteFor; if(!p) return;
   var l=leads.find(function(x){return x.id===p.id;});
   var i=document.getElementById('nb-in'); var txt=i?i.value.trim():'';
-  if(l){ l.notes=txt; db_leadPatch(l,{jack_comment:txt}); ldToast(txt?'Note saved — writing to sheet':'Note cleared'); }
+  if(l){
+    l.notes=txt; db_leadPatch(l,{jack_comment:txt});
+    var tw=noteMirror(l);
+    ldToast(txt?('Note saved — writing to sheet'+(tw?' · and to '+vaDisp(tw.va)+'’s copy':'')):'Note cleared');
+  }
   window._noteFor=null;
   if(p.manual){ try{selectLead(p.id,true);}catch(e){renderList();} }   // manual: save & stay on this lead
   else advanceAfter(p.id);                                             // after a decision: save & next
 }
 function nbSkip(){ var p=window._noteFor; window._noteFor=null; if(!p) return; if(p.manual){ try{selectLead(p.id,true);}catch(e){renderList();} } else advanceAfter(p.id); }
-function nbFocus(){ setTimeout(function(){ var i=document.getElementById('nb-in'); if(i){ i.focus(); i.selectionStart=i.value.length; } },90); }
+/* Grow to fit what's been typed, up to a sane ceiling, then scroll. Called on input
+   and once on open so an existing long note is fully visible the moment it appears. */
+function nbGrow(el){
+  if(!el) return;
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight, 220)+'px';
+}
+function nbFocus(){ setTimeout(function(){
+  var i=document.getElementById('nb-in');
+  if(i){ nbGrow(i); i.focus(); try{ i.selectionStart=i.selectionEnd=i.value.length; }catch(e){} }
+},90); }
 function setL(id,v){
   const l=leads.find(x=>x.id===id);
   if(l){l.islead=v;l.seen=true;markSeen(l._sid);
@@ -16111,7 +17540,14 @@ function setSt(id,st){
 ldToast((st==='bought'?'BOUGHT ✓':st==='passed'?'Marked NOT':st==='waiting'?'Marked WAITING':'ATB ✓')+' — writing to sheet');
 try{ nbFocus(); }catch(e){}}
 function undoA(id){window._noteFor=null;const l=leads.find(x=>x.id===id);if(l){l.status=null;l.islead=null;l.seen=true;db_leadPatch(l,{status:null,islead:null});}renderList();}
-function saveN(id){const l=leads.find(x=>x.id===id),ta=document.getElementById('mn');if(l&&ta){l.notes=ta.value;db_leadPatch(l,{jack_comment:ta.value});ldToast('Note saved — writing to sheet')}}
+function saveN(id){
+  const l=leads.find(x=>x.id===id),ta=document.getElementById('mn');
+  if(l&&ta){
+    l.notes=ta.value; db_leadPatch(l,{jack_comment:ta.value});
+    var tw=noteMirror(l);
+    ldToast('Note saved — writing to sheet'+(tw?' · and to '+vaDisp(tw.va)+'’s copy':''));
+  }
+}
 function cpDiscord(id){
   const l=leads.find(x=>x.id===id);if(!l)return;
   const txt='**'+l.title+'**\n'
@@ -16161,13 +17597,14 @@ function ldNextUndecided(fromId){
   }catch(e){}
 }
 function advanceAfter(id){
+  if(!window._sessStart) window._sessStart=Date.now();
   window._sessDecided=(window._sessDecided||0)+1;
   try{ var _dl=leads.find(function(x){return x.id===id;}); if(_dl) logDecision(_dl); }catch(e){}   // log to cloud history
   // CONTINUOUS LEARNING: in smart mode, every decision retrains the model + rescores,
   // so it keeps up with how your criteria shift lead to lead.
   try{ if(getAppSettings().scoreMode==='smart'){ var m=trainSmartModel();
     if(m&&!m.err){ leads.forEach(function(l){ l._sc=calcScore({roi:l.roi,profit:l.profit,spm:l.spm,fba:l.fba,margin:l.margin}); }); } } }catch(e){}
-  renderList();
+  if(!ldRowRefresh(id)) renderList();      // same reason — touch one row
   try{
     /* deliberately NOT jumping to the next lead — see ldNextUndecided() */
     selectLead(id,true);
@@ -16183,6 +17620,16 @@ document.addEventListener('keydown',e=>{
   if(e.metaKey||e.ctrlKey||e.altKey) return;
   const typing=/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)||document.activeElement.isContentEditable;
   if(e.key==='/'&&!typing){e.preventDefault();document.getElementById('search').focus();return;}
+  /* He decides with one key (B/N/L/A/W); the reason should cost one more, not a
+     mouse trip across the panel. 1-9 map to the reasons offered for THAT decision. */
+  if(!typing && /^[1-9]$/.test(e.key)){
+    var _l=(window.leads||[]).find(function(x){ return x.id===selId; });
+    if(_l && (_l.status||_l.islead===false)){
+      var _opts=(_l.islead===false && !_l.status) ? LEAD_REASONS.filter(function(r){return r.for==='no';}) : reasonsFor(_l);
+      var _pick=_opts[parseInt(e.key,10)-1];
+      if(_pick){ e.preventDefault(); reasonSet(_l.id,_pick.c); return; }
+    }
+  }
   if(e.key==='Escape'&&typing){document.activeElement.blur();return;}
   if(typing)return;
   if(e.key==='ArrowDown'){e.preventDefault();moveSel(1);}
@@ -16999,16 +18446,15 @@ async function sbScrapBatch(batchId){
   if(b.status==='Started'||b.status==='Completed'){
     showToast('Too late — '+vaDisp(b.started_by||b.assigned_to||'a VA')+' has already started this one',true); return;
   }
-  var okGo=await askConfirm({
-    title:'Bin the '+escHtml(b.storefront_name||'')+' batch?',
-    body:'<b>'+(b.asin_count||0)+' ASIN'+((b.asin_count||0)===1?'':'s')+'</b> from '+escHtml(b.date||'')
-        +' will be deleted, and nobody will be asked to work it.',
-    detail:'Use this when you\u2019ve looked and it isn\u2019t worth anyone\u2019s time \u2014 or the paste went to the wrong tag.',
-    yes:'Bin it', no:'Keep it', danger:true });
-  if(!okGo) return;
   if(IS_PREVIEW){ showToast('Preview mode — not scrapped',true); return; }
+  var h={apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY};
+  var keptBatch=null, keptItems=[];
   try{
-    var h={apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY};
+    // grab everything BEFORE deleting, so Undo has something to put back
+    var br=await fetchT(SUPABASE_URL+'/rest/v1/storefront_batches?id=eq.'+encodeURIComponent(batchId)+'&select=*',{headers:h});
+    if(br.ok) keptBatch=(await br.json())[0]||null;
+    var ir=await fetchT(SUPABASE_URL+'/rest/v1/storefront_batch_items?batch_id=eq.'+encodeURIComponent(batchId)+'&select=*',{headers:h});
+    if(ir.ok) keptItems=await ir.json()||[];
     await fetchT(SUPABASE_URL+'/rest/v1/storefront_batch_items?batch_id=eq.'+encodeURIComponent(batchId),{method:'DELETE',headers:h});
     var r=await fetchT(SUPABASE_URL+'/rest/v1/storefront_batches?id=eq.'+encodeURIComponent(batchId),{method:'DELETE',headers:h});
     if(!r.ok){ showToast('Couldn\'t scrap it — check your connection',true); return; }
@@ -17016,8 +18462,42 @@ async function sbScrapBatch(batchId){
   SB_FLASH=null;
   await sbLoadBatches(true);
   sbRenderImport();
-  showToast('Binned \u2713 \u2014 nobody will be asked to work it');
   try{ sbRefreshJack(); }catch(e){}
+  if(keptBatch){
+    window._sbBinUndo={batch:keptBatch,items:keptItems};
+    sbBinToast((keptBatch.storefront_name||'Batch'),(keptItems.length||keptBatch.asin_count||0));
+  } else {
+    showToast('Binned \u2713');
+  }
+}
+/* A toast that can put it back. Nothing else in the app deletes rows, so this is
+   the only place that needs it — hence a purpose-built one rather than a system. */
+function sbBinToast(name,n){
+  var old=document.getElementById('sb-bin-toast'); if(old) old.remove();
+  var d=document.createElement('div');
+  d.id='sb-bin-toast'; d.className='sb-bin-toast';
+  d.innerHTML='<span>Binned <b>'+escHtml(name)+'</b> \u00b7 '+n+' ASIN'+(n===1?'':'s')+'</span>'
+    +'<button onclick="sbBinUndo()">\u21ba Undo</button>';
+  document.body.appendChild(d);
+  clearTimeout(window._sbBinT);
+  window._sbBinT=setTimeout(function(){ var x=document.getElementById('sb-bin-toast'); if(x) x.remove(); window._sbBinUndo=null; },12000);
+}
+async function sbBinUndo(){
+  var u=window._sbBinUndo; if(!u){ showToast('Too late to undo that one',true); return; }
+  window._sbBinUndo=null;
+  var x=document.getElementById('sb-bin-toast'); if(x) x.remove();
+  var h={apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,'Content-Type':'application/json',Prefer:'resolution=ignore-duplicates'};
+  try{
+    var r=await fetchT(SUPABASE_URL+'/rest/v1/storefront_batches',{method:'POST',headers:h,body:JSON.stringify([u.batch])});
+    if(!r.ok){ showToast('Couldn\'t put it back — check your connection',true); return; }
+    if(u.items.length){
+      await fetchT(SUPABASE_URL+'/rest/v1/storefront_batch_items',{method:'POST',headers:h,body:JSON.stringify(u.items)});
+    }
+  }catch(e){ showToast('Couldn\'t put it back — check your connection',true); return; }
+  await sbLoadBatches(true);
+  sbRenderImport();
+  try{ sbRefreshJack(); }catch(e){}
+  showToast('Put back \u2713 \u2014 '+(u.items.length||0)+' ASINs restored');
 }
 function sbImportHTML(){
   var qs=sbActiveQueues();
@@ -17552,6 +19032,21 @@ function sbWorkRowHTML(b){
     +'</div>';
 }
 /* Started something by mistake — put it back rather than being forced to finish it. */
+/* Take a batch back off whoever holds it — for a shift abandoned mid-way, or a test
+   session that locked it. Non-destructive: it returns to Assigned with its ASINs and
+   routing intact, so it simply reappears on their list. */
+async function sbRelease(batchId){
+  var b=(SB_BATCHES||[]).filter(function(x){ return x.id===batchId; })[0];
+  var prev=b?{s:b.status,by:b.started_by}:null;
+  if(b){ b.status='Assigned'; b.started_by=null; sbPaintJack(); }
+  var ok=await sbPatch(batchId,{status:'Assigned', started_by:null, started_at:null}, true);
+  if(!ok){
+    if(b&&prev){ b.status=prev.s; b.started_by=prev.by; sbPaintJack(); }
+    showToast('Couldn\'t release it — check your connection',true); return;
+  }
+  showToast('Released \u2014 back on '+vaDisp((prev&&prev.by)||'their')+'\u2019s list \u2713');
+  sbSyncSoon();
+}
 async function sbJackUnstart(batchId){
   var b=(SB_BATCHES||[]).filter(function(x){return x.id===batchId;})[0];
   var prev=b?{s:b.status,by:b.started_by}:null;
@@ -17592,22 +19087,26 @@ function sbRowHTML(b){
     var binBtn=(isDraft||!started)
       ? '<button class="sbr-b bin" title="Delete this batch and its ASINs — nobody gets asked to work it" '
         +'onclick="sbScrapBatch(\''+b.id+'\')">&#10005; Bin</button>' : '';
-    actions='<div class="sbr-route">'
-      +[['Mera',''],['Suz',''],['Both','Both'],['All','All 3'],['Jack','Me']].map(function(v){
-          var who=v[0], lbl=v[1]||vaDisp(who);
-          var tip=who==='All'?'Mera, Suz and you':who==='Both'?'Mera and Suz':who==='Jack'?'You':vaDisp(who);
-          return '<button class="sbr-b'+(b.assigned_to===who?' on':'')+'" data-w="'+who+'" title="'
-            +escHtml(tip)+'" onclick="sbAssign(\''+b.id+'\',\''+who+'\')">'+escHtml(lbl)+'</button>';
+    actions='<div class="sbr-route2">'
+      +['Mera','Suz'].map(function(who){
+          return '<button class="sbr-go2'+(b.assigned_to===who?' on':'')+'" data-w="'+who+'" title="Send it to '
+            +escHtml(vaDisp(who))+'" onclick="sbAssign(\''+b.id+'\',\''+who+'\')">&#8594; '+escHtml(vaDisp(who))+'</button>';
         }).join('')
-      +binBtn+'</div>'
-      +(mine?'<div class="sbr-act">'
-            +'<button class="sbr-b go" onclick="sbJackStart(\''+b.id+'\')">&#9654; Start</button>'
-            +'<button class="sbr-b done" title="Mark it finished without timing it" '
-            +'onclick="sbJackComplete(\''+b.id+'\')">&#10003; Done</button></div>':'');
+      +'<details class="sbr-more"><summary title="Everything else">&#8943;</summary><div class="sbw-menu">'
+        +'<button onclick="sbAssign(\''+b.id+'\',\'Both\')">&#8594; Both VAs</button>'
+        +'<button onclick="sbAssign(\''+b.id+'\',\'All\')">&#8594; All 3 of us</button>'
+        +'<button onclick="sbAssign(\''+b.id+'\',\'Jack\')">&#8594; Keep for me</button>'
+        +(mine?'<button onclick="sbJackStart(\''+b.id+'\')">&#9654; Start it now</button>'
+              +'<button onclick="sbJackComplete(\''+b.id+'\')">&#10003; Mark done</button>':'')
+        +'<button class="danger" onclick="sbScrapBatch(\''+b.id+'\')">&#10005; Bin this batch</button>'
+      +'</div></details>'
+      +'</div>';
   } else if(jackOn){
     actions='<div class="sbr-act one"><button class="sbr-b go" onclick="sbJackComplete(\''+b.id+'\')">&#10003; Done</button></div>';
   } else if(started){
-    actions='<div class="sbr-lock">&#128274; locked</div>';
+    actions='<div class="sbr-lock">&#128274; '+escHtml(vaDisp(b.started_by||'someone'))+' has it'
+      +'<button class="sbr-rel" title="Put it back on their list so anyone can pick it up" '
+      +'onclick="sbRelease(\''+b.id+'\')">Release</button></div>';
   }
 
   var nm=b.storefront_name||'—';
@@ -17667,20 +19166,42 @@ function sbTodayHTML(){
         return (a.batch_number||0)-(b.batch_number||0);
       });
     });
-    var keys=Object.keys(g).sort(function(x,y){
-      var px=Math.min.apply(null,g[x].map(priOf)), py=Math.min.apply(null,g[y].map(priOf));
-      if(px!==py) return px-py;                        // a tag containing High work leads
-      var dx=g[x].map(function(b){return sbToISO(b.date)||'';}).sort().pop()||'';
-      var dy=g[y].map(function(b){return sbToISO(b.date)||'';}).sort().pop()||'';
-      if(dx!==dy) return dy<dx?-1:1;                   // then the freshest tag
-      return x.localeCompare(y);
+    /* ── ORDER, EXACTLY AS JACK ASKED ─────────────────────────────────────────
+     "high medium low -- but then to sort high out it's freshest first to oldest
+      of high - then same for medium and same for low -- most of them will be the
+      same day so just do it in order of these"  ("these" = the tag order he sets
+      with the arrows in Storefronts admin, i.e. storefronts.pos).
+     So: PRIORITY → DATE (newest first) → his admin order → batch number.
+     Every key belongs to the BATCH ITSELF. Nothing is derived from what else is
+     still on the board, which is what made it reshuffle after every click — a tag
+     used to be ranked by its own remaining batches, so routing one moved the rest. */
+    var qpos={};
+    (SB_QUEUES||[]).forEach(function(q){
+      qpos[String(q.name||'').toLowerCase()]=(q.pos==null?9999:q.pos);
     });
-    var out=[];
-    keys.forEach(function(k){
-      g[k].forEach(function(b,i){ b._tagFirst=(i===0); b._tagSize=g[k].length; b._tagIdx=i+1; out.push(b); });
+    function posOf(b){
+      var v=qpos[String(b.storefront_name||'').toLowerCase()];
+      return v==null?9999:v;
+    }
+    var flat=[];
+    Object.keys(g).forEach(function(k){ g[k].forEach(function(b){ flat.push(b); }); });
+    flat.sort(function(a,b){
+      if(priOf(a)!==priOf(b)) return priOf(a)-priOf(b);          // High → Normal → Low
+      var da=sbToISO(a.date)||'', db=sbToISO(b.date)||'';
+      if(da!==db) return db<da?-1:1;                             // freshest first
+      if(posOf(a)!==posOf(b)) return posOf(a)-posOf(b);          // then his admin order
+      var ta=String(a.storefront_name||''), tb=String(b.storefront_name||'');
+      if(ta!==tb) return ta.localeCompare(tb);
+      return (a.batch_number||0)-(b.batch_number||0);
     });
-    return out;
+    // keep the n/m chips meaningful: they count batches sharing a tag
+    var sizes={},idxs={};
+    flat.forEach(function(b){ var k=tagOf(b); sizes[k]=(sizes[k]||0)+1; });
+    flat.forEach(function(b){ var k=tagOf(b); idxs[k]=(idxs[k]||0)+1;
+      b._tagFirst=(idxs[k]===1); b._tagSize=sizes[k]; b._tagIdx=idxs[k]; });
+    return flat;
   };
+
   var toRoute=sortFn(live.filter(function(b){ return b.status==='Draft'; }));
   var going  =sortFn(live.filter(function(b){ return b.status==='Started'; }));
   // Jack's own batches were interleaved with the VAs' — five "Jack" rows sitting among
@@ -17821,13 +19342,23 @@ async function sbJackComplete(batchId){
   sbSyncSoon();
 }
 async function sbStart(batchId){
-  var ok=await sbPatch(batchId,{status:'Started', started_by:(state.currentVA||'VA'), started_at:new Date().toISOString()});
+  var who=String((state&&state.currentVA)||'VA');
+  // A test/preview session must never lock a real batch — Jack hit exactly this and
+  // the tile then read "locked" with no way to release it.
+  if(IS_PREVIEW || /^(test|preview|demo)$/i.test(who)){
+    showToast('Test mode — not locking a real batch',true); return;
+  }
+  var ok=await sbPatch(batchId,{status:'Started', started_by:who, started_at:new Date().toISOString()});
   if(!ok){ showToast('Couldn\'t start it — check your connection',true); return; }
   showToast('Started — this batch is now locked ✓');
   try{ sbRefreshVA(); }catch(e){}
 }
 async function sbComplete(batchId){
-  var ok=await sbPatch(batchId,{status:'Completed', completed_by:(state.currentVA||'VA'), completed_at:new Date().toISOString()});
+  var whoC=String((state&&state.currentVA)||'VA');
+  if(IS_PREVIEW || /^(test|preview|demo)$/i.test(whoC)){
+    showToast('Test mode — not completing a real batch',true); return;
+  }
+  var ok=await sbPatch(batchId,{status:'Completed', completed_by:whoC, completed_at:new Date().toISOString()});
   if(!ok){ showToast('Couldn\'t save that — check your connection',true); return; }
   showToast('Batch complete ✓');
   try{ sbRefreshVA(); }catch(e){}
@@ -18367,8 +19898,19 @@ function sbPerf(days, log){
     var r=by[k]||(by[k]={name:k,batches:0,asins:0,leads:0,mins:0,worked:0,done:0});
     r.batches++; r.asins+=(b.asin_count||0);
     if(b.status==='Completed') r.done++;
+    /* who actually works this storefront, and when it was last touched — Jack:
+       "more stuff on the storefront thing as these are all storefront" */
+    var who=b.completed_by||b.started_by||b.assigned_to||'';
+    if(who){ r.by=r.by||{}; r.by[who]=r.by[who]||{leads:0,mins:0,batches:0}; r.by[who].batches++; }
+    if(b.status==='Completed'&&iso){ if(!r.lastISO||iso>r.lastISO) r.lastISO=iso; }
     var t=idx[b.id];
-    if(t){ r.leads+=t.leads; r.mins+=t.mins; r.worked++; }
+    if(t){
+      r.leads+=t.leads; r.mins+=t.mins; r.worked++;
+      if(who){ r.by[who].leads+=t.leads; r.by[who].mins+=t.mins; }
+    }
+    // the raw batch line, so "why is this tag doing badly" is answerable on screen
+    (r.list=r.list||[]).push({id:b.id,iso:iso,date:b.date,asins:b.asin_count||0,status:b.status,
+      who:who,leads:t?t.leads:null,mins:t?t.mins:null});
   });
   // fold in anything logged by hand on the shift screen, under the same tag name
   var man=sbManualIndex(log, cut);
@@ -18383,17 +19925,392 @@ function sbPerf(days, log){
     r.hrs=r.mins/60;
     r.lph=r.hrs>0?(r.leads/r.hrs):null;
     r.apl=r.leads>0?(r.asins/r.leads):null;
+    /* Jack: "how long it took to find a lead on average ... more in-depth".
+       minsPerLead is the one that makes a tag feel expensive or cheap in HIS time.
+       hitRate is the same story from the ASIN side: how many of what we send converts. */
+    r.minsPerLead = (r.leads>0 && r.mins>0) ? (r.mins/r.leads) : null;
+    r.hitRate     = (r.asins>0 && r.leads>0) ? (r.leads/r.asins*100) : null;
+    r.minsPerBatch= (r.worked>0 && r.mins>0) ? (r.mins/r.worked) : null;
+    r.leadsPerBatch=(r.worked>0) ? (r.leads/r.worked) : null;   // "how long does 1 take with how many leads"
+    r.asinsPerHour = (r.hrs>0) ? (r.asins/r.hrs) : null;        // how fast they chew through a list
+    var wl=(r.list||[]).filter(function(x){ return x.leads!=null; }).map(function(x){ return x.leads; });
+    r.bestBatch  = wl.length?Math.max.apply(null,wl):null;
+    r.worstBatch = wl.length?Math.min.apply(null,wl):null;
+    r.asinsPerBatch=r.batches>0?(r.asins/r.batches):null;
+    // who gets the most out of it — only meaningful once someone has logged time AND leads
+    var best=null;
+    Object.keys(r.by||{}).forEach(function(v){
+      var x=r.by[v]; if(!(x.mins>0&&x.leads>0)) return;
+      var lph=x.leads/(x.mins/60);
+      if(!best||lph>best.lph) best={va:v,lph:lph,leads:x.leads};
+    });
+    r.bestVa=best;
+    r.daysSince = r.lastISO ? Math.max(0,Math.round((Date.now()-new Date(r.lastISO+'T12:00:00').getTime())/86400000)) : null;
     return r;
   }).sort(function(a,b){
     if((b.leads||0)!==(a.leads||0)) return (b.leads||0)-(a.leads||0);
     return (b.asins||0)-(a.asins||0);
   });
 }
+function sbMins(m){
+  if(m==null||!isFinite(m)) return '—';
+  if(m<1) return '<1m';
+  if(m<90) return Math.round(m)+'m';
+  return (m/60).toFixed(1)+'h';
+}
 var SB_PERF_DAYS=30;
 function sbPerfSet(d){ SB_PERF_DAYS=d; try{ sbPaintJack(); }catch(e){} }
+/* Jack: "how many leads per filter ect ect". filter_usage logs one row per VA
+   opening a filter, with the leads they got from it, so leads-per-open is the
+   filter equivalent of the tags' leads-per-hour. A filter opened 7 times for 2
+   leads is costing two VAs' attention for very little. */
+function sbFilterLeague(days){
+  var rows=(window._fuCloud||fuLocal()||[]);
+  var cut=Date.now()-(days||30)*86400000;
+  var by={};
+  rows.forEach(function(u){
+    var t=u.opened_at?new Date(u.opened_at).getTime():null;
+    if(t && t<cut) return;
+    var k=u.filter_id||u.title||'?';
+    var r=by[k]||(by[k]={title:u.title||'(untitled filter)',tag:u.tag||'',opens:0,leads:0,vas:{}});
+    r.opens++; r.leads+=parseInt(u.leads)||0;
+    if(u.va) r.vas[u.va]=(r.vas[u.va]||0)+1;
+  });
+  return Object.keys(by).map(function(k){
+    var r=by[k];
+    r.per=r.opens>0?(r.leads/r.opens):0;
+    r.who=Object.keys(r.vas).map(function(v){ return vaDisp(v); }).join(' + ');
+    return r;
+  }).sort(function(a,b){
+    if(b.leads!==a.leads) return b.leads-a.leads;
+    return b.opens-a.opens;                       // then the biggest time sink
+  });
+}
+function sbFilterLeagueHTML(){
+  var rows=sbFilterLeague(SB_PERF_DAYS);
+  if(!rows.length) return '';
+  var opens=rows.reduce(function(a,r){return a+r.opens;},0);
+  var leads=rows.reduce(function(a,r){return a+r.leads;},0);
+  var dead=rows.filter(function(r){ return r.opens>=3 && r.leads===0; });
+  var best=rows[0];
+  return '<div class="mgr-section">Filters &mdash; what&rsquo;s producing'
+      +'<span style="margin-left:auto;font-size:10.5px;font-weight:600;color:var(--muted-2);">'
+      +rows.length+' opened · '+opens+' opens · '+leads+' lead'+(leads===1?'':'s')
+      +' · last '+SB_PERF_DAYS+'d</span></div>'
+    +(dead.length?'<div class="sfl-warn"><b>'+dead.length+' filter'+(dead.length===1?'':'s')
+      +' opened 3+ times for nothing.</b> '+escHtml(dead.slice(0,3).map(function(r){return r.title;}).join(' · '))
+      +(dead.length>3?' and '+(dead.length-3)+' more':'')+' — worth retiring or retuning.</div>':'')
+    +'<div class="sfl-tbl">'
+      +'<div class="sfl-hd"><span>Filter</span><span>Opens</span><span>Leads</span><span>Per open</span><span>Who ran it</span></div>'
+      + rows.slice(0,25).map(function(r){
+          var tone=r.leads===0?' none':(r.per>=0.5?' good':'');
+          return '<div class="sfl-r'+tone+'">'
+            +'<span class="sfl-n">'+escHtml(String(r.title).slice(0,58))
+              +(r.tag?'<i>'+escHtml(r.tag)+'</i>':'')+'</span>'
+            +'<span class="sfl-v">'+r.opens+'</span>'
+            +'<span class="sfl-v'+(r.leads?' lead':'')+'">'+r.leads+'</span>'
+            +'<span class="sfl-v">'+(r.opens?r.per.toFixed(2):'—')+'</span>'
+            +'<span class="sfl-who">'+escHtml(r.who||'—')+'</span>'
+          +'</div>';
+        }).join('')
+      +'</div>'
+    +(rows.length>25?'<div class="sfl-more">Showing the top 25 of '+rows.length+'.</div>':'');
+}
+/* Jack: "so i know if it's doing well or not". A number alone doesn't answer that —
+   2.4 leads/hr means nothing until you know the board runs at 1.7. So each storefront
+   is graded against JACK'S TARGET (sbTargetLph), not the board — grading against
+   the board's own median flattered everything: when the whole board runs at 1.5/hr,
+   1.4/hr reads "about average" while actually missing target by 25%. */
+/* The bar is Jack's own target, not the board average. 15 leads across an 8h shift
+   = 1.9 leads/hour. Set in Settings; falls back to the daily lead goal ÷ hours. */
+function sbTargetLph(){
+  try{
+    var st=getAppSettings();
+    var explicit=parseFloat(st.sfLeadsPerHr);
+    if(explicit>0) return explicit;
+    var leads=parseInt(st.sfLeadsPerDay)||15;
+    var hrs=parseFloat(st.dailyHoursTarget)||8;
+    if(leads>0&&hrs>0) return leads/hrs;
+  }catch(e){}
+  return 15/8;
+}
+function sbGrade(r,tgt){
+  tgt=tgt||sbTargetLph();
+  var t1=tgt.toFixed(1);
+  if(!(r.worked>0)) return {k:'unproven',label:'not worked yet',tone:'off',
+    why:'No batch has been worked in this window, so there is nothing to judge.'};
+  if(!r.leads) return {k:'dead',label:'returning nothing',tone:'bad',
+    why:r.asins.toLocaleString()+' ASINs and '+(r.hrs>0?r.hrs.toFixed(1)+'h':'time')+' spent for zero leads. Target is '+t1+'/hr.'};
+  if(!r.lph) return {k:'ok',label:'producing',tone:'ok',why:'Producing leads.'};
+  var rel=r.lph/tgt;
+  if(rel>=1) return {k:'over',label:'beating target',tone:'good',
+    why:r.lph.toFixed(1)+' leads/hr against a '+t1+'/hr target — '+Math.round((rel-1)*100)+'% above.'};
+  if(rel>=0.8) return {k:'near',label:'about on target',tone:'warn',
+    why:r.lph.toFixed(1)+' leads/hr against a '+t1+'/hr target — just under.'};
+  return {k:'under',label:'under target',tone:'bad',
+    why:r.lph.toFixed(1)+' leads/hr against a '+t1+'/hr target — '+Math.round((1-rel)*100)+'% short. '
+      +(r.minsPerLead!=null?sbMins(r.minsPerLead)+' of a VA\u2019s day per lead.':'')};
+}
+/* leads per week across the window — the shape matters more than any single number */
+function sbSpark(r,days){
+  var list=(r.list||[]).filter(function(x){ return x.iso && x.leads!=null; });
+  if(!list.length) return '';
+  var weeks=Math.max(2,Math.min(12,Math.ceil(days/7)));
+  var now=Date.now(), buckets=new Array(weeks).fill(0), any=false;
+  list.forEach(function(x){
+    var ageD=(now-new Date(x.iso+'T12:00:00').getTime())/86400000;
+    var i=weeks-1-Math.floor(ageD/7);
+    if(i>=0&&i<weeks){ buckets[i]+=x.leads; if(x.leads) any=true; }
+  });
+  if(!any) return '';
+  var max=Math.max.apply(null,buckets)||1;
+  return '<span class="spk" title="Leads per week, oldest to newest">'
+    + buckets.map(function(v){
+        return '<i style="height:'+Math.max(8,Math.round(v/max*100))+'%" title="'+v+' lead'+(v===1?'':'s')+'"></i>';
+      }).join('') + '</span>';
+}
+var SB_OPEN_TAG=null;
+function sbTagToggle(name){
+  SB_OPEN_TAG = (SB_OPEN_TAG===name) ? null : name;
+  try{ sbPaintJack(); }catch(e){}
+}
+/* Every batch on this storefront, so a bad number has a visible cause. */
+function sbTagDetailHTML(r){
+  var list=(r.list||[]).slice().sort(function(a,b){ return (b.iso||'')<(a.iso||'')?-1:1; });
+  if(!list.length) return '';
+  var vas=Object.keys(r.by||{});
+  return '<div class="spd">'
+    +(vas.length?'<div class="spd-vas">'
+      + vas.map(function(v){
+          var x=r.by[v], lph=(x.mins>0&&x.leads>0)?(x.leads/(x.mins/60)):null;
+          return '<span class="spd-va"><b>'+escHtml(vaDisp(v))+'</b>'
+            +x.batches+' batch'+(x.batches===1?'':'es')
+            +(x.leads?' · '+x.leads+' leads':' · no leads')
+            +(lph?' · '+lph.toFixed(1)+'/hr':'')+'</span>';
+        }).join('')
+      +'</div>':'')
+    +'<div class="spd-tbl"><div class="spd-hd"><span>Date</span><span>ASINs</span><span>Worked by</span><span>Leads</span><span>Time</span><span>Per lead</span></div>'
+    + list.map(function(x){
+        var per=(x.leads&&x.mins)?sbMins(x.mins/x.leads):'—';
+        var cls=x.leads===0?' zero':(x.leads?'':' pend');
+        return '<div class="spd-r'+cls+'">'
+          +'<span>'+escHtml(x.date||'—')+'</span>'
+          +'<span class="spd-n">'+x.asins+'</span>'
+          +'<span>'+escHtml(x.who?vaDisp(x.who):'—')+'</span>'
+          +'<span class="spd-n">'+(x.leads==null?'<i>not worked</i>':x.leads)+'</span>'
+          +'<span class="spd-n">'+(x.mins?sbMins(x.mins):'—')+'</span>'
+          +'<span class="spd-n">'+per+'</span>'
+        +'</div>';
+      }).join('')
+    +'</div></div>';
+}
+/* Jack: "does those leads produce in a buy". Leads are only worth what you buy off
+   them, so this reads lead_decisions — every decision he has made, with is_buy, qty
+   and the profit per unit — and reports conversion by SOURCE METHOD (JKPF, Storefront,
+   THC…), which is the closest link the data has back to where a lead came from.
+   Honest about its own gaps: profit only counts buys where he entered a quantity. */
+function sbBuyStats(days){
+  var rows=(window._decisionCache||[]);
+  var cut=Date.now()-(days||30)*86400000;
+  var by={}, tot={n:0,buy:0,units:0,profit:0,noQty:0};
+  rows.forEach(function(r){
+    var t=r.updated_at?new Date(r.updated_at).getTime():null;
+    if(t && t<cut) return;
+    if(!r.decision) return;
+    var k=String(r.src||'').trim()||'not recorded';
+    var a=by[k]||(by[k]={src:k,n:0,buy:0,units:0,profit:0,noQty:0});
+    a.n++; tot.n++;
+    if(r.is_buy){
+      a.buy++; tot.buy++;
+      var q=parseInt(r.qty)||0;
+      if(q>0){ a.units+=q; tot.units+=q; var pf=(parseFloat(r.profit)||0)*q; a.profit+=pf; tot.profit+=pf; }
+      else { a.noQty++; tot.noQty++; }
+    }
+  });
+  var list=Object.keys(by).map(function(k){
+    var a=by[k]; a.rate=a.n?(a.buy/a.n*100):0; return a;
+  }).sort(function(x,y){ return y.n-x.n; });
+  tot.rate=tot.n?(tot.buy/tot.n*100):0;
+  return {list:list, tot:tot};
+}
+/* ── END OF DAY: IS THEIR TIME WORTH IT? ────────────────────────────────────
+   Jack: "at the end of the day i need to know on average how many leads per filter
+   sent to them and how many minutes/hours it takes to find a lead — to see if their
+   time is better spent elsewhere — but also am i buying their leads".
+   Two halves that live in different places:
+     • TIME and LEADS come from the app (worked batches).
+     • BUYS and PROFIT come from HIS decisions, tagged by the sheet's Sourcing Method.
+   They join on the source label, so this is only as good as that column — which is
+   why the mismatch warning below matters. Everything here is stated per HOUR of VA
+   time, because that is the thing he is actually spending. */
+var SB_CHANNELS=[
+  {k:'storefront', label:'Storefront work',
+   src:['storefront','kpf storefront','a2a storefront','storefront anaylsis sheet','storefront analysis sheet']},
+  {k:'filters',    label:'Keepa filters (KPF/JKPF)',
+   src:['jkpf','kpf brand','kpf category','keepa tracker']},
+  {k:'other',      label:'Everything else',
+   src:['pp pings','arbi','eu sheet','manual','newsletter','promotion','replens sheet','asins','profit path wa','thc','discord']}
+];
+function sbChannelOf(src){
+  var v=String(src||'').trim().toLowerCase();
+  if(!v) return null;
+  for(var i=0;i<SB_CHANNELS.length;i++) if(SB_CHANNELS[i].src.indexOf(v)>=0) return SB_CHANNELS[i].k;
+  return 'other';
+}
+function sbWorth(days){
+  var dec=(window._decisionCache||[]), cut=Date.now()-(days||30)*86400000;
+  var by={}; SB_CHANNELS.forEach(function(c){ by[c.k]={k:c.k,label:c.label,leads:0,buys:0,units:0,profit:0,noQty:0,hrs:0}; });
+  var untagged=0;
+  dec.forEach(function(r){
+    var t=r.updated_at?new Date(r.updated_at).getTime():null;
+    if(t&&t<cut) return;
+    if(!r.decision) return;
+    var ch=sbChannelOf(r.src);
+    if(!ch){ untagged++; return; }
+    var a=by[ch]; a.leads++;
+    if(r.is_buy){ a.buys++; var q=parseInt(r.qty)||0;
+      if(q>0){ a.units+=q; a.profit+=(parseFloat(r.profit)||0)*q; } else a.noQty++; }
+  });
+  // hours: only the storefront channel is measured by the app
+  try{ sbPerf(days).forEach(function(r){ by.storefront.hrs+=(r.hrs||0); }); }catch(e){}
+  var list=SB_CHANNELS.map(function(c){
+    var a=by[c.k];
+    a.rate=a.leads?(a.buys/a.leads*100):0;
+    a.perHr=a.hrs>0?(a.profit/a.hrs):null;
+    a.minsPerLead=(a.hrs>0&&a.leads>0)?(a.hrs*60/a.leads):null;
+    return a;
+  });
+  return {list:list, untagged:untagged};
+}
+/* The join above is only as good as the sheet's Sourcing Method column — and the two
+   sheets don't offer the same options. Checked 11/08/2026: Mera can pick JKPF /
+   Storefront / THC and Suz cannot; Suz can pick "discord" and Mera cannot. Mera has
+   used JKPF 82 times — work Suz literally cannot label the same way, so the two are
+   not comparable. This reads the LIVE validation off both sheets and says so. */
+var SB_SRC_LISTS=null;
+async function sbLoadSrcLists(){
+  if(SB_SRC_LISTS) return SB_SRC_LISTS;
+  var key=(typeof SPEND_API_KEY!=='undefined')?SPEND_API_KEY:'';
+  if(!key||typeof SHEET_NAMES==='undefined') return null;
+  var out={};
+  for(var sid in SHEET_NAMES){
+    try{
+      var tabs=await fetchT(SUPABASE_URL+'/rest/v1/sheet_tabs?select=tab,included&sheet_id=eq.'+encodeURIComponent(sid),
+        {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
+      var t=(tabs.ok?(await tabs.json()):[]).filter(function(x){return x.included;})[0];
+      if(!t) continue;
+      var u='https://sheets.googleapis.com/v4/spreadsheets/'+sid+'?key='+key+'&includeGridData=true&ranges='
+        +encodeURIComponent(t.tab+'!L3:L3')+'&fields=sheets(data(rowData(values(dataValidation))))';
+      var r=await fetchT(u); if(!r.ok) continue;
+      var j=await r.json();
+      var dv=j.sheets[0].data[0].rowData[0].values[0].dataValidation;
+      out[SHEET_NAMES[sid]]=(dv&&dv.condition&&dv.condition.values||[]).map(function(v){ return v.userEnteredValue; });
+    }catch(e){}
+  }
+  SB_SRC_LISTS=out; return out;
+}
+function sbSrcFixHTML(){
+  var L=SB_SRC_LISTS; if(!L) return '';
+  var names=Object.keys(L); if(names.length<2) return '';
+  var a=L[names[0]]||[], b=L[names[1]]||[];
+  var onlyA=a.filter(function(x){ return b.indexOf(x)<0; });
+  var onlyB=b.filter(function(x){ return a.indexOf(x)<0; });
+  if(!onlyA.length && !onlyB.length) return '';
+  var merged=a.concat(b).filter(function(x,i,arr){ return arr.indexOf(x)===i; }).sort();
+  return '<div class="swx-fix">'
+    +'<b>⚠ The two sheets offer different Sourcing Methods, so their work can’t be compared.</b>'
+    +'<div class="swx-f2">'+escHtml(names[0])+' only: <i>'+escHtml(onlyA.join(', ')||'—')+'</i>'
+      +' &nbsp;·&nbsp; '+escHtml(names[1])+' only: <i>'+escHtml(onlyB.join(', ')||'—')+'</i></div>'
+    +'<div class="swx-f2">Paste this same list into <b>Data → Data validation</b> on column L of BOTH sheets:</div>'
+    +'<textarea class="swx-list" readonly onclick="this.select()">'+escHtml(merged.join(','))+'</textarea>'
+    +'</div>';
+}
+function sbWorthHTML(){
+  var w=sbWorth(SB_PERF_DAYS);
+  var any=w.list.some(function(a){ return a.leads>0; });
+  if(!any && !w.untagged) return '';
+  var sf=w.list[0];
+  return '<div class="mgr-section">Is their time worth it?'
+      +'<span style="margin-left:auto;font-size:10.5px;font-weight:600;color:var(--muted-2);">'
+      +'last '+SB_PERF_DAYS+'d · time from the app, buys from your decisions</span></div>'
+    +(sf.hrs>0?'<div class="swx-head">'
+      +'<div class="swx-h"><b>'+sf.hrs.toFixed(1)+'h</b><em>storefront time</em></div>'
+      +'<div class="swx-h"><b>'+sf.leads+'</b><em>leads</em></div>'
+      +'<div class="swx-h"><b>'+(sf.minsPerLead!=null?sbMins(sf.minsPerLead):'—')+'</b><em>per lead</em></div>'
+      +'<div class="swx-h'+(sf.buys?' good':'')+'"><b>'+sf.buys+'</b><em>you bought</em></div>'
+      +'<div class="swx-h'+(sf.profit>0?' good':'')+'"><b>'+(sf.profit>0?'£'+Math.round(sf.profit):'—')+'</b><em>profit</em></div>'
+      +'<div class="swx-h'+(sf.perHr>0?' good':'')+'"><b>'+(sf.perHr!=null?'£'+sf.perHr.toFixed(0):'—')+'</b><em>per hour of their time</em></div>'
+    +'</div>':'')
+    +'<div class="sbb-tbl"><div class="sbb-hd"><span>Channel</span><span>Leads</span><span>Bought</span><span>Buy rate</span><span>Profit</span><span>Time</span></div>'
+    + w.list.filter(function(a){ return a.leads||a.hrs; }).map(function(a){
+        var tone=a.leads&&!a.buys?' none':(a.rate>=40?' good':'');
+        return '<div class="sbb-r'+tone+'">'
+          +'<span class="sbb-n">'+escHtml(a.label)+'</span>'
+          +'<span class="sbb-v">'+a.leads+'</span>'
+          +'<span class="sbb-v'+(a.buys?' lead':'')+'">'+a.buys+'</span>'
+          +'<span class="sbb-v">'+(a.leads?a.rate.toFixed(0)+'%':'—')+'</span>'
+          +'<span class="sbb-v">'+(a.profit>0?'£'+Math.round(a.profit):'—')+'</span>'
+          +'<span class="sbb-v">'+(a.hrs>0?a.hrs.toFixed(1)+'h':'<i>not timed</i>')+'</span>'
+        +'</div>';
+      }).join('')
+    +'</div>'
+    +sbSrcFixHTML()
+    +(w.untagged?'<div class="swx-warn"><b>'+w.untagged+' decided lead'+(w.untagged===1?'':'s')+' had no Sourcing Method</b>'
+      +' — those can’t be credited to anything, so the numbers above understate whichever channel really produced them.'
+      +' The column is a dropdown on both sheets; it just wasn’t picked.</div>':'')
+    +'<div class="swx-note">Only storefront work is timed by the app — filters are opened from the VA panel, '
+      +'which records opens and leads but not minutes. Filter time would need a timer on the filter panel.</div>';
+}
+function sbBuyHTML(){
+  var b=sbBuyStats(SB_PERF_DAYS);
+  if(!b.tot.n) return '';
+  var t=b.tot;
+  return '<div class="mgr-section">Do the leads turn into buys?'
+      +'<span style="margin-left:auto;font-size:10.5px;font-weight:600;color:var(--muted-2);">'
+      +'decisions you’ve made in the last '+SB_PERF_DAYS+'d</span></div>'
+    +'<div class="sbb-top">'
+      +'<div class="sbb-t"><b>'+t.n+'</b><em>leads decided</em></div>'
+      +'<div class="sbb-t'+(t.buy?' good':'')+'"><b>'+t.buy+'</b><em>bought</em></div>'
+      +'<div class="sbb-t'+(t.rate>=25?' good':'')+'"><b>'+t.rate.toFixed(0)+'%</b><em>buy rate</em></div>'
+      +'<div class="sbb-t"><b>'+(t.units||'—')+'</b><em>units</em></div>'
+      +'<div class="sbb-t'+(t.profit>0?' good':'')+'"><b>'+(t.profit>0?'£'+Math.round(t.profit).toLocaleString():'—')+'</b><em>profit on those units</em></div>'
+    +'</div>'
+    +(t.noQty?'<div class="sbb-note">'+t.noQty+' buy'+(t.noQty===1?'':'s')+' had no quantity entered, so the profit above is understated. '
+      +'The quantity box is on the lead once you mark it bought.</div>':'')
+    +'<div class="sbb-tbl"><div class="sbb-hd"><span>Where it came from</span><span>Leads</span><span>Bought</span><span>Buy rate</span><span>Units</span><span>Profit</span></div>'
+    + b.list.map(function(a){
+        var tone=a.buy===0?' none':(a.rate>=40?' good':'');
+        return '<div class="sbb-r'+tone+'">'
+          +'<span class="sbb-n">'+escHtml(a.src)+'</span>'
+          +'<span class="sbb-v">'+a.n+'</span>'
+          +'<span class="sbb-v'+(a.buy?' lead':'')+'">'+a.buy+'</span>'
+          +'<span class="sbb-v">'+a.rate.toFixed(0)+'%</span>'
+          +'<span class="sbb-v">'+(a.units||'—')+'</span>'
+          +'<span class="sbb-v">'+(a.profit>0?'£'+Math.round(a.profit).toLocaleString():'—')+'</span>'
+        +'</div>';
+      }).join('')
+    +'</div>';
+}
 function sbPerfHTML(){
   var rows=sbPerf(SB_PERF_DAYS);
+  var _allLeads=rows.reduce(function(a,r){ return a+(r.leads||0); },0);
+  rows.forEach(function(r){ r.share=_allLeads?(r.leads/_allLeads*100):0; });
+  var med=sbTargetLph();          // the bar is Jack's target, not the board — see sbGrade()
+  /* Is a storefront getting better or worse? Same metric over the PREVIOUS window
+     of equal length, so "3.0 leads/hr" reads as rising or fading rather than as a
+     number with no history behind it. */
+  var prev={};
+  try{
+    var older=sbPerf(SB_PERF_DAYS*2);
+    older.forEach(function(o){
+      var now=rows.filter(function(r){ return r.name===o.name; })[0];
+      var pl=(o.leads||0)-((now&&now.leads)||0);
+      var pm=(o.mins||0)-((now&&now.mins)||0);
+      prev[o.name]={leads:pl, lph:(pm>0&&pl>0)?(pl/(pm/60)):null};
+    });
+  }catch(e){}
   var head='<div class="mgr-section">What’s producing'
+    +'<span class="spx-tgt" title="Set in Settings — Storefront target">target <b>'+sbTargetLph().toFixed(1)+'</b> leads/hr</span>'
     +'<span style="margin-left:auto;display:flex;gap:6px;">'
     +[7,30,90].map(function(d){
         return '<button class="sbp-t'+(SB_PERF_DAYS===d?' on':'')+'" onclick="sbPerfSet('+d+')">'+d+'d</button>';
@@ -18429,16 +20346,25 @@ function sbPerfHTML(){
     var doneP=r.batches?Math.round(r.done/r.batches*100):0;
     var openN=r.batches-r.done;
     var hasR=(r.worked>0 && r.leads>0);
-    var lphW=bestLph?Math.min(100,Math.round((r.lph||0)/bestLph*100)):0;
+    var lphW=Math.min(100,Math.round((r.lph||0)/(med||1)*100));   // 100% = hitting target
     var topLph=hasR && bestLph && r.lph>=bestLph-0.001;
     var topApl=hasR && bestApl && r.apl && r.apl<=bestApl+0.001;
-    return '<div class="spx'+(hasR?'':' quiet')+(topLph?' best':'')+'">'
+    var gr=sbGrade(r,med);
+    var open=(SB_OPEN_TAG===r.name);
+    return '<div class="spx g-'+gr.tone+(hasR?'':' quiet')+(topLph?' best':'')+(open?' open':'')+'">'
       +'<div class="spx-h">'
         +'<span class="spx-name">'+escHtml(r.name)+'</span>'
         +dest(r.name)
         +(topLph?'<span class="spx-flag">best rate</span>':'')
         +(topApl&&!topLph?'<span class="spx-flag cheap">fewest ASINs per lead</span>':'')
+        +'<span class="spx-grade '+gr.tone+'" title="'+escHtml(gr.why)+'">'+escHtml(gr.label)+'</span>'
       +'</div>'
+      +'<div class="spx-why"><span>'+escHtml(gr.why)+'</span>'
+        +(hasR&&r.share>0?'<span class="spx-share" title="Share of every lead that came back in this window">'
+            +'<i style="width:'+Math.min(100,Math.round(r.share))+'%"></i><b>'+r.share.toFixed(0)+'%</b>'
+            +'<em>of all leads</em></span>':'')
+      +'</div>'
+      +(function(){ var sp=sbSpark(r,SB_PERF_DAYS); return sp?'<div class="spx-spark"><em>leads by week</em>'+sp+'</div>':''; })()
       // the pipeline, drawn: what went out, how much has been worked
       +'<div class="spx-pipe">'
         +'<span class="spx-p"><b>'+r.batches+'</b> batch'+(r.batches===1?'':'es')+'</span>'
@@ -18460,6 +20386,50 @@ function sbPerfHTML(){
         +'<div class="spx-k'+(hasR&&r.apl?'':' off')+'"><b>'+(hasR&&r.apl?Math.round(r.apl):'—')+'</b><em>ASINs per lead</em>'
           +'<span class="spx-note">'+(hasR&&r.apl?(r.apl<=15?'cheap to run':r.apl<=40?'reasonable':'expensive'):'needs a worked batch')+'</span></div>'
       +'</div>'
+      /* the deeper row — only drawn once a tag has actually produced something,
+         so an unworked tag doesn't fill up with dashes */
+      +(hasR?(function(){
+          var p=prev[r.name]||{}, tr='';
+          if(p.lph!=null && r.lph!=null && p.lph>0){
+            var ch=Math.round((r.lph-p.lph)/p.lph*100);
+            if(Math.abs(ch)>=10) tr='<span class="spx-tr '+(ch>0?'up':'down')+'" title="vs the previous '+SB_PERF_DAYS+' days">'
+              +(ch>0?'▲':'▼')+' '+Math.abs(ch)+'% leads/hr</span>';
+          }
+          return '<div class="spx-extra">'
+            +(r.bestVa?'<span class="spx-bva" title="Best leads/hour on this storefront">'
+                +escHtml(vaDisp(r.bestVa.va))+' gets most from it &middot; <b>'+r.bestVa.lph.toFixed(1)+'</b>/hr</span>':'')
+            +tr
+            +(r.daysSince!=null?'<span class="spx-last">last worked '
+                +(r.daysSince===0?'today':r.daysSince===1?'yesterday':r.daysSince+'d ago')+'</span>':'')
+          +'</div>';
+        })():'')
+      +(hasR?(function(){
+          /* colour every number that has a right answer: time per lead against the
+             minutes the target implies, hit rate against the board, best/worst spread. */
+          var tgtMins=60/med;                       // minutes per lead if hitting target
+          var tpl = r.minsPerLead==null?'':(r.minsPerLead<=tgtMins?' class="good"':(r.minsPerLead<=tgtMins*1.5?' class="warn"':' class="bad"'));
+          var hrAll=(totA>0&&totL)?(totL/totA*100):0;
+          var hit = r.hitRate==null?'':(r.hitRate>=hrAll*1.25?' class="good"':(r.hitRate>=hrAll*0.75?'':' class="bad"'));
+          var spread = (r.bestBatch==null)?'':(r.worstBatch>0?' class="good"':' class="warn"');
+          return '<div class="spx-deep">'
+        +'<span title="Average time spent before one lead came out. Target pace is '+sbMins(tgtMins)+'"><em>time per lead</em><b'+tpl+'>'
+          +sbMins(r.minsPerLead)+'</b></span>'
+        +'<span title="Leads as a % of ASINs sent. Board average is '+hrAll.toFixed(1)+'%"><em>hit rate</em><b'+hit+'>'
+          +(r.hitRate!=null?r.hitRate.toFixed(1)+'%':'—')+'</b></span>'
+        +'<span title="Average time to work one batch, and what it yields"><em>per batch</em><b>'
+          +sbMins(r.minsPerBatch)+(r.leadsPerBatch!=null?' <i>&rarr; '+(Math.round(r.leadsPerBatch*10)/10)+' leads</i>':'')+'</b></span>'
+        +'<span title="Average size of a batch on this tag"><em>batch size</em><b>'
+          +(r.asinsPerBatch!=null?Math.round(r.asinsPerBatch):'—')+'</b></span>'
+        +'<span title="How many ASINs get checked in an hour on this storefront"><em>asins / hr</em><b>'
+          +(r.asinsPerHour!=null?Math.round(r.asinsPerHour):'—')+'</b></span>'
+        +'<span title="Best and worst single batch, by leads — a 0 worst means it is inconsistent"><em>best / worst batch</em><b'+spread+'>'
+          +(r.bestBatch!=null?r.bestBatch+' / '+r.worstBatch:'—')+'</b></span>'
+      +'</div>'; })():'')
+      +((r.list&&r.list.length)
+        ? '<button class="spx-open-b" onclick="sbTagToggle('+JSON.stringify(r.name).replace(/"/g,'&quot;')+')">'
+            +(open?'Hide the '+r.list.length+' batches ▴':'Show all '+r.list.length+' batch'+(r.list.length===1?'':'es')+' ▾')+'</button>'
+        : '')
+      +(open?sbTagDetailHTML(r):'')
       +'</div>';
   }
 
@@ -18469,15 +20439,33 @@ function sbPerfHTML(){
     +'<div class="spx-t'+(totL?' good':'')+'"><b>'+(totL||'—')+'</b><em>leads back</em></div>'
     +'<div class="spx-t"><b>'+(totH>0?totH.toFixed(1)+'h':'—')+'</b><em>time spent</em></div>'
     +'<div class="spx-t'+(totH>0&&totL?' good':'')+'"><b>'+(totH>0&&totL?(totL/totH).toFixed(1):'—')+'</b><em>leads / hour overall</em></div>'
+    +'<div class="spx-t"><b>'+(totH>0&&totL?sbMins(totH*60/totL):'—')+'</b><em>avg time per lead</em></div>'
+    +'<div class="spx-t"><b>'+(totA>0&&totL?(totL/totA*100).toFixed(1)+'%':'—')+'</b><em>hit rate</em></div>'
     +'</div>';
 
   var verdict='';
   if(worked.length>=2){
     var top=worked.slice().sort(function(a,b){return b.lph-a.lph;})[0];
     var low=worked.slice().sort(function(a,b){return a.lph-b.lph;})[0];
+    /* The three questions a storefront board should answer without being asked:
+       what's best, what's costing me, and what am I still sending ASINs into for
+       nothing. The last one is where the money leaks. */
+    var dear=worked.slice().filter(function(r){ return r.minsPerLead!=null; })
+                   .sort(function(a,b){ return b.minsPerLead-a.minsPerLead; })[0];
+    var dead=rows.filter(function(r){ return r.worked>0 && r.leads===0; });
+    var deadA=dead.reduce(function(a,r){ return a+r.asins; },0);
+    var never=rows.filter(function(r){ return r.worked===0 && r.batches>0; });
     verdict='<div class="spx-verdict"><b>'+escHtml(top.name)+'</b> is your best hour-for-hour at <b>'
       +top.lph.toFixed(1)+' leads/hr</b>'
       +(low && low.name!==top.name ? ' — <span class="dim">'+escHtml(low.name)+' is the slowest at '+low.lph.toFixed(1)+'/hr.</span>' : '')
+      +(dear&&dear.minsPerLead>=20 ? '<div class="spx-v2">'+escHtml(dear.name)+' costs the most time per lead — <b>'
+          +sbMins(dear.minsPerLead)+'</b> of someone\u2019s day for each one.</div>' : '')
+      +(dead.length ? '<div class="spx-v2 bad"><b>'+dead.length+' storefront'+(dead.length===1?'':'s')
+          +' worked and returned nothing</b> — '+escHtml(dead.slice(0,3).map(function(r){return r.name;}).join(', '))
+          +(dead.length>3?' +'+(dead.length-3)+' more':'')+', '+deadA.toLocaleString()+' ASINs spent.</div>' : '')
+      +(never.length ? '<div class="spx-v2 dim2">'+never.length+' sent but never worked: '
+          +escHtml(never.slice(0,4).map(function(r){return r.name;}).join(', '))
+          +(never.length>4?' +'+(never.length-4)+' more':'')+'.</div>' : '')
       +'</div>';
   } else if(!worked.length){
     verdict='<div class="spx-verdict wait"><b>Nothing worked yet.</b> '
@@ -18485,7 +20473,9 @@ function sbPerfHTML(){
   }
 
   return head+summary+verdict
-    +'<div class="spx-grid">'+worked.concat(pending).map(card).join('')+'</div>';
+    +'<div class="spx-grid">'+worked.concat(pending).map(card).join('')+'</div>'
+    +sbWorthHTML();                 // stays: it IS the storefront time question
+    // the filter league lives on Filters, the buy breakdown on Insights — see there
 }
 function sbJackHTML(){
   if(window.SB_TABLES_MISSING){
@@ -18641,6 +20631,13 @@ function mgr_renderAudit(){
   el.innerHTML=audHTML();
 }
 function mgr_renderStorefronts(){
+  // the filter league needs filter_usage; pull it once, then repaint when it lands
+  try{ if(!window._fuCloud && typeof fuLoadCloud==='function'){
+    fuLoadCloud().then(function(){ if(mgr_currentTab==='storefronts') mgr_renderStorefronts(); });
+  } }catch(e){}
+  try{ if(!SB_SRC_LISTS && typeof sbLoadSrcLists==='function'){
+    sbLoadSrcLists().then(function(){ if(mgr_currentTab==='storefronts') mgr_renderStorefronts(); });
+  } }catch(e){}
   var el=document.getElementById('mgr-storefronts-content'); if(!el) return;
   if(!SB_QUEUES||!SB_BATCHES){
     el.innerHTML='<div class="sk-note">Loading batches…</div>'+skTiles(3,3);
@@ -19069,6 +21066,8 @@ function jb_editorHTML(va){
       +'<label class="jb-toggle"><input type="checkbox" id="jb-ileads-'+va+'" '+(pref.leads?'checked':'')+' onchange="jb_prefTgl(\''+va+'\')"> &#128200; Must log leads</label>'
       +jbPriPickHTML(va)
       +'<button class="jb-preset-save" onclick="jbPresetSave(\''+va+'\')" title="Save this as a reusable preset">&#128190; Save preset</button>'
+      +'<button class="jb-send-both" title="Adds the same task to both VAs\u2019 lists \u2014 they each get their own copy to tick off" '
+        +'onclick="jb_addItem(\''+va+'\',true)">&#10148; Both</button>'
       +'<button class="jb-send-btn" onclick="jb_addItem(\''+va+'\')">&#10148; Send to '+vaDisp(va)+'</button></div>'
       +jbNoteSnipsHTML(va)
       +jbPresetsHTML(va)
@@ -19230,7 +21229,7 @@ function jbFilterPick(va,id){
        var w=document.querySelector('.jbf-wrap'); if(w) w.outerHTML=jbFilterPickHTML(va); }catch(e){}
   showToast('“'+(f.title||'Filter')+'” loaded — hit Send to '+vaDisp(va));
 }
-function jb_addItem(va){
+function jb_addItem(va,alsoTo){
   var tEl=document.getElementById('jb-itype-'+va), vEl=document.getElementById('jb-ival-'+va), nEl=document.getElementById('jb-iname-'+va), rEl=document.getElementById('jb-inote-'+va);
   var v=(vEl&&vEl.value||'').trim(); if(!v){ showToast('Paste a link / ASIN / message first',true); return; }
   var t=tEl?tEl.value:'msg';
@@ -19242,10 +21241,20 @@ function jb_addItem(va){
   var typed=(nEl&&nEl.value||'').trim();
   var name=typed||jbAutoName(t,v);          // blank name → derive it from the link
   var pri=jbPri(va);
-  var o=jb_open(va); o.items.push({iid:jb_uid(),t:t,v:v,n:name,r:(rEl&&rEl.value||'').trim(),
-    timer:timer?1:0,leads:wantLeads?1:0,pri:pri,done:false,addedOn:ukDateShort(),rep:null,nextOn:''});
-  jb_setOpen(va,o); jb_rerender(va);
-  showToast('Sent to '+vaDisp(va)+' \u2713'+(pri==='High'?' \u2014 flagged HIGH':'')
+  var note=(rEl&&rEl.value||'').trim();
+  /* Each VA gets a SEPARATE copy — own iid, own done/timer/leads. Sharing one item
+     would mean whoever ticks it first clears it off the other's list too. */
+  var targets=[va];
+  if(alsoTo) ['Mera','Suz'].forEach(function(x){ if(x!==va) targets.push(x); });
+  targets.forEach(function(tv){
+    var o=jb_open(tv); o.items.push({iid:jb_uid(),t:t,v:v,n:name,r:note,
+      timer:timer?1:0,leads:wantLeads?1:0,pri:pri,done:false,addedOn:ukDateShort(),rep:null,nextOn:''});
+    jb_setOpen(tv,o);
+  });
+  jb_rerender(va);
+  var who=targets.length>1 ? targets.map(function(x){ return vaDisp(x); }).join(' and ') : vaDisp(va);
+  showToast('Sent to '+who+' \u2713'+(pri==='High'?' \u2014 flagged HIGH':'')
+    +(pri==='Urgent'?' \u2014 URGENT banner on their shift':'')
     +(typed?'':' \u2014 named \u201c'+String(name).slice(0,28)+'\u201d'));
 }
 function jb_delItem(va,iid){
