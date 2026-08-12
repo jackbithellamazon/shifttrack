@@ -236,7 +236,10 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
   transition:transform .14s var(--ease),background .16s,border-color .16s,box-shadow .16s;
 }
 .btn:active{transform:translateY(1px);}
-.btn-success{background:var(--accent);color:#fff;box-shadow:var(--sh-1);}
+/* Measured 3.9:1 (white on the violet accent) on the button she presses most. Dark ink on
+   a solid green is 8.9:1 and matches the Done button on the storefront rows. */
+.btn-success{background:#3ac478;color:#06210f;box-shadow:var(--sh-1);font-weight:800;}
+.btn-success:hover{background:#4ad98a;}
 .btn-success:hover{background:var(--accent-2);}
 /* .btn-primary was used on three "Open the X tab →" buttons and never defined —
    they rendered as unstyled text. Same treatment as .btn-success, which is the
@@ -727,6 +730,13 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .sflt-newhint{font-size:11px;color:var(--muted-2);}
 .sflt-newva{width:28px;height:26px;}
 .sflt-days{display:inline-flex;gap:4px;flex-wrap:wrap;}
+/* Everything she taps on a row is now at least 30px — measured at 21px before. */
+.ql{gap:7px;padding:7px 2px 2px;}
+.ql .ql-chip{min-height:30px;padding:0 11px;font-size:11.5px;}
+.ql-step{min-height:30px;}
+.ql-step button{min-width:30px;min-height:30px;font-size:15px;}
+.ql-n{min-width:26px;font-size:13px;}
+.ql-lab{font-size:10px;letter-spacing:.5px;}
 .ql-open{background:none;border:1px dashed var(--line-2);color:var(--muted-2);border-radius:7px;
   padding:3px 9px;font-family:inherit;font-size:10.5px;font-weight:600;cursor:pointer;margin-top:3px;}
 .ql-open:hover{border-color:var(--accent);color:var(--text);}
@@ -1140,7 +1150,7 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 /* From-Jack rows now match the standard task row: icon · title(+badges) · meta line */
 .jbcard-icon{display:flex;align-items:center;justify-content:center;font-size:15px;}
 .jbcard-head .jbcard-title{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
-.jbcard-head .jbcard-from,.jbcard-head .jbcard-type,.jbcard-head .jbcard-carry{font-size:9px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;padding:2px 7px;border-radius:999px;display:inline-flex;align-items:center;gap:4px;line-height:1.5;}
+.jbcard-head .jbcard-from,.jbcard-head .jbcard-type,.jbcard-head .jbcard-carry{font-size:10.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;padding:2px 7px;border-radius:999px;display:inline-flex;align-items:center;gap:4px;line-height:1.5;}
 .jbcard-head .jbcard-from{background:color-mix(in srgb,var(--accent,#7c5cff) 20%,transparent);color:#c9beff;}
 .jbcard-head .jbcard-from svg{width:9px;height:9px;}
 .jbcard-head .jbcard-type{background:color-mix(in srgb,var(--jbc) 18%,transparent);color:var(--jbc);}
@@ -2321,6 +2331,58 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .shotv-body img.zoom{max-width:none;max-height:none;width:auto;height:auto;cursor:grab;}
 .shotv-fail{color:#ffb3b3;font-size:14px;font-weight:700;text-align:center;line-height:1.7;}
 .shotv-fail a{color:#bdd7ff;}
+/* merged storefront block: the host task sits INSIDE the batch card as its head */
+.sbv-sec.sbv-merged{padding:0;border:1.5px solid color-mix(in srgb,var(--accent) 34%,transparent);
+  border-radius:14px;background:color-mix(in srgb,var(--accent) 5%,transparent);overflow:hidden;}
+.sbv-sec.sbv-merged > .task-item{margin:0;border:none;border-radius:0;background:transparent;
+  border-bottom:1px solid var(--line-2);}
+.sbv-sec.sbv-merged > .sbv-h{padding:11px 14px 0;}
+.sbv-sec.sbv-merged > .sbv-how{margin:8px 14px 10px;}
+.sbv-sec.sbv-merged > .tk-sec-b{padding:0 12px 12px;}
+/* sources panel — was an uppercase label over a stack of near-identical boxes */
+.pf-wrap{margin-top:16px;padding-top:13px;border-top:1px solid var(--line-2);}
+.pf-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.pf-h-t{font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:#b9aeff;}
+.pf-h-s{font-size:11px;color:#8c94a8;font-weight:600;}
+.pf-prog{margin-left:auto;font-size:11px;font-weight:800;padding:3px 10px;border-radius:999px;
+  background:rgba(255,255,255,.06);color:#b8c1d4;border:1px solid var(--line-2);white-space:nowrap;}
+.pf-prog.all{background:rgba(58,196,120,.16);color:#8ef0b6;border-color:rgba(58,196,120,.45);}
+.pf-rows{display:flex;flex-direction:column;gap:7px;}
+.pf-add{background:transparent;border:1px dashed color-mix(in srgb,var(--accent) 40%,transparent);
+  color:#a99dff;font-family:inherit;font-size:11.5px;font-weight:700;padding:8px 14px;
+  border-radius:9px;cursor:pointer;margin-top:9px;transition:all .15s;}
+.pf-add:hover{border-color:var(--accent);color:#d8d2ff;background:color-mix(in srgb,var(--accent) 10%,transparent);}
+/* live-writes indicator — was a full-width bar, now a corner dot */
+/* Measured on Mera's shift, by class, not by guess:
+     task-expand-btn 26px x15 · pf-open 23px · pf-timer 26px · vaf-tagbtn 25px
+   and 9–9.5px label text on ql-lab, vaf-tag, stat-label, pf-src, pf-hint, sbv-hi.
+   Everything she taps is now >= 30px; nothing she has to read is under 10.5px. */
+#view-va .task-expand-btn{min-height:30px;min-width:30px;}
+#view-va .pf-open,#view-va .pf-timer{min-height:30px;padding:0 11px;}
+#view-va .vaf-tagbtn{min-height:30px;}
+#view-va .ql-lab,#view-va .pf-hint,#view-va .pf-src,#view-va .vaf-tag,
+#view-va .stat-label,#view-va .sbv-hi,#view-va .jb-carry-badge{font-size:10.5px;}
+#view-va .ql .ql-lab{letter-spacing:.4px;}
+#view-va .tk-nextchip{font-size:10px;}
+/* the carried-from-Jack badge was 3.9:1 — the only real contrast fail left on the shift */
+#view-va .jb-carry,.jb-carry{background:rgba(255,176,60,.18);color:#ffd08a;
+  border:1px solid rgba(255,176,60,.45);}
+.lf-dot{position:fixed;left:14px;bottom:14px;z-index:60;display:flex;align-items:center;gap:7px;
+  padding:5px 10px 5px 8px;border-radius:999px;font-size:10.5px;font-weight:700;letter-spacing:.2px;
+  color:#8ef0b6;background:color-mix(in srgb,#3ac478 14%,rgba(10,12,18,.92));
+  border:1px solid color-mix(in srgb,#3ac478 38%,transparent);backdrop-filter:blur(4px);
+  box-shadow:0 4px 16px -6px rgba(0,0,0,.7);opacity:.65;transition:opacity .15s;}
+.lf-dot:hover{opacity:1;}
+.lf-dot i{width:7px;height:7px;border-radius:50%;background:#3ac478;flex:0 0 auto;
+  box-shadow:0 0 8px -1px #3ac478;}
+.lf-dot button{background:transparent;border:none;color:#8ef0b6;font-family:inherit;font-size:10.5px;
+  font-weight:800;cursor:pointer;opacity:.75;padding:0 0 0 4px;border-left:1px solid rgba(142,240,182,.3);}
+.lf-dot button:hover{opacity:1;text-decoration:underline;}
+@media(max-width:700px){.lf-dot span{display:none;}}
+.mgr-endshift{margin-left:10px;font-family:inherit;font-size:11px;font-weight:800;
+  padding:4px 10px;border-radius:8px;cursor:pointer;white-space:nowrap;
+  background:rgba(255,176,60,.16);border:1px solid rgba(255,176,60,.45);color:#ffd08a;}
+.mgr-endshift:hover{background:rgba(255,176,60,.28);}
 .aud-work{margin:14px 0 4px;padding:14px 16px;border-radius:12px;
   background:rgba(255,255,255,.03);border:1px solid var(--line-2);}
 .aud-work-h{font-size:12.5px;font-weight:800;color:#e8eefb;margin-bottom:11px;}
@@ -4769,7 +4831,10 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
       <div class="list-pane">
         <div class="list-search">
           <svg class="ls-search-ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-          <input type="text" id="search" placeholder="Search title or ASIN…" oninput="ldSearchInput()">
+          <input type="search" id="search" placeholder="Search title or ASIN…" oninput="renderList()"
+            name="lead-find" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+            data-lpignore="true" data-1p-ignore data-form-type="other"
+            aria-label="Search leads by title or ASIN">
           <kbd class="ls-kbd">/</kbd>
         </div>
         <div class="list-sort">
@@ -5032,11 +5097,14 @@ function liveFromFileBanner(){
   try{
     if(IS_PREVIEW || location.hostname) return;          // only the unlocked file:// case
     if(document.getElementById('livefile-bar')) return;
-    var b=document.createElement('div'); b.id='livefile-bar';
-    b.innerHTML='<span></span><div><b>Saving is ON for this local copy.</b>'
-      +'<span>Everything you do here writes to the real data.</span></div>'
-      +'<button onclick="disableLiveWrites()">Turn off</button>';
-    document.body.appendChild(b); document.body.classList.add('has-preview-bar');
+    /* Jack: "get rid of this banner". It told him something he already knows and took a
+       permanent strip off the bottom of every screen. Now a small dot in the corner:
+       still visible that writes are live, still one click to turn off, no lost space. */
+    var b=document.createElement('div'); b.id='livefile-bar'; b.className='lf-dot';
+    b.title='Saving is ON — everything here writes to the real data. Click to turn off.';
+    b.innerHTML='<i></i><span>saving on</span>'
+      +'<button onclick="disableLiveWrites()" title="Stop writing to the real data">off</button>';
+    document.body.appendChild(b);   // no has-preview-bar: the page keeps its full height
   }catch(e){}
 }
 if(document.readyState!=='loading') setTimeout(function(){ previewBanner(); liveFromFileBanner(); },300);
@@ -5700,6 +5768,7 @@ async function checkAndRestoreDraft(va) {
     state._jbDone = draft.jbDone || {};
     state._newsletterDay = draft.newsletterDay || false;
     state.submitted = false;
+    state._forceEnd = draft.forceEnd || null;
 
     return 'restored';
   } catch(e) {
@@ -5759,7 +5828,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v37.0';
+var APP_VERSION='v38.0';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -6846,7 +6915,21 @@ function selectVA(va) {
         try{ renderStorefronts(); if((state.storefronts||[]).some(function(s){return s.running;})){ if(!window._sfTick) window._sfTick=setInterval(sfTickRunning,1000); } }catch(e){}
         try{ jb_addsBanner(va); }catch(e){}
         startTimer();
-        showToast('✓ Shift restored — picked up where you left off!');
+        if(state._forceEnd){
+          showToast('Jack has asked you to close this shift — check it over and submit');
+          setTimeout(function(){
+            try{
+              var host=document.getElementById('eod-form');
+              if(host){
+                var b=document.createElement('div');
+                b.className='eu-bar'; b.id='force-end-bar';
+                b.innerHTML='⚠️ <b>Jack asked you to close this shift.</b> Your tasks, time and leads are all still here — check them over and submit below.';
+                host.parentNode.insertBefore(b,host);
+                host.scrollIntoView({behavior:'smooth',block:'start'});
+              }
+            }catch(e){}
+          },600);
+        } else showToast('✓ Shift restored — picked up where you left off!');
       } else {
         /* LAST LINE OF DEFENCE. "No draft" from the cloud is not proof there is no work —
            this device may still be holding it. Suz reported closing the tab and being put
@@ -7289,18 +7372,30 @@ function renderTasks() {
        Jack, on the first cut which dumped them at the bottom: "surely storefront should
        go with and around where storefronts is on their POA". */
     var sbRecs=list.filter(function(r){ return r.t && r.t.sbBatchId; });
-    var sbPlaced=false;
+    var sbPlaced=false, sbCard=null, hostEl=null;
     list.forEach(function(r){
       if(r.t && r.t.sbBatchId){
         if(!sbPlaced){
           sbPlaced=true;
-          try{ body.appendChild(sbVaGroupEl(sbRecs)); }
+          try{ sbCard=sbVaGroupEl(sbRecs); body.appendChild(sbCard); }
           catch(e){ sbRecs.forEach(function(x){ body.appendChild(buildTaskEl(x.t,x.i,x.extra)); }); }
         }
         return;
       }
-      body.appendChild(buildTaskEl(r.t,r.i,r.extra));
+      var el=buildTaskEl(r.t,r.i,r.extra);
+      if(r.t && JB_ROUTE && JB_ROUTE.sf && JB_ROUTE.sf.indexOf(r.t.id)>=0) hostEl=el;
+      body.appendChild(el);
     });
+    /* Jack: "shouldn't that be merged?" — the Storefronts task and the batch card were two
+       separate cards for one job, stacked on top of each other. When the host survives
+       (because Jack sent something into it) it now becomes the HEAD of the batch card
+       rather than a card of its own: one bordered block, one heading, everything about
+       storefronts inside it. */
+    if(sbCard && hostEl && hostEl.parentNode===body){
+      sbCard.classList.add('sbv-merged');
+      sbCard.insertBefore(hostEl, sbCard.firstChild);
+      body.insertBefore(sbCard, body.firstChild===hostEl?body.firstChild:sbCard);
+    }
     return sec;
   }
   if(fromJack.length){
@@ -7540,7 +7635,15 @@ function fmtSecs(sec){
   if(m) return m+'m '+(s?s+'s':'00s');
   return s+'s';
 }
-function taskTypeLabel(t){ if(taskIsTickOnly(t)) return 'Tick to confirm when done'; if(t.hasLinks) return 'Log your links &amp; leads found'; return 'Log time spent &amp; leads found'; }
+/* This printed the same sentence on nearly every row ("Log time spent & leads found"),
+   so it read as decoration rather than information. It now only speaks when the row is
+   unusual — tick-only, or carrying sources — and says nothing on the ordinary case,
+   where the Start button and the +log chip already say it. */
+function taskTypeLabel(t){
+  if(taskIsTickOnly(t)) return 'Tick to confirm \u2014 no time or leads needed';
+  if(t.hasLinks) return 'Sources below \u2014 log the leads each one gave you';
+  return '';
+}
 function taskLoggedSummary(t){ var dur=fmtDur(t.timeHrs,t.timeMins); var lc=taskLeadCount(t); var parts=[]; if(dur) parts.push(dur); if(!taskIsTickOnly(t)) parts.push(lc+' lead'+(lc===1?'':'s')); return parts.join(' &#183; '); }
 var SUB_ICON_CLOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
 var SUB_ICON_LINK  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15l6-6"/><path d="M11 6l1-1a4 4 0 015 5l-1 1"/><path d="M13 18l-1 1a4 4 0 01-5-5l1-1"/></svg>';
@@ -7671,9 +7774,13 @@ function buildJackTaskEl(task, i, isExtra){
         + ((task.jbCarried&&!task.done)?'<span class="jbcard-carry'+(task.jbCarryDays>=3?' overdue':'')+'" title="Sent '+(task.jbAddedOn||'earlier')+' — still open">'+(task.jbCarryDays>=3?'&#9888; '+task.jbCarryDays+'d':'&#8635; '+(task.jbCarryDays?task.jbCarryDays+'d':'carried'))+'</span>':'')
         + '</div>'
       + '<div class="'+metaCls+' task-sub"><span>'+meta+'</span></div>'
-      + (qlNeeds(task) ? quickLogHTML(task,i,isExtra)
-          : (taskIsTickOnly(task)||task.done||task.skipped ? ''
-             : '<button type="button" class="ql-open" onclick="event.stopPropagation();qlReveal('+i+','+isExtra+')">+ log time / leads</button>'))
+      /* This had it backwards: the +15m / +30m / leads strip appeared only AFTER she had
+         already logged something, and before that she got a 21px dashed button that had to
+         be tapped first. So the moment she needed the controls was the one moment they
+         were hidden, behind the smallest target on the screen (measured: 21px tall).
+         The strip is now simply there on any task that takes time or leads. */
+      + ((taskIsTickOnly(task)||task.done||task.skipped) ? ''
+          : quickLogHTML(task,i,isExtra))
     + '</div>'
     + openMini + timerHtml
     + ((task.done && task.tickedAt) ? '<div class="task-done-time">&#10003; '+task.tickedAt+'</div>' : '')
@@ -7731,14 +7838,17 @@ function buildTaskEl(task, i, isExtra) {
   if (task.skipped) { subIcon = SUB_ICON_CHECK; subText = 'Skipped'+(task.skipReason?' &#183; '+task.skipReason:''); }
   else if (task.done) { subIcon = SUB_ICON_CHECK; var sm = taskLoggedSummary(task); subText = sm || 'Completed'; }
   else if (inProg) { subIcon = SUB_ICON_CLOCK; var pd = fmtDur(task.timeHrs,task.timeMins); subText = 'In progress' + (pd ? ' &#183; '+pd+' logged' : ' &#183; started'); }
-  else { subIcon = taskIsTickOnly(task) ? SUB_ICON_CHECK : (task.hasLinks ? SUB_ICON_LINK : SUB_ICON_CLOCK); subText = taskTypeLabel(task); }
+  else { subText = taskTypeLabel(task);
+         subIcon = subText ? (taskIsTickOnly(task) ? SUB_ICON_CHECK : SUB_ICON_LINK) : ''; }
   // anything that needs time + leads logged gets the controls here instead of a
   // sentence telling them to go and find the controls
-  var subHtml = qlNeeds(task) ? quickLogHTML(task,i,isExtra)
-                              : '<div class="task-sub">'+subIcon+'<span>'+subText+'</span>'
-                                +((taskIsTickOnly(task)||task.done||task.skipped)?''
-                                  :'<button type="button" class="ql-open" onclick="event.stopPropagation();qlReveal('+i+','+isExtra+')">+ log time / leads</button>')
-                                +'</div>';
+  /* Ordinary task rows use THIS path (the From-Jack cards use the other one), and it had
+     the same backwards logic: controls only after something was logged, otherwise a 21px
+     dashed button to reveal them. The strip is now always on a row that needs time or
+     leads; tick-only and finished rows keep their plain sub-line. */
+  var subHtml = (taskIsTickOnly(task)||task.done||task.skipped)
+        ? (subText ? '<div class="task-sub">'+subIcon+'<span>'+subText+'</span></div>' : '')
+        : quickLogHTML(task,i,isExtra);
 
   var actHtml;
   if (task.done) {
@@ -7766,7 +7876,10 @@ function buildTaskEl(task, i, isExtra) {
   if (task.done)        statusChip = '<span class="task-status done">&#10003; '+(task.tickedAt||'Done')+'</span>';
   else if (task.skipped)statusChip = '<span class="task-status skip">Skipped</span>';
   else if (inProg)      statusChip = '<span class="task-status prog">In progress</span>';
-  else                  statusChip = '<span class="task-status todo">To do</span>';
+  /* "To do" appeared on every unticked row — which is all of them. It said nothing and
+     cost a chip's worth of width on each. The states that DO differ (done, skipped, in
+     progress) still show; "not started yet" is now simply the absence of a chip. */
+  else                  statusChip = '';
   // carried-over one-off tasks show a rollover badge (escalates to red overdue at 3+ days)
   if (task.jbCarried && !task.done) statusChip = (typeof jb_carryBadge==='function'? jb_carryBadge(task.jbAddedOn):'') + statusChip;
 
@@ -7947,13 +8060,20 @@ function buildFields(task, i, isExtra) {
     var _named=lnames.filter(function(n){return !!n;}).length;
     var _logged=0;
     for(var _z=0;_z<lv.length;_z++){ if(lnames[_z]&&ll[_z]!==''&&ll[_z]!=null&&ll[_z]!==undefined) _logged++; }
-    tf += '<div style="margin-top:16px;">'
-      + '<div style="font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">'
-      + '<span>'+linkLabel+'</span>'
-      + (_named?'<span class="pf-prog'+(_logged>=_named?' all':'')+'" id="pfp-'+sfx+'">'+_logged+' of '+_named+' logged</span>':'<span style="color:var(--muted);font-size:9px;">link &nbsp;|&nbsp; leads</span>')
+    /* Was a bare uppercase label over a stack of near-identical boxes, so a VA could not
+       tell at a glance what was hers to do, what she had already done, or what was left.
+       Now: one line that states the job and how far through she is, with the count going
+       green only when every named source has a number against it. */
+    tf += '<div class="pf-wrap">'
+      + '<div class="pf-head">'
+        + '<span class="pf-h-t">'+linkLabel+'</span>'
+        + (_named
+            ? '<span class="pf-prog'+(_logged>=_named?' all':'')+'" id="pfp-'+sfx+'">'
+              +(_logged>=_named?'\u2713 all '+_named+' logged':_logged+' of '+_named+' logged')+'</span>'
+            : '<span class="pf-h-s">paste a link, tap the leads it gave you</span>')
       + '</div>'
-      + '<div id="'+cId+'">'+linkRows+'</div>'
-      + '<button data-cid="'+cId+'" data-ti="'+i+'" data-ie="'+(isExtra?1:0)+'" data-tot="'+totId+'" onclick="handleAddLink(this)" style="background:none;border:1px dashed rgba(155,143,255,0.3);color:var(--muted);font-family:var(--font-mono);font-size:10px;padding:7px 16px;border-radius:7px;cursor:pointer;margin-top:8px;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;" onmouseover="this.style.borderColor=\'rgba(155,143,255,0.7)\';this.style.color=\'var(--accent)\'" onmouseout="this.style.borderColor=\'rgba(155,143,255,0.3)\';this.style.color=\'var(--muted)\'">+ Add Link</button>'
+      + '<div id="'+cId+'" class="pf-rows">'+linkRows+'</div>'
+      + '<button class="pf-add" data-cid="'+cId+'" data-ti="'+i+'" data-ie="'+(isExtra?1:0)+'" data-tot="'+totId+'" onclick="handleAddLink(this)">+ Add another link</button>'
       + '</div>';
   }
   return tf;
@@ -8440,11 +8560,16 @@ function jb_groupTask(ty,items){
     name:'From Jack · '+items.length+' '+t[1].toLowerCase(),
     jbLabel:items.length+' '+t[1].toLowerCase(),
     jbReason:'', jbCarried:carried>0, jbCarryDays:oldest, mandatory:true,
-    hint:'Jack sent '+items.length+' '+t[1].toLowerCase()+'. Work down the list below, log the leads each one gave you, then tick this off.'
+    /* Same call as a single ASIN: nobody times a stopwatch for three of them. The GROUP
+       was still demanding time + leads, which is why "3 asins" wore "Time it & log leads". */
+    tickOnly:(ty==='asin'),
+    hint:(ty==='asin'
+      ? 'Jack sent '+items.length+' ASINs. Copy or open each one, check it, then tick this off. No timer needed.'
+      : 'Jack sent '+items.length+' '+t[1].toLowerCase()+'. Work down the list below, log the leads each one gave you, then tick this off.')
       +(carried?' '+carried+' carried over from a previous day.':''),
     hasLinks:true, links:links, linkNames:names, linkLeads:leads,
     done:false, skipped:false, skipReason:'', time:'', timeHrs:0, timeMins:0, leads:'', context:'',
-    jbUrl:'', jbAsin:'', jbTimer:true, jbLeads:true,
+    jbUrl:'', jbAsin:'', jbTimer:(ty!=='asin'), jbLeads:(ty!=='asin'),
     timerSec:0, timerRun:false, timerStart:null };
 }
 function jb_itemTask(it,i){
@@ -9553,6 +9678,28 @@ function mgr_startLiveTick(){
     if(mgr&&mgr.classList.contains('active')) mgr_liveTick();
   });
 }
+/* ── END A STUCK SHIFT FROM JACK'S SIDE ────────────────────────────────────
+   Writes a flag into the VA's own draft. Nothing is deleted and no hours are changed —
+   when she next opens the app the shift restores exactly as it was, with a banner and the
+   wrap-up screen already open, so she can submit it or start a fresh one. */
+async function mgr_endVaShift(va){
+  if(!confirm('Ask '+vaDisp(va)+' to close this shift?\n\nNothing is deleted. Her tasks, time and leads stay exactly as they are — next time she opens the app she lands on the wrap-up screen to submit it.')) return;
+  try{
+    var r=await fetchT(SUPABASE_URL+'/rest/v1/draft_shifts?va=eq.'+encodeURIComponent(va)+'&select=*&order=updated_at.desc',
+      {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
+    var rows=r.ok?await r.json():[];
+    if(!rows.length){ showToast('No open shift found for '+vaDisp(va),true); return; }
+    var row=rows[0], data=row.data||{};
+    data.forceEnd={by:'Jack', at:new Date().toISOString()};
+    var up=await fetchT(SUPABASE_URL+'/rest/v1/draft_shifts?va=eq.'+encodeURIComponent(va)
+        +'&date=eq.'+encodeURIComponent(row.date),
+      {method:'PATCH',headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+        'Content-Type':'application/json',Prefer:'return=minimal'},
+       body:JSON.stringify({data:data, updated_at:new Date().toISOString()})});
+    if(up.ok) showToast(vaDisp(va)+' will be taken to the wrap-up screen next time she opens the app ✓');
+    else showToast("Couldn't flag that shift — check your connection",true);
+  }catch(e){ showToast("Couldn't flag that shift",true); }
+}
 function mgr_getReports(){try{return JSON.parse(localStorage.getItem('shifttrack_reports')||'[]');}catch(e){return[];}}
 function mgr_ukToday(){return new Date().toLocaleDateString('en-GB',{timeZone:'Europe/London'});}
 function mgr_monthStart(){
@@ -9968,8 +10115,14 @@ function mgr_flagBanner(log){
           return;
         }
         if(updUK===today){          // started today, just gone quiet — that is NOT "hasn't submitted"
+          /* A shift stuck open (a closed tab, a dead timer) sat there for hours with no way
+             for Jack to clear it from his side. This asks the VA to wrap up: her work is
+             untouched, and next time she opens the app she is taken straight to the EOD. */
           onShift.push('<b>'+vaDisp(va)+'</b> is on shift but has gone quiet \u2014 nothing logged for <b>'
-            +Math.round(freshMin)+'m</b> \u00b7 '+(d.hoursWorked||'0')+'h \u00b7 '+(d.totalLeads||0)+' leads');
+            +Math.round(freshMin)+'m</b> \u00b7 '+(d.hoursWorked||'0')+'h \u00b7 '+(d.totalLeads||0)+' leads'
+            +' <button class="mgr-endshift" onclick="mgr_endVaShift(\''+va+'\')" '
+            +'title="Ask '+escHtml(vaDisp(va))+' to close this shift \u2014 nothing is deleted, she just lands on the wrap-up screen">'
+            +'End their shift</button>');
           return;
         }
       }
@@ -13923,11 +14076,11 @@ function showToast(msg,isError) {
     var prev7=all.filter(function(l){var d=ld(l);return d&&d>d14&&d<=d7;});
     var mom=prev7.length?Math.round((last7.length-prev7.length)/prev7.length*100):0;
     var momTxt=prev7.length?((mom>=0?'+':'')+mom+'% vs prior 7d'):'vs prior 7d';
-    var pend=all.filter(function(l){return l.islead===null&&!l.status;}).sort(function(a,b){return b._sc.total-a._sc.total;}).slice(0,6);
+    var pend=all.filter(function(l){return l.islead===null&&!l.status;}).sort(function(a,b){return ((b._sc&&b._sc.total)||0)-((a._sc&&a._sc.total)||0);}).slice(0,6);
     var oppRows=pend.map(function(l){
       return '<div onclick="showLeadsView()" style="cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:9px 0;border-top:1px solid var(--line);">'
         +'<span style="font-size:12.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+escHtml(l.title||'—')+'</span>'
-        +'<span style="font-family:var(--font-mono);font-size:11.5px;color:var(--muted-2);white-space:nowrap;">★ '+l._sc.total+' · '+Math.round(money(l,'roi'))+'% ROI · £'+Math.round(money(l,'profit'))+'</span></div>';
+        +'<span style="font-family:var(--font-mono);font-size:11.5px;color:var(--muted-2);white-space:nowrap;">★ '+((l._sc&&l._sc.total)||0)+' · '+Math.round(money(l,'roi'))+'% ROI · £'+Math.round(money(l,'profit'))+'</span></div>';
     }).join('');
     /* ── Filter performance — which saved filters are actually producing ──
        Exact: opens + leads the VA logged against each filter.
@@ -13950,10 +14103,10 @@ function showToast(msg,isError) {
       +'</div>'
       +'<div class="mgr-grid-2" style="margin-bottom:8px;">'+vaFunnel('VA M','Mera','var(--mera)')+vaFunnel('VA S','Suz','var(--suz)')+'</div>'
       +bands('Score bands — does the score predict buys?',[
-          {label:'9–10 ★',test:function(l){return l._sc.total>=9;}},
-          {label:'7–8',test:function(l){return l._sc.total>=7&&l._sc.total<9;}},
-          {label:'5–6',test:function(l){return l._sc.total>=5&&l._sc.total<7;}},
-          {label:'Under 5',test:function(l){return l._sc.total<5;}}
+          {label:'9–10 ★',test:function(l){return ((l._sc&&l._sc.total)||0)>=9;}},
+          {label:'7–8',test:function(l){var v=(l._sc&&l._sc.total)||0;return v>=7&&v<9;}},
+          {label:'5–6',test:function(l){var v=(l._sc&&l._sc.total)||0;return v>=5&&v<7;}},
+          {label:'Under 5',test:function(l){return ((l._sc&&l._sc.total)||0)<5;}}
         ],'buy rate should climb with score')
       +league(function(l){return l.src;},'Sourcing methods — what converts')
       +filterPerfHTML()
@@ -15984,14 +16137,20 @@ function getFNoFocus(){
     if(view==='new'&&(l.status||l.islead!==null)&&l.id!==_pendingLeave)return false;   // New = undecided; a just-decided lead is HELD until he clicks off it
     if(window._staleFilter&&(view==='new'||view==='all')&&!isStale(l))return false;   // "Going stale" ribbon filter
     if(fd!=='all'){ var _d=_pGB(l.date); if(!_d)return false; var _dd=Math.round((_t0-_d)/86400000);
-      if(fd==='sheet') return true;   // the ticked tabs already chose the months
+      /* THE SEARCH BUG. `return true` here means "keep this lead" and jumps out of the
+         whole predicate — so with the date filter on "Whatever months I've ticked"
+         (Jack's default) every filter BELOW this line was skipped, the search included.
+         Confirmed from his live session: box said "nespresso", getF returned 629, while
+         the chips — which use _leadCtx, where this same bug was fixed long ago — said 18.
+         The ticked tabs decide the months; they must not decide anything else. */
+      if(fd!=='sheet'){
       if(fd==='month'&&(_d.getMonth()!==_now.getMonth()||_d.getFullYear()!==_now.getFullYear()))return false;
       if(fd.slice(0,2)==='m:'){ var _ym=fd.slice(2).split('-'); if(_d.getFullYear()!==+_ym[0]||(_d.getMonth()+1)!==+_ym[1])return false; }
       if(fd.slice(0,2)==='d:'){ var _iso=_d.getFullYear()+'-'+('0'+(_d.getMonth()+1)).slice(-2)+'-'+('0'+_d.getDate()).slice(-2); if(_iso!==fd.slice(2))return false; }
       if(fd==='today'&&_dd!==0)return false;
       if(fd==='yesterday'&&_dd!==1)return false;
       if(fd==='48h'&&(_dd<0||_dd>1))return false;
-      if(fd==='7d'&&(_dd<0||_dd>6))return false; }
+      if(fd==='7d'&&(_dd<0||_dd>6))return false; } }
     if(view==='lead'&&l.islead!==true)return false;
     if(view==='bought'&&l.status!=='bought')return false;
     if(view==='basket'&&!isBasketish(l))return false;
@@ -16008,11 +16167,18 @@ function getFNoFocus(){
     if(!q&&ldArchived(l))return false;
     return true;
   }).sort((a,b)=>{
-    if(sortBy==='score')return b._sc.total-a._sc.total;
-    if(sortBy==='roi')return b.roi-a.roi;
-    if(sortBy==='profit')return b.profit-a.profit;
-    if(sortBy==='spm')return b.spm-a.spm;
-    const p=d=>d.split('/').reverse().join('');return p(b.date).localeCompare(p(a.date));
+    /* A single lead without a score threw here and took the whole render with it. Because
+       updateCounts() runs FIRST, the chips updated (18 matches) while the list and the
+       "608 leads" header kept their previous values — which is exactly what a broken
+       search looks like. Nothing in a sort comparator is worth an exception. */
+    const sc=x=>(x&&x._sc&&typeof x._sc.total==='number')?x._sc.total:0;
+    const num=x=>{ const n=parseFloat(x); return isNaN(n)?0:n; };
+    if(sortBy==='score')return sc(b)-sc(a);
+    if(sortBy==='roi')return num(b.roi)-num(a.roi);
+    if(sortBy==='profit')return num(b.profit)-num(a.profit);
+    if(sortBy==='spm')return num(b.spm)-num(a.spm);
+    const p=d=>String(d||'').split('/').reverse().join('');
+    return p(b.date).localeCompare(p(a.date));
   });
 }
 // does a lead pass the active CONTEXT filters (date/store/cat/source/score/search)? optionally also view/va
@@ -16037,6 +16203,11 @@ function _leadCtx(l, useView, useVa){
   if(fsrc!=='all'&&l.src!==fsrc)return false;
   if(scoreMin>0&&l._sc.total<scoreMin)return false;
   if(q&&!(l.title.toLowerCase().includes(q)||l.asin.toLowerCase().includes(q)))return false;
+  /* The list applies these two; the counts did not — so the chips counted leads that were
+     not on screen (archived, or hidden by the Going-stale ribbon). Same drift that let the
+     search bug hide for months: two filters that must agree, kept in two places. */
+  if(window._staleFilter&&(view==='new'||view==='all')&&typeof isStale==='function'&&!isStale(l))return false;
+  if(!q&&typeof ldArchived==='function'&&ldArchived(l))return false;
   if(useVa&&va!=='all'&&l.va!==va)return false;
   if(useView){
     if(view==='new'&&(l.status||l.islead!==null))return false;
@@ -16116,12 +16287,12 @@ function updateCounts(){
   const stale=ctx.filter(l=>isStale(l)).length;
   const decided=ctx.filter(l=>l.islead!==null).length;
   const buyRate=decided?Math.round(bought.length/decided*100):0;
-  const avg=ctx.length?(ctx.reduce((a,b)=>a+b._sc.total,0)/ctx.length).toFixed(1):'-';
+  const avg=ctx.length?(ctx.reduce((a,b)=>a+((b._sc&&b._sc.total)||0),0)/ctx.length).toFixed(1):'-';
   const unAll=ctx.filter(l=>!l.seen&&l.islead===null&&!l.status);
   const unM=unAll.filter(l=>l.va==='VA M').length, unS=unAll.length-unM;
   const bM=bought.filter(l=>l.va==='VA M').length, bS=bought.length-bM;
   const bkVal=ctx.filter(isBasketish).reduce((a,b)=>a+(+b.buy||0),0);
-  function avgVa(v){var a=ctx.filter(l=>l.va===v);return a.length?(a.reduce((x,b)=>x+b._sc.total,0)/a.length).toFixed(1):'-';}
+  function avgVa(v){var a=ctx.filter(l=>l.va===v);return a.length?(a.reduce((x,b)=>x+((b._sc&&b._sc.total)||0),0)/a.length).toFixed(1):'-';}
   document.getElementById('ribbon').innerHTML=`
     <div class="rc rc-click ${unAll.length?'rc-purple':'rc-off'}" onclick="gotoView('new')" title="Show new / undecided leads"><div class="rv">${unAll.length}</div><div class="rl">Unseen</div><div class="rsub">Mera ${unM} · Suz ${unS}</div></div>
     ${sessTileHTML()}
@@ -16238,14 +16409,78 @@ function undoDecision(id){
    he was looking at belonged to an earlier keystroke. That is the "search is super
    glitchy" and the "search doesn't filter" report: both the same stall.
    Type freely; the list catches up once, when he stops. */
-var _ldSearchT=null, _ldSearchLast=null;
+var _ldSearchT=null, _ldSearchRAF=null, _ldSearchLast=null, _ldSearchShown=null;
+/* A debounce alone was not safe. Browsers throttle (and in a background tab, suspend)
+   setTimeout, so the trailing render could simply never arrive — measured live: the box
+   read "nespress", the pending flag was still true seconds later, and the list still had
+   all 678 rows. Calling renderList() by hand produced the right 18 in 26ms. So the timer
+   is now only ONE of the ways the render can happen:
+     · setTimeout  — the normal path while typing
+     · rAF         — fires whenever the page actually paints
+     · flush       — on keyup/change/blur, and on coming back to the tab
+   plus ldSearchGuard(), which repaints if what is on screen doesn't match the box. */
+function ldSearchFlush(){
+  if(_ldSearchT){ clearTimeout(_ldSearchT); _ldSearchT=null; }
+  if(_ldSearchRAF){ cancelAnimationFrame(_ldSearchRAF); _ldSearchRAF=null; }
+  var el=document.getElementById('search');
+  _ldSearchShown=el?el.value:'';
+  renderList();
+}
 function ldSearchInput(){
   var el=document.getElementById('search');
   var q=el?el.value:'';
   if(q===_ldSearchLast) return;                 // repeat keystroke, same text: nothing to do
   _ldSearchLast=q;
   if(_ldSearchT) clearTimeout(_ldSearchT);
-  _ldSearchT=setTimeout(function(){ _ldSearchT=null; renderList(); }, 140);
+  if(_ldSearchRAF) cancelAnimationFrame(_ldSearchRAF);
+  _ldSearchT=setTimeout(ldSearchFlush,140);
+  _ldSearchRAF=requestAnimationFrame(function(){
+    _ldSearchRAF=null;
+    setTimeout(function(){ if(_ldSearchT) ldSearchFlush(); },140);
+  });
+}
+/* last line of defence: if the list on screen was built for a different query than the
+   box holds, repaint. Cheap (a string compare) and runs on the interactions a stuck
+   search would otherwise survive. */
+function ldSearchGuard(){
+  var el=document.getElementById('search'); if(!el) return;
+  if(el.value===_ldSearchShown) return;
+  ldSearchFlush();
+}
+if(!window._ldSearchBound){
+  window._ldSearchBound=true;
+  document.addEventListener('visibilitychange',function(){ if(!document.hidden) ldSearchGuard(); });
+  window.addEventListener('focus',ldSearchGuard);
+  document.addEventListener('keyup',function(e){
+    if(e&&e.target&&e.target.id==='search') ldSearchGuard();
+  },true);
+  document.addEventListener('change',function(e){
+    if(e&&e.target&&e.target.id==='search') ldSearchGuard();
+  },true);
+  document.addEventListener('click',ldSearchGuard,true);
+}
+var LD_PAGE=70;                 // rows built on the first pass — about two screens
+/* Append the rest in chunks: once on the next frame (so a short list completes instantly)
+   and again whenever she scrolls near the bottom. Never blocks typing. */
+function ldFillMore(){
+  var q=window._ldQueue;
+  if(!q||!q.length) return;
+  var el=document.getElementById('list-scroll'); if(!el) return;
+  var chunk=q.splice(0,LD_PAGE), h='';
+  chunk.forEach(function(l){ h+=litemH(l); });
+  el.insertAdjacentHTML('beforeend',h);
+  /* rAF does not fire in a hidden or backgrounded tab, so it cannot be the only way the
+     rest of the list arrives — chain a timeout alongside it and let whichever runs first
+     do the work (the queue check at the top makes the loser a no-op). */
+  if(q.length){ requestAnimationFrame(ldFillMore); setTimeout(ldFillMore,50); }
+  else { try{ updateCounts(); }catch(e){} }
+}
+if(!window._ldScrollBound){
+  window._ldScrollBound=true;
+  document.addEventListener('scroll',function(e){
+    var el=e&&e.target; if(!el||el.id!=='list-scroll') return;
+    if(el.scrollTop+el.clientHeight > el.scrollHeight-600) ldFillMore();
+  },true);
 }
 function renderList(){
   if(!document.getElementById('list-scroll'))return;
@@ -16255,8 +16490,23 @@ function renderList(){
     var _sig=(window.leads||[]).length+':'+((window.leads||[])[0]||{})._sid;
     if(window._dupeSig!==_sig){ buildDupeMap(); window._dupeSig=_sig; }
   }catch(e){ try{ buildDupeMap(); }catch(_){} }
+  /* The list is built BEFORE the counts now. It used to be the other way round, so a
+     throw while filtering left fresh chips above a stale list — the user-visible symptom
+     of "search doesn't work". If it throws now, nothing has been updated yet and the
+     error is shown rather than swallowed. */
+  var fl;
+  try{
+    var _sb=document.getElementById('search'); _ldSearchShown=_sb?_sb.value:'';
+    fl=ldMergeTwins(getF());
+  }catch(e){
+    try{ console.error('[renderList] filter failed:',e); }catch(_){}
+    try{ document.getElementById('list-scroll').innerHTML=
+      '<div style="padding:26px 18px;color:#ff9d9d;font-size:13px;line-height:1.6">'
+      +'Couldn\u2019t build the list \u2014 <b>'+String(e&&e.message||e).replace(/</g,'&lt;')+'</b>'
+      +'<br><span style="color:#a9b3c7">Tell Jack exactly what you typed. Clearing the search box will bring it back.</span></div>'; }catch(_){}
+    return;
+  }
   updateCounts();
-  const fl=ldMergeTwins(getF());
   document.getElementById('tt-count').textContent=fl.length+(fl.length===1?' lead':' leads');
   const el=document.getElementById('list-scroll');
   if(!fl.length){
@@ -16275,13 +16525,25 @@ function renderList(){
   }
   const bd={};fl.forEach(l=>{(bd[l.date]=bd[l.date]||[]).push(l)});
   const ord=Object.keys(bd).sort((a,b)=>{const p=d=>d.split('/').reverse().join('');return p(b).localeCompare(p(a))});
-  let h=''; const shown=[];                      // the order actually ON SCREEN
+  /* Every keystroke used to rebuild all ~680 rows: 116ms of blocked main thread each time.
+     Debouncing that turned out worse — a throttled timer meant the render could simply
+     never arrive and the list sat stale. So: render on EVERY input, synchronously, but
+     only build what fits on screen (plus a screenful of slack) and append the rest as she
+     scrolls. Always correct, and cheap enough that correctness costs nothing. */
+  let h=''; const shown=[]; const queue=[];
+  var built=0;
   ord.forEach(date=>{
     const lb=date==='04/06/2026'?'Today':date==='03/06/2026'?'Yesterday':date;
     h+=`<div class="ld-date">${lb}<span>${bd[date].length}</span></div>`;
-    bd[date].forEach(l=>{h+=litemH(l); shown.push(l);});
+    bd[date].forEach(l=>{
+      shown.push(l);
+      if(built<LD_PAGE){ h+=litemH(l); built++; }
+      else queue.push(l);
+    });
   });
   el.innerHTML=h;
+  window._ldQueue=queue;
+  ldFillMore();
   try{
     var _fe=document.getElementById('focus-entry');
     if(_fe) _fe.innerHTML=focusEntryHTML();
@@ -18469,7 +18731,7 @@ function cpDiscord(id){
   const txt='**'+l.title+'**\n'
     +'ASIN: `'+l.asin+'` · '+l.store+' · via '+l.src+'\n'
     +'Buy £'+l.buy+' → Sell £'+l.sell+' · Profit **£'+f2(l.profit)+'** · ROI **'+l.roi+'%** · SPM '+spml(l.spm)+' · '+l.fba+' FBA sellers\n'
-    +'Score: '+l._sc.total.toFixed(1)+'/10 ('+scGrade(l._sc.total)+')\n'
+    +'Score: '+(((l._sc&&l._sc.total)||0)).toFixed(1)+'/10 ('+scGrade((l._sc&&l._sc.total)||0)+')\n'
     +l.amz+'\n'+l.sup;
   navigator.clipboard?.writeText(txt).catch(()=>{});
   ldToast('Lead copied — paste straight into Discord ✓');
@@ -20567,7 +20829,7 @@ function sbQueuesHTML(){
       +'<span class="sbq-stat"><b>'+review+'</b> land with you</span>'
       +(missing?'<span class="sbq-stat warn">'+missing+' from your sheet not added yet</span>':'')
       +'<span class="sbq-stat mute" id="sbq-shown">'+sbAdminRows().length+' shown</span>'
-      +'<input class="sbq-search" placeholder="Find a tag…" value="'+escHtml(SB_ADMIN_FILTER)+'"'
+      +'<input class="sbq-search" type="search" name="tag-find" autocomplete="off" data-lpignore="true" data-1p-ignore placeholder="Find a tag…" value="'+escHtml(SB_ADMIN_FILTER)+'"'
         +' oninput="sbAdminFilter(this.value)" spellcheck="false">'
     +'</div>'
     +sbBulkBarHTML()
