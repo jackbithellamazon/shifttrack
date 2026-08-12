@@ -2269,6 +2269,12 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
    "already seen". Desaturate the picture, grey the panel, mute the figures — but keep
    the title at full contrast so it stays scannable. */
 /* focus queue — a finite, ranked handful instead of a wall of 600 */
+.pf-src{display:inline-block;margin-left:8px;font-style:normal;font-size:9.5px;font-weight:800;
+  letter-spacing:.4px;text-transform:uppercase;padding:2px 7px;border-radius:999px;vertical-align:middle;
+  background:color-mix(in srgb,var(--accent) 22%,transparent);color:#d8d2ff;
+  border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);}
+.pf-src.own{margin-left:0;background:rgba(255,255,255,.06);color:#9aa3b8;border-color:var(--line-2);}
+.pf-hint{margin-left:10px;text-transform:none;letter-spacing:0;font-size:9.5px;color:var(--muted-2);font-weight:600;}
 .eu-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px;padding:11px 14px;
   border-radius:11px;font-size:13px;font-weight:700;line-height:1.45;color:#dbeaff;
   background:color-mix(in srgb,#4c8dff 16%,transparent);
@@ -5641,7 +5647,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v35.5';
+var APP_VERSION='v35.9';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -7044,7 +7050,90 @@ function euReopenCheck(){
 }
 function euDismissBanner(){ var h=document.getElementById('eu-banner'); if(h) h.innerHTML=''; }
 
+
+/* ── PARALLEL LINK ARRAYS: ONE INVARIANT, ENFORCED ─────────────────────────
+   links / linkNames / linkLeads / linkFilterIds are read BY INDEX, so they are only
+   meaningful while they are the same length. Nothing enforced that, and a task created
+   with links:['','',''] but linkNames:[] silently split a From-Jack item in half —
+   its name on row 1, its URL on row 4, looking like two unrelated things.
+   Two functions now hold the line:
+     taskLinksNormalise() — structural: every row exists in all four arrays
+     taskLinksRepair()    — corrective: a named From-Jack row gets its URL back from
+                            the brief itself (the source of truth), and the orphaned
+                            copy of that URL is removed. This repairs drafts already
+                            saved in the broken shape, not just new ones. */
+/* Growing to row `li` must happen in all four arrays at once. Four call sites used to
+   grow whichever array they happened to need, which is the same drift that split the
+   From-Jack item in half — just triggered by typing instead of by a send. */
+function taskLinksEnsure(t,li){
+  if(!t) return;
+  t.links=t.links||[]; t.linkNames=t.linkNames||[];
+  t.linkLeads=t.linkLeads||[]; t.linkFilterIds=t.linkFilterIds||[];
+  var n=Math.max(li+1,t.links.length,t.linkNames.length,t.linkLeads.length,t.linkFilterIds.length);
+  while(t.links.length<n)         t.links.push('');
+  while(t.linkNames.length<n)     t.linkNames.push('');
+  while(t.linkLeads.length<n)     t.linkLeads.push('');
+  while(t.linkFilterIds.length<n) t.linkFilterIds.push('');
+}
+function taskLinksNormalise(t){
+  if(!t||!t.hasLinks) return false;
+  t.links=t.links||[]; t.linkNames=t.linkNames||[];
+  t.linkLeads=t.linkLeads||[]; t.linkFilterIds=t.linkFilterIds||[];
+  var n=Math.max(t.links.length,t.linkNames.length,t.linkLeads.length,t.linkFilterIds.length);
+  var changed=false;
+  while(t.links.length<n){ t.links.push(''); changed=true; }
+  while(t.linkNames.length<n){ t.linkNames.push(''); changed=true; }
+  while(t.linkLeads.length<n){ t.linkLeads.push(''); changed=true; }
+  while(t.linkFilterIds.length<n){ t.linkFilterIds.push(''); changed=true; }
+  return changed;
+}
+function taskLinksRepair(t,va){
+  if(!taskLinksNormalise(t)&&!(t.jbIids&&t.jbIids.length)) return false;
+  if(!t.jbIids||!t.jbIids.length) return false;
+  var items=[];
+  try{ var o=jb_open(va||state.currentVA); items=(o&&o.items)||[]; }catch(e){ return false; }
+  var byIid={}; items.forEach(function(it){ if(it&&it.iid) byIid[it.iid]=it; });
+  var fixed=false;
+  t.jbIids.forEach(function(iid,k){
+    if(!iid) return;
+    var it=byIid[iid]; if(!it) return;
+    var url=/^https?:\/\//i.test(it.v||'')?it.v:'';
+    if(!url) return;
+    // where does this item's NAME sit?
+    var ni=-1;
+    for(var i=0;i<t.linkNames.length;i++){
+      if(t.linkNames[i] && String(t.linkNames[i]).indexOf(jb_cleanLabel(it))===0){ ni=i; break; }
+    }
+    if(ni<0) return;
+    if(t.links[ni]===url) return;                       // already whole
+    // is the URL sitting on its own somewhere else, with no name?
+    var oi=-1;
+    for(var j=0;j<t.links.length;j++){
+      if(j!==ni && t.links[j]===url && !t.linkNames[j]){ oi=j; break; }
+    }
+    if(!t.links[ni]){ t.links[ni]=url; fixed=true; }
+    if(oi>=0){                                          // drop the orphan half
+      t.links.splice(oi,1); t.linkNames.splice(oi,1);
+      t.linkLeads.splice(oi,1); t.linkFilterIds.splice(oi,1);
+      fixed=true;
+    }
+  });
+  return fixed;
+}
+function taskLinksRepairAll(){
+  var any=false;
+  ['tasks','extraTasks'].forEach(function(key){
+    (state[key]||[]).forEach(function(t){
+      if(taskLinksNormalise(t)) any=true;
+      try{ if(taskLinksRepair(t)) any=true; }catch(e){}
+    });
+  });
+  if(any){ try{ saveShiftDraft(false); }catch(e){} }
+  return any;
+}
+
 function renderTasks() {
+  try{ taskLinksRepairAll(); }catch(e){}
   try{ euReopenCheck(); }catch(e){}
   var mandEl = document.getElementById('mandatory-tasks');
   var extEl  = document.getElementById('extra-tasks');
@@ -7529,7 +7618,8 @@ function buildFields(task, i, isExtra) {
     + '</div>';
 
   if (task.hasLinks) {
-    var linkLabel = task.id === 'jack-poa' ? 'Links / Filters Jack Sent' : 'Links Used / Sources Found';
+    var linkLabel = task.id === 'jack-poa' ? 'Links / Filters Jack Sent'
+      : 'Links Used / Sources Found <span class="pf-hint">every row is labelled \u2014 blank ones are yours to fill</span>';
     var cId   = 'lc-'+i+'-'+(isExtra?'e':'t');
     var totId = 'lt-'+i+'-'+(isExtra?'e':'t');
     var lv = task.links     || ['','',''];
@@ -7544,7 +7634,15 @@ function buildFields(task, i, isExtra) {
         var _secs=(task.linkSecs&&task.linkSecs[li])||0;
         linkRows += '<div class="pf-link'+(_lset?' pf-logged':'')+(_run?' pf-running':'')+'" id="pfr-'+sfx+'-'+li+'">'
           + '<span class="pf-n">'+(li+1)+'</span>'
-          + '<span class="pf-name" title="'+String(lnames[li]).replace(/"/g,'&quot;')+'">'+lnames[li]+'</span>'
+          /* Jack, on this exact panel: "where has this come from — is this a storefront?"
+             A named row is something HE sent; an empty slot is hers to fill. Neither said
+             so, and both sat in the same list under one heading. They do now.
+             (linkFilterIds marks the ones that came from a saved filter rather than a
+             one-off From-Jack item, so the two are told apart properly.) */
+          + '<span class="pf-name" title="'+String(lnames[li]).replace(/"/g,'&quot;')+'">'+lnames[li]
+            + '<em class="pf-src">'
+            + (((task.linkFilterIds||[])[li]) ? 'saved filter' : 'from Jack')
+            + '</em></span>'
           + (lv[li]?'<a class="pf-open" href="'+String(lv[li]).replace(/"/g,'&quot;')+'" target="_blank" onclick="event.stopPropagation();pfTimerStart('+i+','+isExtra+','+li+')">Open &#8599;</a>':'')
           // per-link Start/Stop — Jack: "start stop should be each one". One running at a
           // time per task; starting link B banks link A's time automatically.
@@ -7560,8 +7658,9 @@ function buildFields(task, i, isExtra) {
           + '</div>';
         continue;
       }
-      linkRows += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">'
+      linkRows += '<div class="pf-own" style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">'
         + '<span style="font-size:10px;color:var(--muted);min-width:18px;text-align:right;font-family:var(--font-mono);">'+(li+1)+'</span>'
+        + (lv[li]?'<em class="pf-src own" title="You pasted this one in \u2014 it did not come from Jack">yours</em>':'')
         + '<input class="field-input" type="text" placeholder="Paste link here..." value="'+(lv[li]||'')+'" style="flex:1;" data-ti="'+i+'" data-li="'+li+'" data-ie="'+(isExtra?1:0)+'" oninput="handleLinkInput(this)">'
         + '<input class="field-input" type="number" placeholder="0" min="0" value="'+(ll[li]||'')+'" style="width:60px;flex-shrink:0;text-align:center;" data-ti="'+i+'" data-li="'+li+'" data-ie="'+(isExtra?1:0)+'" data-tot="'+totId+'" oninput="handleLeadInput(this)">'
         + '</div>';
@@ -7704,8 +7803,7 @@ setInterval(function(){
    individual storefront or filter actually produced anything. */
 function pfStep(i,isExtra,li,d){
   var arr=isExtra?state.extraTasks:state.tasks, t=arr[i]; if(!t||t.done) return;
-  t.linkLeads=t.linkLeads||[];
-  while(t.linkLeads.length<=li) t.linkLeads.push('');
+  taskLinksEnsure(t,li);
   var cur=parseInt(t.linkLeads[li])||0;
   t.linkLeads[li]=String(Math.max(0,cur+d));
   t.leads=t.linkLeads.reduce(function(a,b){return a+(parseInt(b)||0);},0);
@@ -7966,13 +8064,28 @@ function jb_attachToHost(host,items){
   host.links=host.links||[]; host.linkLeads=host.linkLeads||[];
   host.linkNames=host.linkNames||[]; host.linkFilterIds=host.linkFilterIds||[];
   host.jbIids=host.jbIids||[]; host.jbGroup=true;
-  items.forEach(function(it){
+  /* These four arrays are read BY INDEX — links[n] is named by linkNames[n]. A recurring
+     task starts life with links:['','',''] but linkNames:[], so pushing an item put its
+     NAME at index 0 and its URL at index 3. Traced on Jack's live Suz shift: the item
+     "19 and 19 - a2a" showed as a named row with nothing to open (row 1) AND as a raw
+     1,587-character Keepa URL in a blank slot (row 4) — one item, split in half, looking
+     like two unrelated things. Level them up before pushing so an item stays whole. */
+  var _n=Math.max(host.links.length,host.linkNames.length,host.linkLeads.length,host.linkFilterIds.length);
+  while(host.links.length<_n)         host.links.push('');
+  while(host.linkNames.length<_n)     host.linkNames.push('');
+  while(host.linkLeads.length<_n)     host.linkLeads.push('');
+  while(host.linkFilterIds.length<_n) host.linkFilterIds.push('');
+  /* Aligning them fixed the split but pushed Jack's item to the BOTTOM, under three
+     empty slots — "why is this here at the bottom then?". Work he actually sent should
+     be the first thing she sees, so it goes IN FRONT of her blank rows. Reversed so
+     several items keep the order they were sent in. */
+  items.slice().reverse().forEach(function(it){
     var isUrl=/^https?:\/\//i.test(it.v);
-    host.links.push(isUrl?it.v:'');
-    host.linkNames.push(jb_cleanLabel(it)+(it.r?' — '+String(it.r).slice(0,40):''));
-    host.linkLeads.push('');            // '' = untouched; a real 0 has to be tapped in
-    host.linkFilterIds.push('');
-    host.jbIids.push(it.iid||'');
+    host.links.unshift(isUrl?it.v:'');
+    host.linkNames.unshift(jb_cleanLabel(it)+(it.r?' — '+String(it.r).slice(0,40):''));
+    host.linkLeads.unshift('');         // '' = untouched; a real 0 has to be tapped in
+    host.linkFilterIds.unshift('');
+    host.jbIids.unshift(it.iid||'');
   });
   host._fromJack=(host._fromJack||0)+items.length;
   host.jbFromJackCount=host._fromJack;
@@ -13002,8 +13115,7 @@ function handleLinkInput(el) {
   var i=parseInt(el.dataset.ti),li=parseInt(el.dataset.li),isExtra=el.dataset.ie==='1';
   var arr=isExtra?state.extraTasks:state.tasks;
   if(!arr[i]) return;
-  if(!arr[i].links) arr[i].links=[];
-  while(arr[i].links.length<=li) arr[i].links.push('');
+  taskLinksEnsure(arr[i],li);
   arr[i].links[li]=el.value;
 }
 function handleLeadInput(el) {
@@ -13011,8 +13123,7 @@ function handleLeadInput(el) {
   var totId=el.dataset.tot;
   var arr=isExtra?state.extraTasks:state.tasks;
   if(!arr[i]) return;
-  if(!arr[i].linkLeads) arr[i].linkLeads=[];
-  while(arr[i].linkLeads.length<=li) arr[i].linkLeads.push(0);
+  taskLinksEnsure(arr[i],li);
   arr[i].linkLeads[li]=parseInt(el.value)||0;
   var total=arr[i].linkLeads.reduce(function(s,v){return s+(parseInt(v)||0);},0);
   arr[i].leads=total;
@@ -13026,9 +13137,8 @@ function handleAddLink(btn) {
   var arr=isExtra?state.extraTasks:state.tasks;
   if(!arr[i]) return;
   if(!arr[i].links) arr[i].links=[];
-  if(!arr[i].linkLeads) arr[i].linkLeads=[];
-  var newIdx=arr[i].links.length;
-  arr[i].links.push(''); arr[i].linkLeads.push(0);
+  var newIdx=Math.max((arr[i].links||[]).length,(arr[i].linkNames||[]).length);
+  taskLinksEnsure(arr[i],newIdx);
   var container=document.getElementById(cId);
   if(!container) return;
   var row=document.createElement('div');
@@ -21081,10 +21191,24 @@ function selfTest(){
     ok('Muted text passes AA', r>=4.5, c+' = '+r.toFixed(2)+':1');
   });
 
-  // 7. duplicate ids silently break getElementById in a single-file app
+  // 7. the four link arrays must stay the same length, or rows lose their names
+  attempt('Task link arrays stay aligned',function(){
+    var bad=[];
+    ['tasks','extraTasks'].forEach(function(k){
+      ((window.state&&state[k])||[]).forEach(function(t){
+        if(!t||!t.hasLinks) return;
+        var L=[(t.links||[]).length,(t.linkNames||[]).length,(t.linkLeads||[]).length,(t.linkFilterIds||[]).length];
+        if(L[0]!==L[1]||L[1]!==L[2]||L[2]!==L[3]) bad.push(t.id+' '+L.join('/'));
+      });
+    });
+    ok('Task link arrays stay aligned', !bad.length, bad.join(', ')||'all equal');
+  });
+  // 8. duplicate ids silently break getElementById in a single-file app
   attempt('No duplicate element ids',function(){
     var seen={},dupes=[];
-    document.querySelectorAll('[id]').forEach(function(e){ if(seen[e.id]) dupes.push(e.id); seen[e.id]=1; });
+    document.querySelectorAll('[id]').forEach(function(e){
+      if(!e.id) return;                       // id="" is not a duplicate, it is just empty
+      if(seen[e.id]) dupes.push(e.id); seen[e.id]=1; });
     ok('No duplicate element ids', !dupes.length, dupes.slice(0,5).join(', ')||'none');
   });
 
