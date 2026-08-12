@@ -2047,6 +2047,17 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .sbw-more summary::-webkit-details-marker{display:none;}
 .sbw-more summary:hover{border-color:var(--line-2);color:var(--text);}
 .sbw-more[open] summary{border-color:var(--accent);color:var(--text);}
+/* who holds it — on the tile and at the head of the menu */
+.sbwt-who{font-size:9.5px;font-weight:800;letter-spacing:.4px;padding:2px 7px;border-radius:999px;
+  background:color-mix(in srgb,var(--cyan) 20%,transparent);color:#bdf0fb;
+  border:1px solid color-mix(in srgb,var(--cyan) 45%,transparent);white-space:nowrap;}
+.sbw-cur{font-size:11px;font-weight:700;color:#aab3c6;padding:7px 10px 6px;
+  border-bottom:1px solid var(--line-2);margin-bottom:3px;white-space:nowrap;}
+.sbw-cur b{color:#e8eefb;}
+.sbw-menu button.is-cur{opacity:.55;cursor:default;}
+.sbw-menu button i{font-style:normal;font-size:9.5px;font-weight:700;opacity:.75;margin-left:5px;}
+.sbw-menu button.is-narrow i{color:#ffc978;}
+.sbw-menu button.is-cur i{color:#8ef0b6;}
 .sbw-menu{position:absolute;right:0;top:calc(100% + 5px);z-index:30;min-width:172px;
   background:#141826;border:1px solid var(--line-2);border-radius:10px;padding:5px;
   box-shadow:0 10px 28px rgba(0,0,0,.5);display:flex;flex-direction:column;gap:2px;}
@@ -2258,6 +2269,18 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
    "already seen". Desaturate the picture, grey the panel, mute the figures — but keep
    the title at full contrast so it stays scannable. */
 /* focus queue — a finite, ranked handful instead of a wall of 600 */
+.eu-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px;padding:11px 14px;
+  border-radius:11px;font-size:13px;font-weight:700;line-height:1.45;color:#dbeaff;
+  background:color-mix(in srgb,#4c8dff 16%,transparent);
+  border:1.5px solid color-mix(in srgb,#4c8dff 50%,transparent);}
+.eu-bar b{color:#fff;font-weight:800;}
+.eu-bar-x{margin-left:auto;background:transparent;border:1.5px solid rgba(255,255,255,.25);
+  color:#dbeaff;border-radius:9px;padding:5px 11px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;}
+.btn.eu-none{white-space:nowrap;}
+.ld-arch{display:block;margin:0 0 9px;padding:7px 12px;border-radius:9px;font-size:11.5px;
+  font-weight:600;color:#a9b3c7;background:rgba(255,255,255,.04);border:1px solid var(--line-2);}
+.ld-arch b{color:#dfe6f3;font-weight:800;}
+.ld-arch i{font-style:normal;color:#8c94a8;}
 #view-leads .fq-entry{width:100%;margin:0 0 10px;padding:12px 15px;text-align:left;cursor:pointer;
   background:color-mix(in srgb,#4da3ff 14%,transparent);border:1.5px solid color-mix(in srgb,#4da3ff 46%,transparent);
   border-radius:12px;color:#dbeaff;font-family:inherit;font-size:13px;font-weight:600;line-height:1.45;}
@@ -3492,6 +3515,8 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
   border-color:color-mix(in srgb,var(--green) 60%,transparent);color:#7ef2c4;}
 
 .sbr-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.sb-pri.quiet{opacity:0;transition:opacity .12s ease;}
+.sbr:hover .sb-pri.quiet,.sbr:focus-within .sb-pri.quiet,.sb-card:hover .sb-pri.quiet{opacity:.85;}
 .sbr-n{font-size:11px;color:var(--muted-2);white-space:nowrap;}
 .sbr-n b{font-family:var(--font-mono);font-size:19px;font-weight:800;color:var(--o);
   margin-right:4px;letter-spacing:-.03em;}
@@ -3536,8 +3561,15 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 /* Out-with-the-VAs and Finished are for reading, not doing. The controls still
    exist for the rare re-route, but they stay folded until the tile is engaged -
    focus-within keeps them reachable by keyboard, so this is not a hover-only trap. */
+/* opacity:0 still occupies its space, so every calm tile carried a permanently empty
+   button row and looked broken. Lift the folded controls OUT of flow and lay them over
+   the foot of the tile: no reserved gap, and no height jump on hover either. */
+.sbr-tiles.calm .sbr{position:relative;}
 .sbr-tiles.calm .sbr-route,.sbr-tiles.calm .sbr-act,.sbr-tiles.calm .sbr-route2{
-  opacity:0;pointer-events:none;transition:opacity .12s ease;}
+  position:absolute;left:10px;right:10px;bottom:10px;margin:0;
+  opacity:0;pointer-events:none;transition:opacity .12s ease;
+  background:color-mix(in srgb,var(--bg) 88%,transparent);
+  padding:6px;border-radius:10px;box-shadow:0 6px 18px -8px rgba(0,0,0,.85);}
 .sbr-tiles.calm .sbr:hover .sbr-route,.sbr-tiles.calm .sbr:focus-within .sbr-route,
 .sbr-tiles.calm .sbr:hover .sbr-act,.sbr-tiles.calm .sbr:focus-within .sbr-act,
 .sbr-tiles.calm .sbr:hover .sbr-route2,.sbr-tiles.calm .sbr:focus-within .sbr-route2{
@@ -4371,6 +4403,7 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
     </div>
 
     <div id="jack-urgent"></div>
+    <div id="eu-banner"></div>
     <div id="jack-adds"></div>
     <div id="from-jack"></div>
     <div id="va-filters"></div>
@@ -4610,6 +4643,7 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
       <button class="nav" data-sc="5" onclick="setScore(this,5)"><span class="dot-ico" style="border-radius:50%;background:var(--amber)"></span>5+</button>
       </div>
     <div class="ribbon" id="ribbon"></div>
+    <div id="archive-line"></div>
     <div id="focus-entry"></div>
     <div id="bulk-entry"></div>
     <div id="bulk-panel" style="display:none"></div>
@@ -5176,7 +5210,7 @@ async function discord_task_notify(task) {
   var emoji = isMera ? '🟣' : '🟡';
   var leads = parseInt(task.leads) || 0;
   var timeStr = task.time || ((task.timeHrs||0) > 0 || (task.timeMins||0) > 0 ? (task.timeHrs||0)+'h '+(task.timeMins||0)+'m' : '');
-  var ms = state.shiftStart ? Date.now() - state.shiftStart - state.totalBreakMs : 0;
+  var ms = workedMs();
   var shiftHrs = (ms/3600000).toFixed(1);
   var allTasks = state.tasks.concat(state.extraTasks);
   var doneSoFar = allTasks.filter(function(t){return t.done;}).length;
@@ -5224,7 +5258,7 @@ async function discord_break_notify(isStart, breakDurationMins) {
   var isMera = state.currentVA === 'Mera';
   var colour = isStart ? 16750848 : 5763719; // amber for start, green for end
   var emoji = isMera ? '🟣' : '🟡';
-  var ms = state.shiftStart ? Date.now() - state.shiftStart - state.totalBreakMs : 0;
+  var ms = workedMs();
   var shiftHrs = (ms/3600000).toFixed(1);
   var allTasks = state.tasks.concat(state.extraTasks);
   var totalLeads = allTasks.reduce(function(s,t){return s+(parseInt(t.leads)||0);},0);
@@ -5275,7 +5309,7 @@ async function discord_shift_start_notify(va) {
 async function db_pushLiveStatus() {
   if (IS_PREVIEW) return;
   if (!DB_ENABLED || !state.currentVA || state.currentVA === 'Test' || !state.shiftStart) return;
-  var ms = Date.now() - state.shiftStart - state.totalBreakMs;
+  var ms = workedMs();
   var shiftHrs = (ms/3600000).toFixed(1);
   var allTasks = state.tasks.concat(state.extraTasks);
   var doneTasks = allTasks.filter(function(t){return t.done;});
@@ -5349,7 +5383,7 @@ function saveShiftDraft(manual) {
   if (state.submitted) return Promise.resolve(null); // Don't save drafts after EOD submitted
 
   // Capture exact elapsed ms so timer restores perfectly
-  var elapsedMs = Date.now() - state.shiftStart - state.totalBreakMs;
+  var elapsedMs = workedMs();
 
   var draft = {
     va: state.currentVA,
@@ -5358,6 +5392,7 @@ function saveShiftDraft(manual) {
     elapsedMs: elapsedMs,                 // exact worked ms at save time
     savedAt: Date.now(),                  // when we saved (to recalculate on restore)
     onBreak: state.onBreak,
+    breakStart: state.onBreak ? state.breakStart : null,   // a break in progress must survive a reload
     breaks: state.breaks,
     newsletterDay: state._newsletterDay || false,
     tasks: state.tasks.map(function(t) { var c=JSON.parse(JSON.stringify(t)); if(c.timerRun){ c.timerSec=ttElapsedT(t); c.timerRun=false; c.timerStart=null; } return c; }),
@@ -5536,7 +5571,10 @@ async function checkAndRestoreDraft(va) {
     state.currentVA = va;
     state.shiftStart = fakeShiftStart;
     state.totalBreakMs = restoredBreakMs;
-    state.onBreak = false;
+    /* This forced onBreak=false and dropped breakStart, so reloading during a break
+       ended it silently and paid every minute of it as worked time. */
+    state.onBreak = !!draft.onBreak;
+    state.breakStart = draft.onBreak ? (draft.breakStart || Date.now()) : null;
     state.breaks = draft.breaks || [];
     state.tasks = draft.tasks || [];
     state.extraTasks = draft.extraTasks || [];
@@ -5603,7 +5641,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v34.9';
+var APP_VERSION='v35.5';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -6705,7 +6743,8 @@ function selectVA(va) {
               state.currentVA = va;
               state.totalBreakMs = _ld.totalBreakMs || 0;
               state.shiftStart = Date.now() - (_ld.elapsedMs||0) - state.totalBreakMs;
-              state.onBreak = false;
+              state.onBreak = !!_ld.onBreak;
+              state.breakStart = _ld.onBreak ? (_ld.breakStart || Date.now()) : null;
               state.breaks = _ld.breaks || [];
               state.tasks = _ld.tasks || [];
               state.extraTasks = _ld.extraTasks || [];
@@ -6943,7 +6982,70 @@ function tkSecToggle(id){
   window['_tkOpen_'+id]=!(window['_tkOpen_'+id]!==undefined?window['_tkOpen_'+id]:false);
   renderTasks();
 }
+
+/* ── EU SHEETS: "there might not be any" ────────────────────────────────────
+   Jack: "if there isn't any, a button to say there isn't any — but then if EU sheets
+   come later on in the shift, a banner at the top and this becomes unlocked."
+   The task was mandatory with no honest way to say "nothing to do", so a VA either
+   skipped it (which reads as a miss) or invented a time. Pressing "None today" records
+   WHICH EU items existed at that moment; anything Jack sends afterwards is new, and new
+   work reopens the task and announces itself. */
+var EU_TASK_IDS=['eu-sheets','suz-eu'];
+function isEuTask(t){ return !!t && EU_TASK_IDS.indexOf(t.id)>=0; }
+function euItemIds(va){
+  var out=[];
+  try{
+    var o=jb_open(va||state.currentVA); if(!o) return out;
+    (o.items||[]).forEach(function(x){
+      if(x.done) return;
+      if(x.t==='eu'||x.t==='euasin') out.push(String(x.id||x.iid||''));
+    });
+  }catch(e){}
+  return out.filter(Boolean);
+}
+function euNone(i,isExtra){
+  var t=(isExtra?state.extraTasks:state.tasks)[i]; if(!t) return;
+  t._euNone=Date.now();
+  t._euSeen=euItemIds();                 // the EU work that existed when he said "none"
+  t.done=true; t.skipped=false; t.timeHrs=0; t.timeMins=0; t.time=''; t.leads='';
+  t.context=(t.context||'').replace(/^No EU sheets today\.?\s*/,'');
+  t.context='No EU sheets today.'+(t.context?' '+t.context:'');
+  renderTasks(); try{ updateStats(); }catch(e){}
+  try{ saveShiftDraft(false); }catch(e){}
+  try{ showToast('Logged: no EU sheets today — it reopens by itself if Jack sends any'); }catch(e){}
+}
+/* new EU work that arrived AFTER "none today" was pressed */
+function euNewItems(){
+  var res={n:0, task:null, idx:-1};
+  (state.tasks||[]).forEach(function(t,i){
+    if(!isEuTask(t)||!t._euNone) return;
+    var seen=t._euSeen||[];
+    var fresh=euItemIds().filter(function(id){ return seen.indexOf(id)<0; });
+    if(fresh.length){ res.n=fresh.length; res.task=t; res.idx=i; }
+  });
+  return res;
+}
+/* Reopen the task the moment new EU work lands, and say so at the top of the shift. */
+function euReopenCheck(){
+  var host=document.getElementById('eu-banner');
+  var f=euNewItems();
+  if(!f.n){ if(host) host.innerHTML=''; return false; }
+  var t=f.task;
+  if(t.done && t._euNone){                       // unlock it — there IS something now
+    t.done=false; t._euNone=null; t._euSeen=null;
+    t.context=(t.context||'').replace(/^No EU sheets today\.?\s*/,'');
+    try{ saveShiftDraft(false); }catch(e){}
+  }
+  if(host) host.innerHTML='<div class="eu-bar">\u{1F1EA}\u{1F1FA} <b>'+f.n+' EU sheet'+(f.n===1?'':'s')+'</b> '
+    +(f.n===1?'has':'have')+' come in since you said there were none — '
+    +'<b>EU Sheets is open again</b>, have a look when you can.'
+    +'<button class="eu-bar-x" onclick="euDismissBanner()">Got it</button></div>';
+  return true;
+}
+function euDismissBanner(){ var h=document.getElementById('eu-banner'); if(h) h.innerHTML=''; }
+
 function renderTasks() {
+  try{ euReopenCheck(); }catch(e){}
   var mandEl = document.getElementById('mandatory-tasks');
   var extEl  = document.getElementById('extra-tasks');
   mandEl.innerHTML = ''; extEl.innerHTML = '';
@@ -7275,6 +7377,11 @@ function buildTaskEl(task, i, isExtra) {
     actHtml = '<span style="color:var(--green);font-size:13px;font-weight:600;">&#10003; Completed &amp; locked</span>';
   } else {
     actHtml = '<button class="btn btn-success" onclick="markDone('+i+','+isExtra+')">&#10003; Mark Complete</button>';
+    if (isEuTask(task)) {
+      actHtml += '<button class="btn btn-ghost eu-none" onclick="euNone('+i+','+isExtra+')" '
+        +'title="Nothing to do on this one today \u2014 it reopens by itself if Jack sends EU sheets later">'
+        +'\u2014 There aren\u2019t any today</button>';
+    }
     if (task.mandatory && !isExtra) {
       actHtml += '<button class="btn btn-danger" onclick="openSkipModal('+i+')">Skip Task</button>';
     } else {
@@ -8083,10 +8190,30 @@ function confirmSkip() {
    Two consequences that DO matter: Jack's board shows her stale, and a crash loses more
    than the promised minute. So on returning to the tab, repaint and re-sync immediately
    instead of waiting for the next tick. */
+/* ── WORKED TIME, ONE DEFINITION ────────────────────────────────────────────
+   Audited against Jack's live Suz shift (12/08/2026): the draft had onBreak:true and
+   totalBreakMs:0 — because break time is only ADDED when a break ends. Every elapsed
+   calculation in the app subtracted totalBreakMs and nothing else, so a break that is
+   still running counted as WORKED time: on the shift clock, in the autosaved draft,
+   and in the hours submitted at EOD. Her draft was showing 108 minutes while she sat
+   on a break. One function now owns this, and it counts the break in progress. */
+function breakSoFarMs(){
+  var t=(state&&state.totalBreakMs)||0;
+  if(state&&state.onBreak&&state.breakStart){
+    var live=Date.now()-state.breakStart;
+    if(live>0) t+=live;
+  }
+  return t;
+}
+function workedMs(){
+  if(!state||!state.shiftStart) return 0;
+  var ms=Date.now()-state.shiftStart-breakSoFarMs();
+  return ms>0?ms:0;
+}
 function paintShiftTimer() {
   if (!state.shiftStart) return;
   var el = document.getElementById('shift-timer'); if (!el) return;
-  var ms = Date.now() - state.shiftStart - state.totalBreakMs;
+  var ms = workedMs();
   if (ms < 0) ms = 0;
   var h = Math.floor(ms/3600000).toString().padStart(2,'0');
   var m = Math.floor((ms%3600000)/60000).toString().padStart(2,'0');
@@ -8446,7 +8573,7 @@ function updateStats() {
   var leads=0, done=0;
   all.forEach(function(t){ leads+=parseInt(t.leads)||0; if(t.done) done++; });
   var _sheet=vaSheetLeadsToday(); if(_sheet!=null) leads=Math.max(_sheet,leads);
-  var ms  = state.shiftStart ? Date.now()-state.shiftStart-state.totalBreakMs : 0;
+  var ms  = workedMs();
   var hrs = ms/3600000;
   document.getElementById('stat-leads').textContent = leads;
   document.getElementById('stat-tasks').textContent = done;
@@ -8464,7 +8591,7 @@ function renderEodRecap() {
   var all = state.tasks.concat(state.extraTasks);
   var leads = 0; all.forEach(function(t){ leads += parseInt(t.leads)||0; });
   var _shR=vaSheetLeadsToday(); if(_shR!=null) leads=Math.max(_shR,leads);
-  var ms = state.shiftStart ? Date.now()-state.shiftStart-state.totalBreakMs : 0;
+  var ms = workedMs();
   var hrs = ms/3600000; if (hrs < 0) hrs = 0;
   var mand = state.tasks.filter(function(t){ return t.mandatory !== false; });
   var mdone = mand.filter(function(t){ return t.done; }).length;
@@ -8520,7 +8647,7 @@ async function submitEOD() {
   var all=state.tasks.concat(state.extraTasks);
   var leads=0; all.forEach(function(t){ leads+=parseInt(t.leads)||0; });
   var _shS=vaSheetLeadsToday(); if(_shS!=null) leads=Math.max(_shS,leads);
-  var ms  = Date.now()-state.shiftStart-state.totalBreakMs;
+  var ms  = workedMs();
   var hrs = (ms/3600000).toFixed(1);
   var done = all.filter(function(t){return t.done;}).length;
   var skip = all.filter(function(t){return t.skipped;}).length;
@@ -15253,6 +15380,28 @@ function getF(){
   // decided stays put until he clicks off it, same as everywhere else.
   return res.filter(function(l){ return f.set[l.id]; });
 }
+/* ── ARCHIVE ────────────────────────────────────────────────────────────────
+   Jack's spec, as answered: leads older than 30 days drop off the board, it happens
+   automatically with nothing to press, NOTHING is ever written to the VA's Google
+   Sheet, and a search still finds them. The sheet stays the permanent record — this
+   only decides what the working board shows. Decided leads are untouched. */
+var LEAD_ARCHIVE_DAYS=30;
+function ldAgeDays(l){
+  try{
+    var d=liDate(l); if(!d||isNaN(d.getTime())) return null;
+    var t=ukNow(); t.setHours(0,0,0,0); d.setHours(0,0,0,0);
+    return Math.round((t-d)/86400000);
+  }catch(e){ return null; }
+}
+function ldArchived(l){
+  if(!l) return false;
+  if(l.status||l.islead!==null) return false;         // a decision keeps it out of the archive
+  var a=ldAgeDays(l);
+  return a!=null && a>LEAD_ARCHIVE_DAYS;
+}
+function ldArchivedCount(){
+  return (window.leads||[]).filter(ldArchived).length;
+}
 function getFNoFocus(){
   const fs=document.getElementById('f-store')?.value||'all';
   const fc=document.getElementById('f-cat')?.value||'all';
@@ -15284,6 +15433,9 @@ function getFNoFocus(){
     if(fsrc!=='all'&&l.src!==fsrc)return false;
     if(scoreMin>0&&l._sc.total<scoreMin)return false;
     if(q&&!(l.title.toLowerCase().includes(q)||l.asin.toLowerCase().includes(q)))return false;
+    // past the cut-off and never decided: off the board — but a search reaches straight
+    // through, because "did we ever find this?" is the whole reason he keeps the history.
+    if(!q&&ldArchived(l))return false;
     return true;
   }).sort((a,b)=>{
     if(sortBy==='score')return b._sc.total-a._sc.total;
@@ -15537,6 +15689,18 @@ function renderList(){
   try{
     var _fe=document.getElementById('focus-entry');
     if(_fe) _fe.innerHTML=focusEntryHTML();
+  }catch(e){}
+  try{
+    var _ae=document.getElementById('archive-line');
+    if(_ae){
+      var _n=ldArchivedCount();
+      var _q=(document.getElementById('search')?.value||'').trim();
+      _ae.innerHTML=_n
+        ? '<span class="ld-arch">\u{1F5C4} <b>'+_n+'</b> undecided lead'+(_n===1?'':'s')+' over '
+          +LEAD_ARCHIVE_DAYS+' days old '+(_q?'are included because you\u2019re searching':'are archived')
+          +' <i>\u2014 search still finds them, and the sheet is untouched</i></span>'
+        : '';
+    }
   }catch(e){}
   try{
     var _be=document.getElementById('bulk-entry');
@@ -18836,10 +19000,16 @@ function sbBadge(status){
   var m={Draft:'draft',Assigned:'assigned',Started:'started',Completed:'done'};
   return '<span class="sb-badge sb-'+(m[status]||'draft')+'">'+status+'</span>';
 }
+/* Normal priority rendered a bare "\u00b7" on every tile — a floating dot with no meaning
+   that reads as a rendering fault, which is exactly what Jack kept seeing. HIGH is the
+   only state worth shouting; Normal now says "Normal" and only appears when the tile is
+   engaged, so it stays changeable without being visual noise. */
 function sbPriPill(b){
   var p=b.priority||'Normal';
+  if(p==='Normal') return '<button class="sb-pri sb-pri-normal quiet" onclick="sbCyclePriority(\''+b.id+'\')" '
+    +'title="Priority: Normal \u2014 click to change">Normal</button>';
   return '<button class="sb-pri sb-pri-'+p.toLowerCase()+'" onclick="sbCyclePriority(\''+b.id+'\')" '
-    +'title="Priority: '+p+' \u2014 click to change">'+(p==='Normal'?'\u00b7':p)+'</button>';
+    +'title="Priority: '+p+' \u2014 click to change">'+p+'</button>';
 }
 function sbCardHTML(b, forVA){
   // dimmed = "not actionable by you". Jack's OWN in-progress batch is very much
@@ -19111,10 +19281,29 @@ function sbWorkRowHTML(b){
         +(b._tagSize>1?'<u>'+b._tagIdx+'/'+b._tagSize+'</u>':'')+'</span>'
       +'<span class="sbr-day'+(age>=6?' stale':'')+'" title="'+escHtml(sbDayLabel(b.date))+'">'
         +escHtml(sbAgeLabel(b.date))+'</span>'
+      /* "Yours to work" no longer means "only yours" — an All batch is on the VAs' lists
+         at the same time, and Jack could not see that anywhere. */
+      +(sbPeople(b.assigned_to).length>1
+        ? '<span class="sbwt-who" title="This batch is on '+escHtml(sbHolders(b))+'\u2019s list'
+          +' \u2014 it is not yours alone">'+escHtml(sbHoldersShort(b))+'</span>' : '')
       +'<details class="sbw-more"><summary title="More">⋯</summary><div class="sbw-menu">'
+        +'<div class="sbw-cur">Currently with <b>'+escHtml(sbHolders(b))+'</b></div>'
+        /* Jack: "the dropdown shouldn't let me send it if it's already with them".
+           Re-sending an All batch to Mera is not a send at all — she already has it —
+           so the menu now says what each option would actually DO. */
         +[['Mera','→ '+escHtml(vaDisp('Mera'))],['Suz','→ '+escHtml(vaDisp('Suz'))],
           ['Both','→ Both VAs'],['All','→ All 3 of us']].map(function(v){
-            return '<button onclick="sbAssign(\''+b.id+'\',\''+v[0]+'\')">'+v[1]+'</button>'; }).join('')
+            var cur=String(b.assigned_to||'');
+            if(cur===v[0]) return '<button class="is-cur" disabled title="This is already where it is">'
+              +v[1]+' <i>current</i></button>';
+            var now=sbPeople(cur), next=sbPeople(v[0]);
+            var adds=next.filter(function(x){ return now.indexOf(x)<0; });
+            if(!adds.length) return '<button class="is-narrow" onclick="sbAssign(\''+b.id+'\',\''+v[0]+'\')" '
+              +'title="'+escHtml(next.map(vaDisp).join(' and '))+' already has this \u2014 '
+              +'this would TAKE IT OFF '+escHtml(now.filter(function(x){return next.indexOf(x)<0;}).map(vaDisp).join(' and '))+'">'
+              +v[1]+' <i>narrows it</i></button>';
+            return '<button onclick="sbAssign(\''+b.id+'\',\''+v[0]+'\')" title="Adds '
+              +escHtml(adds.map(vaDisp).join(' and '))+'">'+v[1]+'</button>'; }).join('')
         +(started?'<button onclick="sbJackUnstart(\''+b.id+'\')">↺ Not started after all</button>':'')
         +'<button class="danger" onclick="sbScrapBatch(\''+b.id+'\')">✕ Bin this batch</button>'
       +'</div></details>'
@@ -19513,13 +19702,33 @@ function sbLand(id){
    every paste creates a storefront_batch stamped with its date, so the newest batch
    date for a tag IS the last time Sarah pasted into it. A tag that has gone quiet is
    the thing worth spotting: it either stopped being built or stopped being sent. */
+/* Jack: "remember this is when Sarah does this."
+   b.date is the day a batch is FOR, and the import screen lets Sarah backdate it
+   (Today / Yesterday / Mon 10 / a date picker). Live data proves the gap: a batch
+   dated 10/08 was actually pasted on 11/08. created_at is when the row was written,
+   which is the only field that means "Sarah pasted". */
+function sbPasteISO(b){
+  if(b&&b.created_at){
+    var d=new Date(b.created_at);
+    if(!isNaN(d.getTime())){
+      try{
+        var g={};
+        new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',year:'numeric',month:'2-digit',day:'2-digit'})
+          .formatToParts(d).forEach(function(p){ g[p.type]=p.value; });
+        if(g.year&&g.month&&g.day) return g.year+'-'+g.month+'-'+g.day;
+      }catch(e){}
+    }
+  }
+  return (typeof sbToISO==='function'?sbToISO(b&&b.date):'')||String((b&&b.date)||'').slice(0,10);
+}
 function sbLastPaste(qid){
-  var newest='';
+  var newest='', forDate='';
   (SB_BATCHES||[]).forEach(function(b){
     if(b.storefront_id!==qid) return;
-    var iso=(typeof sbToISO==='function'?sbToISO(b.date):'')||String(b.date||'').slice(0,10);
-    if(iso&&iso>newest) newest=iso;
+    var iso=sbPasteISO(b);
+    if(iso&&iso>newest){ newest=iso; forDate=b.date||''; }
   });
+  sbLastPaste._for=forDate;
   return newest;
 }
 function sbAgoLabel(iso){
@@ -19568,10 +19777,11 @@ function sbQueueRowHTML(q){
     +'<td><input class="sb-inp sb-inp-note" value="'+escHtml(q.notes||'')
       +'" placeholder="e.g. household brands \u00b7 Sarah builds it Mondays" '
       +'onchange="sbQueueSet(\''+q.id+'\',\'notes\',this.value)"></td>'
-    +(function(){ var a=sbAgoLabel(sbLastPaste(q.id));
-        return '<td class="sb-ctr"><span class="sbq-ago '+a.cls+'"'
-          +(a.d!=null?' title="'+a.d+' day'+(a.d===1?'':'s')+' since the last batch on this tag"':' title="No batch has ever landed on this tag"')
-          +'>'+a.txt+'</span></td>'; })()
+    +(function(){ var iso=sbLastPaste(q.id), fd=sbLastPaste._for, a=sbAgoLabel(iso);
+        var tip = (a.d==null) ? 'Sarah has never pasted into this tag'
+          : ('Sarah pasted '+a.d+' day'+(a.d===1?'':'s')+' ago'
+             + (fd && sbToISO && sbToISO(fd)!==iso ? ' \u2014 she dated that batch '+fd+', so the two differ' : ''));
+        return '<td class="sb-ctr"><span class="sbq-ago '+a.cls+'" title="'+escHtml(tip)+'">'+a.txt+'</span></td>'; })()
     +(SB_SHOW_DETAILS
        ? '<td><input class="sb-inp" value="'+escHtml(q.frequency||'')+'" placeholder="Daily" onchange="sbQueueSet(\''+q.id+'\',\'frequency\',this.value)"></td>'
        : '')
@@ -19720,7 +19930,7 @@ function sbQueuesHTML(){
       +'<th>Tag</th><th>Where a paste ends up</th>'
       +'<th>Priority</th>'
       +'<th title="What is actually in this tag — brands, who is in it, how it is built">What&rsquo;s in it</th>'
-      +'<th title="The newest batch on this tag — i.e. the last time a paste landed here">Last paste</th>'
+      +'<th title="When Sarah last pasted into this tag \u2014 the moment the batch was created, not the day she dated it for">Last paste</th>'
       +(SB_SHOW_DETAILS?'<th>Frequency</th>':'')
       +'<th>Active</th><th></th></tr></thead>'
     +'<tbody id="sbq-body">'+sbQueueRowsHTML()+'</tbody>'
@@ -20912,6 +21122,25 @@ setTimeout(function(){
    `b.assigned_to===va` only ever matched a single name, so every "Both" batch since the
    module shipped landed on nobody's task list and sat on Jack's board looking assigned.
    Jack asked six times for an all-three option; this is why adding it wasn't enough. */
+/* One place that answers "who actually holds this batch", so a tile, a menu and a
+   filter can never disagree about it again. */
+function sbPeople(assigned){
+  var a=String(assigned||'');
+  if(a==='Both') return ['Mera','Suz'];
+  if(a==='All')  return ['Mera','Suz','Jack'];
+  if(a==='Mera'||a==='Suz'||a==='Jack') return [a];
+  return [];
+}
+function sbHolders(b){
+  var p=sbPeople(b&&b.assigned_to);
+  if(!p.length) return 'nobody yet';
+  return p.map(function(x){ return x==='Jack'?'you':vaDisp(x); }).join(' + ');
+}
+function sbHoldersShort(b){
+  var p=sbPeople(b&&b.assigned_to);
+  if(p.length===3) return 'ALL 3';
+  return p.map(function(x){ return x==='Jack'?'YOU':String(vaDisp(x)).toUpperCase(); }).join(' + ');
+}
 function sbGoesTo(b, va){
   var a=String(b&&b.assigned_to||'');
   if(a===va) return true;
