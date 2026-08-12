@@ -2275,6 +2275,114 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
   border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);}
 .pf-src.own{margin-left:0;background:rgba(255,255,255,.06);color:#9aa3b8;border-color:var(--line-2);}
 .pf-hint{margin-left:10px;text-transform:none;letter-spacing:0;font-size:9.5px;color:var(--muted-2);font-weight:600;}
+/* storefront batches — one card, compact rows */
+.sbv-sec{margin-top:14px;}
+.sbv-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.sbv-sum{margin-left:auto;font-size:11px;font-weight:600;color:#a9b3c7;}
+.sbv-sum b{color:#e8eefb;font-weight:800;}
+.sbv-sum .late{font-style:normal;color:#ff9d9d;font-weight:700;}
+.sbv-how{font-size:11.5px;color:#a9b3c7;line-height:1.5;padding:7px 12px;margin:8px 0 10px;
+  border-left:3px solid color-mix(in srgb,var(--accent) 55%,transparent);
+  background:rgba(255,255,255,.03);border-radius:0 9px 9px 0;}
+.sbv-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:9px 12px;margin-bottom:7px;
+  border-radius:11px;background:rgba(255,255,255,.028);border:1px solid var(--line-2);}
+.sbv-row.next{border-color:color-mix(in srgb,var(--accent) 55%,transparent);
+  background:color-mix(in srgb,var(--accent) 9%,transparent);}
+.sbv-row.run{border-color:color-mix(in srgb,#3ac478 55%,transparent);}
+.sbv-row.held{opacity:.62;}
+.sbv-main{display:flex;align-items:center;gap:8px;flex:1 1 240px;min-width:0;flex-wrap:wrap;}
+.sbv-name{font-size:13px;font-weight:800;color:#eef2fb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px;}
+.sbv-name i{font-style:normal;font-weight:700;color:#9aa3b8;font-size:11px;}
+.sbv-n{font-size:11px;font-weight:700;color:#b8c1d4;background:rgba(255,255,255,.06);
+  padding:2px 8px;border-radius:999px;white-space:nowrap;}
+.sbv-age{font-size:10.5px;font-weight:700;color:#a9b3c7;padding:2px 8px;border-radius:999px;
+  background:rgba(255,255,255,.05);white-space:nowrap;}
+.sbv-age.late{color:#ffb3b3;background:rgba(245,69,95,.14);border:1px solid rgba(245,69,95,.4);}
+.sbv-hi{font-size:9.5px;font-weight:800;letter-spacing:.4px;color:#ffb3c0;background:rgba(245,69,95,.16);
+  border:1px solid rgba(245,69,95,.45);padding:2px 7px;border-radius:999px;}
+.eod-blocked{outline:2.5px solid #f5455f !important;outline-offset:3px;border-radius:10px;
+  animation:eodPulse 1.1s ease-in-out 2;}
+@keyframes eodPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,69,95,.55);}50%{box-shadow:0 0 0 9px rgba(245,69,95,0);}}
+.shotv{position:fixed;inset:0;z-index:9999;background:rgba(4,5,9,.94);
+  display:flex;flex-direction:column;backdrop-filter:blur(3px);}
+.shotv-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:11px 16px;
+  background:#0d1017;border-bottom:1px solid var(--line-2);flex-shrink:0;}
+.shotv-t{font-size:13px;font-weight:800;color:#eef2fb;max-width:46vw;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;}
+.shotv-hint{font-size:11.5px;color:#a9b3c7;font-weight:600;}
+.shotv-ext{margin-left:auto;font-size:12px;font-weight:700;color:#bdd7ff;text-decoration:none;
+  padding:6px 12px;border-radius:9px;background:color-mix(in srgb,#4c8dff 16%,transparent);
+  border:1px solid color-mix(in srgb,#4c8dff 45%,transparent);}
+.shotv-x{background:transparent;border:1.5px solid rgba(255,255,255,.25);color:#e6ecf7;
+  border-radius:9px;width:34px;height:32px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;}
+.shotv-body{flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;padding:18px;}
+.shotv-body img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;
+  cursor:zoom-in;user-select:none;-webkit-user-drag:none;}
+.shotv-body img.zoom{max-width:none;max-height:none;width:auto;height:auto;cursor:grab;}
+.shotv-fail{color:#ffb3b3;font-size:14px;font-weight:700;text-align:center;line-height:1.7;}
+.shotv-fail a{color:#bdd7ff;}
+.aud-work{margin:14px 0 4px;padding:14px 16px;border-radius:12px;
+  background:rgba(255,255,255,.03);border:1px solid var(--line-2);}
+.aud-work-h{font-size:12.5px;font-weight:800;color:#e8eefb;margin-bottom:11px;}
+.aud-work-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:9px;}
+.awc{padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.03);
+  border:1px solid var(--line-2);border-left:3px solid var(--line-2);}
+.awc em{display:block;font-style:normal;font-size:9.5px;font-weight:800;letter-spacing:.6px;
+  text-transform:uppercase;color:#8c94a8;margin-bottom:4px;}
+.awc b{display:block;font-size:19px;font-weight:800;color:#eef2fb;line-height:1.15;font-family:var(--font-head,inherit);}
+.awc span{display:block;font-size:10.5px;color:#a9b3c7;margin-top:3px;line-height:1.45;}
+.awc.good{border-left-color:#3ac478;} .awc.good b{color:#8ef0b6;}
+.awc.warn{border-left-color:#ffb03c;} .awc.warn b{color:#ffd08a;}
+.awc.bad {border-left-color:#f5455f;} .awc.bad  b{color:#ff9d9d;}
+.aud-work-n{margin-top:10px;font-size:11.5px;color:#ffd08a;line-height:1.5;}
+.tk-arch{margin-top:18px;padding-top:14px;border-top:1px solid var(--line-2);}
+.tk-arch-h{font-size:12.5px;font-weight:800;color:#e8eefb;margin-bottom:10px;}
+.tk-arch-h span{font-weight:600;color:#a9b3c7;font-size:11px;margin-left:8px;}
+.tk-arch-r{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:9px 12px;margin-bottom:7px;
+  border-radius:10px;background:rgba(255,255,255,.03);border:1px solid var(--line-2);}
+.tk-arch-r b{font-size:12.5px;color:#dfe6f3;font-weight:700;}
+.tk-arch-r span{font-size:11px;color:#8c94a8;flex:1;min-width:120px;}
+.tk-arch-b,.tk-arch-x{font-family:inherit;font-size:11.5px;font-weight:700;border-radius:9px;
+  padding:6px 11px;cursor:pointer;white-space:nowrap;}
+.tk-arch-b{background:color-mix(in srgb,var(--accent) 20%,transparent);color:#d8d2ff;
+  border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);}
+.tk-arch-x{background:transparent;border:1px solid rgba(245,69,95,.4);color:#ff9d9d;}
+.tk-nextchip{display:inline-block;margin-left:9px;font-size:9px;font-weight:800;letter-spacing:.6px;
+  padding:3px 8px;border-radius:999px;vertical-align:middle;color:#0a0b10;background:var(--accent);
+  box-shadow:0 0 14px -4px var(--accent);}
+.tk-ph-sub{display:block;font-size:10.5px;font-weight:600;color:#9aa3b8;letter-spacing:0;
+  text-transform:none;margin-top:2px;}
+.tk-ph-main>.tk-sec-h .tk-sec-n{background:rgba(255,255,255,.06);color:#b8c1d4;font-weight:700;}
+.tk-ph-end>.tk-sec-h .tk-sec-t{color:#ffd08a;}
+.tk-ph-start>.tk-sec-h .tk-sec-t{color:#9fd8ff;}
+.sbv-share{font-size:9.5px;font-weight:800;letter-spacing:.3px;color:#d8cfff;
+  background:color-mix(in srgb,var(--accent) 20%,transparent);
+  border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);padding:2px 8px;border-radius:999px;}
+.sbv-also{font-size:10.5px;font-weight:700;color:#9fd8ff;background:rgba(76,141,255,.13);
+  border:1px solid rgba(76,141,255,.4);padding:2px 8px;border-radius:999px;}
+.sbv-held{font-size:10.5px;font-weight:700;color:#ffd08a;background:rgba(255,176,60,.14);
+  border:1px solid rgba(255,176,60,.4);padding:2px 8px;border-radius:999px;}
+.sbv-live{font-size:10.5px;font-weight:800;color:#8ef0b6;}
+.sbv-ctl{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-left:auto;}
+.sbv-open{font-size:11.5px;font-weight:800;color:#bdd7ff;text-decoration:none;padding:6px 11px;
+  border-radius:9px;background:color-mix(in srgb,#4c8dff 16%,transparent);
+  border:1px solid color-mix(in srgb,#4c8dff 45%,transparent);white-space:nowrap;}
+.sbv-t{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono,inherit);
+  font-size:11.5px;font-weight:800;color:#cfd8e8;background:rgba(255,255,255,.05);
+  border:1px solid var(--line-2);border-radius:9px;padding:6px 11px;cursor:pointer;white-space:nowrap;}
+.sbv-t.on{color:#06210f;background:#3ac478;border-color:#3ac478;}
+.sbv-kp{display:inline-flex;border:1px solid var(--line-2);border-radius:9px;overflow:hidden;}
+.sbv-kp button{font-size:10.5px;font-weight:800;padding:6px 9px;background:transparent;border:none;
+  color:#9aa3b8;cursor:pointer;font-family:inherit;}
+.sbv-kp button.yes{background:rgba(58,196,120,.25);color:#8ef0b6;}
+.sbv-kp button.no{background:rgba(245,69,95,.22);color:#ffb3b3;}
+.sbv-lead{display:inline-flex;align-items:center;gap:2px;border:1px solid var(--line-2);border-radius:9px;}
+.sbv-lead button{width:26px;height:28px;background:transparent;border:none;color:#cfd8e8;font-size:14px;
+  font-weight:800;cursor:pointer;}
+.sbv-lead button.plus{color:#8ef0b6;}
+.sbv-lead b{min-width:20px;text-align:center;font-size:12.5px;color:#fff;}
+.sbv-done{font-size:11.5px;font-weight:800;color:#06210f;background:#3ac478;border:none;
+  border-radius:9px;padding:7px 13px;cursor:pointer;font-family:inherit;white-space:nowrap;}
 .eu-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px;padding:11px 14px;
   border-radius:11px;font-size:13px;font-weight:700;line-height:1.45;color:#dbeaff;
   background:color-mix(in srgb,#4c8dff 16%,transparent);
@@ -2429,7 +2537,11 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .dup-armed{outline:2px solid var(--accent);outline-offset:2px;border-radius:10px;}
 .d-shot{display:block;margin-top:9px;border:1px solid var(--line-2);border-radius:10px;overflow:hidden;
   text-decoration:none;background:rgba(255,255,255,.03);}
-.d-shot img{display:block;width:100%;max-height:230px;object-fit:cover;object-position:top;}
+/* was object-fit:cover with a 230px cap — it showed the top band of the screenshot and
+   cut the actual product, price and SAS panel out of frame. Contain shows all of it. */
+.d-shot img{display:block;width:100%;max-height:340px;object-fit:contain;object-position:center;
+  background:#0b0c12;}
+.d-shot{cursor:zoom-in;}
 .d-shot span{display:block;padding:6px 10px;font-size:11px;color:var(--muted-2);}
 .d-shot:hover{border-color:var(--accent);}
 .d-shot.d-shot-fail img{display:none;}
@@ -4514,7 +4626,7 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
             <button type="button" class="eod-tag" onclick="addIssueTag('Amazon issue')">Amazon issue</button>
             <button type="button" class="eod-tag win" onclick="addIssueTag('Good win','win')">&#9733; Good win</button>
           </div>
-          <textarea id="eod-notes" class="eod-notes" placeholder="e.g. Found a strong homeware brand on sale &#8212; 6 leads from one brand. Storefront X performing well..."></textarea>
+          <textarea id="eod-notes" class="eod-notes" placeholder="Anything worth telling Jack? A brand on sale, a storefront doing well, something that blocked you, anything odd &#8212; this is the one place he reads."></textarea>
         </div>
       </div>
 
@@ -4657,7 +4769,7 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
       <div class="list-pane">
         <div class="list-search">
           <svg class="ls-search-ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-          <input type="text" id="search" placeholder="Search title or ASIN…" oninput="renderList()">
+          <input type="text" id="search" placeholder="Search title or ASIN…" oninput="ldSearchInput()">
           <kbd class="ls-kbd">/</kbd>
         </div>
         <div class="list-sort">
@@ -5647,7 +5759,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v35.9';
+var APP_VERSION='v37.0';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -6228,7 +6340,8 @@ function cloneTaskTemplates(tasks){
       mandatory:t.mandatory !== false,
       hint:String(t.hint||''),
       hasLinks:!!t.hasLinks,
-      tickOnly:t.tickOnly===true
+      tickOnly:t.tickOnly===true,
+      archived:t.archived===true      // parked tasks must survive the clone, or Archive is a no-op
     };
   });
 }
@@ -6817,7 +6930,8 @@ function startShift(va, newsletterDay, previewVA) {
   state._newsletterDay = newsletterDay;
   state._goalCelebrated = false; state._tasksCelebrated = false;
 
-  var base  = getTaskTemplateSource(tmplVA);
+  /* an archived task is parked, not deleted — it must not reach the VA's shift */
+  var base  = getTaskTemplateSource(tmplVA).filter(function(t){ return !t.archived; });
   var tasks = base.map(function(t) {
     return { id:t.id, name:t.name, mandatory:t.mandatory, tickOnly:t.tickOnly===true, hint:t.hint||'', hasLinks:t.hasLinks||false,
              done:false, skipped:false, skipReason:'', time:'', timeHrs:0, timeMins:0, leads:'', context:'', links:t.hasLinks?['','','']:[] };
@@ -6897,7 +7011,8 @@ function startShift(va, newsletterDay, previewVA) {
     state._jbItemCount=_openItems.length;
     // storefront batches assigned to this VA arrive as ordinary tasks (High first)
     try{
-      if(SB_BATCHES) sbInjectBatchTasks(tmplVA, tasks);
+      if(SB_BATCHES){ try{ sbLoadDoneFlags().then(function(){ try{ if(state.currentVA) renderTasks(); }catch(e){} }); }catch(e){}
+        sbInjectBatchTasks(tmplVA, tasks); }
       else if(typeof sbLoadBatches==='function') sbLoadBatches().then(function(){
         try{ if(state.currentVA===va && sbInjectBatchTasks(tmplVA, state.tasks)) renderTasks(); }catch(e){}
       });
@@ -7075,6 +7190,17 @@ function taskLinksEnsure(t,li){
   while(t.linkLeads.length<n)     t.linkLeads.push('');
   while(t.linkFilterIds.length<n) t.linkFilterIds.push('');
 }
+/* Drafts saved before that fix still hold the seeded 0s. A filter row that has a 0 but
+   was never opened (no timer, no time) was never really logged — clear it back to ''. */
+function taskLinksHealSeeded(t){
+  if(!t||!t.hasLinks) return false;
+  var ids=t.linkFilterIds||[], led=t.linkLeads||[], secs=t.linkSecs||[], fixed=false;
+  for(var i=0;i<led.length;i++){
+    if(!ids[i]) continue;                       // only saved-filter rows were seeded
+    if(led[i]===0 && !(secs[i]>0)){ led[i]=''; fixed=true; }
+  }
+  return fixed;
+}
 function taskLinksNormalise(t){
   if(!t||!t.hasLinks) return false;
   t.links=t.links||[]; t.linkNames=t.linkNames||[];
@@ -7125,6 +7251,7 @@ function taskLinksRepairAll(){
   ['tasks','extraTasks'].forEach(function(key){
     (state[key]||[]).forEach(function(t){
       if(taskLinksNormalise(t)) any=true;
+      try{ if(taskLinksHealSeeded(t)) any=true; }catch(e){}
       try{ if(taskLinksRepair(t)) any=true; }catch(e){}
     });
   });
@@ -7157,7 +7284,23 @@ function renderTasks() {
 
   function fill(sec,list){
     var body=sec.querySelector('.tk-sec-b');
-    list.forEach(function(r){ body.appendChild(buildTaskEl(r.t,r.i,r.extra)); });
+    /* Storefront batches stay AT THEIR PLACE in the POA order (they're spliced in right
+       after the Storefronts host task), but render as ONE compact card, not N full rows.
+       Jack, on the first cut which dumped them at the bottom: "surely storefront should
+       go with and around where storefronts is on their POA". */
+    var sbRecs=list.filter(function(r){ return r.t && r.t.sbBatchId; });
+    var sbPlaced=false;
+    list.forEach(function(r){
+      if(r.t && r.t.sbBatchId){
+        if(!sbPlaced){
+          sbPlaced=true;
+          try{ body.appendChild(sbVaGroupEl(sbRecs)); }
+          catch(e){ sbRecs.forEach(function(x){ body.appendChild(buildTaskEl(x.t,x.i,x.extra)); }); }
+        }
+        return;
+      }
+      body.appendChild(buildTaskEl(r.t,r.i,r.extra));
+    });
     return sec;
   }
   if(fromJack.length){
@@ -7171,8 +7314,49 @@ function renderTasks() {
     mandEl.appendChild(fill(taskSectionEl('📣 From Jack — today only'+(urgent?' · '+urgent+' urgent':''),
       fromJack.length,'tk-sec-jack'+(urgent?' has-urgent':'')),fromJack));
   }
+  /* Storefront batches were full task rows — six of them swamped the ticklist and the
+     recurring shift structure disappeared under a wall of identical purple (Jack: "still
+     got major issues here... it needs a whole redesign"). They are ONE kind of work, so
+     they get ONE card: compact rows inside a single section, oldest debt flagged first,
+     done ones collapsing to a line. The task objects underneath are unchanged — timers,
+     drafts, EOD and Jack's board all keep reading the same state. */
+  /* ── PHASES ─────────────────────────────────────────────────────────────
+     19 near-identical rows in one list gave no sense of shape. Three phases match how
+     the shift actually runs. Jack's caveat, in his words: "they might not be able to get
+     all the main work done — if that makes sense." So MAIN WORK is explicitly open-ended:
+     it shows how much got through, never a red "incomplete", because not finishing it is
+     normal. Only the checks at each end are things that must be ticked. */
   if(mand.length){
-    mandEl.appendChild(fill(taskSectionEl('Still to do',mand.length),mand));
+    var PHASE_START=['leadsheet','telegram','pp-main','ht-filters','kpf-daily','kpf-tue','kpf-thu',
+                     'suz-leadsheet','suz-telegram','suz-pp','suz-kpf-daily','newsletter-a'];
+    var PHASE_END=['pp-light','telegram-eod','oos-sheet','leadsheet-eod',
+                   'suz-pp-light','suz-telegram-eod','suz-oos-sheet','suz-leadsheet-eod'];
+    function phaseOf(t){
+      var id=String(t.id||'');
+      if(PHASE_START.indexOf(id)>=0) return 0;
+      if(PHASE_END.indexOf(id)>=0)   return 2;
+      return 1;                                   // sourcing, EU, storefronts, POA, batches
+    }
+    var ph=[[],[],[]];
+    mand.forEach(function(r){ ph[phaseOf(r.t)].push(r); });
+    var META=[
+      {t:'\u2600\ufe0f Start of shift', cls:'tk-ph-start', sub:'quick checks before you get going'},
+      {t:'\u26cf\ufe0f Main work',      cls:'tk-ph-main',  sub:'get through what you can \u2014 finishing every one is not expected'},
+      {t:'\u{1F319} Before you log off', cls:'tk-ph-end',   sub:'these do need ticking'}
+    ];
+    var anyPhase=ph.filter(function(g){ return g.length; }).length>1;
+    if(anyPhase){
+      ph.forEach(function(group,gi){
+        if(!group.length) return;
+        var doneN=group.filter(function(r){ return r.t.done; }).length;
+        var sec=taskSectionEl(META[gi].t+'<span class="tk-ph-sub">'+META[gi].sub+'</span>',
+                              (gi===1? (doneN+' of '+group.length+' so far') : (doneN+'/'+group.length)),
+                              META[gi].cls);
+        mandEl.appendChild(fill(sec,group));
+      });
+    } else {
+      mandEl.appendChild(fill(taskSectionEl('Still to do',mand.length),mand));
+    }
   }
   if(own.length){
     extEl.appendChild(fill(taskSectionEl('Their own work',own.length,'tk-sec-own'),own));
@@ -7186,6 +7370,90 @@ function renderTasks() {
   updateTaskProgress();
   updateStats();
   try{ renderShiftBar(); }catch(e){}
+}
+
+/* ── STOREFRONT BATCHES: ONE CARD ──────────────────────────────────────────
+   Each row: what it is → open it → time it → Keepa yes/no → leads → done.
+   Every control is the SAME handler the old full rows used (ttToggle, sbBatchKeepa,
+   sbBatchLead, markDone), so nothing about the data changes — only the amount of
+   screen it takes to show it. */
+function sbVaStartedBy(task){
+  var b=(SB_BATCHES||[]).find(function(x){ return x.id===task.sbBatchId; });
+  return (b&&b.status==='Started')?(b.started_by||''):'';
+}
+function sbVaRowHTML(r){
+  var t=r.t, i=r.i, ex=r.extra?1:0, bx=(r.extra?'e':'t')+i;
+  var b=(SB_BATCHES||[]).find(function(x){ return x.id===t.sbBatchId; })||{};
+  var n=b.asin_count||0, age=sbAgeDays(b.date), running=!!t.timerRun;
+  var elapsed=(typeof ttElapsedT==='function')?ttElapsedT(t):0;
+  var kp=t.keepaTracks||'';
+  var lc=(t.leads===''||t.leads==null)?0:(+t.leads||0);
+  var me=vaDisp(state.currentVA||'');
+  var by=sbVaStartedBy(t);
+  /* Jack: "some stuff goes to both VAs to do — not locked when Mera has it". A batch
+     assigned to Both/All is EVERYONE'S work: the other VA starting it is information,
+     never a lock. Only a batch owned by one person locks for anyone else. */
+  var shared=(b.assigned_to==='Both'||b.assigned_to==='All');
+  var otherBy=(by && by!==state.currentVA && by!==me && by!=='')?by:null;
+  var other=(!shared && otherBy)?otherBy:null;
+  var alsoOn=(shared && otherBy)?otherBy:null;
+  var waiting=shared?sbWaitingOn(b).filter(function(w){ return w!==state.currentVA; }):[];
+  var ageChip = (age==null)?'' : age<=0?'<span class="sbv-age">today</span>'
+    : age===1?'<span class="sbv-age">yesterday</span>'
+    : '<span class="sbv-age'+(age>=2?' late':'')+'">'+age+' days</span>';
+  return '<div class="sbv-row'+(running?' run':'')+(other?' held':'')+'" data-lid="'+t.sbBatchId+'">'
+    +'<div class="sbv-main">'
+      +'<b class="sbv-name" title="'+escHtml(t.sbNote||'')+'">'+escHtml(b.storefront_name||'Queue')
+        +(b.batch_number>1?' <i>#'+b.batch_number+'</i>':'')+'</b>'
+      +'<span class="sbv-n">'+n+' ASINs</span>'
+      +ageChip
+      +((b.priority==='High')?'<span class="sbv-hi">HIGH</span>':'')
+      +(other?'<span class="sbv-held" title="Started by '+escHtml(vaDisp(other))+' — leave it with them">'+escHtml(vaDisp(other))+' has it</span>':'')
+      +(shared?'<span class="sbv-share" title="Sent to both of you — you each do your own pass, it only closes when everyone has">BOTH'
+          +(waiting.length?' · '+escHtml(waiting.map(vaDisp).join(' + '))+' still to do':' · you are the last one')+'</span>':'')
+      +(alsoOn?'<span class="sbv-also" title="'+escHtml(vaDisp(alsoOn))+' is working it right now">'+escHtml(vaDisp(alsoOn))+' on it now</span>':'')
+      +(running?'<span class="sbv-live">● timing</span>':'')
+    +'</div>'
+    +'<div class="sbv-ctl">'
+      +(t.jbUrl?'<a class="sbv-open" href="'+String(t.jbUrl).replace(/"/g,'&quot;')+'" target="_blank" title="Open all '+n+' ASINs in one Keepa list">Keepa &#8599;</a>':'')
+      +(other?'' :
+        '<button type="button" class="sbv-t'+(running?' on':'')+'" onclick="ttToggle('+i+','+ex+')">'
+          +'<span id="bp-el-'+bx+'">'+sfFmt(elapsed)+'</span> '+(running?'&#9632;':'&#9654;')+'</button>'
+        +'<span class="sbv-kp"><button type="button" class="'+(kp==='yes'?'yes':'')+'" onclick="sbBatchKeepa('+i+','+ex+',\'yes\')">KT&nbsp;Y</button>'
+          +'<button type="button" class="'+(kp==='no'?'no':'')+'" onclick="sbBatchKeepa('+i+','+ex+',\'no\')">N</button></span>'
+        +'<span class="sbv-lead"><button type="button" onclick="sbBatchLead('+i+','+ex+',-1)">&minus;</button>'
+          +'<b id="bl-n-'+bx+'">'+lc+'</b>'
+          +'<button type="button" class="plus" onclick="sbBatchLead('+i+','+ex+',1)">+</button></span>'
+        +'<button type="button" class="sbv-done" onclick="markDone('+i+','+ex+')">&#10003; Done</button>')
+    +'</div>'
+    +'</div>';
+}
+function sbVaGroupEl(rows){
+  var sec=document.createElement('div');
+  sec.className='tk-sec sbv-sec';
+  var totA=0, oldest=0;
+  rows.forEach(function(r){
+    var b=(SB_BATCHES||[]).find(function(x){ return x.id===r.t.sbBatchId; })||{};
+    totA+=(b.asin_count||0);
+    var a=sbAgeDays(b.date); if(a!=null&&a>oldest) oldest=a;
+  });
+  /* oldest first inside the card — the "clear this one first" rule enforced by ORDER,
+     not by repeating a warning sentence on every row. High priority still tops it. */
+  var ordered=rows.slice().sort(function(x,y){
+    var px=(x.t.sbPriority==='High')?0:1, py=(y.t.sbPriority==='High')?0:1;
+    if(px!==py) return px-py;
+    var ax=sbAgeDays(((SB_BATCHES||[]).find(function(b){return b.id===x.t.sbBatchId;})||{}).date)||0;
+    var ay=sbAgeDays(((SB_BATCHES||[]).find(function(b){return b.id===y.t.sbBatchId;})||{}).date)||0;
+    return ay-ax;
+  });
+  sec.innerHTML='<div class="tk-sec-h sbv-h">\u{1F3EC} Storefront batches'
+    +'<span class="sbv-sum"><b>'+rows.length+'</b> to work · <b>'+totA+'</b> ASINs'
+    +(oldest>=2?' · <em class="late">oldest waiting '+oldest+' days</em>':'')+'</span></div>'
+    +'<div class="sbv-how">'+escHtml(sbHowText())+'</div>'
+    +'<div class="tk-sec-b">'+ordered.map(sbVaRowHTML).join('')+'</div>';
+  var first=sec.querySelector('.sbv-row:not(.held)');
+  if(first) first.classList.add('next');
+  return sec;
 }
 /* a slim always-visible bar: how far through, what's next, leads so far */
 function renderShiftBar(){
@@ -7216,11 +7484,22 @@ function renderShiftBar(){
 function markNextUpTask(){
   try{
     document.querySelectorAll('.task-item.next-up').forEach(function(el){ el.classList.remove('next-up'); });
+    document.querySelectorAll('.tk-nextchip').forEach(function(el){ el.remove(); });
     var rows=document.querySelectorAll('#mandatory-tasks .task-item, #extra-tasks .task-item');
     for(var i=0;i<rows.length;i++){
       var r=rows[i];
       if(r.classList.contains('done')||r.classList.contains('skipped')) continue;
-      r.classList.add('next-up'); return;
+      r.classList.add('next-up');
+      /* a faint border was the only cue \u2014 easy to miss in a list of 19. Say it. */
+      try{
+        if(!r.querySelector('.tk-nextchip')){
+          var c=document.createElement('span');
+          c.className='tk-nextchip'; c.textContent='DO THIS NEXT';
+          var h=r.querySelector('.task-title')||r.querySelector('.tk-title')||r.firstElementChild;
+          if(h) h.appendChild(c);
+        }
+      }catch(e){}
+      return;
     }
   }catch(e){}
 }
@@ -7581,8 +7860,9 @@ function buildFields(task, i, isExtra) {
           +'<button type="button" class="bl-b plus" onclick="sbBatchLead('+i+','+isExtra+',1)">+</button>'
         +'</div>'
       +'</div>'
-      +'<input class="bp-note" type="text" placeholder="Anything worth telling Jack? (optional)" value="'
-        +(task.context||'').replace(/"/g,'&quot;')+'" oninput="updateField('+i+','+isExtra+',\'context\',this.value)">'
+    /* Measured over 25 real shifts: this box was filled on 11 of 492 tasks (2%). It cost
+       every task row vertical space and collected almost nothing. Asked once at wrap-up
+       instead \u2014 one question they will actually answer beats a box they never touch. */
       +'<button type="button" class="bp-done" onclick="markDone('+i+','+isExtra+')">&#10003; Mark Complete</button>'
     +'</div>';
   }
@@ -7613,8 +7893,7 @@ function buildFields(task, i, isExtra) {
     + '</div>'
     + (task.hasLinks ? '' :
         '<input class="field-input tf-note" id="lf-'+sfx+'" type="hidden" value="'+(task.leads||'')+'">')
-    + '<div class="field-group field-full"><div class="field-label">Anything worth telling Jack?</div>'
-      + '<input class="field-input" type="text" placeholder="e.g. strong brand on sale, dug deep…" value="'+(task.context||'').replace(/"/g,'&quot;')+'" oninput="updateField('+i+','+isExtra+',\'context\',this.value)"></div>'
+    /* per-task note removed \u2014 see the note above; one question at wrap-up instead */
     + '</div>';
 
   if (task.hasLinks) {
@@ -7911,12 +8190,41 @@ function markDone(i, isExtra) {
   }
   // the controls are on the row now, so point at them rather than forcing the panel open
   var sfxD = (isExtra?'e':'t')+i;
-  if (!task.timeHrs && !task.timeMins) {
-    qlFlash(sfxD);
-    showToast('Log the time first &#8212; tap +15m / +30m / +1h on the row', true); return;
+  /* A batch's time IS its timer — the row has no +15m chips, so demanding them made Done
+     impossible. Pressing Done banks whatever the timer holds (stopping it if running),
+     exactly like stopping it by hand would. No timer ever started → she is told to Start,
+     not sent hunting for chips that are not there. */
+  if (task.sbBatchId) {
+    var bankSec = (typeof ttElapsedT==='function') ? ttElapsedT(task) : (task.timerSec||0);
+    if (task.timerRun) { task.timerRun=false; task.timerStart=null; task.timerSec=bankSec; }
+    if (!task.timeHrs && !task.timeMins && bankSec>=30) {
+      var bm=Math.max(1,Math.round(bankSec/60));
+      task.timeHrs=Math.floor(bm/60); task.timeMins=bm%60;
+      task.time=fmtDur(task.timeHrs,task.timeMins); task._timeFromTimer=true;
+    }
+    if (!task.timeHrs && !task.timeMins) {
+      showToast('Press &#9654; Start and work the batch first &#8212; the timer is the time log', true); return;
+    }
+  } else {
+    /* "Faster logging" \u2014 they time the task, then Done refused because the timer was
+       still running and no chips had been tapped. Done now banks whatever the timer holds,
+       exactly as stopping it by hand would. Only asks for chips if no timer ever ran. */
+    if (task.timerRun || task.timerSec) {
+      var _sec=(typeof ttElapsedT==='function')?ttElapsedT(task):(task.timerSec||0);
+      if (task.timerRun){ task.timerRun=false; task.timerStart=null; task.timerSec=_sec; }
+      if (!task.timeHrs && !task.timeMins && _sec>=30){
+        var _m=Math.max(1,Math.round(_sec/60));
+        task.timeHrs=Math.floor(_m/60); task.timeMins=_m%60;
+        task.time=fmtDur(task.timeHrs,task.timeMins); task._timeFromTimer=true;
+      }
+    }
+    if (!task.timeHrs && !task.timeMins) {
+      qlFlash(sfxD);
+      showToast('Log the time first &#8212; press &#9654; Start, or tap +15m / +30m / +1h', true); return;
+    }
   }
   if (task.leads === '' || task.leads === null || task.leads === undefined) {
-    qlFlash(sfxD);
+    if(!task.sbBatchId) qlFlash(sfxD);
     showToast('Set leads found &#8212; tap + on the row (or &#8722; once for zero)', true); return;
   }
   // bank any link timer still running — forgetting to stop is the normal case
@@ -7928,7 +8236,19 @@ function markDone(i, isExtra) {
   // jb_taskTicked was ONLY on the tick-only path above — but every From-Jack item and
   // one-off task takes THIS path, so none of them were ever marked done in the rolling
   // cloud bucket. That's why they kept coming back the next day as "carried / overdue".
-  if(task.sbBatchId){ try{ sbComplete(task.sbBatchId); }catch(e){} }
+  if(task.sbBatchId){
+    try{
+      var _b=(SB_BATCHES||[]).find(function(x){ return x.id===task.sbBatchId; });
+      if(_b && sbIsShared(_b)){
+        var last=sbMarkDoneBy(task.sbBatchId, state.currentVA);
+        if(last){ sbComplete(task.sbBatchId); }          // everyone's in — close it
+        else {
+          var left=sbWaitingOn(_b).map(vaDisp).join(' and ');
+          showToast('Your pass is logged \u2014 still waiting on '+left);
+        }
+      } else { sbComplete(task.sbBatchId); }
+    }catch(e){}
+  }
   jb_taskTicked(task); sfltPoaTicked(task); sfltPoaLinksTicked(task); discord_task_notify(task); db_pushLiveStatus(); saveShiftDraft(false);
 }
 
@@ -8011,6 +8331,17 @@ function sfTickRunning(){
 function renderStorefronts(){
   var host=document.getElementById('storefront-list'); if(!host) return;
   var list=state.storefronts||[];
+  /* Jack, pointing at this exact box under a card of 7 real batches: "fuck is this".
+     It's the old self-logging module from before batches existed. While real batches
+     are on the shift and she hasn't logged anything in here, it is pure noise. It
+     comes back the moment the batches are gone or it holds her own entries. */
+  try{
+    var sec=document.getElementById('storefront-section');
+    if(sec){
+      var hasBatches=(state.tasks||[]).some(function(t){ return t.sbBatchId && !t.done && !t.skipped; });
+      sec.style.display=(hasBatches && !list.length)?'none':'';
+    }
+  }catch(e){}
   if(!list.length){ host.innerHTML='<div class="sf-empty">No storefronts yet. Hit &ldquo;Add storefront&rdquo; when you start scanning one.</div>'; return; }
   host.innerHTML=list.map(function(sf){
     var el=sfElapsed(sf), h=el/3600, n=parseInt(sf.leads)||0, lph=(h>0.01&&n>0)?(n/h).toFixed(1)+' /hr':'— /hr';
@@ -8125,9 +8456,17 @@ function jb_itemTask(it,i){
   var carried=jb_isCarried(it.addedOn); var cd=carried?jb_carryDays(it.addedOn):0;
   return { id:'jbitem-'+iid, jbIid:iid, name:ty[1]+' · '+nm, jbLabel:nm, jbReason:(it.r||'').trim(),
     jbAddedOn:it.addedOn||'', jbCarried:carried, jbCarryDays:cd, jbPri:(it.pri||'Medium'), mandatory:true,
-    hint:(carried?'Carried over from '+it.addedOn+' — still needs doing.':'Sent by Jack today.')+(it.leads?' Log how many leads this gave you.':'')+(it.timer?' Use Start/Stop on the row to time it.':''),
+    hint:(it.t==='asin'
+      ? ((carried?'Carried over from '+it.addedOn+'. ':'')+'Copy it or open it on Amazon, check it, then tick it off. No timer needed.')
+      : (carried?'Carried over from '+it.addedOn+' — still needs doing.':'Sent by Jack today.')
+        +(it.leads?' Log how many leads this gave you.':'')+(it.timer?' Use Start/Stop on the row to time it.':'')),
     hasLinks:false, done:false, skipped:false, skipReason:'', time:'', timeHrs:0, timeMins:0, leads:'', context:'', links:[],
-    jbType:it.t, jbUrl:isUrl?it.v:'', jbAsin:(it.t==='asin'?String(it.v).trim():''), jbTimer:!!it.timer, jbLeads:!!it.leads,
+    /* Jack: "asins like that just get the button on here so they don't have to open it —
+       they won't start and stop for one asin, it will be a quick 30 second job." So a lone
+       ASIN never demands a timer or a lead count: copy it, open it, tick it. */
+    tickOnly:(it.t==='asin'),
+    jbType:it.t, jbUrl:isUrl?it.v:'', jbAsin:(it.t==='asin'?String(it.v).trim():''),
+    jbTimer:(it.t==='asin'?false:!!it.timer), jbLeads:(it.t==='asin'?false:!!it.leads),
     timerSec:0, timerRun:false, timerStart:null };
 }
 /* Leads split the way Jack actually sells: A2A UK, A2A EU, everything else OA.
@@ -8739,15 +9078,36 @@ async function submitEOD() {
   // The double-tap lock is taken AFTER validation, not before. Taking it first meant a
   // missing skip-reason or Keepa count jammed the Submit button for 12 seconds and
   // answered the next tap with "Already submitting…", which is simply untrue.
+  /* "VAs can't end their shift." Measured: when submission is blocked, the field it is
+     blocking on sits 972px ABOVE the viewport — she taps Submit at the bottom of the page,
+     focus jumps to something she cannot see, the toast scrolls past, and to her the button
+     is simply dead. A block she can't see is indistinguishable from a broken app.
+     Bring the blocker to her, and make it obvious. */
+  function eodBlock(el,msg){
+    try{
+      if(el){
+        el.scrollIntoView({behavior:'smooth',block:'center'});
+        el.classList.add('eod-blocked');
+        setTimeout(function(){ try{ el.classList.remove('eod-blocked'); }catch(e){} },2600);
+        setTimeout(function(){ try{ el.focus({preventScroll:true}); }catch(e){ el.focus(); } },320);
+      }
+    }catch(e){}
+    showToast(msg,true);
+  }
   var bad = state.tasks.filter(function(t){ return t.mandatory&&t.skipped&&!t.skipReason.trim(); });
-  if (bad.length) { showToast('Add a reason for each skipped task first', true); return; }
+  if (bad.length) {
+    var bi=state.tasks.indexOf(bad[0]);
+    eodBlock(document.querySelector('#mandatory-tasks .task-item:nth-of-type('+(bi+1)+')'),
+      'Add a reason for the skipped task first — it is highlighted above');
+    return;
+  }
 
   // Keepa validation
   var keepaInput = document.getElementById('keepa-today');
   var keepaTodayVal = keepaInput ? keepaInput.value.trim() : '';
   if (state.currentVA !== 'Test' && keepaTodayVal === '') {
-    if (keepaInput) keepaInput.focus();
-    showToast('Please enter your Keepa tracker count', true); return;
+    eodBlock(keepaInput,'Enter your Keepa tracker count first — scrolled to it for you');
+    return;
   }
   // validation passed — NOW lock out a second submission
   state._eodSubmitting = true;
@@ -10253,7 +10613,9 @@ function mgr_dayByDay(weekRecs,va,monStr){
     html+='<div id="'+rowId+'" style="display:none;border-top:1px solid rgba(255,255,255,0.05);padding:8px 12px 10px 70px;background:#0d0f16;border-radius:0 0 8px 8px;">';
     if(tasksArr.length){
       html+='<div style="display:flex;font-size:9px;color:#5a6378;text-transform:uppercase;letter-spacing:1.4px;font-weight:700;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.04);margin-bottom:3px;">'
-        +'<span style="min-width:52px;">Ticked</span><span style="flex:1;">Task</span><span style="min-width:40px;text-align:right;">Leads</span>'
+        +'<span style="min-width:52px;">Ticked</span><span style="flex:1;">Task</span>'
+        +'<span style="min-width:74px;text-align:right;" title="How long they spent \u2014 green when the Start/Stop timer produced it, amber when it was typed in by hand">Time</span>'
+        +'<span style="min-width:40px;text-align:right;">Leads</span>'
         +'</div>';
       tasksArr.forEach(function(t){
         var isSk=t.skipped;
@@ -10262,9 +10624,27 @@ function mgr_dayByDay(weekRecs,va,monStr){
         var nameStyle=isSk?'color:#f2647f99;text-decoration:line-through;':'color:#b6bccb;';
         var leadsVal=parseInt(t.leads)||0;
         var leadsHtml=leadsVal>0?'<span style="color:#f2c200;">'+leadsVal+'</span>':'<span style="color:#3a4258;">—</span>';
+        /* Jack: "when i audit their day i wanna know how long they spent on each thing —
+           i want them using start and stop, maybe a column to say if they did or didn't."
+           Green = the timer produced it. Amber = typed in by hand. Grey dash = no time at
+           all, which is the thing worth chasing. */
+        var _sec=(t.timerSec!=null?+t.timerSec:0);
+        var _mins=(parseInt(t.timeHrs)||0)*60+(parseInt(t.timeMins)||0);
+        var _timed=(_sec>=30)||!!t._timeFromTimer;
+        var spentHtml;
+        if(_mins>0||_sec>=30){
+          var _show=_mins>0?((_mins>=60?Math.floor(_mins/60)+'h ':'')+(_mins%60)+'m')
+                           :(Math.round(_sec/60)+'m');
+          spentHtml='<span style="color:'+(_timed?'#10d99a':'#f5a524')+';" title="'
+            +(_timed?'timed with Start/Stop':'typed in by hand — no timer used')+'">'+_show
+            +(_timed?' \u23f1':' \u270e')+'</span>';
+        } else {
+          spentHtml='<span style="color:#3a4258;" title="no time recorded at all">\u2014</span>';
+        }
         html+='<div style="display:flex;align-items:baseline;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.03);">'
           +'<span style="min-width:52px;color:'+timeCol+';font-size:10px;flex-shrink:0;">'+timeLabel+'</span>'
           +'<span style="flex:1;font-size:12px;'+nameStyle+'">'+t.name+'</span>'
+          +'<span style="min-width:74px;text-align:right;font-size:10px;">'+spentHtml+'</span>'
           +'<span style="min-width:40px;text-align:right;font-size:10px;">'+leadsHtml+'</span>'
           +(isSk&&t.skipReason?'</div><div style="padding:1px 0 3px 52px;"><span style="font-size:9px;color:#f2647f55;font-style:italic;">'+t.skipReason+'</span>':'')
           +'</div>';
@@ -11905,7 +12285,8 @@ function mgr_collectTaskEditorRows(){
       hint:row.querySelector('.task-edit-hint').value.trim(),
       mandatory:row.querySelector('.task-edit-mandatory').checked,
       hasLinks:row.querySelector('.task-edit-links').checked,
-      tickOnly:row.querySelector('.task-edit-tickonly').checked
+      tickOnly:row.querySelector('.task-edit-tickonly').checked,
+      archived:row.getAttribute('data-arch')==='1'
     });
   });
   mgr_settingsTaskDrafts[mgr_settingsTaskVA]=rows;
@@ -11916,7 +12297,8 @@ function mgr_taskSettingsHTML(settings,standalone){
   var rows=mgr_getTaskEditorRows(va);
   var poa=mgr_settingsPoaDrafts[va]!==undefined?mgr_settingsPoaDrafts[va]:((settings.poaNotes&&settings.poaNotes[va])||'');
   var rowHtml=rows.map(function(t,i){
-    return '<div class="task-editor-row" data-index="'+i+'">'
+    if(t.archived) return '';
+    return '<div class="task-editor-row" data-index="'+i+'" data-arch="0">'
       +'<input type="hidden" class="task-edit-id" value="'+escHtml(t.id)+'">'
       +'<div class="task-editor-index">'+(i+1)+'</div>'
       +'<div class="settings-field"><label class="settings-label">Task name</label><input class="settings-input task-edit-name" value="'+escHtml(t.name)+'"></div>'
@@ -11929,7 +12311,7 @@ function mgr_taskSettingsHTML(settings,standalone){
       +'<div class="task-editor-actions">'
         +'<button class="icon-btn" title="Move up" onclick="mgr_moveTaskRow('+i+',-1)">↑</button>'
         +'<button class="icon-btn" title="Move down" onclick="mgr_moveTaskRow('+i+',1)">↓</button>'
-        +'<button class="icon-btn" title="Delete task" onclick="mgr_deleteTaskRow('+i+')" style="color:#ff6680;">Del</button>'
+        +'<button class="icon-btn" title="Park it — off the VA\u2019s shift, keeps the wording and any attached filters" onclick="mgr_archiveTaskRow('+i+')" style="color:#ffb84d;">Archive</button>'
       +'</div>'
       +sfltTaskStripHTML(t.id,i)
       +'</div>';
@@ -11949,7 +12331,34 @@ function mgr_taskSettingsHTML(settings,standalone){
       +'<div class="settings-field"><label class="settings-label">Standing note on the &quot;Jack POA&quot; task ('+va+')</label><textarea class="settings-input" id="setting-poa-notes" style="min-height:80px;resize:vertical;" placeholder="A permanent note glued to the recurring Jack POA task (optional)">'+escHtml(poa)+'</textarea></div>'
       +'<div style="font-size:11px;color:var(--muted-2);line-height:1.55;margin-top:8px;">Permanent \u2014 shown every shift. For today-only briefs use From Jack instead.</div>'
     +'</div>'
-    +'<div id="task-editor-list" class="task-editor-list">'+rowHtml+'</div>'
+    +'<div id="task-editor-list" class="task-editor-list">'+rowHtml
+      +rows.map(function(t,i){
+          if(!t.archived) return '';
+          // hidden carrier so mgr_collectTaskEditorRows() keeps archived tasks in the draft
+          return '<div class="task-editor-row" data-index="'+i+'" data-arch="1" style="display:none;">'
+            +'<input type="hidden" class="task-edit-id" value="'+escHtml(t.id)+'">'
+            +'<input class="task-edit-name" type="hidden" value="'+escHtml(t.name)+'">'
+            +'<textarea class="task-edit-hint" style="display:none">'+escHtml(t.hint||'')+'</textarea>'
+            +'<input type="checkbox" class="task-edit-mandatory" '+(t.mandatory?'checked':'')+'>'
+            +'<input type="checkbox" class="task-edit-links" '+(t.hasLinks?'checked':'')+'>'
+            +'<input type="checkbox" class="task-edit-tickonly" '+(t.tickOnly?'checked':'')+'>'
+            +'</div>';
+        }).join('')
+      +'</div>'
+    +(function(){
+        var arch=rows.map(function(t,i){ return {t:t,i:i}; }).filter(function(r){ return r.t.archived; });
+        if(!arch.length) return '';
+        return '<div class="tk-arch"><div class="tk-arch-h">\u{1F5C4} Archived <span>'+arch.length
+          +' parked \u2014 not on '+va+'\u2019s shift</span></div>'
+          +arch.map(function(r){
+              return '<div class="tk-arch-r"><b>'+escHtml(r.t.name||'Untitled')+'</b>'
+                +(r.t.hint?'<span>'+escHtml(String(r.t.hint).slice(0,80))+'</span>':'')
+                +'<button class="tk-arch-b" onclick="mgr_restoreTaskRow('+r.i+')">\u21ba Restore</button>'
+                +'<button class="tk-arch-x" onclick="mgr_deleteTaskRow('+r.i+')">Delete for good</button>'
+              +'</div>';
+            }).join('')
+          +'</div>';
+      })()
     +'<div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">'
       +'<button class="btn btn-ghost" onclick="mgr_addTaskRow()">+ Add Task</button>'
       +'<button class="btn btn-success" onclick="mgr_saveTaskSettings()">Save POA & Ticklist</button>'
@@ -11975,8 +12384,33 @@ function mgr_moveTaskRow(idx,dir){
   mgr_settingsTaskDrafts[mgr_settingsTaskVA]=rows;
   mgr_repaintTicklist();
 }
+/* ── TICKLIST ARCHIVE ──────────────────────────────────────────────────────
+   Jack, twice: "still have no archive". The only control was Del, which threw the task
+   away along with its wording, its flags and any filters attached to it — so a task he
+   wasn't using this month had to be rebuilt from scratch later. Archiving parks it
+   instead: off the VAs' shifts, one tap to bring back, and a real delete still available
+   once it's in the archive. Stored on the task itself (archived:true), so it rides the
+   existing save with no new table and nothing to run. */
+function mgr_archiveTaskRow(idx){
+  var rows=mgr_collectTaskEditorRows();
+  if(!rows[idx]) return;
+  rows[idx].archived=true;
+  mgr_settingsTaskDrafts[mgr_settingsTaskVA]=rows;
+  mgr_repaintTicklist();
+  try{ showToast('Archived \u2014 it will not appear on '+mgr_settingsTaskVA+'\u2019s shift. Restore it any time below.'); }catch(e){}
+}
+function mgr_restoreTaskRow(idx){
+  var rows=mgr_collectTaskEditorRows();
+  if(!rows[idx]) return;
+  rows[idx].archived=false;
+  mgr_settingsTaskDrafts[mgr_settingsTaskVA]=rows;
+  mgr_repaintTicklist();
+  try{ showToast('Back on the ticklist \u2014 remember to Save'); }catch(e){}
+}
 function mgr_deleteTaskRow(idx){
   var rows=mgr_collectTaskEditorRows();
+  var t=rows[idx]||{};
+  if(!confirm('Delete "'+(t.name||'this task')+'" for good?\n\nThe wording, its settings and any filters attached to it go with it. Archiving keeps all of that.')) return;
   rows.splice(idx,1);
   mgr_settingsTaskDrafts[mgr_settingsTaskVA]=rows;
   mgr_repaintTicklist();
@@ -15145,14 +15579,37 @@ async function leadPullOnce(force){
           var changed=[];
           refresh.forEach(function(rec2){
             var cur=have[rec2.id]; if(!cur||cur===true) return;
-            var row={id:rec2.id}, any=false;
+            var any=false;
             SHEETCOLS.forEach(function(k){
               var nv=rec2[k];
               if(nv===''||nv===null||nv===undefined) return;   // sheet blank → keep what we have
               if(String(cur[k]==null?'':cur[k])===String(nv)) return;
-              row[k]=nv; any=true;
+              any=true;
             });
-            if(any) changed.push(row);
+            if(!any) return;
+            /* THE BUG THAT KEPT SOURCE BLANK FOREVER.
+               This used to send ONLY the changed fields — {id, store, source_method}. But a
+               PostgREST upsert is INSERT ... ON CONFLICT DO UPDATE, so the INSERT half still
+               has to satisfy every NOT NULL column. Postgres answered 400 every single time:
+                 23502: null value in column "sheet_id" violates not-null constraint
+               errs++ swallowed it, so the pull reported "0 updated" and looked healthy while
+               NO row was ever refreshed. Send the whole record instead — it carries sheet_id,
+               tab, row_index and the rest — MINUS the three columns Jack owns, so his
+               decisions still cannot be overwritten by the sheet. */
+            /* Every object in a bulk upsert must carry the SAME keys — PostgREST answers
+               PGRST102 "All object keys must match" otherwise. So build one fixed shape:
+               identity columns (which satisfy the NOT NULLs) plus every sheet-owned column.
+               Where the sheet cell is blank we resend the value already in the database, so
+               "sheet blank → keep what we have" still holds without a null wiping anything.
+               status / islead / jack_comment are never in this list — they stay Jack's. */
+            var row={ id:rec2.id, sheet_id:rec2.sheet_id, tab:rec2.tab,
+                      row_index:rec2.row_index, va:rec2.va };
+            SHEETCOLS.forEach(function(k){
+              var v=rec2[k];
+              if(v===''||v===null||v===undefined) v=(cur[k]===undefined?null:cur[k]);
+              row[k]=v;
+            });
+            changed.push(row);
           });
           if(changed.length){
             try{
@@ -15160,15 +15617,18 @@ async function leadPullOnce(force){
                 headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
                   'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
                 body:JSON.stringify(changed)});
-              if(up.ok) updated+=changed.length; else errs++;
-            }catch(e){ errs++; }
+              if(up.ok) updated+=changed.length;
+              else { errs++; try{ window.LEAD_PULL_ERR=(await up.text()).slice(0,300); }catch(e2){} }
+            }catch(e){ errs++; window.LEAD_PULL_ERR=String(e&&e.message||e); }
           }
         }
       }
     }
   }catch(e){ errs++; }
   _leadPullAt=Date.now(); _leadPullBusy=false;
-  window.LEAD_PULL_LAST={at:new Date().toISOString(),added:added,updated:updated,checked:checked,errors:errs};
+  window.LEAD_PULL_LAST={at:new Date().toISOString(),added:added,updated:updated,checked:checked,
+    errors:errs, lastError:window.LEAD_PULL_ERR||null};
+  if(errs && window.console) console.warn('[lead pull] '+errs+' error(s):', window.LEAD_PULL_ERR||'(no body)');
   return window.LEAD_PULL_LAST;
 }
 /* Is he mid-edit in the leads view? Any focused input/textarea there counts —
@@ -15714,6 +16174,13 @@ function afterDecision(id){
       if(!ldRowRefresh(id)) renderList();
       var row0=document.querySelector('.litem[data-lid="'+id+'"]');
       if(row0) row0.classList.add('litem-decided');
+      /* Jack: "the how many i bought isn't popping up until a while". setSt() sets
+         _noteFor and expects the DETAIL pane to repaint — but the row-only fast path
+         added for speed never repainted it, so the qty box only turned up whenever
+         something else happened to redraw the pane (a refresh, clicking another lead,
+         the 60s pull). Repaint the pane too when this is the lead on screen; it is one
+         element, so the 175ms full-list rebuild is still avoided. */
+      if(selId===id){ try{ renderDetail(); }catch(e){} }
       return;
     }
     // hold it on screen while it's the one being looked at
@@ -15766,9 +16233,28 @@ function undoDecision(id){
   var bar=document.getElementById('lead-undo-bar'); if(bar) bar.classList.remove('show');
   try{ renderList(); selectLead(id,true); }catch(e){}
 }
+/* Measured on Jack's real 735 leads: one renderList() is 116ms with 678 rows on screen,
+   so typing "nespresso" fired nine of them — 354ms of blocked main thread, and the list
+   he was looking at belonged to an earlier keystroke. That is the "search is super
+   glitchy" and the "search doesn't filter" report: both the same stall.
+   Type freely; the list catches up once, when he stops. */
+var _ldSearchT=null, _ldSearchLast=null;
+function ldSearchInput(){
+  var el=document.getElementById('search');
+  var q=el?el.value:'';
+  if(q===_ldSearchLast) return;                 // repeat keystroke, same text: nothing to do
+  _ldSearchLast=q;
+  if(_ldSearchT) clearTimeout(_ldSearchT);
+  _ldSearchT=setTimeout(function(){ _ldSearchT=null; renderList(); }, 140);
+}
 function renderList(){
   if(!document.getElementById('list-scroll'))return;
-  try{ buildDupeMap(); }catch(e){}   // duplicates are recomputed from the current lead set
+  /* buildDupeMap() walked all 735 leads on EVERY render, including every keystroke.
+     It only changes when the lead set does, so key it on that. */
+  try{
+    var _sig=(window.leads||[]).length+':'+((window.leads||[])[0]||{})._sid;
+    if(window._dupeSig!==_sig){ buildDupeMap(); window._dupeSig=_sig; }
+  }catch(e){ try{ buildDupeMap(); }catch(_){} }
   updateCounts();
   const fl=ldMergeTwins(getF());
   document.getElementById('tt-count').textContent=fl.length+(fl.length===1?' lead':' leads');
@@ -15872,6 +16358,7 @@ var _dupeMap = null;
 function dupeKeyDate(l){
   try{ var d=liDate(l); return d?d.getTime():0; }catch(e){ return 0; }
 }
+function dupeMapDirty(){ try{ window._dupeSig=null; }catch(e){} }
 function buildDupeMap(){
   var map={}, byAsin={};
   (window.leads||[]).forEach(function(l){
@@ -16268,6 +16755,54 @@ function shotImg(u){
   if(im) return 'https://i.imgur.com/'+im[1]+'.png';
   return u;
 }
+
+/* ── SCREENSHOT VIEWER ─────────────────────────────────────────────────────
+   Jack: "ideally want it fully in my webapp". Opening a new tab loses the lead, the
+   filters and his place in the queue every single time. This shows the whole shot over
+   the app: click to zoom to full size and drag to pan, Esc or click the backdrop to
+   come back to exactly where he was. */
+function shotOpen(url,title){
+  url=shotImg(url); if(!url) return;
+  var old=document.getElementById('shot-viewer'); if(old) old.remove();
+  var v=document.createElement('div');
+  v.id='shot-viewer'; v.className='shotv';
+  v.innerHTML='<div class="shotv-bar">'
+      +'<span class="shotv-t">'+escHtml(title||'VA screenshot')+'</span>'
+      +'<span class="shotv-hint">click the image to zoom · drag to move · Esc to close</span>'
+      +'<a class="shotv-ext" href="'+String(url).replace(/"/g,'&quot;')+'" target="_blank" rel="noopener">Open original ↗</a>'
+      +'<button class="shotv-x" title="Close (Esc)">✕</button>'
+    +'</div>'
+    +'<div class="shotv-body"><img alt="VA screenshot" src="'+String(url).replace(/"/g,'&quot;')+'"></div>';
+  document.body.appendChild(v);
+  var body=v.querySelector('.shotv-body'), img=v.querySelector('img');
+  function close(){ try{ v.remove(); }catch(e){} document.removeEventListener('keydown',onKey); }
+  function onKey(e){ if(e.key==='Escape'){ e.preventDefault(); close(); } }
+  document.addEventListener('keydown',onKey);
+  v.querySelector('.shotv-x').onclick=close;
+  v.onclick=function(e){ if(e.target===v||e.target===body) close(); };
+  img.onclick=function(e){
+    e.stopPropagation();
+    var zoomed=img.classList.toggle('zoom');
+    if(zoomed){
+      // keep the point clicked under the cursor when it blows up
+      var r=img.getBoundingClientRect();
+      var fx=(e.clientX-r.left)/r.width, fy=(e.clientY-r.top)/r.height;
+      body.scrollLeft=fx*img.offsetWidth-body.clientWidth/2;
+      body.scrollTop =fy*img.offsetHeight-body.clientHeight/2;
+    }
+  };
+  // drag to pan while zoomed
+  var down=false,sx=0,sy=0,sl=0,st=0;
+  body.addEventListener('mousedown',function(e){ if(!img.classList.contains('zoom'))return;
+    down=true; sx=e.clientX; sy=e.clientY; sl=body.scrollLeft; st=body.scrollTop; e.preventDefault(); });
+  window.addEventListener('mousemove',function(e){ if(!down)return;
+    body.scrollLeft=sl-(e.clientX-sx); body.scrollTop=st-(e.clientY-sy); });
+  window.addEventListener('mouseup',function(){ down=false; });
+  img.onerror=function(){
+    body.innerHTML='<div class="shotv-fail">That screenshot didn’t load.<br>'
+      +'<a href="'+String(url).replace(/"/g,'&quot;')+'" target="_blank" rel="noopener">Try opening it directly ↗</a></div>';
+  };
+}
 /* afterDecision/selectLead both wanted this and it was never defined — every call
    threw and fell back to a whole-list repaint, which is the flicker Jack sees. */
 function renderDetail(){
@@ -16422,10 +16957,10 @@ function detailH(l){
           ${l.screenshot?`<a class="d-link d-link-shot" href="${String(l.screenshot).replace(/"/g,'&quot;')}" target="_blank">${ICO.ext} 📸 Screenshot</a>`
                         :`<span class="d-link d-link-off" title="The VA didn't put a screenshot on this row">${ICO.ext} No screenshot</span>`}
         </div>
-        ${l.screenshot?`<a class="d-shot" href="${String(l.screenshot).replace(/"/g,'&quot;')}" target="_blank" title="Open the full screenshot">
+        ${l.screenshot?`<a class="d-shot" href="${String(l.screenshot).replace(/"/g,'&quot;')}" title="Click to view it full size, without leaving the app" onclick="event.preventDefault();shotOpen('${String(l.screenshot).replace(/'/g,'')}','${String(l.title||'').replace(/[`'\\"<>]/g,'').slice(0,60)}')">
             <img src="${shotImg(l.screenshot)}" alt="VA screenshot" loading="lazy"
                  onerror="this.closest('.d-shot').classList.add('d-shot-fail')">
-            <span>📸 VA screenshot — click to open full size</span></a>`:''}
+            <span>📸 VA screenshot — click to view it full size here</span></a>`:''}
         <div class="d-asin-row">
           <button class="d-asin" onclick="cpA('${l.asin}',event)">${ICO.copy} ${l.asin}</button>
           ${l.discount&&l.discount.trim()?`<button class="d-asin d-code" onclick="cpA('${String(l.discount).replace(/'/g,'').replace(/"/g,'')}',event)" title="Copy discount / code">🏷️ ${String(l.discount).replace(/</g,'&lt;').slice(0,28)}</button>`:''}
@@ -17182,7 +17717,10 @@ function sfltAttachToPoa(tasks,va){
     t.links=t.links||[]; t.linkLeads=t.linkLeads||[]; t.linkFilterIds=t.linkFilterIds||[]; t.linkNames=t.linkNames||[];
     mine.forEach(function(f){
       if(t.linkFilterIds.indexOf(f.id)>=0) return;
-      t.links.push(f.url||''); t.linkLeads.push(0); t.linkFilterIds.push(f.id); t.linkNames.push(f.title||'Filter');
+      /* '' means UNTOUCHED; a real 0 means "I ran it and got nothing" and has to be tapped
+         in. Seeding 0 here made every filter read as already logged — Jack's screenshot
+         says "3 of 3 logged" on three rows nobody had opened. */
+      t.links.push(f.url||''); t.linkLeads.push(''); t.linkFilterIds.push(f.id); t.linkNames.push(f.title||'Filter');
       attached.push(f.id);
     });
     // drop the "check Discord" hint — the library replaces that channel
@@ -17910,6 +18448,7 @@ function setSt(id,st){
   if(st==='passed'&&l._sc&&l._sc.total>=8){ setTimeout(function(){ldToast('You passed on a '+l._sc.total+'/10 — Auto-tune can learn from this too');},900); }
   try{ logDecision(l); }catch(e){}   // log at DECISION time — advanceAfter only fires if he finishes the note step
   try{ dupeMirror(id,st); }catch(e){}   // if he armed "both", the other VA's copy follows
+  dupeMapDirty();               // a decision can change who counts as a duplicate
   window._noteFor={id:id};      // set BEFORE painting so the qty/note panel is there first time
   _pendingLeave=id;             // hold it on screen until he moves to another lead
   try{ afterDecision(id); }catch(e){ try{ renderList(); }catch(_){} }
@@ -21022,6 +21561,72 @@ function audHTML(){
     +'<div class="aud-s"><em>Time logged</em><b>'+(mins?(mins/60).toFixed(1)+'h':'—')+'</b>'
       +'<span>'+tasks.filter(function(t){ return (typeof sbTaskMins==='function')&&sbTaskMins(t)>0; }).length+' of '+tasks.length+' tasks timed</span></div>'
     +'</div>';
+  summary+=audWorkHTML();
+
+  /* ── HOW THE DAY WAS ACTUALLY WORKED ──────────────────────────────────────
+     Jack: "i wanna know did they press the start and stop — more data and insight —
+     it's our app we can get it all, so why aren't we". Everything below is computed
+     from what the shift already saved; no new fields, nothing for the VAs to do. */
+  function audWorkHTML(){
+    var timed=0, typed=0, none=0;
+    tasks.forEach(function(t){
+      var m=(typeof sbTaskMins==='function')?sbTaskMins(t):0;
+      if(t.timeSource==='timer') timed++;
+      else if(m>0) typed++;
+      else none++;
+    });
+    var pct=tasks.length?Math.round(timed/tasks.length*100):0;
+    var shiftH=parseFloat(rec.hoursWorked)||0;
+    var acc=mins/60;
+    var accPct=shiftH>0?Math.round(acc/shiftH*100):0;
+    var lph=(acc>0.05)?(claimed/acc).toFixed(1):null;
+
+    // ticks across the day → where the quiet stretches were
+    function toMin(hhmm){
+      var m2=String(hhmm||'').match(/^(\d{1,2}):(\d{2})/); if(!m2) return null;
+      return (+m2[1])*60+(+m2[2]);
+    }
+    var ticks=tasks.map(function(t){ return {m:toMin(t.tickedAt), n:t.name, at:t.tickedAt||''}; })
+                   .filter(function(x){ return x.m!=null; })
+                   .sort(function(a2,b2){ return a2.m-b2.m; });
+    var gap=null, gapAfter='';
+    for(var i=1;i<ticks.length;i++){
+      var d=ticks[i].m-ticks[i-1].m;
+      if(gap===null||d>gap){ gap=d; gapAfter=ticks[i-1].n; }
+    }
+    var firstTick=ticks.length?ticks[0]:null, lastTick=ticks.length?ticks[ticks.length-1]:null;
+    var startM=toMin(rec.shiftStart), endM=toMin(rec.shiftEnd);
+    var warmUp=(startM!=null&&firstTick)?(firstTick.m-startM):null;
+    var windDown=(endM!=null&&lastTick)?(endM-lastTick.m):null;
+    function hm(v){ if(v==null) return '—'; return v>=60?(Math.floor(v/60)+'h '+(v%60)+'m'):(v+'m'); }
+    /* fmt24to12() lives in another <script> block and is not visible here — it threw the
+       whole audit away. Format it locally rather than reach across blocks. */
+    function clock(hhmm){
+      var m3=String(hhmm||'').match(/^(\d{1,2}):(\d{2})/); if(!m3) return '—';
+      var h=+m3[1], ap=h>=12?'pm':'am', h12=(h%12)||12;
+      return h12+':'+m3[2]+ap;
+    }
+    function tone(ok,warn,v){ return v>=ok?'good':v>=warn?'warn':'bad'; }
+
+    return '<div class="aud-work">'
+      +'<div class="aud-work-h">How the day was worked</div>'
+      +'<div class="aud-work-g">'
+        +'<div class="awc '+tone(70,40,pct)+'"><em>Start/Stop used</em><b>'+timed+' of '+tasks.length+'</b>'
+          +'<span>'+pct+'% timed'+(typed?' · '+typed+' typed by hand':'')+(none?' · '+none+' no time at all':'')+'</span></div>'
+        +'<div class="awc '+tone(70,40,accPct)+'"><em>Time against tasks</em><b>'+acc.toFixed(1)+'h</b>'
+          +'<span>of '+shiftH.toFixed(1)+'h on shift'+(shiftH>acc?' · '+(shiftH-acc).toFixed(1)+'h not accounted for':'')+'</span></div>'
+        +'<div class="awc"><em>Leads per hour</em><b>'+(lph||'—')+'</b>'
+          +'<span>'+(lph?claimed+' leads across '+acc.toFixed(1)+'h of logged work':'no timed work to measure')+'</span></div>'
+        +'<div class="awc '+(gap==null?'':(gap>=90?'bad':gap>=45?'warn':'good'))+'"><em>Longest quiet stretch</em><b>'+hm(gap)+'</b>'
+          +'<span>'+(gap==null?'not enough ticks to tell':'nothing ticked after &ldquo;'+escHtml(String(gapAfter).slice(0,34))+'&rdquo;')+'</span></div>'
+        +'<div class="awc"><em>First tick</em><b>'+(firstTick?escHtml(clock(firstTick.at)):'—')+'</b>'
+          +'<span>'+(warmUp==null?'—':hm(warmUp)+' after starting the shift')+'</span></div>'
+        +'<div class="awc"><em>Last tick</em><b>'+(lastTick?escHtml(clock(lastTick.at)):'—')+'</b>'
+          +'<span>'+(windDown==null?'—':hm(windDown)+' before ending it')+'</span></div>'
+      +'</div>'
+      +(none?'<div class="aud-work-n">'+none+' task'+(none===1?'':'s')+' finished with no time recorded at all \u2014 those are invisible in every hours figure you look at.</div>':'')
+      +'</div>';
+  }
 
   /* Everything recorded about a task, not just the headline: what Jack sent with it,
      every named link and what each produced, how long each link was open, when it was
@@ -21272,6 +21877,66 @@ function sbGoesTo(b, va){
   if(a==='All')  return va==='Mera'||va==='Suz'||va==='Jack';
   return false;
 }
+
+/* ── SHARED BATCHES: BOTH MEANS BOTH ───────────────────────────────────────
+   Jack: "both means both VA's need to do it ffs". Until now the first Done closed the
+   batch for everyone, so routing to Both really meant "whoever gets there first" — the
+   opposite of the intent. A shared batch now records a completion PER VA and only turns
+   Completed once every VA it was sent to has finished her own pass.
+   Stored in app_flags (a plain key/value table that already exists) — no schema change,
+   nothing to run, and it survives across devices and shifts. */
+function sbNeededBy(b){
+  var a=String((b&&b.assigned_to)||'');
+  if(a==='Both') return ['Mera','Suz'];
+  if(a==='All')  return ['Mera','Suz','Jack'];
+  return a?[a]:[];
+}
+function sbIsShared(b){ return sbNeededBy(b).length>1; }
+function sbDoneKey(batchId,va){ return 'sbdone:'+batchId+':'+va; }
+window._sbDoneBy=window._sbDoneBy||{};        // batchId -> {va:true}
+function sbDoneByLocal(batchId){ return window._sbDoneBy[batchId]||{}; }
+function sbHasDone(batchId,va){ return !!sbDoneByLocal(batchId)[va]; }
+/* pull every per-VA completion for the batches on screen, so both sides agree */
+function sbLoadDoneFlags(){
+  if(typeof SUPABASE_URL==='undefined'||!DB_ENABLED) return Promise.resolve();
+  var ids=(SB_BATCHES||[]).filter(sbIsShared).map(function(b){ return b.id; });
+  if(!ids.length) return Promise.resolve();
+  return fetchT(SUPABASE_URL+'/rest/v1/app_flags?k=like.sbdone:*&select=k',
+      {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}})
+    .then(function(r){ return r.ok?r.json():[]; })
+    .then(function(rows){
+      var m={};
+      (rows||[]).forEach(function(x){
+        var p=String(x.k||'').split(':');
+        if(p.length===3){ (m[p[1]]||(m[p[1]]={}))[p[2]]=true; }
+      });
+      window._sbDoneBy=m;
+      return m;
+    }).catch(function(){});
+}
+/* Record THIS VA's pass. Returns true when that was the last one needed. */
+function sbMarkDoneBy(batchId,va){
+  var b=(SB_BATCHES||[]).find(function(x){ return x.id===batchId; });
+  var need=sbNeededBy(b);
+  (window._sbDoneBy[batchId]=window._sbDoneBy[batchId]||{})[va]=true;
+  if(!IS_PREVIEW && typeof SUPABASE_URL!=='undefined' && DB_ENABLED){
+    try{
+      fetch(SUPABASE_URL+'/rest/v1/app_flags',{method:'POST',
+        headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+                 'Content-Type':'application/json',Prefer:'resolution=ignore-duplicates,return=minimal'},
+        body:JSON.stringify({k:sbDoneKey(batchId,va),v:'done'})}).catch(function(){});
+    }catch(e){}
+  }
+  var doneBy=sbDoneByLocal(batchId);
+  return need.every(function(who){ return doneBy[who]; });
+}
+/* who on a shared batch still hasn't done their pass */
+function sbWaitingOn(b){
+  if(!sbIsShared(b)) return [];
+  var doneBy=sbDoneByLocal(b.id);
+  return sbNeededBy(b).filter(function(who){ return !doneBy[who]; });
+}
+
 function sbBatchTask(b){
   var n=b.asin_count||0;
   var pri=(b.priority==='High')?' — HIGH PRIORITY':'';
@@ -21295,9 +21960,11 @@ function sbBatchTask(b){
     sbAge:age,
     mandatory:true, hasLinks:false,
     jbUrl:b.keepa_url||'', jbUrlLabel:'Open all '+n+' in Keepa', jbType:'sf', jbTimer:true, jbLeads:true,
+    /* "Locked — you started this" showed on batches JACK had started, which to the VA
+       read as an accusation about something she never did. Name who actually has it. */
     jbReason:lateNote+(b.status==='Started'
-        ? 'Locked — you started this, nothing can be added to it now.'
-        : 'Press Start when you begin. That locks the list so nothing changes under you.'),
+        ? ('In progress'+(b.started_by?' — started by '+vaDisp(b.started_by):'')+'. The list is locked so nothing changes mid-run.')
+        : 'Press Start when you begin — that locks the list so nothing changes under you.'),
     hint:'Open the '+n+' ASINs in Keepa, work through them, then log your time and how many leads you got. Ticking this marks the batch done for Jack.',
     done:false, skipped:false, skipReason:'', time:'', timeHrs:0, timeMins:0, leads:'', context:'', links:[],
     timerSec:0, timerRun:false, timerStart:null
@@ -21306,7 +21973,11 @@ function sbBatchTask(b){
 /* inject any Assigned/Started batches for this VA into their task list */
 function sbInjectBatchTasks(va, tasks){
   var mine=(SB_BATCHES||[]).filter(function(b){
-    return sbGoesTo(b,va) && (b.status==='Assigned'||b.status==='Started');
+    if(!sbGoesTo(b,va)) return false;
+    if(b.status!=='Assigned' && b.status!=='Started') return false;
+    // a shared batch she has already done stays gone for HER, while the other VA finishes
+    if(sbIsShared(b) && sbHasDone(b.id,va)) return false;
+    return true;
   });
   if(!mine.length) return 0;
   /* Jack's rule, in his words: "anything high priority beats rest of storefronts —
