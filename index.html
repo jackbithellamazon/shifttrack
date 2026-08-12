@@ -3674,6 +3674,14 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
   border-radius:9px;}
 .sbp-note b{color:var(--amber);}
 .sbq-bar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0 0 10px;}
+/* last-paste column: a quiet tag is the thing worth spotting, so age drives the colour */
+.sbq-ago{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;
+  white-space:nowrap;border:1px solid transparent;}
+.sbq-ago.fresh{color:#8ef0b6;background:rgba(58,196,120,.15);border-color:rgba(58,196,120,.38);}
+.sbq-ago.ok   {color:#cfd8e8;background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14);}
+.sbq-ago.warn {color:#ffd08a;background:rgba(255,176,60,.15);border-color:rgba(255,176,60,.4);}
+.sbq-ago.cold {color:#ff9d9d;background:rgba(245,69,95,.14);border-color:rgba(245,69,95,.4);}
+.sbq-ago.never{color:#9aa3b8;background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);font-weight:600;}
 .sbq-stat{font-size:11.5px;font-weight:700;color:var(--muted);background:rgba(255,255,255,.045);
   border:1px solid var(--line-2);border-radius:999px;padding:5px 12px;}
 .sbq-stat b{color:var(--text);font-weight:800;font-family:var(--font-mono);}
@@ -5567,7 +5575,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v34.3';
+var APP_VERSION='v34.5';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -19058,7 +19066,10 @@ async function sbJackUnstart(batchId){
 }
 function sbRowHTML(b){
   var t=sbToday();
-  var mine=(b.assigned_to==='Jack');
+  /* same bug one level down: this is what draws Start / Done, so an 'All' batch rendered
+     with no way to act on it at all — the tile in Jack's screenshot with Keepa and Copy
+     but no buttons. */
+  var mine=sbGoesTo(b,'Jack');
   var isDraft=(b.status==='Draft');
   var started=(b.status==='Started');
   var doneB=(b.status==='Completed');
@@ -19206,8 +19217,13 @@ function sbTodayHTML(){
   var going  =sortFn(live.filter(function(b){ return b.status==='Started'; }));
   // Jack's own batches were interleaved with the VAs' — five "Jack" rows sitting among
   // Mera/Suz, so his own queue was the hardest thing on his own board to find.
-  var mineQ  =sortFn(live.filter(function(b){ return b.status==='Assigned' && b.assigned_to==='Jack'; }));
-  var out2   =sortFn(live.filter(function(b){ return b.status==='Assigned' && b.assigned_to!=='Jack'; }));
+  /* sbGoesTo() was written for the VA side to fix exactly this, and Jack's own board was
+     never switched over to it. `assigned_to==='Jack'` is false for 'All' and 'Both', so a
+     batch he sent to all three of us showed the ALL badge, sat under "Out with the VAs",
+     and never reached his own worklist. It is his AND theirs — it belongs in both places,
+     and the ALL badge on the tile already says the VAs have it too. */
+  var mineQ  =sortFn(live.filter(function(b){ return b.status==='Assigned' && sbGoesTo(b,'Jack'); }));
+  var out2   =sortFn(live.filter(function(b){ return b.status==='Assigned' && !sbGoesTo(b,'Jack'); }));
   var older  =live.filter(function(b){ return b.date!==t; }).length;
   var totA   =live.reduce(function(a,b){ return a+(b.asin_count||0); },0);
 
@@ -19394,6 +19410,35 @@ function sbLand(id){
   setTimeout(function(){ if(SB_LANDED===id){ SB_LANDED=null; } }, 1400);
 }
 /* ── QUEUE ADMIN (replaces the master Google Sheet) ─────────────────────────*/
+/* ── LAST PASTE PER TAG ─────────────────────────────────────────────────────
+   Jack: "add a column for the last day sarah pasted info". No new table needed —
+   every paste creates a storefront_batch stamped with its date, so the newest batch
+   date for a tag IS the last time Sarah pasted into it. A tag that has gone quiet is
+   the thing worth spotting: it either stopped being built or stopped being sent. */
+function sbLastPaste(qid){
+  var newest='';
+  (SB_BATCHES||[]).forEach(function(b){
+    if(b.storefront_id!==qid) return;
+    var iso=(typeof sbToISO==='function'?sbToISO(b.date):'')||String(b.date||'').slice(0,10);
+    if(iso&&iso>newest) newest=iso;
+  });
+  return newest;
+}
+function sbAgoLabel(iso){
+  if(!iso) return {txt:'never', cls:'never', d:null};
+  var t=ukNow(); t.setHours(0,0,0,0);
+  var p=String(iso).split('-');
+  var d=new Date(+p[0],(+p[1])-1,+p[2]); d.setHours(0,0,0,0);
+  var days=Math.round((t-d)/86400000);
+  if(days<0)  return {txt:'today', cls:'fresh', d:0};      // clock skew, not the future
+  if(days===0) return {txt:'today', cls:'fresh', d:0};
+  if(days===1) return {txt:'yesterday', cls:'fresh', d:1};
+  if(days<=3)  return {txt:days+' days ago', cls:'ok', d:days};
+  if(days<=7)  return {txt:days+' days ago', cls:'warn', d:days};
+  if(days<=27) return {txt:days+' days ago', cls:'cold', d:days};
+  var w=Math.floor(days/7);
+  return {txt:(days<60?w+' weeks ago':Math.floor(days/30)+' months ago'), cls:'cold', d:days};
+}
 function sbQueueRowHTML(q){
   function sel(id,val,opts){
     var cls=(id==='default_assignee')?(' sb-goes-'+String(val||'jack').toLowerCase()):'';
@@ -19425,6 +19470,10 @@ function sbQueueRowHTML(q){
     +'<td><input class="sb-inp sb-inp-note" value="'+escHtml(q.notes||'')
       +'" placeholder="e.g. household brands \u00b7 Sarah builds it Mondays" '
       +'onchange="sbQueueSet(\''+q.id+'\',\'notes\',this.value)"></td>'
+    +(function(){ var a=sbAgoLabel(sbLastPaste(q.id));
+        return '<td class="sb-ctr"><span class="sbq-ago '+a.cls+'"'
+          +(a.d!=null?' title="'+a.d+' day'+(a.d===1?'':'s')+' since the last batch on this tag"':' title="No batch has ever landed on this tag"')
+          +'>'+a.txt+'</span></td>'; })()
     +(SB_SHOW_DETAILS
        ? '<td><input class="sb-inp" value="'+escHtml(q.frequency||'')+'" placeholder="Daily" onchange="sbQueueSet(\''+q.id+'\',\'frequency\',this.value)"></td>'
        : '')
@@ -19514,7 +19563,7 @@ function sbAdminRows(){
 }
 function sbQueueRowsHTML(){
   var rows=sbAdminRows();
-  if(!rows.length) return '<tr><td colspan="'+(SB_SHOW_DETAILS?9:7)+'" class="sb-none">'
+  if(!rows.length) return '<tr><td colspan="'+(SB_SHOW_DETAILS?10:8)+'" class="sb-none">'
     +(SB_QUEUES&&SB_QUEUES.length?'No queue matches “'+escHtml(SB_ADMIN_FILTER)+'”.':'No queues yet.')+'</td></tr>';
   return rows.map(sbQueueRowHTML).join('');
 }
@@ -19573,6 +19622,7 @@ function sbQueuesHTML(){
       +'<th>Tag</th><th>Where a paste ends up</th>'
       +'<th>Priority</th>'
       +'<th title="What is actually in this tag — brands, who is in it, how it is built">What&rsquo;s in it</th>'
+      +'<th title="The newest batch on this tag — i.e. the last time a paste landed here">Last paste</th>'
       +(SB_SHOW_DETAILS?'<th>Frequency</th>':'')
       +'<th>Active</th><th></th></tr></thead>'
     +'<tbody id="sbq-body">'+sbQueueRowsHTML()+'</tbody>'
