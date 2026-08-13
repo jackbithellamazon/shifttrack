@@ -372,7 +372,13 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .cardstyle-toggle button{background:transparent;border:none;color:var(--muted);font-family:var(--font);font-size:10.5px;font-weight:700;letter-spacing:.2px;padding:4px 11px;border-radius:6px;cursor:pointer;transition:all .15s var(--ease);}
 .cardstyle-toggle button:hover{color:var(--text);}
 .cardstyle-toggle button.on{background:var(--accent);color:#0a0b10;}
-.stats-head{display:flex;align-items:center;justify-content:flex-end;}
+.stats-head{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.vp-toggle{display:inline-flex;align-items:center;gap:8px;background:none;border:1px solid var(--line-2);border-radius:10px;
+  padding:7px 13px;color:var(--muted);font-family:var(--font);font-size:12px;font-weight:800;letter-spacing:.3px;cursor:pointer;transition:.16s;}
+.vp-toggle:hover{color:var(--text);border-color:var(--line-3,var(--line-2));}
+.vp-caret{display:inline-block;transition:transform .16s;font-size:10px;}
+.vp-toggle[aria-expanded="true"] .vp-caret{transform:rotate(90deg);}
+#va-perf.vp-collapsed{display:none;}
 
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px;}
 .stat-card{
@@ -2389,6 +2395,17 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .welcome-time{font-size:12.5px;color:var(--muted);margin-bottom:22px;}
 .welcome-msg{background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r-md);padding:16px 18px;margin-bottom:22px;font-size:14.5px;font-weight:600;line-height:1.5;color:var(--text);}
 #break-overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(5,6,11,0.86);align-items:center;justify-content:center;flex-direction:column;gap:20px;backdrop-filter:blur(8px);}
+/* Runaway-break warning. Off until 45 minutes, loud past 90. */
+.break-nag{display:block;margin:0 0 18px;padding:12px 14px;border-radius:12px;text-align:left;font-size:12.5px;line-height:1.6;
+  background:color-mix(in srgb,var(--amber) 13%,transparent);border:1px solid color-mix(in srgb,var(--amber) 42%,transparent);color:var(--amber);}
+.break-nag b{display:block;font-size:13.5px;margin-bottom:3px;}
+.break-nag span{display:block;color:var(--muted);}
+.break-nag.loud{background:color-mix(in srgb,var(--red) 15%,transparent);border-color:color-mix(in srgb,var(--red) 55%,transparent);color:var(--red);}
+.break-nag.off{display:none;}
+.eod-keepa-warn{margin-top:9px;padding:10px 12px;border-radius:10px;font-size:12px;line-height:1.55;
+  background:color-mix(in srgb,var(--amber) 12%,transparent);border:1px solid color-mix(in srgb,var(--amber) 45%,transparent);color:var(--amber);}
+.eod-keepa-warn b{display:inline;}
+.eod-keepa-warn span{display:block;margin-top:4px;color:var(--muted);}
 @keyframes breathe{0%,100%{transform:scale(1);opacity:.92}50%{transform:scale(1.09);opacity:1}}
 .toast{position:fixed;top:18px;left:50%;z-index:700;max-width:min(420px,92vw);background:color-mix(in srgb,var(--green) 12%,var(--panel));border:1px solid color-mix(in srgb,var(--green) 45%,var(--line-2));border-radius:13px;padding:13px 20px;font-size:13.5px;font-weight:600;color:var(--text);box-shadow:0 18px 50px -16px rgba(0,0,0,.8);transform:translate(-50%,-90px);opacity:0;pointer-events:none;transition:transform .32s cubic-bezier(.2,.9,.3,1.25),opacity .25s;display:flex;align-items:center;gap:9px;}
 .toast::before{content:"✓";font-weight:800;color:var(--green);flex-shrink:0;}
@@ -4833,13 +4850,20 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
     <div id="shift-momentum"></div>
     <div id="va-results"></div>
     <div class="stats-head">
+      <!-- MEASURED: her first actual task sat 1,509px down a 4,608px page — more than
+           two full screens of banners and stats before any work. This panel alone was
+           765px of it. It is worth having, so it stays; it just starts folded and
+           remembers what she chose. -->
+      <button class="vp-toggle" id="vp-toggle" onclick="vaPerfToggle()" aria-expanded="false">
+        <span class="vp-caret">&#9656;</span> How I&rsquo;m doing this week
+      </button>
       <div class="cardstyle-toggle" id="cardstyle-toggle">
         <button data-cs="bold"  onclick="setCardStyle('bold')">Bold</button>
         <button data-cs="clean" onclick="setCardStyle('clean')">Clean</button>
       </div>
     </div>
     <!-- How am I doing? — filled by vaPerfPaint() once the leads and hours land -->
-    <div id="va-perf"></div>
+    <div id="va-perf" class="vp-collapsed"></div>
     <div class="stats-grid" id="shift-kpis" data-cs="bold">
       <div class="stat-card stat-card-leads" data-kpi="leads">
         <div class="stat-top"><div class="stat-label">Leads today</div><span class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M17 7h4v4"/></svg></span></div>
@@ -4922,12 +4946,20 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
             <input type="number" id="keepa-today" min="0" placeholder="e.g. 600" class="eod-keepa-input" oninput="updateKeepaTotal()">
             <div class="eod-keepa-delta" id="keepa-total-display"><span class="eod-keepa-dl">vs last shift</span><span id="keepa-total-val">&#8212;</span></div>
           </div>
+          <!-- This box takes a TOTAL and files a DIFFERENCE. Typing 640 when the last
+               shift said 1,155 quietly records -515 against her tracker KPI, and a
+               dropped digit looks exactly like that. Say it in words, not just a red
+               number she is scrolling past on her way to Submit. -->
+          <div class="eod-keepa-warn" id="keepa-warn" style="display:none;"></div>
         </div>
         <div class="eod-block">
           <label class="eod-blabel">Notes for Jack<span>Optional &#8212; issues, wins, anything you noticed. Tap a tag to add one.</span></label>
           <div class="eod-tags" id="eod-issue-tags">
             <button type="button" class="eod-tag" onclick="addIssueTag('Supplier problem')">Supplier problem</button>
-            <button type="button" class="eod-tag" onclick="addIssueTag('Can&#39;t source it')">Can't source it</button>
+            <!-- &#39; is decoded by the HTML parser BEFORE the JS is parsed, so a
+                 single-quoted string containing it is a SyntaxError and the button
+                 silently does nothing. Delimit with &quot; instead. -->
+            <button type="button" class="eod-tag" onclick="addIssueTag(&quot;Can&#39;t source it&quot;)">Can't source it</button>
             <button type="button" class="eod-tag" onclick="addIssueTag('Price changed')">Price changed</button>
             <button type="button" class="eod-tag" onclick="addIssueTag('Amazon issue')">Amazon issue</button>
             <button type="button" class="eod-tag win" onclick="addIssueTag('Good win','win')">&#9733; Good win</button>
@@ -5117,6 +5149,7 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
     <div style="font-family:var(--font-head);font-size:14px;font-weight:700;letter-spacing:3.5px;color:var(--amber);text-transform:uppercase;margin-bottom:12px;">On Break</div>
     <div id="break-timer" style="font-family:var(--font-head);font-size:50px;font-weight:700;color:#fff;letter-spacing:1px;line-height:1;margin-bottom:14px;font-variant-numeric:tabular-nums;">00:00</div>
     <div style="font-size:12.5px;color:var(--muted);margin-bottom:24px;line-height:1.65;">Your shift timer is paused &mdash; nothing is lost.<br>Come back whenever you&rsquo;re ready.</div>
+    <div id="break-nag" class="break-nag off"></div>
     <button class="btn btn-success" onclick="toggleBreak()" style="padding:15px 36px;font-size:14px;width:100%;border-radius:12px;">&#9654;&nbsp; End Break &amp; Resume</button>
   </div>
 </div>
@@ -5837,6 +5870,10 @@ function saveShiftDraft(manual) {
     savedAt: Date.now(),                  // when we saved (to recalculate on restore)
     onBreak: state.onBreak,
     breakStart: state.onBreak ? state.breakStart : null,   // a break in progress must survive a reload
+    /* ...and so must the time it started. This lived only in memory, so a break
+       that spanned a reload was filed with a blank start time and Jack's shift
+       detail showed "  → 06:58 pm". */
+    breakStartTime: state.onBreak ? (state._currentBreakStartTime||'') : '',
     breaks: state.breaks,
     newsletterDay: state._newsletterDay || false,
     tasks: state.tasks.map(function(t) { var c=JSON.parse(JSON.stringify(t)); if(c.timerRun){ c.timerSec=ttElapsedT(t); c.timerRun=false; c.timerStart=null; } return c; }),
@@ -5986,7 +6023,13 @@ async function checkAndRestoreDraft(va) {
 
     // Check if EOD already submitted to Supabase today for this VA
     try {
-      var eodRes = await fetchT(SUPABASE_URL + '/rest/v1/shifts?va=eq.'+va+'&date=eq.'+ukDateShort()+'&select=id&limit=1', {
+      /* The shift row is filed under the MANILA day it started (`date: phShiftDay`),
+         but this looked it up by the LONDON date. Those differ for the seven hours
+         either side of Manila midnight, where the guard would find nothing and hand
+         her back a draft for a day she had already submitted. Ask for both. */
+      var _dk=[ukDateShort(), shiftDayKey()].filter(function(d,z,a){ return d && a.indexOf(d)===z; })
+        .map(function(d){ return '"'+d+'"'; }).join(',');
+      var eodRes = await fetchT(SUPABASE_URL + '/rest/v1/shifts?va=eq.'+va+'&date=in.('+_dk+')&select=id&limit=1', {
         headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY}
       });
       var eodRows = await eodRes.json();
@@ -6027,6 +6070,7 @@ async function checkAndRestoreDraft(va) {
        ended it silently and paid every minute of it as worked time. */
     state.onBreak = !!draft.onBreak;
     state.breakStart = draft.onBreak ? (draft.breakStart || Date.now()) : null;
+    state._currentBreakStartTime = draft.onBreak ? (draft.breakStartTime||'') : '';
     state.breaks = draft.breaks || [];
     state.tasks = draft.tasks || [];
     state.extraTasks = draft.extraTasks || [];
@@ -6095,7 +6139,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v40.9';
+var APP_VERSION='v41.0';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -7181,6 +7225,10 @@ function selectVA(va) {
         renderTasks();
         try{ renderStorefronts(); if((state.storefronts||[]).some(function(s){return s.running;})){ if(!window._sfTick) window._sfTick=setInterval(sfTickRunning,1000); } }catch(e){}
         try{ jb_addsBanner(va); }catch(e){}
+        /* She may have been on a break when the tab closed. Draw the break UI from
+           state instead of leaving the old screen up: without this she came back to
+           a normal-looking app with the clock stopped. */
+        try{ paintBreakUI(); }catch(e){}
         startTimer();
         if(state._forceEnd){
           showToast('Jack has asked you to close this shift — check it over and submit');
@@ -8555,10 +8603,15 @@ function ldStep(i,isExtra,d){
   t.leads=String(Math.max(0,(parseInt(t.leads)||0)+d));
   qlSync(i,isExtra);
 }
+/* `parseInt(val) || 0` let "-5" straight through: -5 is truthy, so the guard never
+   fired. The row then DISPLAYED "0m" (the formatter only prints h>0 / m>0) while
+   -5 sat in the record — stored wrong, shown right, which is the worst pairing.
+   "999" was accepted too. min/max on a number input do nothing while typing. */
 function updateTimeField(i, isExtra, field, val) {
   var arr = isExtra ? state.extraTasks : state.tasks;
   if (!arr[i]) return;
-  arr[i][field] = parseInt(val) || 0;
+  var n = parseInt(val); if (!isFinite(n)) n = 0;
+  arr[i][field] = Math.max(0, Math.min(field === 'timeMins' ? 59 : 24, n));
   var h = parseInt(arr[i].timeHrs) || 0;
   var m = parseInt(arr[i].timeMins) || 0;
   arr[i].time = (h > 0 ? h + 'h ' : '') + (m > 0 ? m + 'm' : '') || '0m';
@@ -9097,6 +9150,56 @@ function startTimer() {
   }
 }
 
+/* ══════════ THE BREAK UI IS DRAWN FROM state.onBreak, NEVER ASSUMED ══════════
+   toggleBreak() was the only thing that ever showed the overlay or changed the
+   button. Restoring a draft sets state.onBreak=true and touched neither — so
+   reopening the tab mid-break gave her a completely normal-looking app with the
+   shift clock silently frozen, and a button reading "Take a Break" that would
+   END the break she didn't know she was on. Measured in the harness: 8 real
+   seconds elapsed, 0 counted; a 7-hour shift recorded as 0.8 hours.
+   One painter, called from both places, so the two can never disagree again. */
+function paintBreakUI(){
+  var btn=document.getElementById('break-btn');
+  var overlay=document.getElementById('break-overlay');
+  if(!btn||!overlay) return;
+  if(state.onBreak){
+    btn.innerHTML='&#9208; On Break...';
+    btn.style.background='rgba(255,184,48,0.3)';
+    btn.style.color='var(--amber)';
+    btn.style.borderColor='rgba(255,184,48,0.6)';
+    overlay.style.display='flex';
+    clearInterval(state._breakTickInt);
+    state._breakTickInt=setInterval(breakTick,1000);
+    breakTick();
+  } else {
+    btn.innerHTML=breakLabel();
+    btn.style.background='rgba(255,184,48,0.15)';
+    btn.style.color='var(--amber)';
+    btn.style.borderColor='rgba(255,184,48,0.4)';
+    overlay.style.display='none';
+    clearInterval(state._breakTickInt);
+  }
+}
+/* 105 of 181 recorded breaks (58%) ran over an hour, 59 over two, and one over
+   FIFTEEN — 09/08, 08:23 pm to 11:33 am. Nothing ever told her the clock was
+   still stopped. It does now, and it gets harder to ignore the longer it runs. */
+function breakTick(){
+  var el=document.getElementById('break-timer');
+  if(!el||!state.onBreak||!state.breakStart) return;
+  var s=Math.floor((Date.now()-state.breakStart)/1000);
+  var mins=Math.floor(s/60);
+  el.textContent=String(mins).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+  var nag=document.getElementById('break-nag');
+  if(!nag) return;
+  if(mins>=90){
+    nag.className='break-nag loud';
+    nag.innerHTML='&#9888; <b>You have been on break for '+(mins>=120?Math.floor(mins/60)+'h '+(mins%60)+'m':mins+' minutes')+'.</b>'
+      +'<span>Your shift clock is stopped &mdash; none of this is counting as worked time. If you are actually back, end the break now.</span>';
+  } else if(mins>=45){
+    nag.className='break-nag';
+    nag.innerHTML='&#9203; <b>'+mins+' minutes on break.</b><span>Still paused &mdash; end the break when you are back.</span>';
+  } else nag.className='break-nag off';
+}
 function toggleBreak() {
   var btn=document.getElementById('break-btn');
   var overlay=document.getElementById('break-overlay');
@@ -9104,21 +9207,19 @@ function toggleBreak() {
     state.breakStart=Date.now(); state.onBreak=true;
     var startTime=new Date().toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:true});
     state._currentBreakStartTime=startTime;
-    // live break timer in the overlay
-    clearInterval(state._breakTickInt);
-    state._breakTickInt=setInterval(function(){
-      var el=document.getElementById('break-timer'); if(!el||!state.onBreak) return;
-      var s=Math.floor((Date.now()-state.breakStart)/1000);
-      el.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
-    },1000);
     var bt=document.getElementById('break-timer'); if(bt) bt.textContent='00:00';
-    btn.innerHTML='⏸ On Break...';
-    btn.style.background='rgba(255,184,48,0.3)';
-    btn.style.color='var(--amber)';
-    btn.style.borderColor='rgba(255,184,48,0.6)';
-    overlay.style.display='flex';
+    paintBreakUI();
     db_pushLiveStatus(); saveShiftDraft(false);
     discord_break_notify(true);
+  } else if (state.breakStart && Date.now()-state.breakStart < 3000) {
+    /* A double-tap, not a break. It used to log a 0-minute break AND ping Jack's
+       Discord twice — 16 of those are sitting in the real data, two of them on
+       Suz's 13/08 shift. Worse, the overlay flashed and vanished, so she believed
+       she was on break and every minute away was paid as worked time. */
+    state.onBreak=false; state.breakStart=null; state._currentBreakStartTime='';
+    paintBreakUI();
+    showToast('That was a double-tap &mdash; you are not on break. Tap once to start one.', true);
+    return;
   } else {
     var endMs=Date.now();
     var endTime=new Date().toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:true});
@@ -9131,12 +9232,8 @@ function toggleBreak() {
     });
     var breakDurMins = Math.round((endMs-state.breakStart)/60000);
     state.totalBreakMs+=endMs-state.breakStart; state.onBreak=false;
-    clearInterval(state._breakTickInt);
-    btn.innerHTML=breakLabel();
-    btn.style.background='rgba(255,184,48,0.15)';
-    btn.style.color='var(--amber)';
-    btn.style.borderColor='rgba(255,184,48,0.4)';
-    overlay.style.display='none';
+    state._currentBreakStartTime='';
+    paintBreakUI();
     showToast('Break ended - back to it!');
     db_pushLiveStatus(); saveShiftDraft(false);
     discord_break_notify(false, breakDurMins);
@@ -9601,8 +9698,24 @@ function vaHoursIssue(){
 }
 /* Paint it, and go and get the two things it needs if they are not here yet. Leads
    already refresh every 60s during a shift; hours are fetched once per shift. */
+/* Folded by default so the ticklist is the first thing on screen, but her choice
+   sticks — open it once and it stays open on this machine. */
+function vaPerfOpen(){ try{ return localStorage.getItem('bdl_vaperf_open')==='1'; }catch(e){ return false; } }
+function vaPerfApply(){
+  var host=document.getElementById('va-perf'), btn=document.getElementById('vp-toggle');
+  if(!host) return;
+  var open=vaPerfOpen();
+  host.classList.toggle('vp-collapsed', !open);
+  if(btn) btn.setAttribute('aria-expanded', open?'true':'false');
+}
+function vaPerfToggle(){
+  try{ localStorage.setItem('bdl_vaperf_open', vaPerfOpen()?'0':'1'); }catch(e){}
+  vaPerfApply();
+  if(vaPerfOpen()){ try{ document.getElementById('va-perf').scrollIntoView({behavior:'smooth',block:'nearest'}); }catch(e){} }
+}
 function vaPerfPaint(){
   var host=document.getElementById('va-perf'); if(!host) return;
+  vaPerfApply();
   var va=(window.state&&state.currentVA)||'';
   if(va==='Test') va=(state._previewAs||'');
   if(!va||!(window.state&&state.shiftStart)){ host.innerHTML=''; return; }
@@ -14292,6 +14405,19 @@ async function keepaLoadPrevTotal(va) {
   } catch(e) { console.error('Keepa load error:', e); }
 }
 
+/* A drop of more than a quarter of the tracker in one shift is nearly always a
+   mis-typed total, not 500 ASINs actually removed. Warn in plain words; never
+   block — sometimes she really has cleared it out. */
+function keepaWarn(diff, typed, prev){
+  var w = document.getElementById('keepa-warn'); if(!w) return;
+  var bigDrop = (diff < 0) && (Math.abs(diff) > Math.max(50, prev*0.25));
+  if(!bigDrop){ w.style.display='none'; w.innerHTML=''; return; }
+  w.style.display='block';
+  w.innerHTML='&#9888; <b>That is '+Math.abs(diff).toLocaleString()+' fewer than last shift</b> ('
+    + prev.toLocaleString()+' &rarr; '+typed.toLocaleString()+').'
+    + '<span>Jack&rsquo;s tracker KPI records the change, so this would go down as '+diff+'. '
+    + 'If you missed a digit, fix it now. If you really did clear them out, carry on.</span>';
+}
 function updateKeepaTotal() {
   var input = document.getElementById('keepa-today');
   var totalEl = document.getElementById('keepa-total-val');
@@ -14301,6 +14427,7 @@ function updateKeepaTotal() {
   if (isNaN(currentVal) || input.value === '') {
     totalEl.textContent = '—';
     if (displayEl) { displayEl.style.borderColor='rgba(45,212,163,0.25)'; displayEl.style.color='#10d99a'; }
+    keepaWarn(0,0,0);
     return;
   }
   if (_keepaIsFirst) {
@@ -14314,6 +14441,7 @@ function updateKeepaTotal() {
     // Colour: green = added, red = removed, grey = no change
     var col = diff > 0 ? '#10d99a' : diff < 0 ? '#f2647f' : '#888';
     if (displayEl) { displayEl.style.color = col; displayEl.style.borderColor = col+'44'; }
+    keepaWarn(diff, currentVal, _keepaPrevTotal);
   } else {
     // No previous total to compare against — printing today's raw number under a
     // "vs yesterday" label read as a +10 change when nothing had changed at all.
@@ -14417,7 +14545,8 @@ function handleLeadInput(el) {
   var arr=isExtra?state.extraTasks:state.tasks;
   if(!arr[i]) return;
   taskLinksEnsure(arr[i],li);
-  arr[i].linkLeads[li]=parseInt(el.value)||0;
+  var _n=parseInt(el.value); if(!isFinite(_n)) _n=0;
+  arr[i].linkLeads[li]=Math.max(0,Math.min(999,_n));      // "-9" was stored as -9 and subtracted from her total
   var total=arr[i].linkLeads.reduce(function(s,v){return s+(parseInt(v)||0);},0);
   arr[i].leads=total;
   var totEl=document.getElementById(totId);
@@ -18233,6 +18362,13 @@ function shotImg(u){
   if(im) return 'https://i.imgur.com/'+im[1]+'.png';
   var c=shotCode(u);
   if(c && SHOT_CACHE[c]) return SHOT_CACHE[c];      // already resolved once
+  /* NEVER hand an unresolved prnt.sc link to an <img>. It is an HTML page, not an
+     image, so the request can only ever fail — but it is still a REQUEST, fired
+     from Jack's own browser, once per unresolved screenshot, every time he scrolls
+     the leads board. 57 of those on repeat is what a bot filter is built to stop,
+     and on 13/08 Cloudflare banned his home IP outright (error 1006). Return ''
+     and let the caller draw the "opens in a new tab" state without asking. */
+  if(c) return '';
   return u;
 }
 function shotCachePut(code,url){
@@ -18613,10 +18749,14 @@ function detailH(l){
           <div class="d-num"><div class="d-num-l">Source Method</div><div class="d-num-v vn" style="font-size:13px;">${l.src}</div></div>
         </div>
       </div>
-      ${l.screenshot?`<a class="d-shot" href="${String(l.screenshot).replace(/"/g,'&quot;')}" title="Click to view it full size, without leaving the app" onclick="event.preventDefault();shotOpen('${String(l.screenshot).replace(/'/g,'')}','${String(l.title||'').replace(/[`'\\"<>]/g,'').slice(0,60)}')">
-            <img src="${shotImg(l.screenshot)}" alt="VA screenshot" loading="lazy"
-                 onerror="shotFix(this,'${String(l.screenshot).replace(/'/g,'')}')">
-            <span>📸 VA screenshot — click to view it full size here</span></a>`:''}
+      ${l.screenshot?(function(){
+          var _src=shotImg(l.screenshot);
+          // No usable image address = draw the fallback state and make NO request.
+          return `<a class="d-shot${_src?'':' d-shot-fail'}" href="${String(l.screenshot).replace(/"/g,'&quot;')}" title="Click to view it full size, without leaving the app" onclick="event.preventDefault();shotOpen('${String(l.screenshot).replace(/'/g,'')}','${String(l.title||'').replace(/[`'\\"<>]/g,'').slice(0,60)}')">
+            ${_src?`<img src="${_src}" alt="VA screenshot" loading="lazy"
+                 onerror="shotFix(this,'${String(l.screenshot).replace(/'/g,'')}')">`:''}
+            <span>📸 VA screenshot — click to view it full size here</span></a>`;
+        })():''}
       ${buyTogetherHTML(l)}
       <div class="d-sec">
         <div class="d-sec-lbl">Why this score — ${s.total.toFixed(1)}/10${s.smart?' <span class="smart-badge">🧠 learned</span>':''}</div>
