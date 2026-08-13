@@ -6095,7 +6095,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v40.8';
+var APP_VERSION='v40.9';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -18535,7 +18535,12 @@ function detailH(l){
       <textarea id="nb-in" rows="2" placeholder="type a note… (Enter saves, Shift+Enter for a new line)"
         oninput="nbGrow(this)"
         onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();nbSave();}">${String(l.notes||'').replace(/</g,'&lt;')}</textarea>
-      <div class="nb-row"><button class="nb-save" onclick="nbSave()">Save · next ➜</button><button class="nb-skip" onclick="nbSkip()">skip · next ➜</button></div>
+      <!-- These said "Save · next ➜" and "skip · next ➜" but advanceAfter() deliberately
+           keeps you on the same lead (that was the whole point of the earlier fix — Jack
+           kept losing his place). So the buttons were promising something the app does
+           not do. Renamed to what actually happens; "Next undecided →" on the card above
+           is the real way to move on. -->
+      <div class="nb-row"><button class="nb-save" onclick="nbSave()">Save note</button><button class="nb-skip" onclick="nbSkip()">No note</button></div>
     </div>`;
   }
   // the change-decision strip goes last, under the note — see the comment above
@@ -20074,9 +20079,21 @@ function nbGrow(el){
   el.style.height='auto';
   el.style.height=Math.min(el.scrollHeight, 220)+'px';
 }
+/* Measured: pressing BOUGHT scrolled the detail pane 323px in one jump, because
+   focusing the note box makes the browser scroll it into view — taking the price, the
+   profit and the screenshot off screen at the exact moment he decided. preventScroll
+   keeps the page still; block:'nearest' then nudges only if the box is actually out of
+   sight, and only by the smallest amount. */
 function nbFocus(){ setTimeout(function(){
   var i=document.getElementById('nb-in');
-  if(i){ nbGrow(i); i.focus(); try{ i.selectionStart=i.selectionEnd=i.value.length; }catch(e){} }
+  if(!i) return;
+  nbGrow(i);
+  try{ i.focus({preventScroll:true}); }catch(e){ i.focus(); }
+  try{ i.selectionStart=i.selectionEnd=i.value.length; }catch(e){}
+  try{
+    var r=i.getBoundingClientRect();
+    if(r.top<0||r.bottom>window.innerHeight) i.scrollIntoView({block:'nearest'});
+  }catch(e){}
 },90); }
 function setL(id,v){
   const l=leads.find(x=>x.id===id);
