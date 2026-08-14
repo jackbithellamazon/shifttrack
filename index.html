@@ -402,6 +402,26 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .score-details>summary:hover,.sm-more>summary:hover{color:var(--text);}
 .sm-more{margin-top:8px;}
 .sm-manual{margin-left:10px;padding:5px 12px;font-size:11.5px;}
+.nt-box{background:color-mix(in srgb,#38bdf8 8%,transparent);border:1px solid color-mix(in srgb,#38bdf8 30%,transparent);border-radius:10px;padding:11px 14px;}
+.nt-box.off{color:var(--muted-2);font-size:11.5px;}
+.nt-h{font-size:12.5px;font-weight:800;color:#7fdcf5;margin-bottom:2px;}
+.nt-sub{font-size:11px;color:var(--muted-2);margin-bottom:8px;}
+.nt-r{display:flex;align-items:baseline;gap:9px;padding:5px 0;border-top:1px solid rgba(255,255,255,.07);font-size:12px;}
+.nt-l{color:var(--muted);min-width:88px;}
+.nt-r b{color:var(--text);font-size:13.5px;}
+.nt-n{color:var(--muted-2);font-size:10.5px;margin-left:auto;text-align:right;}
+.nt-r.good b{color:#3ac478;}
+.fr-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:12px;margin-bottom:10px;}
+.fr-col{background:var(--panel);border:1px solid var(--line-2);border-radius:14px;padding:12px 16px;}
+.fr-h{font-size:12px;font-weight:800;margin-bottom:7px;}
+.fr-h.hot{color:#10d99a;} .fr-h.cold{color:#ff7a8f;}
+.fr-r{display:flex;align-items:baseline;gap:9px;padding:6px 0;border-top:1px solid var(--line);font-size:12px;}
+.fr-va{font-weight:800;flex:0 0 44px;}
+.fr-t{flex:1;min-width:0;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fr-r b{white-space:nowrap;font-size:12px;}
+.fr-n{color:var(--muted-2);font-size:10.5px;white-space:nowrap;}
+.fr-none{font-size:11.5px;color:var(--muted-2);padding:6px 0;}
+.nt-l{text-transform:none;}
 #va-perf.vp-collapsed{display:none;}
 
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px;}
@@ -6243,13 +6263,21 @@ async function checkAndRestoreDraft(va) {
       return 'none';
     }
 
-    // ── TIMER FIX ──
-    // Use elapsedMs directly — this is how long she actually worked.
-    // Set shiftStart so that: Date.now() - shiftStart - totalBreakMs = elapsedMs
-    // Therefore: shiftStart = Date.now() - elapsedMs - totalBreakMs
+    /* ── TIMER BASE — AND THE BREAK THAT WAS STILL RUNNING ────────────────────
+       Set shiftStart so that workedMs() gives back exactly what she had worked.
+       workedMs() = now - shiftStart - breakSoFarMs(), and breakSoFarMs() counts
+       totalBreakMs PLUS the live break if one is still open. The old line only
+       subtracted totalBreakMs, so the live break was deducted a second time and
+       her clock lost the whole break.
+
+       Suz, 14/08/2026, "lost my shift huhu": worked 2h35m19s, took a 2-hour break,
+       came back to 00:35:19 on the timer. 2h35m19s − 2h = 35m19s, to the second.
+       The v41.0 fix made the break VISIBLE on restore but left this arithmetic
+       alone, so the hours kept vanishing. Include the live break in the base. */
     var restoredElapsed = draft.elapsedMs || 0;
     var restoredBreakMs = draft.totalBreakMs || 0;
-    var fakeShiftStart = Date.now() - restoredElapsed - restoredBreakMs;
+    var fakeShiftStart = restoreBase(restoredElapsed, restoredBreakMs,
+                                     draft.onBreak, draft.breakStart, Date.now());
 
     state.currentVA = va;
     state.shiftStart = fakeShiftStart;
@@ -6286,7 +6314,8 @@ async function checkAndRestoreDraft(va) {
       if (ld) {
         var el = ld.elapsedMs || 0, bm = ld.totalBreakMs || 0;
         state.currentVA = va;
-        state.shiftStart = Date.now() - el - bm;
+        // same one clock as everywhere else — never a second copy of the sum
+        state.shiftStart = restoreBase(el, bm, false, null, Date.now());
         state._trueStart = ld.shiftStart || state.shiftStart;   // same rule as the cloud path
         state.totalBreakMs = bm;
         state.onBreak = false;
@@ -6335,7 +6364,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v43.0';
+var APP_VERSION='v43.9';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -7389,6 +7418,21 @@ function draftStartFresh(va){
   try{ document.getElementById('view-va').classList.add('setup-active'); }catch(e){}
 }
 function selectVA(va) {
+  /* Ask the other tabs first. If one of them is already running this VA's shift,
+     stop here — do not start, do not restore, do not autosave over it. */
+  if(va!=='Test' && !window._tabCheckDone){
+    shiftAlreadyOpenElsewhere(va).then(function(taken){
+      if(taken){
+        try{ document.getElementById('login-screen').style.display='none'; }catch(e){}
+        shiftTabBlocked(va);
+        return;
+      }
+      window._tabCheckDone=true;
+      selectVA(va);
+      window._tabCheckDone=false;
+    });
+    return;
+  }
   renderNewsletterSchedulePanels();
   // Check Supabase for an in-progress draft first
   if ((va === 'Mera' || va === 'Suz') && DB_ENABLED) {
@@ -7459,9 +7503,14 @@ function selectVA(va) {
                 +' of shift.\n\nPick up where you left off?\n\n(Cancel starts a brand-new shift.)')) {
               state.currentVA = va;
               state.totalBreakMs = _ld.totalBreakMs || 0;
-              state.shiftStart = Date.now() - (_ld.elapsedMs||0) - state.totalBreakMs;
               state.onBreak = !!_ld.onBreak;
               state.breakStart = _ld.onBreak ? (_ld.breakStart || Date.now()) : null;
+              state._currentBreakStartTime = _ld.onBreak ? (_ld.breakStartTime||'') : '';
+              /* Was `now - elapsed - totalBreakMs` — the SAME missing live-break term
+                 that cost Suz two hours, sitting in a second copy of the sum. Found by
+                 auditing for copies after the first fix; now on the shared clock. */
+              state.shiftStart = restoreBase(_ld.elapsedMs||0, state.totalBreakMs,
+                                             state.onBreak, state.breakStart, Date.now());
               state.breaks = _ld.breaks || [];
               state.tasks = _ld.tasks || [];
               state.extraTasks = _ld.extraTasks || [];
@@ -7517,6 +7566,61 @@ function selectVA(va) {
 }
 
 // ── START SHIFT ──────────────────────────────────────────
+/* ══════════ ONE TAB OWNS THE SHIFT ═════════════════════════════════════════
+   The draft is ONE row per VA per day, written last-write-wins, autosaved every
+   60s by every open tab, with no version check. So a second tab on the same
+   laptop — she clicks her bookmark, forgetting the first tab is open — quietly
+   overwrites the live shift with its own staler copy, once a minute. Same shape
+   as the bug that cost Suz two hours: one shared thing, no guard, silently wrong.
+
+   Tabs talk to each other. A tab about to run a shift asks "is anyone already on
+   this VA?" and waits ~700ms. A live tab answers. If anyone answers, the NEW tab
+   stands down and says so — the tab she was actually working in keeps the shift
+   and keeps saving. A reloaded tab is not blocked, because the dead one cannot
+   answer. Falls through and allows the shift if the browser has no channel. */
+var BDL_TAB_ID = Math.random().toString(36).slice(2) + '-' + Date.now();
+var _shiftBus = null;
+try{ if(typeof BroadcastChannel!=='undefined') _shiftBus=new BroadcastChannel('bdl_shift_owner'); }catch(e){}
+if(_shiftBus){
+  _shiftBus.onmessage=function(ev){
+    var m=ev&&ev.data; if(!m) return;
+    // someone is asking whether this VA is already being worked on
+    if(m.t==='who' && m.tab!==BDL_TAB_ID){
+      try{
+        var live = window.state && state.shiftStart && !state.submitted &&
+                   state.currentVA===m.va && state.currentVA!=='Test';
+        if(live) _shiftBus.postMessage({t:'mine', va:m.va, tab:BDL_TAB_ID});
+      }catch(e){}
+    }
+    if(m.t==='mine' && m.va===window._askingForVA && m.tab!==BDL_TAB_ID) window._vaTabTaken=true;
+  };
+}
+function shiftAlreadyOpenElsewhere(va){
+  if(!_shiftBus || va==='Test') return Promise.resolve(false);
+  window._askingForVA=va; window._vaTabTaken=false;
+  try{ _shiftBus.postMessage({t:'who', va:va, tab:BDL_TAB_ID}); }catch(e){ return Promise.resolve(false); }
+  return new Promise(function(res){
+    setTimeout(function(){ var taken=!!window._vaTabTaken; window._askingForVA=null; res(taken); },700);
+  });
+}
+function shiftTabBlocked(va){
+  var d=document.createElement('div');
+  d.id='tab-blocked';
+  d.style.cssText='position:fixed;inset:0;background:rgba(5,6,11,.93);z-index:1200;display:flex;'
+    +'align-items:center;justify-content:center;padding:22px;backdrop-filter:blur(6px);';
+  d.innerHTML='<div style="max-width:470px;background:var(--panel);border:1px solid var(--line-2);'
+    +'border-left:4px solid var(--amber);border-radius:16px;padding:26px 28px;">'
+    +'<div style="font-family:var(--font-head);font-size:21px;font-weight:800;color:var(--text);margin-bottom:10px;">'
+    +'Your shift is already open in another tab</div>'
+    +'<div style="font-size:13.5px;color:var(--muted);line-height:1.65;margin-bottom:18px;">'
+    +'You have '+escHtml(vaDisp(va)||va)+'&rsquo;s shift running in a different tab or window. '
+    +'<b style="color:var(--text)">Go back to that one</b> &mdash; all your work is there and still saving. '
+    +'If two tabs run at once they overwrite each other and you lose time.</div>'
+    +'<button class="btn btn-success" style="width:100%;padding:14px;border-radius:12px;" '
+    +'onclick="try{window.close()}catch(e){};document.getElementById(\'tab-blocked\').remove();showLogin();">'
+    +'Close this tab</button></div>';
+  document.body.appendChild(d);
+}
 function startShift(va, newsletterDay, previewVA) {
   var tmplVA = (va === 'Test' && previewVA) ? previewVA : va;
   if (newsletterDay === undefined && (tmplVA === 'Mera' || tmplVA === 'Suz')) newsletterDay = isNewsletterDayFor(tmplVA);
@@ -9345,18 +9449,65 @@ function confirmSkip() {
    still running counted as WORKED time: on the shift clock, in the autosaved draft,
    and in the hours submitted at EOD. Her draft was showing 108 minutes while she sat
    on a break. One function now owns this, and it counts the break in progress. */
-function breakSoFarMs(){
-  var t=(state&&state.totalBreakMs)||0;
-  if(state&&state.onBreak&&state.breakStart){
-    var live=Date.now()-state.breakStart;
-    if(live>0) t+=live;
-  }
+/* ══════════ THE CLOCK — ONE DEFINITION, TWO USERS ══════════════════════════
+   THE BUG (14/08/2026, Suz: "lost my shift huhu"):
+   Two places did this arithmetic and they disagreed about ONE term.
+     the live timer:   worked = now − shiftStart − (banked breaks + break running now)
+     the restore base: shiftStart = now − worked − (banked breaks)     ← no live break
+   Restore therefore handed the timer a base that was short by exactly the length of
+   the break she was still on, and the timer then subtracted that break AGAIN.
+   She worked 2h35m19s, broke for 2h, came back to 00:35:19. To the second.
+
+   HOW IT GOT IN: an earlier fix changed restore to KEEP onBreak=true (before, it
+   silently ended her break and paid it as work). That was right — but it introduced
+   a live-break term on one side of the equation and nobody updated the other side.
+   A shared invariant was edited from one end.
+
+   THE FIX THAT MATTERS is not the missing term, it is that there is now only ONE
+   function. `restoreBase` is `workedFrom` solved for shiftStart. They are inverses
+   by construction, so they cannot drift apart again — and timerSelfTest() proves it
+   on every build. Do not inline this arithmetic anywhere else. */
+function breakTotalAt(totalBreakMs,onBreak,breakStart,now){
+  var t=totalBreakMs||0;
+  if(onBreak&&breakStart){ var live=now-breakStart; if(live>0) t+=live; }
   return t;
+}
+function workedFrom(shiftStart,totalBreakMs,onBreak,breakStart,now){
+  var ms=now-shiftStart-breakTotalAt(totalBreakMs,onBreak,breakStart,now);
+  return ms>0?ms:0;
+}
+function restoreBase(elapsedMs,totalBreakMs,onBreak,breakStart,now){
+  return now-(elapsedMs||0)-breakTotalAt(totalBreakMs,onBreak,breakStart,now);
+}
+/* Round-trip: restore what we saved, get back what we saved. Run by the ship gate. */
+function timerSelfTest(){
+  var H=3600000, now=1700000000000, fails=[];
+  [
+    ['plain shift, no breaks',            3*H,        0,      false, 0],
+    ['worked with breaks banked, working', 3*H+10*60000, 45*60000, false, 0],
+    ["SUZ 14/08 — on a 2h break",         2*H+35*60000+19000, 0, true,  2*H],
+    ['on a short break, breaks banked',   5*H,        30*60000, true,  12*60000],
+    ['break longer than the work',        20*60000,   0,      true,  3*H],
+    ['zero worked, on break',             0,          0,      true,  H],
+    ['long shift, many breaks',           7*H+45*60000, 2*H+15*60000, false, 0]
+  ].forEach(function(c){
+    var name=c[0], elapsed=c[1], banked=c[2], onBreak=c[3], liveLen=c[4];
+    var breakStart=onBreak?(now-liveLen):null;
+    var base=restoreBase(elapsed,banked,onBreak,breakStart,now);
+    var got=workedFrom(base,banked,onBreak,breakStart,now);
+    if(Math.abs(got-elapsed)>1000)
+      fails.push(name+': saved '+Math.round(elapsed/1000)+'s, restored '+Math.round(got/1000)+'s');
+  });
+  return fails;
+}
+function breakSoFarMs(){
+  return breakTotalAt((state&&state.totalBreakMs)||0,
+                      state&&state.onBreak, state&&state.breakStart, Date.now());
 }
 function workedMs(){
   if(!state||!state.shiftStart) return 0;
-  var ms=Date.now()-state.shiftStart-breakSoFarMs();
-  return ms>0?ms:0;
+  return workedFrom(state.shiftStart,(state&&state.totalBreakMs)||0,
+                    state&&state.onBreak, state&&state.breakStart, Date.now());
 }
 function paintShiftTimer() {
   if (!state.shiftStart) return;
@@ -10156,7 +10307,8 @@ function renderEodRecap() {
   var mand = state.tasks.filter(function(t){ return t.mandatory !== false; });
   var mdone = mand.filter(function(t){ return t.done; }).length;
   var mskip = mand.filter(function(t){ return t.skipped; }).length;
-  var brk = Math.round((state.totalBreakMs||0)/60000);
+  // include a break still running, so the recap matches what gets submitted
+  var brk = Math.round(breakTotalAt(state.totalBreakMs||0,state.onBreak,state.breakStart,Date.now())/60000);
   function chip(k,v,l){ return '<div class="rc" style="--k:'+k+'"><b>'+v+'</b><span>'+l+'</span></div>'; }
   recap.innerHTML = chip('#f5a524',hrs.toFixed(1),'Hours') + chip('#10d99a',leads,'Leads')
     + chip('#8b5cff',mdone+'/'+mand.length,'Tasks') + chip('#f5455f',brk,'Break m');
@@ -10324,6 +10476,20 @@ async function submitEOD() {
     var _startMs = state._trueStart || state.shiftStart;
     var shiftStartTime = _startMs ? new Date(_startMs).toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:true}) : '-';
     var shiftEndTime   = ukTimeString();
+    /* Found by auditing the same clock a second time: if she submits while STILL on
+       a break, breakMins only counted BANKED breaks — a 3h break in progress went
+       unrecorded. hoursWorked was right (workedMs already excludes it) but the shift
+       row then failed its own evidence check, because hours+breaks no longer added
+       up to the clock window. Close the open break into the record first. */
+    if(state.onBreak && state.breakStart){
+      var _endMs=Date.now(), _open=Math.max(0,_endMs-state.breakStart);
+      state.breaks.push({ startMs:state.breakStart, endMs:_endMs,
+        startTime:state._currentBreakStartTime||'', endTime:ukTimeString(),
+        durationMins:Math.round(_open/60000) });
+      state.totalBreakMs+=_open;
+      state.onBreak=false; state.breakStart=null; state._currentBreakStartTime='';
+      try{ paintBreakUI(); }catch(e){}
+    }
     var breakMins      = Math.round(state.totalBreakMs/60000);
     var rec = { id:Date.now(), va:state.currentVA, date:phShiftDay, dateUK:today, submittedAt:ukTimeString(),
       shiftStart:shiftStartTime, shiftEnd:shiftEndTime, breakMins:breakMins,
@@ -12969,6 +13135,57 @@ function mgr_leadIntelHTML(){
       +'<div class="li-card"><div class="li-h">Retailers — by profit</div>'+(byStore.rows||'<div class="li-none">No retailer data yet.</div>')+'</div>'
     +'</div>';
 }
+/* ══════════ REPEAT BEHAVIOUR — "the same filter over and over" ══════════════
+   Jack: "if a VA is doing the same filter over and over again — I wanna know —
+   ESPECIALLY if they are getting results." Two verdicts, per VA, last 14 days:
+     🔥 runs it repeatedly AND it keeps producing  → her instinct is right, feed it
+     🕳 runs it repeatedly and it gives NOTHING     → habit, not judgement — redirect
+   A repeat = 3+ separate days on the same filter inside the window. Everything is
+   read from what the VAs already log (opens + leads per filter) — nothing new for
+   them to do. */
+function filterRepeatPanel(){
+  var usage=(window._fuCloud&&window._fuCloud.length)?window._fuCloud:(typeof fuLocal==='function'?fuLocal():[]);
+  if(!usage.length) return '';
+  function dnum(ds){ var p=String(ds||'').split('/'); return p.length===3?new Date(+p[2],+p[1]-1,+p[0]).getTime():0; }
+  var cut=Date.now()-14*86400000;
+  var g={};
+  usage.forEach(function(u){
+    var t=dnum(u.date); if(!t||t<cut) return;
+    var id=(u.filter_id||u.title); if(!id) return;
+    var k=id+'|'+(u.va||'?');
+    if(!g[k]) g[k]={title:u.title||'Filter', va:u.va||'?', days:{}, runs:0, leads:0, last:0};
+    var o=g[k];
+    o.runs+=(parseInt(u.opens)||1);
+    o.leads+=(parseInt(u.leads)||0);
+    o.days[u.date]=1;
+    if(t>o.last){ o.last=t; if(u.title) o.title=u.title; }
+  });
+  var rows=Object.keys(g).map(function(k){ var o=g[k]; o.dayN=Object.keys(o.days).length; return o; })
+    .filter(function(o){ return o.dayN>=3; });                     // the "over and over" bar
+  if(!rows.length) return '';
+  var hot=rows.filter(function(o){ return o.leads>=o.dayN; })      // producing at least ~1/day it runs
+    .sort(function(a,b){ return b.leads-a.leads; }).slice(0,6);
+  var cold=rows.filter(function(o){ return o.leads===0; })
+    .sort(function(a,b){ return b.dayN-a.dayN; }).slice(0,6);
+  function vaCol2(v){ return (v==='Mera'||v==='VA M')?'#c07bff':'#f2c200'; }
+  function line(o,colr){
+    return '<div class="fr-r"><span class="fr-va" style="color:'+vaCol2(o.va)+'">'+escHtml(vaDisp(o.va)||o.va)+'</span>'
+      +'<span class="fr-t" title="'+escHtml(o.title)+'">'+escHtml(o.title)+'</span>'
+      +'<b style="color:'+colr+'">'+o.dayN+' of 14 days</b>'
+      +'<span class="fr-n">'+o.leads+' lead'+(o.leads===1?'':'s')+' · '+o.runs+' runs</span></div>';
+  }
+  var out='<div class="mgr-section">Repeat behaviour — last 14 days'
+    +'<span style="margin-left:auto;font-size:10.5px;font-weight:600;color:var(--muted-2);">same filter on 3+ days</span></div>'
+    +'<div class="fr-wrap">';
+  out+='<div class="fr-col"><div class="fr-h hot">🔥 Repeating it AND it produces — feed these</div>'
+    +(hot.length?hot.map(function(o){return line(o,'#10d99a');}).join('')
+      :'<div class="fr-none">Nothing yet — needs a filter run on 3+ days that also produced leads.</div>')+'</div>';
+  out+='<div class="fr-col"><div class="fr-h cold">🕳 Repeating it for NOTHING — worth a word</div>'
+    +(cold.length?cold.map(function(o){return line(o,'#ff7a8f');}).join('')
+      :'<div class="fr-none">Nobody is grinding a dead filter. Good.</div>')+'</div>';
+  out+='</div>';
+  return out;
+}
 /* Filter performance — shared by the Filters tab and the Insights tab.
    Exact: opens + leads the VA logged. Estimated: that VA-day's buys shared out in
    proportion to each filter's logged leads (leads carry no filter id, so it IS an
@@ -13051,7 +13268,7 @@ function mgr_renderFilters(){
        sub:(live-used)>0?'sitting in the list, never run':'every live filter has been used'})
     +'</div>';
   html+='<div class="filters-shell">'+sfltManageHTML()+'</div>';
-  html+='<div id="filters-perf">'+filterPerfPanel('filters')+'</div>';
+  html+='<div id="filters-perf">'+filterRepeatPanel()+filterPerfPanel('filters')+'</div>';
   try{ html+=sbFilterLeagueHTML(); }catch(e){}     // leads per filter — belongs here, not on Storefronts
   host.innerHTML=html;
   // usage numbers live in their own table — pull once, then repaint
@@ -13920,6 +14137,7 @@ function mgr_renderSettings(){
          huge and not simple." The verdict now leads; the lecture and the full grid
          are one click away instead of a wall he has to scroll past. */
       +'<div id="score-verdict" style="margin-bottom:10px;"></div>'
+      +'<div id="note-thresholds" style="margin-bottom:10px;"></div>'
       +'<details class="score-details"><summary>How the score works &amp; the full matrix check</summary>'
       +'<div style="font-size:12px;color:var(--muted);line-height:1.6;background:var(--panel-2);border:1px solid var(--line-2);border-radius:10px;padding:11px 14px;margin-bottom:4px;">'
         +'<b style="color:var(--text);">How the score works:</b> it is a <b style="color:var(--text);">lookup, not a formula</b>. Sales per month picks a volume band, profit per unit picks a tier, and where they meet in your matrix is the score. ROI only ever adjusts it &mdash; under 10% docks a couple of points unless the profit or the speed makes up for it.'
@@ -14426,6 +14644,7 @@ function scoreGoManual(){
 }
 function renderScoreTeach(){
   try{ var v=document.getElementById('score-verdict'); if(v) v.innerHTML=smartHealthHTML(); }catch(e){}
+  try{ var nt=document.getElementById('note-thresholds'); if(nt) nt.innerHTML=noteThresholdHTML(); }catch(e){}
   var host=document.getElementById('score-teach'); if(!host) return;
   var decided=(window.leads||[]).filter(function(l){ return l.islead!==null||l.status; });
   window._teachDecided=decided;
@@ -15377,7 +15596,7 @@ function showToast(msg,isError) {
        Estimated: that VA-day's buys shared out in proportion to the leads each
        filter produced that day (labelled as an estimate — leads don't carry a
        filter id). NOTHING here bins or archives anything: Jack decides. */
-    function filterPerfHTML(){ return filterPerfPanel(); }
+    function filterPerfHTML(){ return filterRepeatPanel()+filterPerfPanel(); }
     return '<div class="mgr-section">Lead insights — from your live sheets</div>'
       +'<div class="mgr-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:8px;">'
         +'<div class="mgr-tile tile-purple"><div class="mgr-tile-label">Total leads</div><div class="mgr-tile-val val-lg">'+all.length+'</div><div class="mgr-tile-sub">'+pending+' pending review</div></div>'
@@ -15874,6 +16093,62 @@ function trainingRows(){
   return Object.keys(by).map(function(k){ return by[k]; });
 }
 function recQty(l){ if(l._decQty!=null) return Math.max(1,Math.min(20,l._decQty)); var m=(typeof ldMeta==='function')?ldMeta(l):{}; return Math.max(1,Math.min(20,m.na?1:(parseInt(m.qty)||1))); }
+/* ══════════ WHAT YOUR NOTES SAY YOUR REAL LIMITS ARE ════════════════════════
+   Jack: "it must read notes anyway and analyse my notes as I write a note on most
+   things I action". Right — and this is the way that works.
+
+   A note cannot be a per-lead FEATURE: at the moment the score is needed the lead is
+   undecided and the note does not exist yet, so a model trained on notes would score
+   brilliantly in testing and know nothing about a fresh lead. But a note is a superb
+   TEACHER. Every time he writes "low ROI" he is labelling a number, and across many
+   notes those labels reveal where his real line sits — which is exactly the thing the
+   matrix needs and cannot learn on its own.
+
+   So: for each score-type reason, take every lead he gave it to, and read off the
+   distribution of the metric it refers to. "You say low ROI on leads averaging 9.4%,
+   and you have never said it above 13%" is a threshold learned from his own words. */
+var NOTE_METRICS=[
+  {code:'roi',    metric:'roi',    label:'ROI',         unit:'%', dir:'below', say:'you call this low ROI'},
+  {code:'profit', metric:'profit', label:'profit/unit', unit:'£', dir:'below', say:'you call this low profit'},
+  {code:'comp',   metric:'fba',    label:'FBA sellers', unit:'',  dir:'above', say:'you call this too crowded'},
+  {code:'demand', metric:'spm',    label:'sales/month', unit:'',  dir:'below', say:'you call this too slow'},
+  {code:'margin', metric:'margin', label:'margin',      unit:'%', dir:'above', say:'you call this a great margin', good:true},
+  {code:'fast',   metric:'spm',    label:'sales/month', unit:'',  dir:'above', say:'you call this fast-selling', good:true}
+];
+function noteThresholds(){
+  var rows=(window.leads||[]).filter(function(l){ return l&&(l.status||l.islead!==null); });
+  var out=[];
+  NOTE_METRICS.forEach(function(nm){
+    var vals=[];
+    rows.forEach(function(l){
+      var a=(typeof reasonAny==='function')?reasonAny(l.notes):null;
+      var code=a&&a.r&&a.r.c;
+      if(code!==nm.code) return;
+      var v=parseFloat(l[nm.metric]); if(!isFinite(v)) return;
+      vals.push(v);
+    });
+    if(vals.length<3) return;                       // two mentions is not a pattern
+    vals.sort(function(x,y){ return x-y; });
+    var med=vals[Math.floor(vals.length/2)];
+    var edge=(nm.dir==='below')?vals[vals.length-1]:vals[0];   // the furthest he has tolerated
+    out.push({label:nm.label, unit:nm.unit, dir:nm.dir, n:vals.length, say:nm.say, good:!!nm.good,
+              median:Math.round(med*10)/10, edge:Math.round(edge*10)/10});
+  });
+  return out;
+}
+function noteThresholdHTML(){
+  var t=noteThresholds();
+  if(!t.length) return '<div class="nt-box off">Write a few more reasons on your rejections and this will show the lines you actually draw.</div>';
+  return '<div class="nt-box"><div class="nt-h">What your notes say your real limits are</div>'
+    +'<div class="nt-sub">Learned from the reasons you gave — not from the matrix.</div>'
+    +t.map(function(x){
+      // £ prefixes, % suffixes — "over %13.1" read as broken
+      function u(v){ return x.unit==='£' ? '£'+v : (x.unit==='%' ? v+'%' : String(v)); }
+      return '<div class="nt-r'+(x.good?' good':'')+'"><span class="nt-l">'+escHtml(x.say)+'</span>'
+        +'<b>'+(x.dir==='below'?'under ':'over ')+u(x.median)+'</b>'
+        +'<span class="nt-n">'+x.n+' times · furthest '+u(x.edge)+'</span></div>';
+    }).join('')+'</div>';
+}
 /* Keep only the decisions that were genuinely about the lead's NUMBERS. */
 function trainableRows(all){
   var kept=[], skipped={world:0,data:0,contra:0,dupe:0};
@@ -15986,7 +16261,16 @@ function trainSmartModel(){
   if(buys.length<6||passes.length<6) return {err:'need ≥6 buys and ≥6 passes (have '+buys.length+' / '+passes.length+')'};
 
   var y=decided.map(function(l){ return isBuy(l)?1:0; });
-  // sample weight: a lead you bought 10 of is a 10× stronger signal than one you bought 1 of.
+  /* Jack: "I want it to learn by how many I buy too" — it already does, and this is
+     the version that actually works. Quantity is CONFIDENCE in the label: 20 units is
+     conviction, 1 unit is a toe in the water.
+     MEASURED on his 86 decisions, five weightings, same folds, balanced accuracy:
+       linear qty 61%  ·  sqrt qty 58%  ·  sqrt+good-lead-0.4 59%
+       log qty+good-lead 57%  ·  flat (ignore qty entirely) 58%
+     Linear wins by 3 points, and ignoring quantity costs 3. I tried the gentler
+     curves on the theory that one 20-unit buy shouldn't outvote twenty decisions;
+     the data disagreed, so they are gone. Do not "improve" this without re-running
+     that comparison. */
   var sw=decided.map(function(l){ return isBuy(l)?recQty(l):1; });
   var maj=Math.max(buys.length,passes.length)/decided.length;   // "always say the common one"
 
@@ -19015,8 +19299,18 @@ function shotImg(u){
   u=String(u||'').trim();
   var g=u.match(/^https?:\/\/(?:www\.)?gyazo\.com\/([a-f0-9]{16,})/i);
   if(g) return 'https://i.gyazo.com/'+g[1]+'.png';
-  var im=u.match(/^https?:\/\/(?:www\.)?imgur\.com\/([A-Za-z0-9]+)$/i);
+  /* Found by testing every shape a VA can produce: imgur.com/a/<id> is an ALBUM
+     page, not a picture, and the old single-segment regex let it through to an <img>
+     that could only fail. Albums and galleries get the same honest "opens in a new
+     tab" as prnt.sc; single images still swap to the direct file. */
+  if(/^https?:\/\/(?:www\.)?imgur\.com\/(a|gallery|t)\//i.test(u)) return '';
+  var im=u.match(/^https?:\/\/(?:www\.)?imgur\.com\/([A-Za-z0-9]{5,})$/i);
   if(im) return 'https://i.imgur.com/'+im[1]+'.png';
+  /* ImgBB gives TWO shapes: i.ibb.co/<id>/<name>.png is the picture and previews as
+     it stands, while ibb.co/<id> is a web page and can only ever fail in an <img>.
+     There is no swap that turns the page into the picture, so say so plainly rather
+     than firing a doomed request on every scroll — the same trap prnt.sc set. */
+  if(/^https?:\/\/(?:www\.)?ibb\.co\//i.test(u)) return '';
   var c=shotCode(u);
   if(c && SHOT_CACHE[c]) return SHOT_CACHE[c];      // already resolved once
   /* NEVER hand an unresolved prnt.sc link to an <img>. It is an HTML page, not an
