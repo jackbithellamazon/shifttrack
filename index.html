@@ -6364,7 +6364,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v43.9';
+var APP_VERSION='v44.2';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -10647,6 +10647,43 @@ async function sheetTabsAutoSync(){
       {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
     if(!res.ok) return null;
     var rows=await res.json(); if(!Array.isArray(rows)) return null;
+
+    /* ── DISCOVER TABS THAT HAVE NEVER BEEN REGISTERED ────────────────────────────
+       This used to switch ON tabs it already knew about, and nothing else. A tab that
+       was never in sheet_tabs was simply invisible — there was nothing to switch on.
+       Suz's "May PP" sat unregistered and unsynced for months that way, and Jack now
+       creates a NEW TAB EVERY MONTH, so September would have gone the same way: a small
+       banner, and the leads silently never arriving.
+       So ask Google what tabs actually exist and register anything new — switched OFF,
+       because discovering a tab is not the same as being told to sync it. The month pass
+       below can then find it like any other. */
+    var added=[];
+    var _notLeads=/login|keepa|notification|viewer|template|instruction|archive/i;
+    if(typeof LEAD_PULL_KEY!=='undefined' && LEAD_PULL_KEY){
+      var _sids=Object.keys(SHEET_NAMES);
+      for(var _i=0;_i<_sids.length;_i++){
+        var _sid=_sids[_i];
+        try{
+          var _gr=await fetchT('https://sheets.googleapis.com/v4/spreadsheets/'+_sid
+                 +'?key='+LEAD_PULL_KEY+'&fields=sheets.properties.title');
+          if(!_gr.ok) continue;
+          var _real=((await _gr.json()).sheets||[]).map(function(s){ return s.properties.title; });
+          var _known={}; rows.forEach(function(t){ if(t.sheet_id===_sid) _known[t.tab]=1; });
+          var _fresh=_real.filter(function(t){ return !_known[t] && !_notLeads.test(t); });
+          if(!_fresh.length) continue;
+          var _ins=await fetchT(SUPABASE_URL+'/rest/v1/sheet_tabs',{method:'POST',
+            headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+              'Content-Type':'application/json',Prefer:'resolution=ignore-duplicates,return=minimal'},
+            body:JSON.stringify(_fresh.map(function(t){ return {sheet_id:_sid,tab:t,included:false}; }))});
+          if(_ins.ok){
+            (function(sid2){ _fresh.forEach(function(t){
+              rows.push({sheet_id:sid2,tab:t,included:false});
+              added.push(SHEET_NAMES[sid2]+' → '+t); }); })(_sid);
+          }
+        }catch(e){}
+      }
+    }
+
     var turnedOn=[], missing=[];
     Object.keys(SHEET_NAMES).forEach(function(sid){
       var mine=rows.filter(function(t){ return t.sheet_id===sid && tabIsBaseMonth(t.tab,mi); });
@@ -10661,9 +10698,14 @@ async function sheetTabsAutoSync(){
            body:JSON.stringify({included:true,updated_at:new Date().toISOString()})}).catch(function(){});
       });
     });
-    TAB_STATE={month:mName, turnedOn:turnedOn, missing:missing};
+    TAB_STATE={month:mName, turnedOn:turnedOn, missing:missing, added:added};
     if(turnedOn.length) showToast('New month — switched on '+turnedOn.length+' '+mName+' tab'
       +(turnedOn.length===1?'':'s')+' so leads keep syncing ✓');
+    /* A newly-found tab whose name does not read as this month is NOT guessed at — the
+       tabs are named every which way ("JULY 2026", "AUGUST ", "May PP", "Feb PP A2A"),
+       so a wrong guess would sync the wrong month silently. Name it and let Jack decide. */
+    if(added.length) showToast('Found '+added.length+' new sheet tab'+(added.length===1?'':'s')
+      +' — check Settings → Sheet tabs to switch '+(added.length===1?'it':'them')+' on', true);
     return TAB_STATE;
   }catch(e){ return null; }
 }
@@ -16076,7 +16118,7 @@ function trainingRows(){
     by[k]={_sid:k, roi:+l.roi||0, profit:+l.profit||0, margin:+l.margin||0,
       spm:parseFloat(l.spm)||0, fba:+l.fba||0, status:l.status, islead:l.islead,
       buy:+l.buy||0, cat:l.cat||l.category, src:l.src||l.source_method, va:l.va,
-      _decQty:null, title:l.title, notes:l.notes, store:l.store, asin:l.asin, _src:'sheet'};
+      _decQty:null, title:l.title, notes:l.notes, store:l.store, asin:asinKey(l), _src:'sheet'};
   });
   (window._decisionCache||[]).forEach(function(r){
     if(!r.decision) return;
@@ -17319,8 +17361,12 @@ async function leadPullOnce(force){
     var floor=cut||'2026-07-01';
     var have={};
     try{
+      /* asin joined this list when it joined SHEETCOLS — without it here, cur.asin is
+         undefined, every row compares as "changed" and each pull re-uploads all 800.
+         status / islead / writeback_pending are here for the decision fill below. */
       var hres=await fetchT(SUPABASE_URL+'/rest/v1/leads?select=id,store,source_method,va_note,'
         +'supplier_url,supplier_url2,amazon_url,category,title,discount_code,screenshot,date,buy,sell,spm,profit,roi,margin,fba'
+        +',asin,status,islead,writeback_pending'
         +'&limit=5000',{headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
       if(hres.ok) (await hres.json()).forEach(function(r){ have[r.id]=r; });
     }catch(e){ errs++; }
@@ -17379,9 +17425,22 @@ async function leadPullOnce(force){
            `merge-duplicates` only writes the columns present in the payload, so leaving
            status / islead / jack_comment OUT of it preserves Jack's decisions. */
         if(refresh.length){
+          /* ── 'asin' MUST STAY IN THIS LIST. ────────────────────────────────────────
+             It was missing, and that was the whole "the VAs' ASIN column is broken" saga.
+             A row's identity is sheet_id::tab::row_index, so when a VA inserts, deletes or
+             re-sorts a row, every row below it gets a new occupant. Refresh then rewrote
+             title, link, cost, ROI — everything the sheet owns — to that new occupant,
+             while `asin` stayed frozen at whatever was captured the very first time.
+             Result: 411 of 800 leads carried one product's ASIN beside another product's
+             title, which read exactly like the VAs had wrecked their own sheets.
+             They had not. Checked against the live sheet: 225 of Mera's 226 July rows have
+             an ASIN matching their own Amazon link. The sheets were always right — this
+             list was wrong. Anything the sheet owns belongs here; leaving a column out
+             does not make it stable, it makes it silently stale.
+             status / islead / jack_comment stay OUT on purpose: those are Jack's. */
           var SHEETCOLS=['store','source_method','va_note','supplier_url','supplier_url2',
             'amazon_url','category','title','discount_code','screenshot','date','buy','sell','spm',
-            'profit','roi','margin','fba'];
+            'profit','roi','margin','fba','asin'];
           var changed=[];
           refresh.forEach(function(rec2){
             var cur=have[rec2.id]; if(!cur||cur===true) return;
@@ -17392,6 +17451,21 @@ async function leadPullOnce(force){
               if(String(cur[k]==null?'':cur[k])===String(nv)) return;
               any=true;
             });
+            /* ── DECISION FILL — the sheet may FILL A BLANK, never overwrite. ────────
+               Jack marks leads up straight in the sheet. Because status / islead are
+               kept out of SHEETCOLS (so a stale sheet can never wipe a call he made in
+               the app), the app could never SEE those either: 30 leads sat decided in
+               the sheet and blank in the app, 21 of them BOUGHT, £2,841 of spend that
+               never reached his buy rate or the scoring model.
+               So: if the app holds NOTHING and the sheet holds something, take it. If
+               the app holds anything at all, the sheet is ignored — his call always wins.
+               writeback_pending means a write is still in flight (an Undo that has not
+               landed yet); leave those alone or we would resurrect what he just cleared. */
+            var _canFill = (cur.status==null && cur.islead==null && !cur.writeback_pending);
+            var _fillSt  = (_canFill && rec2.status!=null)  ? rec2.status : null;
+            var _fillLd  = (_canFill && rec2.islead!=null)  ? rec2.islead : null;
+            if(_fillSt!=null || _fillLd!=null) any=true;
+
             if(!any) return;
             /* THE BUG THAT KEPT SOURCE BLANK FOREVER.
                This used to send ONLY the changed fields — {id, store, source_method}. But a
@@ -17415,6 +17489,11 @@ async function leadPullOnce(force){
               if(v===''||v===null||v===undefined) v=(cur[k]===undefined?null:cur[k]);
               row[k]=v;
             });
+            /* Same fixed shape on EVERY object or PostgREST answers PGRST102, so these two
+               are always present — carrying the value already in the database unless the
+               fill above applies. Never a bare null: that would wipe his decisions. */
+            row.status = (_fillSt!=null) ? _fillSt : (cur.status===undefined?null:cur.status);
+            row.islead = (_fillLd!=null) ? _fillLd : (cur.islead===undefined?null:cur.islead);
             changed.push(row);
           });
           if(changed.length){
@@ -17451,6 +17530,7 @@ async function loadLeadsFromDB(){
   try{
     if(typeof SUPABASE_URL==='undefined'||typeof DB_ENABLED==='undefined'||!DB_ENABLED) return;
     var _sd=''; try{_sd=(getAppSettings().leadsStartDate||'').trim();}catch(e){}
+    if(window._ldStartOverride) _sd='';        // "Show them" — this session only, setting untouched
     // NOTE: the DB `date` column is unreliable (Mera's rows import day/month-swapped — a lead
     // sourced 11 July stores as "2026-11-07"). So we DON'T filter on it server-side; we repair each
     // date with normLeadISO() then filter client-side below. See also the source fix Jack needs.
@@ -17479,7 +17559,12 @@ async function loadLeadsFromDB(){
         _id:'LD-'+String(r.row_index||n).padStart(4,'0') };
     });
     // Jack's "show leads from" setting — hard cutoff on the REPAIRED date (integer compare, no timezone edge)
-    if(_sd){ var cp=_sd.split('-'); var coN=(+cp[0])*10000+(+cp[1])*100+(+cp[2]); if(coN){ leads=leads.filter(function(l){ var p=(l.date||'').split('/'); if(p.length!==3) return true; var dN=(+p[2])*10000+(+p[1])*100+(+p[0]); return !dN||dN>=coN; }); } }
+    /* Count what this cutoff removes. It was silently dropping 224 of 1024 leads — a
+       third of the board gone with nothing on screen to say so, which is exactly what
+       "leads are going missing" looked like. The setting stays (it is the day Jack
+       started using the app); it just stops being invisible. */
+    window._ldHiddenByStart=0; window._ldStartDate=_sd||'';
+    if(_sd){ var cp=_sd.split('-'); var coN=(+cp[0])*10000+(+cp[1])*100+(+cp[2]); if(coN){ var _b4=leads.length; leads=leads.filter(function(l){ var p=(l.date||'').split('/'); if(p.length!==3) return true; var dN=(+p[2])*10000+(+p[1])*100+(+p[0]); return !dN||dN>=coN; }); window._ldHiddenByStart=_b4-leads.length; } }
     if(keepSel){ var again=leads.find(function(x){return x._sid===keepSel;}); selId=again?again.id:null; }
     else if(!leadsEditing()){ selId=null; }
     try{ window.leads=leads; }catch(e){}
@@ -17984,6 +18069,20 @@ function ldArchived(l){
 function ldArchivedCount(){
   return (window.leads||[]).filter(ldArchived).length;
 }
+/* "Show them" on the older-leads line. A session-only flag that loadLeadsFromDB reads —
+   his SETTING is never written to. An earlier version cleared the setting and restored it
+   on a timer; if anything failed in between, his start date was gone. A flag cannot do
+   that: close the tab and it is back to normal. Jack asked for them hidden by default,
+   so this is the escape hatch, not a new default. */
+function ldShowOlder(){
+  window._ldStartOverride=true;
+  try{ ldToast('Showing the older leads too — reloading…'); }catch(e){}
+  try{ loadLeadsFromDB(); }catch(e){}
+}
+function ldHideOlder(){
+  window._ldStartOverride=false;
+  try{ loadLeadsFromDB(); }catch(e){}
+}
 /* Days from the Monday that starts the week containing `d`. Jack's weeks start on
    Monday, so Sunday belongs to the week BEFORE — which getDay()===0 does not give you.
    0..6 = this week, -7..-1 = last week. */
@@ -18186,7 +18285,7 @@ function ldSameDeal(a,b){
 function ldMergeTwins(list){
   var byAsin={};
   list.forEach(function(l){
-    var k=String(l.asin||'').trim().toUpperCase(); if(!k) return;
+    var k=asinKey(l); if(!k) return;                  // resolved, NOT the column — see asinKey()
     (byAsin[k]||(byAsin[k]=[])).push(l);
   });
   var hide={};
@@ -18572,11 +18671,25 @@ function renderList(){
           +(_cS?' <button class="ld-arch-b" onclick="asinFixCopy(\'VA S\')">'+vaDisp('Suz')+' ('+_cS+')</button>':'')
           +'</span>'
         : '';
+      /* The start-date cutoff is Jack's own setting, so it stays \u2014 but it is no longer
+         allowed to be silent. Nothing is deleted; these are older than the day he began
+         using the app. One click to see them if he ever wants. */
+      var _hs=(+window._ldHiddenByStart||0);
+      var _hsHtml=window._ldStartOverride
+        ? '<span class="ld-arch" title="Showing everything, including leads from before you '
+          +'started using the app. This lasts until you reload.">\u{1F4C5} showing <b>all</b> leads'
+          +' <button class="ld-arch-b" onclick="ldHideOlder()">Back to normal</button></span>'
+        : (_hs
+        ? '<span class="ld-arch" title="Older than '+escHtml(window._ldStartDate||'your start date')
+          +' \u2014 the day you started using the app. Nothing is deleted; they are still in the '
+          +'database and still in the VAs\u2019 sheets.">\u{1F4C5} <b>'+_hs+'</b> older leads hidden'
+          +' <button class="ld-arch-b" onclick="ldShowOlder()">Show them</button></span>'
+        : '');
       _ae.innerHTML=(_n
         ? '<span class="ld-arch" title="They are only hidden from this list. Search still '
           +'finds them and nothing is removed from the sheet.">\u{1F5C4} <b>'+_n+'</b> archived'
           +(_q?' (shown \u2014 you\u2019re searching)':'')+'</span>'
-        : '')+_cx;
+        : '')+_hsHtml+_cx;
     }
   }catch(e){}
   try{
@@ -18676,9 +18789,10 @@ function dupeKeyDate(l){
 }
 function dupeMapDirty(){ try{ window._dupeSig=null; }catch(e){} }
 function buildDupeMap(){
+  _sidAsinIdx=null;                                   // lead set changed — rebuild the row index too
   var map={}, byAsin={};
   (window.leads||[]).forEach(function(l){
-    var a=String(l.asin||'').trim().toUpperCase(); if(!a) return;
+    var a=asinKey(l); if(!a) return;                  // resolved, NOT the column — see asinKey()
     (byAsin[a]=byAsin[a]||[]).push(l);
   });
   Object.keys(byAsin).forEach(function(a){
@@ -18834,6 +18948,38 @@ function leadUseAsin(l){
   var c=leadAsinConflict(l);
   return c?c.link:String((l&&l.asin)||'').trim().toUpperCase();
 }
+/* ── THE KEY FOR "IS THIS THE SAME PRODUCT?" ──────────────────────────────────
+   Every grouping question must ask it through here: dupes, twins, "you decided this
+   before", the model's training set. Grouping on l.asin instead groups by a value that
+   is WRONG on 410 rows, so it answers a different question entirely — "which rows share
+   a typo".
+   Measured on the live board before this existed: 153 of the 235 DUPE / BOTH VAs badges
+   named a different product (an NZXT cooler told to be a Char-Broil BBQ, which was told
+   to be a L'Oreal beard trimmer), while the three genuine copies of that same cooler
+   carried no badge at all. Jack, on the search that exposed it: "mini bug". It was not.
+   NOT the same as asinConflictHTML(), which groups on the raw column ON PURPOSE to ask
+   how many different products share one typed value. That one is correct as it is. */
+function asinKey(l){
+  try{ return leadUseAsin(l)||''; }catch(e){}
+  return String((l&&l.asin)||'').trim().toUpperCase();
+}
+/* Decision rows — both the DB cache and the ones read straight out of the sheet — stored
+   whatever was in the ASIN column at the time, so they inherit the same offset. Resolve
+   each one back through its lead before comparing. Indexed because reasonRecall() runs
+   on every lead detail render and the naive version is O(rows x leads). */
+var _sidAsinIdx=null;
+function sidAsinIndex(){
+  if(_sidAsinIdx) return _sidAsinIdx;
+  var m={};
+  (window.leads||[]).forEach(function(l){ var k=(l&&(l._sid||l.id)); if(k!=null) m[k]=asinKey(l); });
+  _sidAsinIdx=m; return m;
+}
+function rowAsinKey(r){
+  if(!r) return '';
+  var m=sidAsinIndex(), k=r.id;
+  if(k!=null && m[k]) return m[k];
+  return String(r.asin||'').trim().toUpperCase();
+}
 /* Measured after shipping the banner: it fires on 410 of 764 leads. A full-width amber
    warning on more than half the board is wallpaper, not a warning — and the leads page
    already shows 3-5 panels on a typical lead. So it is a one-line chip by default and
@@ -18863,12 +19009,12 @@ function asinConflictHTML(l){
 }
 function dupePrior(l){
   if(!l) return null;
-  var a=String(l.asin||'').trim().toUpperCase(); if(!a) return null;
+  var a=asinKey(l); if(!a) return null;               // resolved, NOT the column — see asinKey()
   var mine=dupeKeyDate(l);
   var best=null;
   (window.leads||[]).forEach(function(x){
     if(!x||x.id===l.id) return;
-    if(String(x.asin||'').trim().toUpperCase()!==a) return;
+    if(asinKey(x)!==a) return;
     if(!(x.islead!==null||x.status)) return;          // only ones he actually decided
     var d=dupeKeyDate(x);
     if(mine&&d&&d>mine) return;                        // must be EARLIER than this one
@@ -19867,7 +20013,7 @@ function recallRows(){
     if(out.some(function(r){ return r.id===k; })) return;
     out.push({id:k, decision:l.status||(l.islead?'lead':'passed'),
       is_buy:(l.status==='bought'||l.status==='atbq'||l.status==='atba2a'),
-      asin:l.asin, store:l.store, note:l.notes, qty:null, updated_at:l.date||''});
+      asin:asinKey(l), store:l.store, note:l.notes, qty:null, updated_at:l.date||''});
   });
   return out;
 }
@@ -19883,9 +20029,9 @@ function reasonRecall(l,score){
       : {lvl:'self',ico:'&#127919;',kind:'score',txt:'Scored <b>'+sc.toFixed(1)+'</b> and you passed for <b>'+escHtml(mine.l)+'</b> &mdash; the numbers could have caught that. A real scoring miss.'});
   }
   if(!rows.length) return out;
-  var asin=String(l.asin||'').toUpperCase();
+  var asin=asinKey(l);
   if(asin){
-    var same=rows.filter(function(r){ return String(r.asin||'').toUpperCase()===asin && r.id!==l._sid; });
+    var same=rows.filter(function(r){ return rowAsinKey(r)===asin && r.id!==l._sid; });
     same.sort(function(a,b){ return String(b.updated_at||'')<String(a.updated_at||'')?-1:1; });
     if(same.length){
       var r0=same[0], _a0=reasonAny(r0.note), w0=_a0&&_a0.r;
