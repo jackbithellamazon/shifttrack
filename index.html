@@ -4149,12 +4149,16 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 
 /* Destinations carry the SAME colour as the person, everywhere in the app, so the
    button you press and the tile it produces are visibly the same thing. */
-.sbr-route2{display:grid;grid-template-columns:1fr 1fr 40px;gap:5px;}
+.sbr-route2{display:grid;grid-template-columns:1fr 1fr 1fr 38px;gap:5px;}
 .sbr-go2{height:34px;border-radius:9px;font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;
   border:1px solid var(--line-2);background:rgba(255,255,255,.05);color:var(--muted);transition:all .12s;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px;}
 .sbr-go2[data-w="Mera"]:hover,.sbr-go2[data-w="Mera"].on{background:color-mix(in srgb,var(--mera) 26%,transparent);border-color:var(--mera);color:#fff;}
 .sbr-go2[data-w="Suz"]:hover,.sbr-go2[data-w="Suz"].on{background:color-mix(in srgb,var(--suz) 26%,transparent);border-color:var(--suz);color:#fff;}
+.sbr-go2[data-w="Jack"]:hover,.sbr-go2[data-w="Jack"].on{background:color-mix(in srgb,var(--jack) 26%,transparent);border-color:var(--jack);color:#fff;}
+/* Three destinations plus the ⋯ is a tight row on a narrow tile. Let the labels shrink
+   before they ellipsis — "→ Mera" losing its arrow beats it reading "→ Me…". */
+@media (max-width:1500px){ .sbr-route2 .sbr-go2{font-size:11.5px;padding:0 2px;} }
 .sbr-more{position:relative;}
 .sbr-more summary{list-style:none;cursor:pointer;height:34px;display:flex;align-items:center;justify-content:center;
   border-radius:9px;border:1px solid var(--line-2);background:rgba(255,255,255,.05);color:var(--muted);font-size:15px;font-weight:800;}
@@ -5003,6 +5007,7 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
         <div class="timer" id="shift-timer" style="font-size:22px;letter-spacing:2px;padding:0 12px;">00:00:00</div>
         <button onclick="saveShiftDraft(true)" id="save-btn" style="padding:10px 18px;font-size:13px;font-weight:700;border-radius:10px;background:color-mix(in srgb,var(--green) 14%,#0d0f16);border:1px solid color-mix(in srgb,var(--green) 34%,var(--line));color:#10d99a;letter-spacing:0.3px;transition:all 0.16s;cursor:pointer;" title="Save progress to cloud — use before restarting your laptop">💾 Save</button>
         <span id="autosave-chip" style="display:none;align-items:center;gap:5px;font-family:var(--font-mono);font-size:10.5px;color:var(--muted);background:var(--panel-2);border:1px solid var(--line);padding:5px 10px;border-radius:999px;white-space:nowrap;"></span>
+        <button onclick="shiftReportWrong()" id="timer-wrong-btn" title="Tell Jack the timer looks wrong — sends him your exact shift state" style="padding:7px 11px;font-size:11px;font-weight:700;border-radius:9px;background:transparent;border:1px solid var(--line-2);color:var(--muted);cursor:pointer;white-space:nowrap;transition:all .14s;">&#9888; Timer wrong?</button>
         <button class="btn" onclick="toggleBreak()" id="break-btn" style="margin-left:auto;padding:13px 30px;font-size:15px;font-weight:700;border-radius:12px;background:var(--amber);border:1px solid var(--amber);color:#241a00;letter-spacing:0.3px;min-width:172px;transition:all 0.16s;box-shadow:0 4px 16px -6px color-mix(in srgb,var(--amber) 70%,transparent);">&#9749; Take a Break</button>
       </div>
     </div>
@@ -5057,6 +5062,21 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
         <div class="stat-val " id="stat-week">0</div>
         <div class="kpi-extra" id="kpi-week-extra"></div>
       </div>
+      <div class="stat-card " data-kpi="keepaadd" style="--k:#18c8f0;">
+        <div class="stat-top"><div class="stat-label">Trackers added</div><span class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></span></div>
+        <div class="stat-val " id="stat-keepaadd">0</div>
+        <div class="kpi-extra" id="kpi-keepaadd-extra"></div>
+      </div>
+      <div class="stat-card " data-kpi="keepawk" style="--k:#38bdf8;">
+        <div class="stat-top"><div class="stat-label">Keepa leads</div><span class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg></span></div>
+        <div class="stat-val " id="stat-keepawk">0</div>
+        <div class="kpi-extra" id="kpi-keepawk-extra"></div>
+      </div>
+      <div class="stat-card " data-kpi="thcwk" style="--k:#a78bfa;">
+        <div class="stat-top"><div class="stat-label">THC discord</div><span class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.2L4 21l1.9-5A8 8 0 1 1 21 12z"/></svg></span></div>
+        <div class="stat-val " id="stat-thcwk">0</div>
+        <div class="kpi-extra" id="kpi-thcwk-extra"></div>
+      </div>
       <div class="stat-card " data-kpi="streak" style="--k:#f356a6;">
         <div class="stat-top"><div class="stat-label">Submit streak</div><span class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2s5 4 5 9a5 5 0 0 1-10 0c0-3 2-4 2-4s2 1 2 1c1-3-1-6-1-6z"/></svg></span></div>
         <div class="stat-val " id="stat-streak">0</div>
@@ -5066,6 +5086,11 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
         <div class="stat-top"><div class="stat-label">Break time</div><span class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 9h2a2 2 0 0 1 0 4h-2M6 2v2M9 2v2M12 2v2"/></svg></span></div>
         <div class="stat-val " id="stat-break">0</div>
         <div class="kpi-extra" id="kpi-break-extra"></div>
+      </div>
+      <div class="stat-card " data-kpi="spend" style="--k:#c084fc;">
+        <div class="stat-top"><div class="stat-label">Spend this month</div><span class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9a4 4 0 0 1 0 8H6"/><path d="M6 8h11M4 12h10"/><path d="M9 11v10"/></svg></span></div>
+        <div class="stat-val " id="stat-spend">&mdash;</div>
+        <div class="kpi-extra" id="kpi-spend-extra"></div>
       </div>
       <div class="stat-card " data-kpi="month" style="--k:#10d99a;">
         <div class="stat-top"><div class="stat-label">Leads this month</div><span class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></span></div>
@@ -6014,6 +6039,25 @@ async function db_pushLiveStatus() {
     // value is what Jack's Live card prints AND what its idle detection counts from.
     shiftStart: new Date(state._trueStart||state.shiftStart).toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:true}),
     hoursWorked: shiftHrs,
+    /* Wall-clock since she clocked in, minus breaks, versus what the timer actually
+       counted. These should match. On 18/08 Suz's read 0.8h against 4h04m on the wall.
+       NOT auto-corrected: a closed laptop legitimately parks the clock and would make
+       an auto-fix pay her for time she was not working. Reported instead, so Jack sees
+       the gap on the Live card the same hour it opens rather than at the end of a day. */
+    clockGapMins: (function(){
+      try{
+        var ts=state._trueStart||state.shiftStart; if(!ts) return 0;
+        var wall=Date.now()-ts-breakSoFarMs();
+        return Math.max(0, Math.round((wall-workedMs())/60000));
+      }catch(e){ return 0; }
+    })(),
+    /* Both numbers, not just the difference — so the Live card can show "clocked 4h04m
+       / counted 47m" and the problem reads itself, instead of a bare gap figure that
+       still needs working out. */
+    clockedMins: (function(){ try{ var ts=state._trueStart||state.shiftStart;
+      return ts?Math.max(0,Math.round((Date.now()-ts-breakSoFarMs())/60000)):0; }catch(e){ return 0; } })(),
+    timerMins:   (function(){ try{ return Math.round(workedMs()/60000); }catch(e){ return 0; } })(),
+    clockRepairs:(window._shiftClockRepaired||0),
     onBreak: state.onBreak,
     breakCount: state.breaks.length,
     totalBreakMins: Math.round(state.totalBreakMs/60000),
@@ -6075,6 +6119,74 @@ function saveShiftDraft(manual) {
 
   // Capture exact elapsed ms so timer restores perfectly
   var elapsedMs = workedMs();
+
+  /* ── THE CLOCK MUST NEVER GO BACKWARDS ──────────────────────────────────────
+     18/08/2026. Suz clocked in at 06:17, ticked a task at 06:32, and at 10:14 her
+     timer read 00:39:17 with no breaks taken. Mera was 1h27m short at the same
+     moment. Their tasks, leads and true start times all survived intact — only the
+     running base had moved. That is the whole reason it became permanent: every
+     60-second autosave faithfully wrote the shrunken figure over the good one.
+     Several things can move the base (a second tab, a restore that reads elapsed as
+     0, re-entering through the login screen mid-shift) and chasing each one has not
+     held. So enforce the property instead: inside one shift, worked time only ever
+     goes UP. If this save would bank LESS than the most we have already seen today,
+     the base is wrong — rebuild it from the known-good figure rather than record the
+     loss. Two minutes of tolerance absorbs ordinary jitter; past that it is a reset.
+     The high-water mark is cleared by startShift() and resetShift(), so a genuine
+     new shift still starts honestly at zero. */
+  var _elKey='bdl_maxel_'+state.currentVA+'_'+shiftDayKey();
+  var _maxEl=0; try{ _maxEl=parseInt(localStorage.getItem(_elKey)||'0',10)||0; }catch(e){}
+  if(_maxEl-elapsedMs > 120000){
+    try{ console.warn('[shift] worked time went backwards ('+Math.round(elapsedMs/60000)
+         +'m < '+Math.round(_maxEl/60000)+'m) — rebuilding the base'); }catch(e){}
+    state.shiftStart=restoreBase(_maxEl,state.totalBreakMs,state.onBreak,state.breakStart,Date.now());
+    elapsedMs=workedMs();
+    window._shiftClockRepaired=(window._shiftClockRepaired||0)+1;
+    try{ startTimer(); }catch(e){}
+    try{ showToast('Your timer had slipped — put back to '
+         +Math.floor(elapsedMs/3600000)+'h '+Math.round((elapsedMs%3600000)/60000)+'m \u2713'); }catch(e){}
+  } else if(elapsedMs>_maxEl){
+    try{ localStorage.setItem(_elKey,String(elapsedMs)); }catch(e){}
+  }
+
+  /* ── THE BEAT ────────────────────────────────────────────────────────────────
+     One event a minute, carrying what this tab currently believes. Three jobs:
+       · it is the heartbeat, so "active" time can be measured against clocked time
+       · it is the write history (#2) — every save is now its own immutable row, so
+         the next time a number moves I can see the exact minute it moved instead of
+         reconstructing a morning from one overwritten field
+       · it is where the numbers get checked against each other, once a minute */
+  try{
+    var _beatMeta={ elapsedMs:elapsedMs, breakMs:state.totalBreakMs||0,
+                    onBreak:!!state.onBreak, repaired:(window._shiftClockRepaired||0),
+                    tasksDone:(state.tasks||[]).filter(function(t){return t.done;}).length };
+    if(Date.now()-(window._seLastBeat||0) >= SE_BEAT_MS){
+      window._seLastBeat=Date.now();
+      seLog('beat',_beatMeta);
+
+      /* The check nobody was doing on 18/08: does the wall clock since she clocked
+         in agree with what the timer counted? A shut laptop makes a small honest
+         gap. Three hours does not. Jack hears about it the same hour either way. */
+      var _ts=state._trueStart||state.shiftStart;
+      if(_ts){
+        var _wall=Date.now()-_ts-breakSoFarMs();
+        var _gap=_wall-elapsedMs;
+        if(_gap > 20*60000){
+          seAlert('clockgap','Shift clock does not add up — '+vaDisp(state.currentVA),
+            vaDisp(state.currentVA)+' clocked in at '+new Date(_ts).toLocaleTimeString('en-GB',
+              {timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:true})
+            +'.\nWall clock says **'+seFmt(_wall)+'** worked, her timer says **'+seFmt(elapsedMs)
+            +'** — a gap of **'+seFmt(_gap)+'**.\nEither her laptop was shut, or the timer has '
+            +'slipped. Worth a check before EOD.');
+        }
+      }
+      if((window._shiftClockRepaired||0)>0 && !SE_ALERTED.repaired){
+        seAlert('repaired','Timer slipped and was put back — '+vaDisp(state.currentVA),
+          'The clock tried to go backwards and was rebuilt from the last good figure. '
+          +'No time was lost, but it should not have happened — worth telling Claude.');
+      }
+    }
+  }catch(e){}
 
   var draft = {
     va: state.currentVA,
@@ -6364,7 +6476,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v44.2';
+var APP_VERSION='v45.5';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -6459,7 +6571,9 @@ function getAppSettings(){
     // per-VA weekly hours — Jack chose different targets per VA, not one shared number
     ['hoursMera','hoursSuz'].forEach(function(k){ var n=parseFloat(saved[k]); if(!isNaN(n)&&n>0) settings[k]=n; });
     // min leads/week were saved but never copied back here, so they snapped back to 60 on every read
-    ['minLeadsMera','minLeadsSuz'].forEach(function(k){ var n=parseInt(saved[k]); if(!isNaN(n)&&n>=0) settings[k]=n; });
+    ['minLeadsMera','minLeadsSuz','keepaWkMera','keepaWkSuz','thcWkMera','thcWkSuz',
+     'keepaAddWkMera','keepaAddWkSuz']
+      .forEach(function(k){ var n=parseInt(saved[k]); if(!isNaN(n)&&n>=0) settings[k]=n; });
     // who's on which pay run — same trap: written by the settings card, dropped on read
     if(Array.isArray(saved.payPeople)) settings.payPeople=saved.payPeople;
     if(Array.isArray(saved.payRuns)) settings.payRuns=saved.payRuns;
@@ -7418,21 +7532,14 @@ function draftStartFresh(va){
   try{ document.getElementById('view-va').classList.add('setup-active'); }catch(e){}
 }
 function selectVA(va) {
-  /* Ask the other tabs first. If one of them is already running this VA's shift,
-     stop here — do not start, do not restore, do not autosave over it. */
-  if(va!=='Test' && !window._tabCheckDone){
-    shiftAlreadyOpenElsewhere(va).then(function(taken){
-      if(taken){
-        try{ document.getElementById('login-screen').style.display='none'; }catch(e){}
-        shiftTabBlocked(va);
-        return;
-      }
-      window._tabCheckDone=true;
-      selectVA(va);
-      window._tabCheckDone=false;
-    });
-    return;
-  }
+  /* The two-tab blocker that used to live here is GONE, deliberately. It asked the
+     other tabs for permission, and when the VA pressed its "Close this tab" button
+     window.close() silently failed and dropped her on the start screen holding a
+     live shift — which is exactly how 18/08 cost Suz 3h15m and Mera 1h27m.
+     Blocking is no longer needed: hours are derived from the append-only event log
+     (seCompute), so every tab computes the same answer and none of them owns
+     anything. Two tabs, a shut laptop, a crash and a reopen are now the same thing.
+     The safest code here is no code. */
   renderNewsletterSchedulePanels();
   // Check Supabase for an in-progress draft first
   if ((va === 'Mera' || va === 'Suz') && DB_ENABLED) {
@@ -7566,61 +7673,15 @@ function selectVA(va) {
 }
 
 // ── START SHIFT ──────────────────────────────────────────
-/* ══════════ ONE TAB OWNS THE SHIFT ═════════════════════════════════════════
-   The draft is ONE row per VA per day, written last-write-wins, autosaved every
-   60s by every open tab, with no version check. So a second tab on the same
-   laptop — she clicks her bookmark, forgetting the first tab is open — quietly
-   overwrites the live shift with its own staler copy, once a minute. Same shape
-   as the bug that cost Suz two hours: one shared thing, no guard, silently wrong.
-
-   Tabs talk to each other. A tab about to run a shift asks "is anyone already on
-   this VA?" and waits ~700ms. A live tab answers. If anyone answers, the NEW tab
-   stands down and says so — the tab she was actually working in keeps the shift
-   and keeps saving. A reloaded tab is not blocked, because the dead one cannot
-   answer. Falls through and allows the shift if the browser has no channel. */
-var BDL_TAB_ID = Math.random().toString(36).slice(2) + '-' + Date.now();
-var _shiftBus = null;
-try{ if(typeof BroadcastChannel!=='undefined') _shiftBus=new BroadcastChannel('bdl_shift_owner'); }catch(e){}
-if(_shiftBus){
-  _shiftBus.onmessage=function(ev){
-    var m=ev&&ev.data; if(!m) return;
-    // someone is asking whether this VA is already being worked on
-    if(m.t==='who' && m.tab!==BDL_TAB_ID){
-      try{
-        var live = window.state && state.shiftStart && !state.submitted &&
-                   state.currentVA===m.va && state.currentVA!=='Test';
-        if(live) _shiftBus.postMessage({t:'mine', va:m.va, tab:BDL_TAB_ID});
-      }catch(e){}
-    }
-    if(m.t==='mine' && m.va===window._askingForVA && m.tab!==BDL_TAB_ID) window._vaTabTaken=true;
-  };
-}
-function shiftAlreadyOpenElsewhere(va){
-  if(!_shiftBus || va==='Test') return Promise.resolve(false);
-  window._askingForVA=va; window._vaTabTaken=false;
-  try{ _shiftBus.postMessage({t:'who', va:va, tab:BDL_TAB_ID}); }catch(e){ return Promise.resolve(false); }
-  return new Promise(function(res){
-    setTimeout(function(){ var taken=!!window._vaTabTaken; window._askingForVA=null; res(taken); },700);
-  });
-}
-function shiftTabBlocked(va){
-  var d=document.createElement('div');
-  d.id='tab-blocked';
-  d.style.cssText='position:fixed;inset:0;background:rgba(5,6,11,.93);z-index:1200;display:flex;'
-    +'align-items:center;justify-content:center;padding:22px;backdrop-filter:blur(6px);';
-  d.innerHTML='<div style="max-width:470px;background:var(--panel);border:1px solid var(--line-2);'
-    +'border-left:4px solid var(--amber);border-radius:16px;padding:26px 28px;">'
-    +'<div style="font-family:var(--font-head);font-size:21px;font-weight:800;color:var(--text);margin-bottom:10px;">'
-    +'Your shift is already open in another tab</div>'
-    +'<div style="font-size:13.5px;color:var(--muted);line-height:1.65;margin-bottom:18px;">'
-    +'You have '+escHtml(vaDisp(va)||va)+'&rsquo;s shift running in a different tab or window. '
-    +'<b style="color:var(--text)">Go back to that one</b> &mdash; all your work is there and still saving. '
-    +'If two tabs run at once they overwrite each other and you lose time.</div>'
-    +'<button class="btn btn-success" style="width:100%;padding:14px;border-radius:12px;" '
-    +'onclick="try{window.close()}catch(e){};document.getElementById(\'tab-blocked\').remove();showLogin();">'
-    +'Close this tab</button></div>';
-  document.body.appendChild(d);
-}
+/* The cross-tab ownership protocol (BroadcastChannel + "your shift is open in
+   another tab" modal) lived here and has been REMOVED. It was built to prevent lost
+   time and caused it: its escape button called window.close(), which browsers refuse
+   for any tab the page did not open, and the code then fell through to the login
+   screen with the shift still live in memory. Starting from there ran a second clock
+   from zero while the real clock-in time stayed put, and the 60-second autosave made
+   the loss permanent — 3h15m of Suz's day and 1h27m of Mera's on 18/08/2026.
+   Nothing replaces it, because nothing needs to: hours come from the event log now,
+   so extra tabs are harmless by construction rather than by policing. */
 function startShift(va, newsletterDay, previewVA) {
   var tmplVA = (va === 'Test' && previewVA) ? previewVA : va;
   if (newsletterDay === undefined && (tmplVA === 'Mera' || tmplVA === 'Suz')) newsletterDay = isNewsletterDayFor(tmplVA);
@@ -7631,6 +7692,12 @@ function startShift(va, newsletterDay, previewVA) {
      (see fakeShiftStart) — it is a timer base, not a clock time. _trueStart is the
      real moment the shift began and nothing is allowed to move it. */
   state._trueStart = state.shiftStart.getTime();
+  /* A brand-new shift starts honestly at zero — drop any high-water mark left by
+     an earlier shift today, or the backwards-clock guard would inflate it. */
+  try{ localStorage.removeItem('bdl_maxel_'+va+'_'+shiftDayKey()); }catch(e){}
+  /* The first event of the day. Every hour she is paid for is derived from this
+     timestamp — nothing downstream stores a duration any more. */
+  try{ seLog('clock_in',{newsletterDay:!!newsletterDay}); }catch(e){}
   state.totalBreakMs = 0;
   state.onBreak = false;
   state._newsletterDay = newsletterDay;
@@ -9500,6 +9567,155 @@ function timerSelfTest(){
   });
   return fails;
 }
+/* ══════════ SHIFT EVENT LOG ══════════════════════════════════════════════════
+   The clock used to be ONE NUMBER, rewritten every 60 seconds. Anything that wrote
+   a bad value destroyed the truth and the next autosave cemented it — 18/08/2026
+   that cost Suz 3h15m and Mera 1h27m before either of them noticed.
+
+   Hours are now DERIVED from an append-only log of what actually happened
+   (clocked in, break started, break ended, clocked out) and are stored NOWHERE.
+   There is no number left to overwrite: to lose an hour something would have to
+   DELETE an event, and the anon role has no delete grant on the table.
+
+   This is also why the two-tab blocker could be deleted. Tabs no longer own
+   anything — they all append to the same log and all compute the same answer —
+   so a second tab, a shut laptop, a crash and a reopen are all the same thing.
+
+   Degrades silently: if the table isn't there yet (SQL not run), SE_OK goes false
+   and every call becomes a no-op. The app then behaves exactly as v44.4. */
+var SE_OK   = null;                      // null = untested · false = table absent
+var SE_TAB  = Math.random().toString(36).slice(2) + Date.now().toString(36);
+var SE_BEAT_MS = 60000;
+var SE_ALERTED = {};                     // one Discord ping per shift per kind
+
+function seEnabled(){
+  try{
+    return SE_OK!==false && !IS_PREVIEW && DB_ENABLED
+           && typeof SUPABASE_URL!=='undefined' && !!SUPABASE_URL;
+  }catch(e){ return false; }
+}
+function seLog(kind, meta){
+  try{
+    if(!seEnabled()) return Promise.resolve(false);
+    if(!window.state || !state.currentVA || state.currentVA==='Test') return Promise.resolve(false);
+    var row={ va:state.currentVA, day:shiftDayKey(), kind:kind,
+              client_ms:Date.now(), tab:SE_TAB, meta:meta||{} };
+    return fetch(SUPABASE_URL+'/rest/v1/shift_events',{method:'POST',
+      headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+               'Content-Type':'application/json',Prefer:'return=minimal'},
+      body:JSON.stringify([row])})
+    .then(function(r){
+      /* 404 = table not created yet, 401/403 = no grant. Either way stop trying;
+         a shift must never be blocked because the log is unavailable. */
+      if(r.status===404||r.status===401||r.status===403){ SE_OK=false; return false; }
+      if(r.ok){ SE_OK=true; return true; }
+      return false;
+    }).catch(function(){ return false; });
+  }catch(e){ return Promise.resolve(false); }
+}
+function seFetch(va, day){
+  try{
+    if(!seEnabled()) return Promise.resolve([]);
+    return fetch(SUPABASE_URL+'/rest/v1/shift_events?va=eq.'+encodeURIComponent(va)
+        +'&day=eq.'+encodeURIComponent(day)+'&select=*&order=client_ms.asc&limit=5000',
+        {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}})
+    .then(function(r){ if(r.status===404){ SE_OK=false; return []; } return r.ok?r.json():[]; })
+    .catch(function(){ return []; });
+  }catch(e){ return Promise.resolve([]); }
+}
+
+/* THE WHOLE POINT: worked time is calculated here, from events, every time it is
+   asked for. Nothing writes it down, so nothing can corrupt it.
+     clocked = (clock_out or now) - clock_in - breaks     <- what she is paid for
+     active  = distinct minutes we actually saw a beat    <- when the app was open
+   They normally match. A gap means the app was shut (fine, but visible) or the
+   clock slipped (not fine — and now you are told rather than finding out at 5pm). */
+function seCompute(events, nowMs){
+  var now = nowMs || Date.now();
+  var out = { clockIn:null, clockOut:null, breakMs:0, openBreakAt:null, clockedMs:0,
+              activeMs:0, beats:0, correctionMins:null, correctionNote:'',
+              lastBeatElapsedMs:null, anomalies:0 };
+  if(!events || !events.length) return out;
+  var openB=null, beatMin={};
+  for(var i=0;i<events.length;i++){
+    var e=events[i], t=+e.client_ms||0, k=e.kind;
+    if(k==='clock_in'){ if(out.clockIn===null||t<out.clockIn) out.clockIn=t; }
+    else if(k==='break_start'){ if(openB===null) openB=t; }
+    else if(k==='break_end'){ if(openB!==null){ out.breakMs+=Math.max(0,t-openB); openB=null; } }
+    else if(k==='clock_out'){ if(out.clockOut===null||t>out.clockOut) out.clockOut=t; }
+    else if(k==='beat'){ out.beats++; beatMin[Math.floor(t/60000)]=1;
+      try{ if(e.meta&&e.meta.elapsedMs!=null) out.lastBeatElapsedMs=+e.meta.elapsedMs; }catch(_){} }
+    else if(k==='anomaly'){ out.anomalies++; }
+    else if(k==='correction'){
+      try{ var m=parseInt(e.meta&&e.meta.minutes,10);
+           if(isFinite(m)&&m>=0){ out.correctionMins=m; out.correctionNote=String((e.meta&&e.meta.note)||''); } }catch(_){}
+    }
+  }
+  out.openBreakAt=openB;
+  /* A break still running at the end of the log is still running NOW — the old code
+     forgot the live break and paid it as worked time. */
+  if(openB!==null) out.breakMs += Math.max(0,(out.clockOut||now)-openB);
+  if(out.clockIn!==null) out.clockedMs = Math.max(0,(out.clockOut||now)-out.clockIn-out.breakMs);
+  out.activeMs = Object.keys(beatMin).length*60000;
+  /* Jack's correction is the final word — it is the last event, and it wins. */
+  if(out.correctionMins!=null) out.clockedMs = out.correctionMins*60000;
+  return out;
+}
+/* ── #5 ONE BUTTON INSTEAD OF A CONVERSATION ─────────────────────────────────
+   Suz did everything right on 18/08 — screenshot, Discord, an explanation — and it
+   still took a while to work out that "the next time I get my 2nd filter I back me
+   to start" meant a second tab. One press now sends the exact state instead, and
+   files it in the log where it can be read back later. */
+function shiftReportWrong(){
+  try{
+    if(!state||!state.currentVA){ showToast('Start your shift first',true); return; }
+    var ts=state._trueStart||state.shiftStart;
+    var wall=ts?(Date.now()-ts-breakSoFarMs()):0;
+    var timer=workedMs();
+    var snap={ reported:true, timerMs:timer, wallMs:wall, gapMs:Math.max(0,wall-timer),
+               trueStart:ts||null, base:state.shiftStart||null,
+               totalBreakMs:state.totalBreakMs||0, onBreak:!!state.onBreak,
+               breaks:(state.breaks||[]).length, repaired:(window._shiftClockRepaired||0),
+               tasksDone:(state.tasks||[]).filter(function(t){return t.done;}).length,
+               ua:(navigator.userAgent||'').slice(0,120), tab:SE_TAB, ver:APP_VERSION };
+    seLog('anomaly',snap);
+    SE_ALERTED.reported=false;                       // a VA report always goes through
+    delete SE_ALERTED.reported;
+    var body=vaDisp(state.currentVA)+' pressed "Timer wrong?".\n'
+      +'Timer says **'+seFmt(timer)+'**, wall clock since clock-in says **'+seFmt(wall)+'**'
+      +(snap.gapMs>60000?' — gap of **'+seFmt(snap.gapMs)+'**':' (they agree)')+'.\n'
+      +'Clocked in '+(ts?new Date(ts).toLocaleTimeString('en-GB',{timeZone:'Europe/London',
+          hour:'2-digit',minute:'2-digit',hour12:true}):'?')
+      +' · breaks '+snap.breaks+' · '+APP_VERSION;
+    var url=''; try{ url=(getAppSettings().whShift||getAppSettings().whJack||'').trim(); }catch(e){}
+    if(url && !IS_PREVIEW){
+      fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({content:'\u{1F6A8} **Timer reported wrong**\n'+body})}).catch(function(){});
+    }
+    showToast('Sent to Jack ✓ — carry on, your work is safe');
+  }catch(e){ try{ showToast('Could not send — message Jack on Discord',true); }catch(_){} }
+}
+function seFmt(ms){
+  ms=Math.max(0,+ms||0);
+  var h=Math.floor(ms/3600000), m=Math.round((ms%3600000)/60000);
+  if(m===60){ h++; m=0; }
+  return h+'h '+(m<10?'0':'')+m+'m';
+}
+
+/* ── #1 TELL JACK THE HOUR IT HAPPENS, NOT AT 5PM ──────────────────────────────
+   Today the VA noticed, four hours in. The app knew at 09:35 and said nothing.
+   It does not need to know WHY the numbers stopped agreeing to be worth sending. */
+function seAlert(kind, title, body){
+  try{
+    if(SE_ALERTED[kind]) return;                 // once per shift per kind
+    SE_ALERTED[kind]=true;
+    seLog('anomaly',{alert:kind, title:title, body:body});
+    var url=''; try{ url=(getAppSettings().whShift||getAppSettings().whJack||'').trim(); }catch(e){}
+    if(!url || IS_PREVIEW) return;
+    fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({content:'⚠️ **'+title+'**\n'+body})}).catch(function(){});
+  }catch(e){}
+}
 function breakSoFarMs(){
   return breakTotalAt((state&&state.totalBreakMs)||0,
                       state&&state.onBreak, state&&state.breakStart, Date.now());
@@ -9606,6 +9822,7 @@ function toggleBreak() {
     state._currentBreakStartTime=startTime;
     var bt=document.getElementById('break-timer'); if(bt) bt.textContent='00:00';
     paintBreakUI();
+    try{ seLog('break_start',{}); }catch(e){}
     db_pushLiveStatus(); saveShiftDraft(false);
     discord_break_notify(true);
   } else if (state.breakStart && Date.now()-state.breakStart < 3000) {
@@ -9632,6 +9849,7 @@ function toggleBreak() {
     state._currentBreakStartTime='';
     paintBreakUI();
     showToast('Break ended - back to it!');
+    try{ seLog('break_end',{mins:breakDurMins}); }catch(e){}
     db_pushLiveStatus(); saveShiftDraft(false);
     discord_break_notify(false, breakDurMins);
   }
@@ -9891,7 +10109,7 @@ function vaTally(list){
      leads in 13 days" and he was right to: 34 of Mera's August rows were re-sends
      of an ASIN she had already sent that month (one of them four times). The
      headline the VA sees is uniq — you cannot find the same product twice. */
-  var t={n:list.length,uniq:0,bought:0,good:0,rejected:0,pending:0,spend:0,oa:0,keepa:0,keepaBought:0};
+  var t={n:list.length,uniq:0,bought:0,good:0,rejected:0,pending:0,spend:0,oa:0,keepa:0,keepaBought:0,thc:0};
   var seen={};
   list.forEach(function(l){
     var a=''; try{ a=leadUseAsin(l); }catch(e){}
@@ -9911,6 +10129,11 @@ function vaTally(list){
     }
     if(!leadIsA2A(l)) t.oa++;
     if(String(l.src||'').toLowerCase().indexOf('keepa')>=0){ t.keepa++; if(o==='bought') t.keepaBought++; }
+    /* THC discord — the VAs spell it three ways in the sheet: Suz writes "discord"
+       (59 rows) and lately "STHC" (all August), Mera writes "THC". Match all three;
+       a lead lost to spelling would read as a missed target she actually hit. */
+    var _sd=String(l.src||'').toLowerCase();
+    if(_sd.indexOf('thc')>=0||_sd.indexOf('discord')>=0) t.thc++;
   });
   return t;
 }
@@ -9975,6 +10198,14 @@ async function vaWeekHours(va){
         var d=new Date(+p[2],+p[1]-1,+p[0]);
         if(isNaN(d.getTime())||d<wStart) return;
         out.done+=parseFloat((row.data&&row.data.hoursWorked)||0)||0;
+        /* trackers ADDED that day — typed in the EOD Keepa box, saved as keepaCount.
+           Not the same thing as leads FROM trackers; Jack targets both separately.
+           GUARD: the count is derived from total-minus-previous-total, so one mistyped
+           total poisons the next day — Mera 18/08 typed 111 for ~1173, and 19/08 then
+           "added" 1073. Nobody hand-adds 120+ trackers in a day; treat bigger numbers
+           as the data glitch they are rather than a smashed target. */
+        var _kAdd=parseInt(row.data&&row.data.keepaCount)||0;
+        if(_kAdd>0&&_kAdd<=120) out.keepaAdded=(out.keepaAdded||0)+_kAdd;
       });
       out.ok=true;
     }
@@ -10032,7 +10263,11 @@ function vaTargets(va){
   return {
     hours: num(isM?s.hoursMera:s.hoursSuz, num(s.weeklyHoursTarget,40)),
     leadsWeek: num(isM?s.minLeadsMera:s.minLeadsSuz, 60),
-    oaDay: num(isM?s.oaGoalMera:s.oaGoalSuz, 2)
+    oaDay: num(isM?s.oaGoalMera:s.oaGoalSuz, 2),
+    /* set 20/08/2026: 10 Keepa-tracker leads and 5 THC-discord leads a week, each VA */
+    keepaWk: num(isM?s.keepaWkMera:s.keepaWkSuz, 10),
+    keepaAddWk: num(isM?s.keepaAddWkMera:s.keepaAddWkSuz, 10),
+    thcWk:  num(isM?s.thcWkMera:s.thcWkSuz, 5)
   };
 }
 /* green on target, amber within reach, red well short — one rule everywhere. */
@@ -10044,6 +10279,41 @@ function vaBuckets(t,cls){
     +'<span class="vp-b vp-pend"><em>Waiting on Jack</em><b>'+t.pending+'</b></span>'
     +'<span class="vp-b vp-rej"><em>Rejected</em><b>'+t.rejected+'</b></span>'
     +'</div>';
+}
+/* ── WHICH BUYING LINE IS THIS VA? ───────────────────────────────────────────
+   The ledger splits spend by PROVIDER — "VA-A" and "VA-S" in column M. Nothing in
+   the data says which sourcing VA each line belongs to, so it is assumed here
+   (Mera -> A, Suz -> S) and overridable in settings with spendVaMera / spendVaSuz.
+   Getting this wrong would show one VA the other's spend, which is worse than
+   showing none — so if Jack ever says the mapping is the other way round, it is a
+   settings change, not a code change. */
+function vaSpendLine(va){
+  var s={}; try{ s=getAppSettings(); }catch(e){}
+  var isM=(va==='Mera'||va==='VA M');
+  var v=String((isM?s.spendVaMera:s.spendVaSuz)||'').trim().toUpperCase();
+  return (v==='A'||v==='S') ? v : (isM?'A':'S');
+}
+/* Month-to-date spend for one VA, straight off the purchase ledger. Cached per
+   VA+range; spendForRangeGB() caches the sheet read underneath it as well. */
+function vaMonthSpendFetch(va){
+  try{
+    if(typeof spendForRangeGB!=='function') return Promise.resolve(null);
+    var now; try{ now=ukNow(); }catch(e){ now=new Date(); }
+    function gb(d){ return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear(); }
+    var from=gb(new Date(now.getFullYear(),now.getMonth(),1)), to=gb(now);
+    var key=va+'|'+from+'|'+to;
+    if(window._vaSpendKey===key && window._vaSpendVal!==undefined)
+      return Promise.resolve(window._vaSpendVal);
+    return spendForRangeGB(from,to).then(function(r){
+      var out=null;
+      if(r){
+        var line=vaSpendLine(va), side=(line==='A')?r.A:r.S;
+        out={ spend:(side&&side.spend)||0, units:(side&&side.units)||0, line:line };
+      }
+      window._vaSpendKey=key; window._vaSpendVal=out;
+      return out;
+    }).catch(function(){ return null; });
+  }catch(e){ return Promise.resolve(null); }
 }
 /* The one-line week/month answer that lives on the shift screen itself. */
 function vaStripHTML(va){
@@ -10375,6 +10645,32 @@ async function submitEOD() {
 
   var keepaVals = keepaGetValues();
 
+  /* ── THE 1,073 GUARD ─────────────────────────────────────────────────────────
+     keepaCount is DERIVED (today's total minus last shift's), so one mistyped total
+     poisons the next day: 18/08 Mera typed 111 for ~1173, and 19/08 recorded 1,073
+     trackers "added". Nobody adds 120+ by hand in a shift. Ask, in her words, and
+     offer the repair: if today's total is right, record a corrected baseline —
+     0 added, chain fixed from tomorrow. Cancel lets her fix a mistyped today. */
+  if (state.currentVA !== 'Test' && !_keepaIsFirst && Math.abs(keepaVals.count) > 120) {
+    var _kMsg = keepaVals.count > 0
+      ? ('Since your last shift the Keepa total went '+(_keepaPrevTotal||0).toLocaleString()
+        +' \u2192 '+keepaVals.total.toLocaleString()+' \u2014 that would record '
+        +keepaVals.count.toLocaleString()+' trackers ADDED today.\n\n'
+        +'If TODAY\u2019S number is right (last shift\u2019s was probably mistyped), press OK \u2014 '
+        +'it is saved as a corrected baseline, 0 added today.\n\n'
+        +'If you mistyped TODAY\u2019S total, press Cancel and fix it.')
+      : ('Since your last shift the Keepa total went '+(_keepaPrevTotal||0).toLocaleString()
+        +' \u2192 '+keepaVals.total.toLocaleString()+' \u2014 that is '
+        +Math.abs(keepaVals.count).toLocaleString()+' trackers REMOVED.\n\n'
+        +'Press OK only if you really cleared them out. Press Cancel to fix the number.');
+    if (!confirm(_kMsg)) {
+      state._eodSubmitting = false;
+      eodBlock(keepaInput, 'Fix your Keepa total, then submit again');
+      return;
+    }
+    if (keepaVals.count > 0) keepaVals = { count: 0, total: keepaVals.total, rebase: true };
+  }
+
   var notes = document.getElementById('eod-notes').value.trim();
 
   var all=state.tasks.concat(state.extraTasks);
@@ -10449,6 +10745,12 @@ async function submitEOD() {
     if (tyG) tyG.innerHTML = (big ? 'Outstanding &#8212; go enjoy your evening! ' : 'Rest up &#8212; see you tomorrow! ') + '&#x1F642;';
   } catch(_){}
 
+  /* The closing event. From here the day's hours are fully determined by the log —
+     clock_in to clock_out minus breaks — and no later save can move them. */
+  try{ seLog('clock_out',{ hours:(workedMs()/3600000).toFixed(2),
+                           breakMs:state.totalBreakMs||0,
+                           tasksDone:(state.tasks||[]).filter(function(t){return t.done;}).length }); }catch(e){}
+
   state.submitted = true;
   // anything they didn't get to follows them into tomorrow, with a day count —
   // nothing quietly disappears at the end of a shift
@@ -10497,6 +10799,7 @@ async function submitEOD() {
       hoursWorked:hrs, totalLeads:leads, leadsPerHr:leads>0&&hrs>0?(leads/parseFloat(hrs)).toFixed(1):'-',
       tasksDone:done, tasksSkipped:skip, notes:notes,
       keepaCount: keepaVals.count, keepaTotal: keepaVals.total,
+      keepaRebase: !!keepaVals.rebase,
       jbOutstanding: jbOpenCount, jbOldest: jbOldest,
       storefronts: (function(){ try{ return sfSummary(); }catch(e){ return null; } })(),
       // This whitelist is why timer usage was unanswerable: `time` survived but nothing
@@ -10602,6 +10905,7 @@ function editEOD(){
   showToast('Editing \u2014 make your changes and submit again \u2713');
 }
 function resetShift() {
+  var _rsVA=state.currentVA;
   Object.assign(state,{currentVA:null,shiftStart:null,_trueStart:null,onBreak:false,breakStart:null,totalBreakMs:0,pendingSkipTask:null,tasks:[],extraTasks:[],breaks:[],submitted:false,liveInterval:null});
   clearInterval(state.timerInterval);
   clearInterval(state.liveInterval);
@@ -10615,6 +10919,7 @@ function resetShift() {
   document.getElementById('eod-form').style.display='block'; try{ eodRenderLeadCheck(); }catch(e){}
   document.getElementById('shift-timer').textContent='00:00:00';
   var btn=document.getElementById('break-btn'); btn.innerHTML=breakLabel(); btn.style.background='rgba(255,184,48,0.15)'; btn.style.color='var(--amber)'; btn.style.borderColor='rgba(255,184,48,0.4)';
+  try{ if(_rsVA) localStorage.removeItem('bdl_maxel_'+_rsVA+'_'+shiftDayKey()); }catch(e){}
   showLogin();
 }
 
@@ -13433,6 +13738,29 @@ async function mgr_renderLive(){
         +'<div style="font-size:11.5px;color:#4a5468;margin-top:4px;">'+subMsg+'</div>'
         +'</div>';
     }
+    /* ── CLOCK DISAGREEMENT, IN FRONT OF HIM, WHILE SHE IS STILL WORKING ────────
+       18/08: Suz clocked in 06:17 and her timer read 47m at 10:19. Nothing on this
+       card said so, and nobody knew until she noticed herself. Both figures are now
+       carried in live_status, so the card can simply show them disagreeing.
+       Not auto-corrected: a shut laptop makes a real gap too, and quietly paying for
+       it would be worse than showing it. Jack decides, one click. */
+    var _gapM=parseInt(s.clockGapMins||0,10)||0;
+    var _clockedM=parseInt(s.clockedMins||0,10)||0;
+    var _timerM=parseInt(s.timerMins||0,10)||0;
+    var gapWarn = (_gapM>=20 && _clockedM>0)
+      ? '<div style="margin-top:9px;background:rgba(255,120,60,.12);border:1px solid rgba(255,140,70,.45);'
+        +'border-radius:9px;padding:9px 11px;font-size:11.5px;color:#ffb98a;line-height:1.55;">'
+        +'&#9888; <b>Clock does not add up.</b> Clocked in for <b>'+Math.floor(_clockedM/60)+'h '
+        +(_clockedM%60)+'m</b>, timer counted <b>'+Math.floor(_timerM/60)+'h '+(_timerM%60)+'m</b> '
+        +'&mdash; <b>'+Math.floor(_gapM/60)+'h '+(_gapM%60)+'m</b> apart.'
+        +'<div style="margin-top:7px;color:#c9d1e3;font-size:11px;">Laptop shut for a while, or the '
+        +'timer slipped. Ask her before EOD.</div>'
+        +'<button onclick="jackFixHours('+JSON.stringify(va).replace(/"/g,'&quot;')+','+_clockedM+','+_timerM+')" '
+        +'style="margin-top:9px;background:rgba(255,255,255,.07);border:1px solid rgba(255,160,90,.5);'
+        +'color:#ffd0ad;font-family:inherit;font-size:11px;font-weight:700;padding:7px 12px;'
+        +'border-radius:8px;cursor:pointer;">Set her hours &rarr;</button>'
+        +'</div>'
+      : '';
     var isOnBreak=s.onBreak;
     var statusCol=isOnBreak?'#f2c200':'#10d99a';
     var statusBg=isOnBreak?'rgba(242,193,78,0.1)':'rgba(45,212,163,0.1)';
@@ -13527,6 +13855,7 @@ async function mgr_renderLive(){
       +taskList
       // Footer
       +'<div style="font-size:10px;color:#5a6378;margin-top:9px;">Started '+s.shiftStart+' · Updated '+s.lastUpdated+' UK</div>'
+      +gapWarn
       +'</div></div>';
   }
 
@@ -13544,6 +13873,43 @@ async function mgr_renderLive(){
   el.innerHTML=html;
 }
 
+/* ── #6 SET HER HOURS, WITH A PAPER TRAIL ────────────────────────────────────
+   Today Jack had to correct two shifts by hand. The correction is now a first-class
+   thing: an append-only 'correction' event carrying the old figure, the new one and
+   why — so the original is never destroyed, seCompute() honours the latest one, and
+   six months later the reason is still readable. */
+async function jackFixHours(va, clockedMins, timerMins){
+  try{
+    var suggest=Math.round(clockedMins||0);
+    var msg='Set '+vaDisp(va)+"'s hours for today.\n\n"
+      +'Clocked in for : '+Math.floor((clockedMins||0)/60)+'h '+((clockedMins||0)%60)+'m\n'
+      +'Timer counted  : '+Math.floor((timerMins||0)/60)+'h '+((timerMins||0)%60)+'m\n\n'
+      +'Enter the MINUTES she should be paid for (blank = leave as is):';
+    var raw=prompt(msg, String(suggest));
+    if(raw===null) return;
+    raw=String(raw).trim(); if(!raw) return;
+    var mins=parseInt(raw,10);
+    if(!isFinite(mins)||mins<0||mins>1440){ showToast('That is not a sensible number of minutes',true); return; }
+    var note=prompt('Why? (kept with the correction — e.g. "laptop shut 9-10", "timer bug 18/08")','')||'';
+
+    var day=(function(){ try{ return shiftDayKey(); }catch(e){ return ''; } })();
+    var ok=await fetch(SUPABASE_URL+'/rest/v1/shift_events',{method:'POST',
+      headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+               'Content-Type':'application/json',Prefer:'return=minimal'},
+      body:JSON.stringify([{ va:va, day:day, kind:'correction', client_ms:Date.now(),
+        tab:(typeof SE_TAB!=='undefined'?SE_TAB:'jack'),
+        meta:{ minutes:String(mins), note:note, byJack:true,
+               wasTimerMins:timerMins||0, wasClockedMins:clockedMins||0 } }])})
+      .then(function(r){ return r.ok; }).catch(function(){ return false; });
+
+    if(!ok){
+      showToast('Could not save the correction — has the shift_events SQL been run yet?',true);
+      return;
+    }
+    showToast(vaDisp(va)+' set to '+Math.floor(mins/60)+'h '+(mins%60)+'m ✓ — original kept');
+    try{ mgr_renderLive(); }catch(e){}
+  }catch(e){ try{ showToast('Could not save that correction',true); }catch(_){} }
+}
 function mgr_popoutLive(){
   var html=[
     '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>BDL VA HQ Live</title>',
@@ -14130,6 +14496,12 @@ function mgr_renderSettings(){
         +'<div class="settings-field"><label class="settings-label">Suz &mdash; hours / week</label><input class="settings-input" id="setting-hours-suz" type="number" min="1" step="0.5" value="'+(settings.hoursSuz||settings.weeklyHoursTarget||40)+'"></div>'
         +'<div class="settings-field"><label class="settings-label">Mera &mdash; min leads / week</label><input class="settings-input" id="setting-minwk-mera" type="number" min="0" value="'+(settings.minLeadsMera!==undefined?settings.minLeadsMera:60)+'"></div>'
         +'<div class="settings-field"><label class="settings-label">Suz &mdash; min leads / week</label><input class="settings-input" id="setting-minwk-suz" type="number" min="0" value="'+(settings.minLeadsSuz!==undefined?settings.minLeadsSuz:60)+'"></div>'
+        +'<div class="settings-field"><label class="settings-label">Mera &mdash; Keepa trackers ADDED / wk</label><input class="settings-input" id="setting-keepaadd-mera" type="number" min="0" value="'+(settings.keepaAddWkMera!==undefined?settings.keepaAddWkMera:10)+'"></div>'
+        +'<div class="settings-field"><label class="settings-label">Suz &mdash; Keepa trackers ADDED / wk</label><input class="settings-input" id="setting-keepaadd-suz" type="number" min="0" value="'+(settings.keepaAddWkSuz!==undefined?settings.keepaAddWkSuz:10)+'"></div>'
+        +'<div class="settings-field"><label class="settings-label">Mera &mdash; Keepa tracker leads / wk</label><input class="settings-input" id="setting-keepawk-mera" type="number" min="0" value="'+(settings.keepaWkMera!==undefined?settings.keepaWkMera:10)+'"></div>'
+        +'<div class="settings-field"><label class="settings-label">Suz &mdash; Keepa tracker leads / wk</label><input class="settings-input" id="setting-keepawk-suz" type="number" min="0" value="'+(settings.keepaWkSuz!==undefined?settings.keepaWkSuz:10)+'"></div>'
+        +'<div class="settings-field"><label class="settings-label">Mera &mdash; THC discord leads / wk</label><input class="settings-input" id="setting-thcwk-mera" type="number" min="0" value="'+(settings.thcWkMera!==undefined?settings.thcWkMera:5)+'"></div>'
+        +'<div class="settings-field"><label class="settings-label">Suz &mdash; THC discord leads / wk</label><input class="settings-input" id="setting-thcwk-suz" type="number" min="0" value="'+(settings.thcWkSuz!==undefined?settings.thcWkSuz:5)+'"></div>'
         +'<div class="settings-field"><label class="settings-label">Mera colour</label><input class="settings-input" id="setting-col-mera" type="color" style="height:42px;padding:4px;" value="'+(settings.colMera||'#b23bff')+'"></div>'
         +'<div class="settings-field"><label class="settings-label">Suz colour</label><input class="settings-input" id="setting-col-suz" type="color" style="height:42px;padding:4px;" value="'+(settings.colSuz||SUZ_COL)+'"></div>'
         +(function(){
@@ -14365,7 +14737,10 @@ function mgr_saveSettings(){
    ['setting-oagoal-mera','oaGoalMera'],['setting-oagoal-suz','oaGoalSuz']].forEach(function(pp){
     var el=document.getElementById(pp[0]); if(el){ var n=parseInt(el.value); if(!isNaN(n)&&n>0) settings[pp[1]]=n; }
   });
-  [['setting-minwk-mera','minLeadsMera'],['setting-minwk-suz','minLeadsSuz']].forEach(function(pp){
+  [['setting-minwk-mera','minLeadsMera'],['setting-minwk-suz','minLeadsSuz'],
+   ['setting-keepawk-mera','keepaWkMera'],['setting-keepawk-suz','keepaWkSuz'],
+   ['setting-keepaadd-mera','keepaAddWkMera'],['setting-keepaadd-suz','keepaAddWkSuz'],
+   ['setting-thcwk-mera','thcWkMera'],['setting-thcwk-suz','thcWkSuz']].forEach(function(pp){
     var el=document.getElementById(pp[0]); if(el){ var n=parseInt(el.value); if(!isNaN(n)&&n>=0) settings[pp[1]]=n; }
   });
   [['setting-hours-mera','hoursMera'],['setting-hours-suz','hoursSuz']].forEach(function(pp){
@@ -15043,12 +15418,21 @@ async function keepaLoadPrevTotal(va) {
 function keepaWarn(diff, typed, prev){
   var w = document.getElementById('keepa-warn'); if(!w) return;
   var bigDrop = (diff < 0) && (Math.abs(diff) > Math.max(50, prev*0.25));
-  if(!bigDrop){ w.style.display='none'; w.innerHTML=''; return; }
+  /* Big RISES warn too. Mera 18/08 typed 111 for ~1173 — the DROP warned (ignored),
+     but next day's +1073 "added" sailed through silently and poisoned the weekly KPI.
+     A rise past 120/shift is either a typo or last shift's baseline was wrong. */
+  var bigRise = (diff > 120);
+  if(!bigDrop && !bigRise){ w.style.display='none'; w.innerHTML=''; return; }
   w.style.display='block';
-  w.innerHTML='&#9888; <b>That is '+Math.abs(diff).toLocaleString()+' fewer than last shift</b> ('
-    + prev.toLocaleString()+' &rarr; '+typed.toLocaleString()+').'
-    + '<span>Jack&rsquo;s tracker KPI records the change, so this would go down as '+diff+'. '
-    + 'If you missed a digit, fix it now. If you really did clear them out, carry on.</span>';
+  w.innerHTML = bigDrop
+    ? ('&#9888; <b>That is '+Math.abs(diff).toLocaleString()+' fewer than last shift</b> ('
+      + prev.toLocaleString()+' &rarr; '+typed.toLocaleString()+').'
+      + '<span>Jack&rsquo;s tracker KPI records the change, so this would go down as '+diff+'. '
+      + 'If you missed a digit, fix it now. If you really did clear them out, carry on.</span>')
+    : ('&#9888; <b>That is '+diff.toLocaleString()+' more than last shift</b> ('
+      + prev.toLocaleString()+' &rarr; '+typed.toLocaleString()+').'
+      + '<span>If your last total was mistyped, don&rsquo;t worry &mdash; submit will ask you and '
+      + 'record today as a corrected baseline instead of '+diff.toLocaleString()+' added.</span>');
 }
 function updateKeepaTotal() {
   var input = document.getElementById('keepa-today');
@@ -15161,6 +15545,13 @@ function vaBriefFill(va){
       }
       var oaWeekTarget=T.oaDay*5;
       out+=kpi('Leads', p.week.uniq, (p.week.uniq/T.leadsWeek)*100, 'of '+T.leadsWeek+' this week');
+      var _kAdd=((h&&h.keepaAdded)||0)
+        +((window.state&&!state.submitted&&typeof keepaGetValues==='function')?(keepaGetValues().count||0):0);
+      out+=kpi('Trackers added', _kAdd, (_kAdd/T.keepaAddWk)*100, 'of '+T.keepaAddWk+' this week');
+      out+=kpi('Keepa leads', p.week.keepa, (p.week.keepa/T.keepaWk)*100, 'of '+T.keepaWk+' this week',
+               p.mtd.keepa?('month '+p.mtd.keepa+(p.mtd.keepaBought?' · '+p.mtd.keepaBought+' bought':'')):'');
+      out+=kpi('THC discord', p.week.thc, (p.week.thc/T.thcWk)*100, 'of '+T.thcWk+' this week',
+               p.mtd.thc?('month '+p.mtd.thc):'');
       out+=kpi('Normal OA', p.week.oa, (p.week.oa/oaWeekTarget)*100, 'of '+oaWeekTarget+' this week',
                (p.mtd.oa||p.lastMonth.oa)?('month '+p.mtd.oa+(p.lastMonth.oa?' vs '+p.lastMonth.oa+' in '+p.lastMonthName.slice(0,3)+(p.mtd.oa<p.lastMonth.oa?' ▼':' ▲'):'')):'');
       out+='<div class="wb-r"><span>Bought</span>'
@@ -15368,7 +15759,7 @@ function showToast(msg,isError) {
   var ACCENTS=[['violet','#7c6cff'],['blue','#4d82f3'],['emerald','#20c997'],['amber','#eab24a'],['rose','#f2647f']];
   // 'keepa' was a switch for a card that doesn't exist; 'month' is a real card that had no
   // switch — so one toggle did nothing and one card could never be hidden.
-  var KPI_KEYS=[['leads','Leads today'],['tasks','Tasks done'],['hrs','Hours worked'],['lph','Leads / hr'],['week','Week leads'],['streak','Submit streak'],['month','Leads this month'],['break','Break time']];
+  var KPI_KEYS=[['leads','Leads today'],['tasks','Tasks done'],['hrs','Hours worked'],['lph','Leads / hr'],['week','Week leads'],['streak','Submit streak'],['month','Leads this month'],['spend','Spend this month'],['keepaadd','Trackers added'],['keepawk','Keepa leads'],['thcwk','THC discord'],['break','Break time']];
   var DEFAULTS={accent:'violet',density:'comfortable',kpi:{leads:1,tasks:1,hrs:1,lph:1,week:1,streak:1,month:1,break:1},dailyTarget:12,weeklyTarget:60};
 
   function loadPrefs(){
@@ -15505,12 +15896,96 @@ function showToast(msg,isError) {
           var code=vaEff==='Mera'?'VA M':vaEff==='Suz'?'VA S':null;
           if(code && window.leads && window.leads.length){
             var now=new Date(); var ym=now.getFullYear()+'-'+('0'+(now.getMonth()+1)).slice(-2);
-            window.leads.forEach(function(l){ if(l.va!==code) return; var p=String(l.date||'').split('/'); var iso=p.length===3?(p[2]+'-'+('0'+p[1]).slice(-2)):String(l.date||'').slice(0,7); if(iso.slice(0,7)===ym) mcount++; });
+            /* Rows, not products — so a re-sent ASIN counted twice and this tile read
+               235 while the strip beside it read 218 for the same VA and month. Jack
+               settled this once already ("you cannot find the same product twice");
+               it just never reached this tile. Count distinct products. */
+            var _seenM={};
+            window.leads.forEach(function(l){ if(l.va!==code) return;
+              var p=String(l.date||'').split('/');
+              var iso=p.length===3?(p[2]+'-'+('0'+p[1]).slice(-2)):String(l.date||'').slice(0,7);
+              if(iso.slice(0,7)!==ym) return;
+              var a=''; try{ a=asinKey(l); }catch(e){}
+              a=a||('row'+(l.id!=null?l.id:Math.random()));
+              if(!_seenM[a]){ _seenM[a]=1; mcount++; }
+            });
           }
         }catch(_){}
         mc.textContent=mcount;
-        if(me2){ var mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][new Date().getMonth()]; me2.innerHTML='<div class="kpi-meta"><span>'+mn+' so far</span><span><b>'+mcount+'</b> leads</span></div>'; }
+        if(me2){ var mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][new Date().getMonth()];
+          me2.innerHTML='<div class="kpi-meta"><span>'+mn+' so far</span><span><b>'+mcount+'</b> product'+(mcount===1?'':'s')+'</span></div>'; }
       }
+
+      /* ── KEEPA TRACKERS + THC DISCORD — this week vs the weekly target ─────────
+         Jack: "get it in shift track" — the brief rows only show when Details is open,
+         and a target nobody can see is not a target. These two sit in the KPI grid
+         with the same green/amber/red rule, so the VA watches herself close the gap.
+         Same source matcher as vaTally — THC is spelt three ways in the sheets. */
+      try{
+        var _kc3=document.getElementById('stat-keepawk'), _tc3=document.getElementById('stat-thcwk');
+        if(_kc3||_tc3){
+          var _vaE3=(window.state&&(state._previewAs||state.currentVA))||'';
+          if(_vaE3==='Mera'||_vaE3==='Suz'){
+            var _code3=_vaE3==='Mera'?'VA M':'VA S';
+            var _monW=(function(){ var d=new Date(); var dw=(d.getDay()+6)%7;
+              d.setDate(d.getDate()-dw); d.setHours(0,0,0,0); return d; })();
+            var _wkK=0,_wkT=0;
+            (window.leads||[]).forEach(function(l){
+              if(l.va!==_code3) return;
+              var pp=String(l.date||'').split('/'); if(pp.length!==3) return;
+              var dd=new Date(+pp[2],+pp[1]-1,+pp[0]); if(!(dd>=_monW)) return;
+              var sr=String(l.src||'').toLowerCase();
+              if(sr.indexOf('keepa')>=0) _wkK++;
+              if(sr.indexOf('thc')>=0||sr.indexOf('discord')>=0) _wkT++;
+            });
+            var _T3=vaTargets(_vaE3);
+            var _paintWk=function(cell,exId,count,target){
+              if(!cell) return;
+              var pct=target>0?count/target*100:0, col=vaKpiCol(pct);
+              cell.textContent=count; cell.style.color=col;
+              var ex=document.getElementById(exId);
+              if(ex) ex.innerHTML='<div class="kpi-prog"><i style="width:'+Math.min(100,Math.round(pct))+'%;background:'+col+'"></i></div>'
+                +'<div class="kpi-meta"><span><b>'+count+'</b> / '+target+' this week</span><span>'+Math.round(pct)+'%</span></div>';
+            };
+            _paintWk(_kc3,'kpi-keepawk-extra',_wkK,_T3.keepaWk);
+            _paintWk(_tc3,'kpi-thcwk-extra',_wkT,_T3.thcWk);
+            /* trackers ADDED = this week's submitted shifts (cloud) + today's live box.
+               window._vaHours is filled by the brief's vaWeekHours fetch; until it
+               lands, the tile shows today's count rather than a fake zero week. */
+            var _ka3=((window._vaHours&&window._vaHours.keepaAdded)||0)
+              +((window.state&&!state.submitted&&typeof keepaGetValues==='function')?(keepaGetValues().count||0):0);
+            _paintWk(document.getElementById('stat-keepaadd'),'kpi-keepaadd-extra',_ka3,_T3.keepaAddWk);
+          }
+        }
+      }catch(_){}
+
+      /* ── SPEND THIS MONTH ──────────────────────────────────────────────────────
+         Read from the PURCHASE LEDGER — the same sheet, columns and provider split
+         the Spend Dashboard uses — not from lead buy-prices. The two were telling
+         different stories: the VA panel showed Mera £5,331 for August while the
+         dashboard showed £6,761 for the same month, because the panel was summing
+         quoted buy price x an assumed quantity on leads marked bought, and the
+         ledger is what was actually paid. On a screen about money, the money has to
+         be the real number. */
+      try{
+        var _spC=document.getElementById('stat-spend'), _spE=document.getElementById('kpi-spend-extra');
+        if(_spC){
+          var _spVa=(window.state&&(state._previewAs||state.currentVA))||'';
+          if(!_spVa || _spVa==='Test'){ _spC.textContent='\u2014'; }
+          else vaMonthSpendFetch(_spVa).then(function(r){
+            var c=document.getElementById('stat-spend'), e2=document.getElementById('kpi-spend-extra');
+            if(!c) return;
+            var mn2=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][new Date().getMonth()];
+            if(!r){ c.textContent='\u2014';
+              if(e2) e2.innerHTML='<div class="kpi-meta"><span>'+mn2+' so far</span><span>not available</span></div>';
+              return; }
+            c.innerHTML='<span style="font-size:.62em;opacity:.55;vertical-align:.12em">\u00a3</span>'
+              +Math.round(r.spend).toLocaleString();
+            if(e2) e2.innerHTML='<div class="kpi-meta"><span>'+mn2+' so far</span><span><b>'
+              +r.units.toLocaleString()+'</b> unit'+(r.units===1?'':'s')+'</span></div>';
+          });
+        }
+      }catch(_){}
       // ── STATUS COLOURS on target-based KPIs: green on/above, amber just below, red below ──
       try{
         var _s=getAppSettings();
@@ -22302,6 +22777,47 @@ function askConfirm(o){
 /* Collapse every on-screen copy of a batch before the board repaints. One batch can be
    drawn more than once (Needs routing, Yours to work, the card grid), so this works off
    data-bid rather than one element. Resolves when the animation has finished. */
+/* ── FLIP: stop the board snapping when a tile leaves ───────────────────────────
+   Binning collapses the tile smoothly, then sbPaintJack() rebuilds the whole board from
+   scratch — and every remaining tile is DROPPED into its new grid slot with no transition
+   at all. The tile you removed glided away; the twenty behind it jumped. That is the
+   "not smooth" part.
+   So: measure where each tile is BEFORE the repaint, let the repaint happen, then put
+   each one back where it was with a transform and let it travel to its real position.
+   Transform-only, so it can never affect layout, and it no-ops when nothing moved. */
+function sbFlipCapture(){
+  var m={};
+  try{
+    [].slice.call(document.querySelectorAll('.sbr[data-bid]')).forEach(function(el){
+      var r=el.getBoundingClientRect();
+      if(r.width) m[el.getAttribute('data-bid')]={x:r.left,y:r.top};
+    });
+  }catch(e){}
+  return m;
+}
+function sbFlipPlay(prev){
+  if(!prev) return;
+  try{ if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return; }catch(e){}
+  try{
+    var moved=[];
+    [].slice.call(document.querySelectorAll('.sbr[data-bid]')).forEach(function(el){
+      var was=prev[el.getAttribute('data-bid')]; if(!was) return;
+      var r=el.getBoundingClientRect();
+      var dx=was.x-r.left, dy=was.y-r.top;
+      if(Math.abs(dx)<1 && Math.abs(dy)<1) return;    // did not move — leave it alone
+      el.style.transition='none';
+      el.style.transform='translate('+dx+'px,'+dy+'px)';
+      moved.push(el);
+    });
+    if(!moved.length) return;
+    void moved[0].offsetHeight;                        // flush the start position first
+    moved.forEach(function(el){
+      el.style.transition='transform .3s cubic-bezier(.22,.7,.3,1)';
+      el.style.transform='';
+      setTimeout(function(){ el.style.transition=''; el.style.transform=''; },340);
+    });
+  }catch(e){}
+}
 function sbCollapseTiles(batchId){
   var els;
   try{ els=[].slice.call(document.querySelectorAll('[data-bid="'+String(batchId).replace(/["\\]/g,'')+'"]')); }
@@ -22353,8 +22869,10 @@ async function sbScrapBatch(batchId){
   sbBinToast((b.storefront_name||'Batch'),(b.asin_count||0));
   SB_FLASH=null;
   await sbCollapseTiles(batchId);
+  var _flip=sbFlipCapture();                 // where everything sits BEFORE the rebuild
   try{ sbPaintJack(); }catch(e){}
   try{ sbRenderImport(); }catch(e){}
+  sbFlipPlay(_flip);                         // …and glide them into their new slots
 
   var res=await job;
   if(!res.ok){
@@ -22399,9 +22917,14 @@ async function sbBinUndo(){
       await fetchT(SUPABASE_URL+'/rest/v1/storefront_batch_items',{method:'POST',headers:h,body:JSON.stringify(items)});
     }
   }catch(e){ showToast('Couldn\'t put it back — check your connection',true); return; }
+  var _flipU=sbFlipCapture();                // same trick coming back as going away
   await sbLoadBatches(true);
   sbRenderImport();
   try{ sbRefreshJack(); }catch(e){}
+  sbFlipPlay(_flipU);
+  /* Land it the same way a new batch lands, so his eye is taken straight to the tile
+     that came back rather than left hunting the board for it. */
+  try{ SB_LANDED=res.batch.id; setTimeout(function(){ SB_LANDED=null; },1400); }catch(e){}
   showToast('Put back ✓ — '+(items.length||res.batch.asin_count||0)+' ASINs restored');
 }
 function sbImportHTML(){
@@ -23030,15 +23553,19 @@ function sbRowHTML(b){
     var binBtn=(isDraft||!started)
       ? '<button class="sbr-b bin" title="Delete this batch and its ASINs — nobody gets asked to work it" '
         +'onclick="sbScrapBatch(\''+b.id+'\')">&#10005; Bin</button>' : '';
+    /* Keeping one for himself was buried in the ⋯ menu while Mera and Suz sat on the
+       tile — three equal destinations, one of them two clicks further away. "Me" is now
+       a first-class button beside them, labelled the same as the bulk bar already does. */
     actions='<div class="sbr-route2">'
-      +['Mera','Suz'].map(function(who){
-          return '<button class="sbr-go2'+(b.assigned_to===who?' on':'')+'" data-w="'+who+'" title="Send it to '
-            +escHtml(vaDisp(who))+'" onclick="sbAssign(\''+b.id+'\',\''+who+'\')">&#8594; '+escHtml(vaDisp(who))+'</button>';
+      +[['Mera',vaDisp('Mera')],['Suz',vaDisp('Suz')],['Jack','Me']].map(function(p){
+          var who=p[0];
+          return '<button class="sbr-go2'+(b.assigned_to===who?' on':'')+'" data-w="'+who+'" title="'
+            +(who==='Jack'?'Keep this one for yourself':'Send it to '+escHtml(vaDisp(who)))
+            +'" onclick="sbAssign(\''+b.id+'\',\''+who+'\')">&#8594; '+escHtml(p[1])+'</button>';
         }).join('')
       +'<details class="sbr-more"><summary title="Everything else">&#8943;</summary><div class="sbw-menu">'
         +'<button onclick="sbAssign(\''+b.id+'\',\'Both\')">&#8594; Both VAs</button>'
         +'<button onclick="sbAssign(\''+b.id+'\',\'All\')">&#8594; All 3 of us</button>'
-        +'<button onclick="sbAssign(\''+b.id+'\',\'Jack\')">&#8594; Keep for me</button>'
         +(mine?'<button onclick="sbJackStart(\''+b.id+'\')">&#9654; Start it now</button>'
               +'<button onclick="sbJackComplete(\''+b.id+'\')">&#10003; Mark done</button>':'')
         +'<button class="danger" onclick="sbScrapBatch(\''+b.id+'\')">&#10005; Bin this batch</button>'
