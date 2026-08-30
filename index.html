@@ -2510,14 +2510,14 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
   overflow-y:auto;overscroll-behavior:contain;}
 .welcome-overlay.open{display:flex;animation:fade .28s var(--ease);}
 .welcome-card{background:var(--panel);border:1px solid var(--line-2);border-radius:var(--r-lg);
-  padding:30px 30px 26px;max-width:760px;width:100%;text-align:center;box-shadow:var(--sh-3);
+  padding:20px 26px 18px;max-width:780px;width:100%;text-align:center;box-shadow:var(--sh-3);
   margin:auto;max-height:calc(100vh - 48px);overflow-y:auto;}
 @media (max-width:820px){ .welcome-card{max-width:460px;padding:26px 20px 22px;} }
 .welcome-card::before{content:'';position:absolute;}
-.welcome-emoji{font-size:2.6rem;margin-bottom:12px;display:block;}
-.welcome-name{font-size:clamp(23px,3vw,28px);font-weight:800;letter-spacing:-0.03em;margin-bottom:6px;background:none!important;-webkit-background-clip:initial!important;background-clip:initial!important;-webkit-text-fill-color:#f5f6fc!important;color:#f5f6fc;line-height:1.1;}
-.welcome-time{font-size:12.5px;color:var(--muted);margin-bottom:22px;}
-.welcome-msg{background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r-md);padding:16px 18px;margin-bottom:14px;font-size:14.5px;font-weight:600;line-height:1.5;color:var(--text);}
+.welcome-emoji{font-size:1.7rem;margin-bottom:4px;display:block;}
+.welcome-name{font-size:clamp(19px,2.4vw,23px);font-weight:800;letter-spacing:-0.03em;margin-bottom:6px;background:none!important;-webkit-background-clip:initial!important;background-clip:initial!important;-webkit-text-fill-color:#f5f6fc!important;color:#f5f6fc;line-height:1.1;}
+.welcome-time{font-size:11.5px;color:var(--muted);margin-bottom:12px;}
+.welcome-msg{background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r-md);padding:9px 14px;margin-bottom:9px;font-size:12.5px;font-weight:600;line-height:1.45;color:var(--muted);}
 /* the morning brief inside the welcome modal */
 #welcome-brief{margin-bottom:16px;text-align:left;
   display:grid;grid-template-columns:1fr 1fr;gap:0 26px;align-items:start;}
@@ -2525,8 +2525,8 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
    the brief is half as tall without losing a single number. */
 #welcome-brief > .wb-line,#welcome-brief > .wb-r,#welcome-brief > .wb-focus,
 #welcome-brief > .wb-wait,#welcome-brief > .wb-sec{grid-column:1/-1;}
-#welcome-brief .wb-sec{font-size:10.5px;font-weight:800;letter-spacing:.9px;
-  text-transform:uppercase;color:var(--muted-2);margin:12px 0 2px;
+#welcome-brief .wb-sec{font-size:10px;font-weight:800;letter-spacing:.9px;
+  text-transform:uppercase;color:var(--muted-2);margin:8px 0 1px;
   padding-bottom:5px;border-bottom:1px solid var(--line-2);}
 #welcome-brief .wb-sec:first-of-type{margin-top:4px;}
 @media (max-width:820px){ #welcome-brief{grid-template-columns:1fr;} }
@@ -2540,11 +2540,11 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 #welcome-brief .wb-seg b{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;}
 #welcome-brief .wb-seg i{font-style:normal;font-size:10.5px;color:var(--muted-2);margin-left:3px;}
 #welcome-brief .wb-resend{font-size:10px;color:var(--muted-2);margin-left:4px;}
-#welcome-brief .wb-k{display:grid;grid-template-columns:76px auto 1fr;grid-template-rows:auto auto;
+#welcome-brief .wb-k{display:grid;grid-template-columns:76px auto 1fr;grid-template-rows:auto auto;padding:5px 2px!important;
   gap:2px 10px;align-items:baseline;padding:9px 4px;border-bottom:1px solid var(--line);}
 #welcome-brief .wb-k-l{grid-column:1;color:var(--muted);font-weight:700;font-size:12.5px;}
 @media (min-width:821px){ #welcome-brief .wb-k{grid-template-columns:92px auto 1fr;} }
-#welcome-brief .wb-k-v{grid-column:2;font-size:19px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1;}
+#welcome-brief .wb-k-v{grid-column:2;font-size:16.5px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1;}
 #welcome-brief .wb-k-t{grid-column:3;color:var(--muted-2);font-size:11px;}
 #welcome-brief .wb-k-bar{grid-column:2/-1;grid-row:2;height:4px;border-radius:3px;background:rgba(255,255,255,.07);overflow:hidden;}
 #welcome-brief .wb-k-bar i{display:block;height:100%;border-radius:3px;transition:width .4s var(--ease);}
@@ -4173,6 +4173,24 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
   padding:3px 8px;border-radius:20px;text-transform:uppercase;white-space:nowrap;
   color:var(--bc);background:color-mix(in srgb,var(--bc) 15%,transparent);
   border:1px solid color-mix(in srgb,var(--bc) 42%,transparent);}
+.dev-fold{margin-top:34px;border-top:1px solid var(--line);padding-top:18px;}
+.dev-fold summary{list-style:none;cursor:pointer;font-size:11px;font-weight:800;letter-spacing:.8px;
+  text-transform:uppercase;color:var(--muted-2);padding:8px 12px;border:1px dashed var(--line-2);
+  border-radius:9px;background:rgba(255,255,255,.02);}
+.dev-fold summary::-webkit-details-marker{display:none;}
+.dev-fold summary:hover{color:var(--amber);border-color:rgba(255,176,46,.4);}
+@media(max-width:520px){
+  /* Jack is the only phone user — the ticklist editor's chip buttons were under 30px
+     and mis-taps on a phone edit REAL recurring tasks. */
+  #mgr-ticklist-content button,.settings-card button{min-height:34px;}
+}
+.bt-fold{margin-top:7px;}
+.bt-fold summary{list-style:none;cursor:pointer;font-size:11px;font-weight:700;color:var(--muted-2);
+  padding:6px 9px;border:1px solid var(--line);border-radius:8px;background:rgba(255,255,255,.025);}
+.bt-fold summary::-webkit-details-marker{display:none;}
+.bt-fold summary::before{content:'▸ ';}
+.bt-fold[open] summary::before{content:'▾ ';}
+.bt-fold summary:hover{color:var(--text);border-color:var(--line-2);}
 .sbr-route2{display:grid;grid-template-columns:1fr 1fr 1fr 38px;gap:5px;}
 .sbr-go2{height:34px;border-radius:9px;font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;
   border:1px solid var(--line-2);background:rgba(255,255,255,.05);color:var(--muted);transition:all .12s;
@@ -6515,7 +6533,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v46.2';
+var APP_VERSION='v46.6';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -10172,6 +10190,10 @@ function vaTally(list){
      leads in 13 days" and he was right to: 34 of Mera's August rows were re-sends
      of an ASIN she had already sent that month (one of them four times). The
      headline the VA sees is uniq — you cannot find the same product twice. */
+  /* Jack: "no note = doesn't count." Filter ONCE here and every number this
+     tally feeds — leads, tickets, keepa, thc, spend — agrees by construction. */
+  try{ if(typeof ldDupUnexplained==='function')
+    list=list.filter(function(l){ return !ldDupUnexplained(l); }); }catch(e){}
   var t={n:list.length,uniq:0,bought:0,good:0,rejected:0,pending:0,spend:0,oa:0,keepa:0,keepaBought:0,thc:0,over100:0,over200:0,premium:0,flagship:0};
   var seen={};
   list.forEach(function(l){
@@ -10306,7 +10328,8 @@ var VA_FOCUS=[
   ['Look for a cheaper source',       ['cheaper','better price','source it cheaper']],
   ['Check the Keepa price history',   ['tanked','price drop','dropped','down more than up']],
   ['Check the seller count',          ['seller','sellers','competition','crowded']],
-  ['Check it is not gated',           ['gated','restricted','ungate']],
+  /* 'Check it is not gated' removed 31/08 — gating is visible only on JACK's Amazon
+     account, so the chip told the VA to do something she physically cannot. */
   ['Check the buy price is right',    ['wrong price','price doesn','doesnt match','price is wrong']]
 ];
 function vaFocus(notes){
@@ -13172,29 +13195,43 @@ function mgr_renderVA(va,containerId){
 function mgr_renderIssues(){
   var reports=mgr_getReports();
   var tl={'broken-link':'Broken Link','task-unclear':'Task Unclear','technical':'Technical','missing-info':'Missing Info','other':'Other'};
-  var html='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">'
-    +'<div style="font-size:10px;color:var(--muted-2);text-transform:uppercase;letter-spacing:3px;font-weight:600;">Reported Issues ('+reports.length+')</div>'
-    +(reports.length?'<button onclick="mgr_clearIssues()" style="background:rgba(242,100,127,0.08);border:1px solid rgba(242,100,127,0.2);color:#f2647f;font-family:var(--font-mono);font-size:10px;padding:5px 12px;border-radius:7px;cursor:pointer;">Clear All</button>':'')
+  /* Was the last tab on the launch-era palette — #444 text on #0d0d1a cards, and
+     "Clear ALL shift logs" sitting as a bare button on a page Jack opens most days.
+     House tokens now, and the destructive dev tools live behind a fold. */
+  var html='<div class="mgr-sec2" style="margin-bottom:14px;"><div>'
+    +'<div class="s-ttl">Reported issues'+(reports.length?' <span style="color:var(--red)">('+reports.length+')</span>':'')+'</div>'
+    +'<div class="s-sub">What the VAs flagged from their shift screens — newest first</div></div>'
+    +(reports.length?'<button class="wb-btn" style="color:var(--red);border-color:rgba(242,100,127,.35)" onclick="mgr_clearIssues()">Clear all</button>':'')
     +'</div>';
-  if(!reports.length){html+='<div style="color:var(--muted-2);font-size:13px;padding:20px 0;">No issues reported. ✓</div>';}
+  if(!reports.length){
+    html+='<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;'
+      +'padding:26px 20px;text-align:center;color:var(--muted);font-size:13px;">'
+      +'✅ Nothing reported.<br><span style="font-size:11.5px;color:var(--muted-2)">'
+      +'VAs raise these from the ⚠ buttons on their shift screen — they land here the moment they do.</span></div>';
+  }
   else{
     reports.slice().reverse().forEach(function(r,i){
       var ri=reports.length-1-i;
-      html+='<div class="issue-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px;">'
-        +'<div><div style="font-size:10px;color:#f2647f;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:3px;">'+(tl[r.type]||r.type)+'</div>'
-        +'<div style="font-size:11px;color:#444;">'+r.va+' · '+r.time+'</div></div>'
-        +'<button onclick="mgr_delIssue('+ri+')" style="background:rgba(242,100,127,0.08);border:1px solid rgba(242,100,127,0.2);color:#f2647f;font-family:var(--font-mono);font-size:10px;padding:4px 10px;border-radius:6px;cursor:pointer;flex-shrink:0;">Delete</button>'
-        +'</div><div style="font-size:13px;color:#ccc;line-height:1.6;">'+r.text+'</div></div>';
+      var vaCol=(r.va==='Mera')?'var(--mera)':(r.va==='Suz')?'var(--suz)':'var(--muted)';
+      html+='<div class="issue-card" style="border-left:3px solid var(--red);">'
+        +'<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:7px;">'
+        +'<div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap;">'
+        +'<span style="font-size:10px;color:var(--red);text-transform:uppercase;letter-spacing:1.2px;font-weight:800;'
+        +'background:rgba(242,100,127,.1);border:1px solid rgba(242,100,127,.28);padding:3px 9px;border-radius:20px;">'+(tl[r.type]||r.type)+'</span>'
+        +'<span style="font-size:11.5px;font-weight:700;color:'+vaCol+';">●&nbsp;'+escHtml(r.va||'?')+'</span>'
+        +'<span style="font-size:11px;color:var(--muted-2);">'+escHtml(r.time||'')+'</span></div>'
+        +'<button class="wb-btn" style="color:var(--red);border-color:rgba(242,100,127,.3);flex-shrink:0" onclick="mgr_delIssue('+ri+')">Delete</button>'
+        +'</div><div style="font-size:13px;color:var(--text);line-height:1.6;">'+escHtml(r.text||'')+'</div></div>';
     });
   }
-  // ── TESTS PANEL ──
-  html+='<div style="margin-top:40px;border-top:1px solid rgba(255,255,255,0.05);padding-top:24px;">';
-  html+='<div style="font-size:10px;color:var(--muted-2);text-transform:uppercase;letter-spacing:3px;font-weight:600;margin-bottom:16px;">&#9881; System Tests</div>';
-  html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">';
+  // ── DEV TOOLS — folded: two of these delete data, they must not sit one stray
+  //    click from the Delete buttons above
+  html+='<details class="dev-fold"><summary>&#9881; Developer tools — resets and debug, careful in here</summary>';
+  html+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-top:12px;">';
 
   function testBtn(label,fn,desc){
-    return '<div style="background:#0d0d1a;border:1px solid #1a1a2e;border-radius:10px;padding:14px 16px;">'
-      +'<div style="font-size:11px;color:#666;margin-bottom:8px;line-height:1.5;">'+desc+'</div>'
+    return '<div style="background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px 15px;">'
+      +'<div style="font-size:11px;color:var(--muted-2);margin-bottom:8px;line-height:1.5;">'+desc+'</div>'
       +'<button onclick="'+fn+'" style="background:rgba(155,143,255,0.1);border:1px solid rgba(155,143,255,0.3);color:#9b8fff;font-family:var(--font-mono);font-size:11px;padding:8px 14px;border-radius:7px;cursor:pointer;width:100%;">'+label+'</button>'
       +'</div>';
   }
@@ -13205,7 +13242,7 @@ function mgr_renderIssues(){
   html+=testBtn('Dump logs to console','console.log(JSON.parse(localStorage.getItem(\'shifttrack_eod_log\')||\'[]\'));showToast(\'Logged to console (F12)\');','Print full shift log to browser console for inspection.');
   html+=testBtn('Test flag banner','mgr_flagBanner([]);showToast(\'Banner cleared\');','Clear the action-needed banner at top of Jack view.');
 
-  html+='</div></div>';
+  html+='</div></details>';
   document.getElementById('mgr-issues-content').innerHTML=html;
 }
 function mgr_delIssue(idx){if(!confirm('Delete?'))return;try{var r=mgr_getReports();r.splice(idx,1);localStorage.setItem('shifttrack_reports',JSON.stringify(r));reportLog=r;mgr_renderIssues();showToast('Deleted');}catch(e){showToast('Error',true);}}
@@ -15670,8 +15707,20 @@ function vaBriefFill(va){
         out+='<div class="wb-r"><span>'+p.lastMonthName.slice(0,3)+' ended</span>'
           +seg(p.lastMonth.n,'#10d99a','leads')+seg(p.lastMonth.bought,'#38bdf8','bought')
           +seg('£'+Math.round(p.lastMonth.spend).toLocaleString(),'#c084fc','')+'</div>';
-      var focus=vaFocus(p.notes);
-      if(focus.length) out+='<div class="wb-focus">🎯 '+escHtml(focus[0].label)+' <b>— Jack has said this ×'+focus[0].n+'</b></div>';
+      /* Jack: "stuff the VA needs to action on the Google sheet should replace this
+         bit" — a dup row needing a note is concrete and hers; a mined phrase is
+         only a nudge. Sheet work wins the slot whenever any exists. */
+      var _dups=[]; try{ _dups=eodDupList(whoRaw)||[]; }catch(e){}
+      if(_dups.length){
+        out+='<div class="wb-focus">📋 <b>'+_dups.length+' row'+(_dups.length===1?'':'s')
+          +' on your sheet need'+(_dups.length===1?'s':'')+' a VA NOTE or deleting</b> — '
+          +'row'+(_dups.length===1?'':'s')+' '
+          +_dups.slice(0,5).map(function(x){ return x.row||'?'; }).join(', ')
+          +(_dups.length>5?'…':'')+'. They don\u2019t count until fixed.</div>';
+      } else {
+        var focus=vaFocus(p.notes);
+        if(focus.length) out+='<div class="wb-focus">🎯 '+escHtml(focus[0].label)+' <b>— Jack has said this ×'+focus[0].n+'</b></div>';
+      }
       /* Jack: "do we need Full breakdown here? if we click it we can't get off it".
          No — gone. The panel's one home is the Details toggle on the shift screen,
          which opens AND closes it (plus the ✕ on the panel itself). The morning
@@ -16009,6 +16058,7 @@ function showToast(msg,isError) {
                it just never reached this tile. Count distinct products. */
             var _seenM={};
             window.leads.forEach(function(l){ if(l.va!==code) return;
+              try{ if(ldDupUnexplained(l)) return; }catch(e){}
               var p=String(l.date||'').split('/');
               var iso=p.length===3?(p[2]+'-'+('0'+p[1]).slice(-2)):String(l.date||'').slice(0,7);
               if(iso.slice(0,7)!==ym) return;
@@ -16039,6 +16089,7 @@ function showToast(msg,isError) {
             var _wkK=0,_wkT=0;
             (window.leads||[]).forEach(function(l){
               if(l.va!==_code3) return;
+              try{ if(ldDupUnexplained(l)) return; }catch(e){}
               var pp=String(l.date||'').split('/'); if(pp.length!==3) return;
               var dd=new Date(+pp[2],+pp[1]-1,+pp[0]); if(!(dd>=_monW)) return;
               var sr=String(l.src||'').toLowerCase();
@@ -16072,6 +16123,7 @@ function showToast(msg,isError) {
             var _prem=0,_flag=0,_o100=0;
             (window.leads||[]).forEach(function(l){
               if(l.va!==_code3) return;
+              try{ if(ldDupUnexplained(l)) return; }catch(e){}
               var pp=String(l.date||'').split('/'); if(pp.length!==3) return;
               var dd=new Date(+pp[2],+pp[1]-1,+pp[0]); if(!(dd>=_m1)) return;
               var sp=parseFloat(l.sell)||0;
@@ -17380,48 +17432,40 @@ function eodRenderLeadCheck(){
    It is her job to clear them, so she gets the list at the end of her own
    shift with the row numbers — not Jack, at review, a week later. */
 function eodDupList(va){
+  /* Rewritten to Jack's final rule (30/08): SAME MONTH only — cross-month repeats
+     are always fine — and exactly the predicate the KPIs and his board use, so
+     what she is asked to fix is precisely what is being held back. */
   var code=(va==='Mera')?'VA M':(va==='Suz')?'VA S':null;
   if(!code) return [];
-  var L=(window.leads||[]).filter(function(l){ return l.va===code; });
-  function k(l){ try{ return asinKey(l); }catch(e){ return String(l.asin||'').toUpperCase(); } }
-  function dt(l){ var p=String(l.date||'').split('/');
-    return p.length===3?new Date(+p[2],+p[1]-1,+p[0]).getTime():0; }
-  function sup(l){ return String(l.sup||'').trim().toLowerCase().replace(/\/+$/,''); }
-  var by={};
-  L.forEach(function(l){ var kk=k(l); if(kk) (by[kk]=by[kk]||[]).push(l); });
   var out=[];
-  Object.keys(by).forEach(function(kk){
-    var g=by[kk]; if(g.length<2) return;
-    g.sort(function(a,b){ return dt(a)-dt(b); });
-    for(var i=1;i<g.length;i++){
-      var cur=g[i], prev=g[i-1];
-      if(String(cur.vanote||'').trim()) continue;                 // she gave a reason
-      if(sup(prev)!==sup(cur)) continue;                          // different supplier — fine
-      var pb=parseFloat(prev.buy)||0, cb=parseFloat(cur.buy)||0;
-      if(!pb||!cb) continue;
-      if(cb < pb*0.98) continue;                                  // cheaper — fine
-      out.push({ row:cur.sheetRow, tab:cur.sheetTab, firstRow:prev.sheetRow,
-                 title:String(cur.title||'(untitled)').slice(0,46),
-                 price:cb, was:pb });
-    }
-  });
+  try{
+    (window.leads||[]).forEach(function(l){
+      if(l.va!==code) return;
+      if(l.status||l.islead!==null) return;               // decided — Jack has seen it
+      if(!ldDupUnexplained(l)) return;
+      out.push({ row:l.sheetRow, tab:l.sheetTab,
+                 title:String(l.title||'(untitled)').slice(0,46),
+                 price:parseFloat(l.buy)||0 });
+    });
+  }catch(e){}
   out.sort(function(a,b){ return (b.row||0)-(a.row||0); });
   return out;
 }
+/* eodDupListOLD removed 31/08 — superseded by the same-month predicate above,
+   kept dead for two builds by mistake. */
 function eodDupCheckHTML(va){
   var d=eodDupList(va);
   if(!d.length) return '';
   var rows=d.slice(0,6).map(function(x){
-    return '<li><b class="eod-lc-row">row '+(x.row||'?')+'</b>'+escHtml(x.title)
-      +' <span style="color:var(--muted-2)">&mdash; already row '+(x.firstRow||'?')
-      +' at £'+x.was.toFixed(2)+'</span></li>';
+    return '<li><b class="eod-lc-row">row '+(x.row||'?')+'</b>'+escHtml(x.title)+'</li>';
   }).join('');
   var more=d.length>6?'<div class="eod-lc-b" style="margin-top:6px">&hellip;and '+(d.length-6)+' more.</div>':'';
   return '<div class="eod-lc warn">'
     +'<div class="eod-lc-h">♻️ '+d.length+' duplicate lead'+(d.length===1?'':'s')+' to sort before you finish</div>'
-    +'<div class="eod-lc-b">You have sent these before, <b>same supplier, same or higher price</b>. '
-    +'For each one: either type WHY you are sending it again in <b>VA NOTE</b> '
-    +'(cheaper, back in stock, different offer), or <b>delete the row</b>.</div>'
+    +'<div class="eod-lc-b">Same ASIN this month, same supplier, same price, no note. '
+    +'<b>Right now these do not count toward your KPIs and Jack cannot see them.</b> '
+    +'Type WHY in <b>VA NOTE</b> (back in stock, new promotion, better offer&hellip;) '
+    +'and they count &mdash; or <b>delete the row</b>.</div>'
     +'<div class="eod-lc-l"><ul>'+rows+'</ul></div>'+more
     +'</div>';
 }
@@ -18235,6 +18279,7 @@ async function loadLeadsFromDB(){
     try{ window.leads=leads; }catch(e){}
     try{ populateMonthFilter(); }catch(e){}
     try{ populateLeadFilters(); }catch(e){}
+    try{ if(!window._fdRestored){ window._fdRestored=1; fDateRestore(); } }catch(e){}
     try{ if(!window._shotLoaded){ window._shotLoaded=1; shotCacheLoad(); } }catch(e){}
     if(leadsEditing()){                       // repaint would delete what he's typing
       window._leadsRepaintDue=true;
@@ -18581,14 +18626,18 @@ function buyTogetherHTML(l){
       +'<span><em>In the order already</em><b>£'+orderTotal.toFixed(2)+'</b></span>'
       +'<span><em>This lead adds</em><b>£'+thisBuy.toFixed(2)+'</b></span>'
       +'<span><em>Order total</em><b>£'+(orderTotal+thisBuy).toFixed(2)+'</b></span>'
-      +'</div>'
-      +'<div class="bt-list">'+inOrder.slice(0,5).map(function(x){ return row(x,' in-order'); }).join('')+'</div>'
+      +'</div>';
+  }
+  var _fold='';
+  if(inOrder.length) _fold+='<div class="bt-list">'+inOrder.slice(0,5).map(function(x){ return row(x,' in-order'); }).join('')+'</div>'
       +(inOrder.length>5?'<div class="bt-more">+'+(inOrder.length-5)+' more already in</div>':'');
-  }
-  if(undec.length){
-    out+='<div class="bt-sub">Best undecided from the same supplier</div>'
+  if(undec.length) _fold+='<div class="bt-sub">Best undecided from the same supplier</div>'
       +'<div class="bt-list">'+undec.slice(0,3).map(function(x){ return row(x,''); }).join('')+'</div>';
-  }
+  if(_fold) out+='<details class="bt-fold"><summary>'
+      +(inOrder.length?inOrder.length+' item'+(inOrder.length===1?'':'s')+' in the order':'')
+      +(inOrder.length&&undec.length?' · ':'')
+      +(undec.length?undec.length+' more from this supplier':'')
+      +'</summary>'+_fold+'</details>';
   out+='<button class="bt-all" onclick="ldSupplierView(\''+String(k).replace(/[^a-z0-9.\-]/g,'')+'\')">'
     +'See all '+(mates.length+1)+' from '+escHtml(k)+' →</button>'
     +'</div>';
@@ -18826,6 +18875,7 @@ function getFNoFocus(){
     // past the cut-off and never decided: off the board — but a search reaches straight
     // through, because "did we ever find this?" is the whole reason he keeps the history.
     if(!q&&ldArchived(l))return false;
+    if(!q&&!(l.status||l.islead!==null)&&ldDupUnexplained(l))return false;  // held until she notes or deletes
     return true;
   }).sort((a,b)=>{
     /* A single lead without a score threw here and took the whole render with it. Because
@@ -18877,6 +18927,7 @@ function _leadCtx(l, useView, useVa){
      search bug hide for months: two filters that must agree, kept in two places. */
   if(window._staleFilter&&(view==='new'||view==='all')&&typeof isStale==='function'&&!isStale(l))return false;
   if(!q&&typeof ldArchived==='function'&&ldArchived(l))return false;
+  if(!q&&!(l.status||l.islead!==null)&&typeof ldDupUnexplained==='function'&&ldDupUnexplained(l))return false;
   if(useVa&&va!=='all'&&l.va!==va)return false;
   if(useView){
     if(view==='new'&&(l.status||l.islead!==null))return false;
@@ -19267,7 +19318,17 @@ function renderList(){
           +`<button class="fq-go" style="margin-top:9px" onclick="ldSearchEverywhere()">Search all leads</button></div>`;
       }
     }
-    el.innerHTML=asinCheckHTML()+`<div style="padding:50px 20px;text-align:center;color:var(--t4);font-size:13px">${msg}${extra}</div>`;
+    /* Jack, twice, on the panel-says-3-copies / list-says-no-match combo: "what does
+       this mean" / "is this buggy". Both lines were true and together they read as a
+       contradiction. When the ASIN panel above is already showing every copy, the
+       empty state defers to it instead of contradicting it. */
+    var _ac=asinCheckHTML();
+    var _msg=msg, _extra=extra;
+    if(_ac && /^b0[a-z0-9]{8}$/i.test(q||'')){
+      _msg='Every copy is in the panel above — including ones this view’s filters would hide.';
+      _extra='';
+    }
+    el.innerHTML=_ac+`<div style="padding:50px 20px;text-align:center;color:var(--t4);font-size:13px">${_msg}${_extra}</div>`;
     document.getElementById('detail-pane').innerHTML=emptyDetail();return;
   }
   /* Jack: "this isn't sorting by score is it — it's sorting it by score AND day".
@@ -19350,7 +19411,15 @@ function renderList(){
           +'database and still in the VAs\u2019 sheets.">\u{1F4C5} <b>'+_hs+'</b> older leads hidden'
           +' <button class="ld-arch-b" onclick="ldShowOlder()">Show them</button></span>'
         : '');
-      _ae.innerHTML=(_n
+      var _dh=0; try{ (window.leads||[]).forEach(function(l){
+        if(!(l.status||l.islead!==null)&&ldDupUnexplained(l)) _dh++; }); }catch(e){}
+      var _dhHtml=_dh
+        ? '<span class="ld-arch" title="Same ASIN, same supplier, same price, same month, '
+          +'no VA note. Held off your board and out of every KPI until the VA adds a reason '
+          +'or deletes the row. Search still finds them.">&#9851; <b>'+_dh+'</b> dup'
+          +(_dh===1?'':'s')+' held back</span>'
+        : '';
+      _ae.innerHTML=_dhHtml+(_n
         ? '<span class="ld-arch" title="They are only hidden from this list. Search still '
           +'finds them and nothing is removed from the sheet.">\u{1F5C4} <b>'+_n+'</b> archived'
           +(_q?' (shown \u2014 you\u2019re searching)':'')+'</span>'
@@ -19656,6 +19725,58 @@ function leadUseAsin(l){
 function asinKey(l){
   try{ return leadUseAsin(l)||''; }catch(e){}
   return String((l&&l.asin)||'').trim().toUpperCase();
+}
+/* ── UNEXPLAINED SAME-MONTH DUPLICATE ─────────────────────────────────────────
+   Jack's final rule, 30/08/2026: the SAME ASIN appearing again in the SAME month
+   is a potential duplicate. It is valid if the supplier changed, the price
+   changed (either direction — a rise can mean back-in-stock repricing), or the
+   VA typed a reason in VA NOTE. Same ASIN + same supplier + same price + no
+   note = meaningless: it must not count toward ANY KPI and must not sit on
+   Jack's board as a new lead. Cross-month repeats are always fine — each month
+   tab is its own world.
+   Measured before this existed (August): Mera 35 of 277 counted rows were
+   meaningless dups (13%), Suz 6 of 327 (2%). One product counted four times. */
+var _duxSig=null,_duxMap=null;
+function buildDupUnexplainedMap(){
+  var map={}, by={};
+  (window.leads||[]).forEach(function(l){
+    var a=''; try{ a=asinKey(l); }catch(e){}
+    if(!a) return;
+    var p=String(l.date||'').split('/');
+    if(p.length!==3) return;
+    var k=l.va+'|'+p[2]+'-'+p[1]+'|'+a;                  // VA + month + product
+    (by[k]=by[k]||[]).push(l);
+  });
+  function dnum(l){ var p=String(l.date||'').split('/');
+    return (+p[2])*10000+(+p[1])*100+(+p[0]); }
+  Object.keys(by).forEach(function(k){
+    var g=by[k]; if(g.length<2) return;
+    g.sort(function(a,b){ return dnum(a)-dnum(b) || (a.sheetRow||0)-(b.sheetRow||0); });
+    for(var i=1;i<g.length;i++){
+      var cur=g[i], prev=g[i-1];
+      /* Jack, 31/08: "fresh from 1st September" — the rule starts clean rather than
+         handing Mera a 60-row August archaeology job on day one. Earlier months keep
+         counting exactly as they always did. */
+      if(dnum(cur)<20260901) continue;
+      if(String(cur.vanote||'').trim()) continue;         // she gave a reason — valid
+      var sa=String(prev.sup||'').trim().toLowerCase().replace(/\/+$/,'');
+      var sb=String(cur.sup||'').trim().toLowerCase().replace(/\/+$/,'');
+      if(sa!==sb) continue;                               // different supplier — valid
+      var pb=parseFloat(prev.buy)||0, cb=parseFloat(cur.buy)||0;
+      if(pb&&cb&&Math.abs(cb-pb)/pb>=0.02) continue;      // price moved — valid
+      map[cur.id]=1;
+    }
+  });
+  _duxMap=map;
+  return map;
+}
+function ldDupUnexplained(l){
+  if(!l) return false;
+  try{
+    var sig=(window.leads||[]).length+':'+((window.leads||[])[0]||{})._sid;
+    if(_duxSig!==sig){ buildDupUnexplainedMap(); _duxSig=sig; }
+    return !!_duxMap[l.id];
+  }catch(e){ return false; }
 }
 /* Decision rows — both the DB cache and the ones read straight out of the sheet — stored
    whatever was in the ASIN column at the time, so they inherit the same offset. Resolve
@@ -20087,6 +20208,7 @@ function litemH(l){
     </div>
     <div class="litem-method">
       <span class="litem-method-pill">${l.src}</span>
+      ${(typeof leadBandChip==='function')?leadBandChip(l):''}
       <span class="litem-stat ${fbaC(l.fba)}" style="font-size:9.5px;color:var(--t3)"><span>Sellers</span>${l.fba}</span>
       ${noteChipHTML(l)}
       ${_wy?`<span class="litem-why k-${_wy.k}" title="${_wy.k==='score'?'the score could catch this':_wy.k==='data'?'the lead info was wrong':'nothing to do with the score'}">${_wy.l}</span>`:''}
@@ -22156,13 +22278,28 @@ function setVA(b,v){va=v;selId=null;document.querySelectorAll('#view-leads [data
 function setScore(b,m){scoreMin=m;selId=null;document.querySelectorAll('#view-leads [data-sc]').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderList()}
 function setSort(b,s){sortBy=s;document.querySelectorAll('#view-leads [data-sort]').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderList()}
 // "Pick a day…" reveals a native date input; choosing a date filters to that exact day
+/* Jack: "this should be local save — I might just wanna see this month's leads."
+   The pick survives a reload; per-machine, never synced. */
+function fDateSave(){ try{ var s=document.getElementById('f-date');
+  localStorage.setItem('bdl_fdate', JSON.stringify({v:s?s.value:'sheet', d:window._fDay||null})); }catch(e){} }
+function fDateRestore(){
+  try{
+    var saved=JSON.parse(localStorage.getItem('bdl_fdate')||'null'); if(!saved) return;
+    var s=document.getElementById('f-date'); if(!s) return;
+    if(![].some.call(s.options,function(o){ return o.value===saved.v; })) return;
+    s.value=saved.v;
+    var dp=document.getElementById('f-day');
+    if(saved.v==='day'&&saved.d){ window._fDay=saved.d; if(dp){ dp.value=saved.d; dp.style.display=''; } }
+  }catch(e){}
+}
 function fDateChange(){ var s=document.getElementById('f-date'), dp=document.getElementById('f-day');
   if(s.value==='day'){ if(dp){ dp.style.display=''; if(!dp.value){ dp.value=new Date().toISOString().slice(0,10); } window._fDay=dp.value; dp.focus(); } }
   else { if(dp) dp.style.display='none'; window._fDay=null; }
+  fDateSave();
   renderList();
 }
-function fDaySet(v){ window._fDay=v; var s=document.getElementById('f-date'); if(s&&v) s.value='day'; renderList(); }
-function clearFilters(){['f-store','f-cat','f-source','f-sup','f-roi','f-profit','f-fba'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='all';});document.getElementById('search').value='';var s=document.getElementById('f-date');if(s)s.value='month';var dp=document.getElementById('f-day');if(dp)dp.style.display='none';window._fDay=null;window._staleFilter=false;renderList()}
+function fDaySet(v){ window._fDay=v; var s=document.getElementById('f-date'); if(s&&v) s.value='day'; fDateSave(); renderList(); }
+function clearFilters(){['f-store','f-cat','f-source','f-sup','f-roi','f-profit','f-fba'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='all';});document.getElementById('search').value='';var s=document.getElementById('f-date');if(s)s.value='month';var dp=document.getElementById('f-day');if(dp)dp.style.display='none';window._fDay=null;window._staleFilter=false;fDateSave();renderList()}
 let _ldtt;function ldToast(msg){const el=document.getElementById('ld-toast');if(!el)return;el.textContent=msg;el.classList.add('show');clearTimeout(_ldtt);_ldtt=setTimeout(()=>el.classList.remove('show'),2400)}
 function moveSel(dir){
   const fl=getF();if(!fl.length)return;
