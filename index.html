@@ -2502,16 +2502,34 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .modal p{color:var(--muted);font-size:13px;margin-bottom:16px;line-height:1.55;}
 .modal textarea{margin-bottom:16px;}
 .modal-actions{display:flex;gap:8px;justify-content:flex-end;}
-.welcome-overlay{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(5,6,11,0.82);backdrop-filter:blur(8px);}
+.welcome-overlay{position:fixed;inset:0;z-index:300;display:none;align-items:flex-start;justify-content:center;padding:24px;background:rgba(5,6,11,0.82);backdrop-filter:blur(8px);
+  /* align-items:center clipped a tall brief off BOTH ends with nowhere to scroll —
+     the VA physically could not reach the bottom of her own morning brief. Start-
+     aligned + margin:auto on the card keeps it centred when it fits and scrollable
+     the moment it does not. */
+  overflow-y:auto;overscroll-behavior:contain;}
 .welcome-overlay.open{display:flex;animation:fade .28s var(--ease);}
-.welcome-card{background:var(--panel);border:1px solid var(--line-2);border-radius:var(--r-lg);padding:34px 32px;max-width:440px;width:100%;text-align:center;box-shadow:var(--sh-3);}
+.welcome-card{background:var(--panel);border:1px solid var(--line-2);border-radius:var(--r-lg);
+  padding:30px 30px 26px;max-width:760px;width:100%;text-align:center;box-shadow:var(--sh-3);
+  margin:auto;max-height:calc(100vh - 48px);overflow-y:auto;}
+@media (max-width:820px){ .welcome-card{max-width:460px;padding:26px 20px 22px;} }
 .welcome-card::before{content:'';position:absolute;}
 .welcome-emoji{font-size:2.6rem;margin-bottom:12px;display:block;}
 .welcome-name{font-size:clamp(23px,3vw,28px);font-weight:800;letter-spacing:-0.03em;margin-bottom:6px;background:none!important;-webkit-background-clip:initial!important;background-clip:initial!important;-webkit-text-fill-color:#f5f6fc!important;color:#f5f6fc;line-height:1.1;}
 .welcome-time{font-size:12.5px;color:var(--muted);margin-bottom:22px;}
 .welcome-msg{background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r-md);padding:16px 18px;margin-bottom:14px;font-size:14.5px;font-weight:600;line-height:1.5;color:var(--text);}
 /* the morning brief inside the welcome modal */
-#welcome-brief{margin-bottom:18px;text-align:left;}
+#welcome-brief{margin-bottom:16px;text-align:left;
+  display:grid;grid-template-columns:1fr 1fr;gap:0 26px;align-items:start;}
+/* everything that is not a KPI runs the full width, so the KPIs flow two-up and
+   the brief is half as tall without losing a single number. */
+#welcome-brief > .wb-line,#welcome-brief > .wb-r,#welcome-brief > .wb-focus,
+#welcome-brief > .wb-wait,#welcome-brief > .wb-sec{grid-column:1/-1;}
+#welcome-brief .wb-sec{font-size:10.5px;font-weight:800;letter-spacing:.9px;
+  text-transform:uppercase;color:var(--muted-2);margin:12px 0 2px;
+  padding-bottom:5px;border-bottom:1px solid var(--line-2);}
+#welcome-brief .wb-sec:first-of-type{margin-top:4px;}
+@media (max-width:820px){ #welcome-brief{grid-template-columns:1fr;} }
 #welcome-brief .wb-wait{font-size:11.5px;color:var(--muted-2);text-align:center;padding:6px 0;}
 #welcome-brief .wb-line{font-size:13px;font-weight:800;color:#3ac478;text-align:center;margin-bottom:10px;}
 #welcome-brief .wb-line.warn{color:#ffb830;}  /* a warning must not wear the success colour */
@@ -2525,6 +2543,7 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 #welcome-brief .wb-k{display:grid;grid-template-columns:76px auto 1fr;grid-template-rows:auto auto;
   gap:2px 10px;align-items:baseline;padding:9px 4px;border-bottom:1px solid var(--line);}
 #welcome-brief .wb-k-l{grid-column:1;color:var(--muted);font-weight:700;font-size:12.5px;}
+@media (min-width:821px){ #welcome-brief .wb-k{grid-template-columns:92px auto 1fr;} }
 #welcome-brief .wb-k-v{grid-column:2;font-size:19px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1;}
 #welcome-brief .wb-k-t{grid-column:3;color:var(--muted-2);font-size:11px;}
 #welcome-brief .wb-k-bar{grid-column:2/-1;grid-row:2;height:4px;border-radius:3px;background:rgba(255,255,255,.07);overflow:hidden;}
@@ -4149,6 +4168,11 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 
 /* Destinations carry the SAME colour as the person, everywhere in the app, so the
    button you press and the tile it produces are visibly the same thing. */
+.dup-tag.dup-ok{background:rgba(34,211,154,.16);color:#22d39a;border:1px solid rgba(34,211,154,.45);}
+.ld-band{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.4px;
+  padding:3px 8px;border-radius:20px;text-transform:uppercase;white-space:nowrap;
+  color:var(--bc);background:color-mix(in srgb,var(--bc) 15%,transparent);
+  border:1px solid color-mix(in srgb,var(--bc) 42%,transparent);}
 .sbr-route2{display:grid;grid-template-columns:1fr 1fr 1fr 38px;gap:5px;}
 .sbr-go2{height:34px;border-radius:9px;font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;
   border:1px solid var(--line-2);background:rgba(255,255,255,.05);color:var(--muted);transition:all .12s;
@@ -5071,6 +5095,21 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
         <div class="stat-top"><div class="stat-label">Keepa leads</div><span class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg></span></div>
         <div class="stat-val " id="stat-keepawk">0</div>
         <div class="kpi-extra" id="kpi-keepawk-extra"></div>
+      </div>
+      <div class="stat-card " data-kpi="over100" style="--k:#22d39a;">
+        <div class="stat-top"><div class="stat-label">&pound;100+ leads</div><span class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16M7 19V9M12 19V5M17 19v-7"/></svg></span></div>
+        <div class="stat-val " id="stat-over100">0</div>
+        <div class="kpi-extra" id="kpi-over100-extra"></div>
+      </div>
+      <div class="stat-card " data-kpi="premium" style="--k:#ffb02e;">
+        <div class="stat-top"><div class="stat-label">Premium &pound;200-500</div><span class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.9 6.3 6.8.8-5 4.6 1.3 6.8L12 17.3 6 20.5l1.3-6.8-5-4.6 6.8-.8z"/></svg></span></div>
+        <div class="stat-val " id="stat-premium">0</div>
+        <div class="kpi-extra" id="kpi-premium-extra"></div>
+      </div>
+      <div class="stat-card " data-kpi="flagship" style="--k:#a78bfa;">
+        <div class="stat-top"><div class="stat-label">Flagship &pound;500+</div><span class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4l14 4-14 4"/></svg></span></div>
+        <div class="stat-val " id="stat-flagship">0</div>
+        <div class="kpi-extra" id="kpi-flagship-extra"></div>
       </div>
       <div class="stat-card " data-kpi="thcwk" style="--k:#a78bfa;">
         <div class="stat-top"><div class="stat-label">THC discord</div><span class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.2L4 21l1.9-5A8 8 0 1 1 21 12z"/></svg></span></div>
@@ -6476,7 +6515,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v45.5';
+var APP_VERSION='v46.2';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -6572,7 +6611,7 @@ function getAppSettings(){
     ['hoursMera','hoursSuz'].forEach(function(k){ var n=parseFloat(saved[k]); if(!isNaN(n)&&n>0) settings[k]=n; });
     // min leads/week were saved but never copied back here, so they snapped back to 60 on every read
     ['minLeadsMera','minLeadsSuz','keepaWkMera','keepaWkSuz','thcWkMera','thcWkSuz',
-     'keepaAddWkMera','keepaAddWkSuz']
+     'keepaAddWkMera','keepaAddWkSuz','over100MoMera','over100MoSuz','premiumMoMera','premiumMoSuz','flagshipMoMera','flagshipMoSuz']
       .forEach(function(k){ var n=parseInt(saved[k]); if(!isNaN(n)&&n>=0) settings[k]=n; });
     // who's on which pay run — same trap: written by the settings card, dropped on read
     if(Array.isArray(saved.payPeople)) settings.payPeople=saved.payPeople;
@@ -10104,12 +10143,36 @@ function vaLeadDate(l){
   return isNaN(d.getTime())?null:d;
 }
 /* One tally for any slice of leads. */
+/* ── SALE-PRICE BANDS ─────────────────────────────────────────────────────────
+   Jack's split, on the AMAZON SALE price (not what she pays for it). His working
+   names were "something ticket" and "super super high ticket" — renamed to things
+   that fit on a chip and escalate in an obvious order. Edit the labels here; the
+   thresholds are what the KPIs count, so change those with more care. */
+var LEAD_BANDS=[
+  {k:'low',  max:15,       label:'Low',      col:'#6b7488'},
+  {k:'mid',  max:60,       label:'Mid',      col:'#7c9cff'},
+  {k:'upper',max:100,      label:'Upper',    col:'#39d0ee'},
+  {k:'high', max:200,      label:'High',     col:'#22d39a'},
+  {k:'prem', max:500,      label:'Premium',  col:'#ffb02e'},
+  {k:'flag', max:Infinity, label:'Flagship', col:'#a78bfa'}
+];
+function leadBand(l){
+  var v=parseFloat(l&&l.sell)||0;
+  for(var i=0;i<LEAD_BANDS.length;i++) if(v<LEAD_BANDS[i].max) return LEAD_BANDS[i];
+  return LEAD_BANDS[LEAD_BANDS.length-1];
+}
+function leadBandChip(l){
+  var v=parseFloat(l&&l.sell)||0; if(!v) return '';
+  var b=leadBand(l);
+  return '<span class="ld-band" style="--bc:'+b.col+'" title="Sells for £'+v.toFixed(2)
+    +' — '+b.label+' ticket">'+b.label+'</span>';
+}
 function vaTally(list){
   /* n = rows on the sheet; uniq = distinct PRODUCTS. Jack twice challenged "138
      leads in 13 days" and he was right to: 34 of Mera's August rows were re-sends
      of an ASIN she had already sent that month (one of them four times). The
      headline the VA sees is uniq — you cannot find the same product twice. */
-  var t={n:list.length,uniq:0,bought:0,good:0,rejected:0,pending:0,spend:0,oa:0,keepa:0,keepaBought:0,thc:0};
+  var t={n:list.length,uniq:0,bought:0,good:0,rejected:0,pending:0,spend:0,oa:0,keepa:0,keepaBought:0,thc:0,over100:0,over200:0,premium:0,flagship:0};
   var seen={};
   list.forEach(function(l){
     var a=''; try{ a=leadUseAsin(l); }catch(e){}
@@ -10134,6 +10197,17 @@ function vaTally(list){
        a lead lost to spelling would read as a missed target she actually hit. */
     var _sd=String(l.src||'').toLowerCase();
     if(_sd.indexOf('thc')>=0||_sd.indexOf('discord')>=0) t.thc++;
+    /* CUMULATIVE by design — "over £100" means over £100, so a £250 find counts
+       toward both. Counting them in exclusive slices would mean a great £250 lead
+       failed the £100 target, which is not what anyone means by it. */
+    var _sp=parseFloat(l.sell)||0;
+    if(_sp>=100) t.over100++;
+    if(_sp>=200) t.over200++;
+    /* premium/flagship are EXCLUSIVE bands, not cumulative — Jack targets them
+       separately (75 premium + 4 flagship a month), so a £600 find is a flagship
+       and must not also fill the premium quota. */
+    if(_sp>=200&&_sp<500) t.premium++;
+    if(_sp>=500) t.flagship++;
   });
   return t;
 }
@@ -10267,6 +10341,17 @@ function vaTargets(va){
     /* set 20/08/2026: 10 Keepa-tracker leads and 5 THC-discord leads a week, each VA */
     keepaWk: num(isM?s.keepaWkMera:s.keepaWkSuz, 10),
     keepaAddWk: num(isM?s.keepaAddWkMera:s.keepaAddWkSuz, 10),
+    /* Jack set Mera 20/08: 40 x £100+ a week, 75 premium and 4 flagship a month.
+       Suz's are her own measured median — she runs A2A on faster, lower-ticket
+       stock, so the same numbers would be the wrong shape of target for her. */
+    /* Set by Jack 24/08 off August actuals, for September. All three ticket bands
+       are MONTHLY — £100+ moved from weekly at the same time, so it uses new keys
+       (over100Mo*) rather than the old weekly ones: a stale 40 read back as a
+       monthly target would show 168 as 420% and look like a smashed goal.
+       Mera runs the higher-ticket book, Suz the faster A2A one, hence the split. */
+    over100Mo:  num(isM?s.over100MoMera:s.over100MoSuz,   isM?150:50),
+    premiumMo:  num(isM?s.premiumMoMera:s.premiumMoSuz,   isM?80:35),
+    flagshipMo: num(isM?s.flagshipMoMera:s.flagshipMoSuz, isM?35:6),
     thcWk:  num(isM?s.thcWkMera:s.thcWkSuz, 5)
   };
 }
@@ -14496,6 +14581,12 @@ function mgr_renderSettings(){
         +'<div class="settings-field"><label class="settings-label">Suz &mdash; hours / week</label><input class="settings-input" id="setting-hours-suz" type="number" min="1" step="0.5" value="'+(settings.hoursSuz||settings.weeklyHoursTarget||40)+'"></div>'
         +'<div class="settings-field"><label class="settings-label">Mera &mdash; min leads / week</label><input class="settings-input" id="setting-minwk-mera" type="number" min="0" value="'+(settings.minLeadsMera!==undefined?settings.minLeadsMera:60)+'"></div>'
         +'<div class="settings-field"><label class="settings-label">Suz &mdash; min leads / week</label><input class="settings-input" id="setting-minwk-suz" type="number" min="0" value="'+(settings.minLeadsSuz!==undefined?settings.minLeadsSuz:60)+'"></div>'
+        +'<div class="settings-field"><label class="settings-label">Mera &mdash; &pound;100+ leads / MONTH</label><input class="settings-input" id="setting-o100-mera" type="number" min="0" value="'+(settings.over100MoMera!==undefined?settings.over100MoMera:150)+'"></div>'
+        +'<div class="settings-field"><label class="settings-label">Suz &mdash; &pound;100+ leads / MONTH</label><input class="settings-input" id="setting-o100-suz" type="number" min="0" value="'+(settings.over100MoSuz!==undefined?settings.over100MoSuz:50)+'"></div>'
+        +'<div class="settings-field"><label class="settings-label">Mera &mdash; Premium &pound;200-500 / MONTH</label><input class="settings-input" id="setting-prem-mera" type="number" min="0" value="'+(settings.premiumMoMera!==undefined?settings.premiumMoMera:75)+'"></div>'
+        +'<div class="settings-field"><label class="settings-label">Suz &mdash; Premium &pound;200-500 / MONTH</label><input class="settings-input" id="setting-prem-suz" type="number" min="0" value="'+(settings.premiumMoSuz!==undefined?settings.premiumMoSuz:35)+'"></div>'
+        +'<div class="settings-field"><label class="settings-label">Mera &mdash; Flagship &pound;500+ / MONTH</label><input class="settings-input" id="setting-flag-mera" type="number" min="0" value="'+(settings.flagshipMoMera!==undefined?settings.flagshipMoMera:4)+'"></div>'
+        +'<div class="settings-field"><label class="settings-label">Suz &mdash; Flagship &pound;500+ / MONTH</label><input class="settings-input" id="setting-flag-suz" type="number" min="0" value="'+(settings.flagshipMoSuz!==undefined?settings.flagshipMoSuz:5)+'"></div>'
         +'<div class="settings-field"><label class="settings-label">Mera &mdash; Keepa trackers ADDED / wk</label><input class="settings-input" id="setting-keepaadd-mera" type="number" min="0" value="'+(settings.keepaAddWkMera!==undefined?settings.keepaAddWkMera:10)+'"></div>'
         +'<div class="settings-field"><label class="settings-label">Suz &mdash; Keepa trackers ADDED / wk</label><input class="settings-input" id="setting-keepaadd-suz" type="number" min="0" value="'+(settings.keepaAddWkSuz!==undefined?settings.keepaAddWkSuz:10)+'"></div>'
         +'<div class="settings-field"><label class="settings-label">Mera &mdash; Keepa tracker leads / wk</label><input class="settings-input" id="setting-keepawk-mera" type="number" min="0" value="'+(settings.keepaWkMera!==undefined?settings.keepaWkMera:10)+'"></div>'
@@ -14740,6 +14831,9 @@ function mgr_saveSettings(){
   [['setting-minwk-mera','minLeadsMera'],['setting-minwk-suz','minLeadsSuz'],
    ['setting-keepawk-mera','keepaWkMera'],['setting-keepawk-suz','keepaWkSuz'],
    ['setting-keepaadd-mera','keepaAddWkMera'],['setting-keepaadd-suz','keepaAddWkSuz'],
+   ['setting-o100-mera','over100MoMera'],['setting-o100-suz','over100MoSuz'],
+   ['setting-prem-mera','premiumMoMera'],['setting-prem-suz','premiumMoSuz'],
+   ['setting-flag-mera','flagshipMoMera'],['setting-flag-suz','flagshipMoSuz'],
    ['setting-thcwk-mera','thcWkMera'],['setting-thcwk-suz','thcWkSuz']].forEach(function(pp){
     var el=document.getElementById(pp[0]); if(el){ var n=parseInt(el.value); if(!isNaN(n)&&n>=0) settings[pp[1]]=n; }
   });
@@ -15536,6 +15630,7 @@ function vaBriefFill(va){
       }
       var out='';
       if(line) out+='<div class="wb-line'+lineCls+'">'+line+'</div>';
+      out+='<div class="wb-sec">This week</div>';
       var ls=window._vaLastShift;
       if(h){
         var hT=T.hours;
@@ -15554,6 +15649,18 @@ function vaBriefFill(va){
                p.mtd.thc?('month '+p.mtd.thc):'');
       out+=kpi('Normal OA', p.week.oa, (p.week.oa/oaWeekTarget)*100, 'of '+oaWeekTarget+' this week',
                (p.mtd.oa||p.lastMonth.oa)?('month '+p.mtd.oa+(p.lastMonth.oa?' vs '+p.lastMonth.oa+' in '+p.lastMonthName.slice(0,3)+(p.mtd.oa<p.lastMonth.oa?' ▼':' ▲'):'')):'');
+      /* The three ticket targets are MONTHLY and were sitting in the middle of the
+         weekly ones, so the list alternated "this week / this month" and neither
+         read as a set. Own section, at the end, where the month is the question. */
+      var _moDone=(p.mtd.over100>=T.over100Mo?1:0)+(p.mtd.premium>=T.premiumMo?1:0)
+                 +(p.mtd.flagship>=T.flagshipMo?1:0);
+      out+='<div class="wb-sec">'+escHtml(p.monthName)+' so far &mdash; '+_moDone+' of 3 hit</div>';
+      out+=kpi('£100+', p.mtd.over100, (p.mtd.over100/T.over100Mo)*100,
+               'of '+T.over100Mo+' &middot; sale price');
+      out+=kpi('Premium', p.mtd.premium, (p.mtd.premium/T.premiumMo)*100,
+               'of '+T.premiumMo+' &middot; £200-500');
+      out+=kpi('Flagship', p.mtd.flagship, (p.mtd.flagship/T.flagshipMo)*100,
+               'of '+T.flagshipMo+' &middot; £500+');
       out+='<div class="wb-r"><span>Bought</span>'
         +seg(p.week.bought,'#38bdf8','this week')
         +(p.week.spend>0?seg('£'+Math.round(p.week.spend).toLocaleString(),'#c084fc','spent'):'')
@@ -15759,7 +15866,7 @@ function showToast(msg,isError) {
   var ACCENTS=[['violet','#7c6cff'],['blue','#4d82f3'],['emerald','#20c997'],['amber','#eab24a'],['rose','#f2647f']];
   // 'keepa' was a switch for a card that doesn't exist; 'month' is a real card that had no
   // switch — so one toggle did nothing and one card could never be hidden.
-  var KPI_KEYS=[['leads','Leads today'],['tasks','Tasks done'],['hrs','Hours worked'],['lph','Leads / hr'],['week','Week leads'],['streak','Submit streak'],['month','Leads this month'],['spend','Spend this month'],['keepaadd','Trackers added'],['keepawk','Keepa leads'],['thcwk','THC discord'],['break','Break time']];
+  var KPI_KEYS=[['leads','Leads today'],['tasks','Tasks done'],['hrs','Hours worked'],['lph','Leads / hr'],['week','Week leads'],['streak','Submit streak'],['month','Leads this month'],['spend','Spend this month'],['keepaadd','Trackers added'],['keepawk','Keepa leads'],['over100','£100+ leads (mo)'],['premium','Premium £200-500 (mo)'],['flagship','Flagship £500+ (mo)'],['thcwk','THC discord'],['break','Break time']];
   var DEFAULTS={accent:'violet',density:'comfortable',kpi:{leads:1,tasks:1,hrs:1,lph:1,week:1,streak:1,month:1,break:1},dailyTarget:12,weeklyTarget:60};
 
   function loadPrefs(){
@@ -15955,6 +16062,34 @@ function showToast(msg,isError) {
             var _ka3=((window._vaHours&&window._vaHours.keepaAdded)||0)
               +((window.state&&!state.submitted&&typeof keepaGetValues==='function')?(keepaGetValues().count||0):0);
             _paintWk(document.getElementById('stat-keepaadd'),'kpi-keepaadd-extra',_ka3,_T3.keepaAddWk);
+            /* sale-price bands — cumulative, same as vaTally */
+            /* all three ticket KPIs are monthly now — counted below with premium
+               and flagship, from the 1st. */
+            /* premium and flagship are MONTHLY targets, so they count from the 1st,
+               not from Monday — a monthly quota shown against a weekly count would
+               read as failing for the first three weeks of every month. */
+            var _m1=new Date(); _m1=new Date(_m1.getFullYear(),_m1.getMonth(),1);
+            var _prem=0,_flag=0,_o100=0;
+            (window.leads||[]).forEach(function(l){
+              if(l.va!==_code3) return;
+              var pp=String(l.date||'').split('/'); if(pp.length!==3) return;
+              var dd=new Date(+pp[2],+pp[1]-1,+pp[0]); if(!(dd>=_m1)) return;
+              var sp=parseFloat(l.sell)||0;
+              if(sp>=100) _o100++;
+              if(sp>=200&&sp<500) _prem++;
+              if(sp>=500) _flag++;
+            });
+            var _paintMo=function(cell,exId,count,target){
+              if(!cell) return;
+              var pct=target>0?count/target*100:0, col=vaKpiCol(pct);
+              cell.textContent=count; cell.style.color=col;
+              var ex=document.getElementById(exId);
+              if(ex) ex.innerHTML='<div class="kpi-prog"><i style="width:'+Math.min(100,Math.round(pct))+'%;background:'+col+'"></i></div>'
+                +'<div class="kpi-meta"><span><b>'+count+'</b> / '+target+' this month</span><span>'+Math.round(pct)+'%</span></div>';
+            };
+            _paintMo(document.getElementById('stat-over100'),'kpi-over100-extra',_o100,_T3.over100Mo);
+            _paintMo(document.getElementById('stat-premium'),'kpi-premium-extra',_prem,_T3.premiumMo);
+            _paintMo(document.getElementById('stat-flagship'),'kpi-flagship-extra',_flag,_T3.flagshipMo);
           }
         }
       }catch(_){}
@@ -17233,7 +17368,62 @@ function eodLeadCheckHTML(va){
 }
 function eodRenderLeadCheck(){
   var el=document.getElementById('eod-leadcheck');
-  if(el) el.innerHTML=eodLeadCheckHTML(state.currentVA==='Test'?state._previewAs:state.currentVA);
+  var va=(state.currentVA==='Test'?state._previewAs:state.currentVA);
+  if(el) el.innerHTML=eodLeadCheckHTML(va)+eodDupCheckHTML(va);
+}
+/* ── DUPS SHE STILL HAS TO DEAL WITH ──────────────────────────────────────────
+   Jack's rule: a repeat is only allowed if there is a reason — different
+   supplier, cheaper, or something typed in VA NOTE. Same supplier at the same
+   or a higher price with no note is not a lead, it is a row to delete.
+   Measured before this existed: 104 such rows across two months, 64 Mera and
+   40 Suz, and six of them sent the SAME DAY within a few rows of each other.
+   It is her job to clear them, so she gets the list at the end of her own
+   shift with the row numbers — not Jack, at review, a week later. */
+function eodDupList(va){
+  var code=(va==='Mera')?'VA M':(va==='Suz')?'VA S':null;
+  if(!code) return [];
+  var L=(window.leads||[]).filter(function(l){ return l.va===code; });
+  function k(l){ try{ return asinKey(l); }catch(e){ return String(l.asin||'').toUpperCase(); } }
+  function dt(l){ var p=String(l.date||'').split('/');
+    return p.length===3?new Date(+p[2],+p[1]-1,+p[0]).getTime():0; }
+  function sup(l){ return String(l.sup||'').trim().toLowerCase().replace(/\/+$/,''); }
+  var by={};
+  L.forEach(function(l){ var kk=k(l); if(kk) (by[kk]=by[kk]||[]).push(l); });
+  var out=[];
+  Object.keys(by).forEach(function(kk){
+    var g=by[kk]; if(g.length<2) return;
+    g.sort(function(a,b){ return dt(a)-dt(b); });
+    for(var i=1;i<g.length;i++){
+      var cur=g[i], prev=g[i-1];
+      if(String(cur.vanote||'').trim()) continue;                 // she gave a reason
+      if(sup(prev)!==sup(cur)) continue;                          // different supplier — fine
+      var pb=parseFloat(prev.buy)||0, cb=parseFloat(cur.buy)||0;
+      if(!pb||!cb) continue;
+      if(cb < pb*0.98) continue;                                  // cheaper — fine
+      out.push({ row:cur.sheetRow, tab:cur.sheetTab, firstRow:prev.sheetRow,
+                 title:String(cur.title||'(untitled)').slice(0,46),
+                 price:cb, was:pb });
+    }
+  });
+  out.sort(function(a,b){ return (b.row||0)-(a.row||0); });
+  return out;
+}
+function eodDupCheckHTML(va){
+  var d=eodDupList(va);
+  if(!d.length) return '';
+  var rows=d.slice(0,6).map(function(x){
+    return '<li><b class="eod-lc-row">row '+(x.row||'?')+'</b>'+escHtml(x.title)
+      +' <span style="color:var(--muted-2)">&mdash; already row '+(x.firstRow||'?')
+      +' at £'+x.was.toFixed(2)+'</span></li>';
+  }).join('');
+  var more=d.length>6?'<div class="eod-lc-b" style="margin-top:6px">&hellip;and '+(d.length-6)+' more.</div>':'';
+  return '<div class="eod-lc warn">'
+    +'<div class="eod-lc-h">♻️ '+d.length+' duplicate lead'+(d.length===1?'':'s')+' to sort before you finish</div>'
+    +'<div class="eod-lc-b">You have sent these before, <b>same supplier, same or higher price</b>. '
+    +'For each one: either type WHY you are sending it again in <b>VA NOTE</b> '
+    +'(cheaper, back in stock, different offer), or <b>delete the row</b>.</div>'
+    +'<div class="eod-lc-l"><ul>'+rows+'</ul></div>'+more
+    +'</div>';
 }
 function payMoney(n){
   n=+n||0;
@@ -19295,13 +19485,42 @@ function dupeOf(l){
   if(!_dupeMap) buildDupeMap();
   return _dupeMap[l.id]||null;
 }
+/* ── WAS THERE A REASON TO SEND IT AGAIN? ─────────────────────────────────────
+   Jack's rule: a repeat is only allowed if something changed — back on offer, or
+   cheaper than last time. Same supplier at the same price again should never be
+   sent. The badge used to say only "DUPE", which flattened a justified re-send
+   (price dropped £57) and pure waste (identical, 23 days later) into one word.
+   Measured across the board: of 306 repeats, 81 were genuinely cheaper and 225
+   had no reason at all. Now the badge says which, so a glance is enough. */
+function dupePriceMove(l){
+  var d=dupeOf(l); if(!d) return null;
+  var prev=(window.leads||[]).find(function(x){ return x.id===d.otherId; });
+  if(!prev) return null;
+  var pb=parseFloat(prev.buy)||0, cb=parseFloat(l.buy)||0;
+  if(!pb||!cb) return null;
+  var diff=cb-pb, pct=diff/pb;
+  return { prev:pb, now:cb, diff:diff, pct:pct,
+           cheaper:pct<=-0.02, same:Math.abs(pct)<0.02, dearer:pct>=0.02 };
+}
 function dupeBadge(l){
   var d=dupeOf(l); if(!d) return '';
   var ago = d.days===0 ? 'the same day' : (d.days===1 ? 'yesterday' : d.days+' days earlier');
-  if(d.sameVA){
-    return '<span class="dup-tag dup-same" title="'+escHtml(vaDisp(l.va))+' already found this '+ago+'">DUPE</span>';
+  var m=dupePriceMove(l);
+  var who=d.sameVA?escHtml(vaDisp(l.va)):escHtml(vaDisp(d.otherVA));
+  if(m&&m.cheaper){
+    /* a real reason — say so in the badge's own colour so it stops reading as a telling-off */
+    return '<span class="dup-tag dup-ok" title="'+who+' sent this '+ago+' at £'+m.prev.toFixed(2)
+      +'. It is £'+Math.abs(m.diff).toFixed(2)+' cheaper now — that is a valid re-send.">'
+      +'↓ £'+Math.abs(m.diff).toFixed(2)+' CHEAPER</span>';
   }
-  return '<span class="dup-tag dup-cross" title="'+escHtml(vaDisp(d.otherVA))+' found this '+ago+' too">BOTH VAs</span>';
+  var why = m ? (m.dearer ? ' and it is £'+m.diff.toFixed(2)+' DEARER now — no reason to re-send'
+                          : ' at the same price — no reason to re-send')
+              : '';
+  if(d.sameVA){
+    return '<span class="dup-tag dup-same" title="'+who+' already sent this '+ago+why+'">'
+      +(m&&!m.cheaper?'DUPE · no reason':'DUPE')+'</span>';
+  }
+  return '<span class="dup-tag dup-cross" title="'+who+' sent this '+ago+why+'">BOTH VAs</span>';
 }
 function dupeOther(l){
   if(!l) return null;
@@ -21837,12 +22056,47 @@ function setL(id,v){
   if(l){l.islead=v;l.seen=true;markSeen(l._sid);
     if(v){db_leadPatch(l,{islead:'LEAD'});}
     else{l.status='passed';var patch={islead:'NOT LEAD',status:'NOT'};if(l.notes&&l.notes.trim())patch.jack_comment=l.notes.trim();db_leadPatch(l,patch);}}
+  var _twL=l?(v ? twinApply(l,{islead:'LEAD'},{islead:true})
+                : twinApply(l,{islead:'NOT LEAD',status:'NOT'},{islead:false,status:'passed'})):0;
   try{ if(l) logDecision(l); }catch(e){}   // log at DECISION time — advanceAfter only fires if he finishes the note step
-  ldToast(v?'LEAD ✓ — writing to sheet':'NOT LEAD + NOT BOUGHT ✕ — both written to sheet');
+  ldToast((v?'LEAD ✓ — writing to sheet':'NOT LEAD + NOT BOUGHT ✕ — both written to sheet')+twinToast(_twL));
   // NOT-a-lead is a finished decision → let it leave the list; LEAD stays open so
   // he can pick BOUGHT/ATB next without losing his place.
   if(v){ try{selectLead(id,true);}catch(e){renderList();} }
   else { window._noteFor={id:id}; try{selectLead(id,true);}catch(e){renderList();} nbFocus(); afterDecision(id); }
+}
+/* ── KEEPING THE PROMISE THE MERGED ROW MAKES ─────────────────────────────────
+   ldMergeTwins() hides N-1 identical copies behind one row and the panel states
+   "Deciding it here decides all N." It did not. setSt/setL only ever wrote the
+   VISIBLE lead, so the hidden copies stayed undecided — and because the merge
+   aborts as soon as ANY copy is decided, they popped straight back out as separate
+   undecided rows. The feature that exists to remove duplicates was manufacturing
+   them. Live proof: B0DP56SQH4, three identical Argos copies at £37.59 — Suz's went
+   BOUGHT, Mera's two are still sitting there as New.
+   Twins are same ASIN + same supplier + same buy price, so one decision is the right
+   answer for all of them. Never overwrite a copy that already has its own decision. */
+function twinApply(l, patch, fields){
+  try{
+    var ids=(l&&l._twinIds)||[]; if(!ids.length) return 0;
+    var done=0;
+    ids.forEach(function(id){
+      var t=(window.leads||[]).find(function(x){ return x.id===id; });
+      if(!t || t===l) return;
+      if(t.status || t.islead!==null) return;            // already decided on its own — leave it
+      for(var k in fields) t[k]=fields[k];
+      t.seen=true;
+      try{ markSeen(t._sid); }catch(e){}
+      try{ db_leadPatch(t, patch); }catch(e){}
+      try{ logDecision(t); }catch(e){}
+      done++;
+    });
+    if(done) try{ dupeMapDirty(); }catch(e){}
+    return done;
+  }catch(e){ return 0; }
+}
+function twinToast(nDone){
+  if(!nDone) return '';
+  return ' · applied to '+nDone+' identical cop'+(nDone===1?'y':'ies');
 }
 function setSt(id,st){
   const l=leads.find(x=>x.id===id);
@@ -21855,12 +22109,13 @@ function setSt(id,st){
   if(st==='passed'&&l._sc&&l._sc.total>=8){ setTimeout(function(){ldToast('You passed on a '+l._sc.total+'/10 — Auto-tune can learn from this too');},900); }
   try{ logDecision(l); }catch(e){}   // log at DECISION time — advanceAfter only fires if he finishes the note step
   try{ dupeMirror(id,st); }catch(e){}   // if he armed "both", the other VA's copy follows
+  var _tw=twinApply(l,{status:sheetStatusOut(st),islead:'LEAD'},{status:st,islead:true});
   dupeMapDirty();               // a decision can change who counts as a duplicate
   window._noteFor={id:id};      // set BEFORE painting so the qty/note panel is there first time
   _pendingLeave=id;             // hold it on screen until he moves to another lead
   try{ afterDecision(id); }catch(e){ try{ renderList(); }catch(_){} }
 }
-ldToast((st==='bought'?'BOUGHT ✓':st==='passed'?'Marked NOT':st==='waiting'?'Marked WAITING':'ATB ✓')+' — writing to sheet');
+ldToast((st==='bought'?'BOUGHT ✓':st==='passed'?'Marked NOT':st==='waiting'?'Marked WAITING':'ATB ✓')+' — writing to sheet'+twinToast(typeof _tw!=='undefined'?_tw:0));
 try{ nbFocus(); }catch(e){}}
 function undoA(id){window._noteFor=null;const l=leads.find(x=>x.id===id);if(l){l.status=null;l.islead=null;l.seen=true;db_leadPatch(l,{status:null,islead:null});}renderList();}
 function saveN(id){
