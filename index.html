@@ -1349,6 +1349,19 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .tk-sec-h.clickable{cursor:pointer;}
 .tk-sec-h.clickable:hover .tk-sec-t{color:var(--text);}
 .tk-caret{font-size:10px;color:var(--muted-2);}
+.login-restore{display:flex;flex-direction:column;align-items:center;gap:7px;max-width:520px;margin:0 auto 26px;padding:16px 20px;border-radius:14px;text-align:center;
+  background:linear-gradient(180deg,rgba(24,200,240,.14),rgba(24,200,240,.06));border:1px solid rgba(24,200,240,.45);}
+.login-restore b{font-size:15px;color:var(--text,#e8ecf5);}
+.login-restore span{font-size:12px;color:var(--muted-2,#8b93a8);line-height:1.45;}
+.login-restore button{margin-top:5px;padding:11px 22px;border:none;border-radius:10px;cursor:pointer;
+  font-family:var(--font,inherit);font-size:14px;font-weight:800;color:#04141a;background:var(--cyan,#18c8f0);}
+.sbq-ago em{display:block;font-style:normal;font-size:8.5px;font-weight:700;letter-spacing:.3px;opacity:.62;margin-top:1px;}
+.sbq-ago em.sbq-binned{color:var(--amber,#ffb830);opacity:.85;}
+.jbcard-reopen{display:inline-block;margin-left:7px;font-size:9.5px;font-weight:900;letter-spacing:.5px;color:#04141a;background:var(--cyan,#18c8f0);border-radius:20px;padding:3px 9px;vertical-align:middle;animation:reopulse 1.6s ease-in-out 3;}
+@keyframes reopulse{0%,100%{box-shadow:0 0 0 0 rgba(24,200,240,.55);}50%{box-shadow:0 0 0 7px rgba(24,200,240,0);}}
+.src-floor{display:inline-block;margin-left:7px;font-size:9.5px;font-weight:900;letter-spacing:.4px;color:#04141a;background:var(--amber,#ffb830);border-radius:20px;padding:3px 9px;vertical-align:middle;}
+.src-floor.hit{background:var(--green,#3ac478);}
+.sb-new{display:inline-flex;align-items:center;gap:5px;margin-left:10px;font-size:10.5px;font-weight:900;color:#04141a;background:var(--cyan,#18c8f0);border-radius:20px;padding:3px 10px;cursor:pointer;animation:reopulse 1.6s ease-in-out infinite;}
 .tk-sec-t{font-size:11.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--ph);}
 .tk-sec-n{font-family:var(--font-mono);font-size:10.5px;font-weight:800;color:var(--ph);
   background:color-mix(in srgb,var(--ph) 13%,transparent);border:1px solid color-mix(in srgb,var(--ph) 32%,transparent);
@@ -5173,7 +5186,12 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
     <div id="extra-tasks"></div>
     <button class="add-task-btn" onclick="addExtraTask()"><span>+</span> Add a task</button>
 
-    <div class="sf-section" id="storefront-section">
+    <!-- Jack, 31/08: "storefront is here 2 times". This manual logger predates the
+         storefront batch module and was used in 0 of 118 shifts — storefront work now
+         arrives as batches with their own timer/leads/Done. Hidden, not deleted: the
+         read side (sbManualIndex) still counts anything historical, and one attribute
+         brings it back if ever wanted. -->
+    <div class="sf-section" id="storefront-section" style="display:none;">
       <div class="sf-head"><span class="sf-title">&#127978; Storefronts</span><span class="sf-sub">Log each storefront you scan &mdash; start the timer, add leads found. Jack sees which ones convert.</span></div>
       <div id="storefront-list"></div>
       <button class="sf-add" onclick="sfAdd()"><span>+</span> Add storefront</button>
@@ -5323,7 +5341,7 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
       <div class="topbar-title" id="view-title">New Leads</div>
       <span class="tt-count" id="tt-count"></span>
       <div class="filters">
-        <select id="f-date" onchange="fDateChange()"><option value="sheet" selected>Whatever months I&rsquo;ve ticked</option><option value="month">This calendar month</option><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="thisweek">This week (Mon–now)</option><option value="lastweek">Last week (Mon–Sun)</option><option value="48h">Last 48h</option><option value="7d">Last 7 days</option><option value="14d">Last 14 days</option><option value="day">Pick a day…</option><option value="all">All dates</option></select>
+        <select id="f-date" onchange="fDateChange()"><option value="sheet" selected>Whatever months I&rsquo;ve ticked</option><option value="month">This calendar month</option><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="thisweek">This week (Mon–now)</option><option value="lastweek">Last week (Mon–Sun)</option><option value="48h">Last 48h</option><option value="7d">Last 7 days</option><option value="14d">Last 14 days</option><option value="30d">Last 30 days</option><option value="day">Pick a day…</option><option value="all">All dates</option></select>
         <input type="date" id="f-day" style="display:none" onchange="fDaySet(this.value)">
         <!-- These three used to be hand-typed lists and were badly out of date: the data holds
              70 stores, 21 categories and 14 source methods. Two category options
@@ -5694,6 +5712,26 @@ function staleBuildNudge(){
     }).catch(function(){});
   }catch(e){}
 }
+/* On load: if this device holds a live shift, go straight back into it. Runs
+   before anything can render the login screen. See liveLocalShift() above. */
+(function(){
+  function autoResume(){
+    try{
+      if(typeof IS_PREVIEW!=='undefined'&&IS_PREVIEW) return;
+      if(typeof liveLocalShift!=='function'||typeof selectVA!=='function'){ return setTimeout(autoResume,250); }
+      if(window.state&&state.shiftStart) return;              // already in a shift
+      if(/[?&]import=1/.test(location.search)) return;         // Sarah's page
+      var live=liveLocalShift(); if(!live) return;
+      window._autoResumed=live.va;
+      selectVA(live.va);
+      setTimeout(function(){
+        try{ showToast('\u21ba Shift restored automatically \u2014 the page had reloaded'); }catch(e){}
+      },1400);
+    }catch(e){}
+  }
+  if(document.readyState!=='loading') setTimeout(autoResume,260);
+  else document.addEventListener('DOMContentLoaded',function(){ setTimeout(autoResume,260); });
+})();
 if(document.readyState!=='loading') setTimeout(function(){ previewBanner(); liveFromFileBanner(); staleBuildNudge(); },300);
 else document.addEventListener('DOMContentLoaded',function(){ setTimeout(function(){ previewBanner(); liveFromFileBanner(); staleBuildNudge(); },300); });
 /* ══════════ SAVE SAFETY NET ══════════════════════════════════════════════════
@@ -6537,7 +6575,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v47.1';
+var APP_VERSION='v48.2';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -7159,8 +7197,56 @@ function enrichTasksWithPOA(va,tasks){
 }
 
 // ── NAVIGATION ───────────────────────────────────────────
+/* ══ SHE MUST NEVER BE DUMPED BACK ON THE LOGIN SCREEN ══════════════════════
+   31/08, Suz: "sir back to start again 😭 ... i wanted to go to my next filter
+   then IT bring me back to shift start again."
+   The event log settles what happened: NINE separate page loads in one shift
+   (each load stamps a fresh tab id) — 00:39, 01:41, 02:47, 03:07, 03:27, 03:39,
+   06:31, 07:40, 07:58. Her browser is reloading the tab (Chrome discards a
+   background tab under memory pressure; a 1.8MB page in a laptop full of Keepa
+   tabs is a prime candidate). Her shift was never ended and never lost — the
+   timer picks straight up each time (52m → 52m → 62m …). But every reload put
+   her on "Who's starting their shift?", which reads as "my whole shift is gone",
+   and she had to find her own way back. The gaps between loads add up to ~1h 47m
+   of her day spent off the clock.
+   So: if this device is holding a live shift, restore it WITHOUT showing the
+   login screen at all. Only End Shift ends a shift. */
+function liveLocalShift(){
+  try{
+    var best=null;
+    ['Mera','Suz'].forEach(function(va){
+      var d=null; try{ d=localDraft(va); }catch(e){}
+      if(!d || d.submitted) return;
+      if(!(d.elapsedMs>0) && !d.shiftStart) return;
+      var age=Date.now()-(d.savedAt||0);
+      if(age>DRAFT_MAX_AGE_MS) return;
+      if(!best || (d.savedAt||0)>(best.savedAt||0)) best={va:va,draft:d,savedAt:d.savedAt||0};
+    });
+    return best;
+  }catch(e){ return null; }
+}
+/* the login screen must offer the way back too — belt and braces if the
+   auto-restore above ever cannot run (Jack: "if they press login again they can
+   restore her shift as she didn't mean to end it as it was a bug") */
+function loginRestoreBanner(){
+  try{
+    var live=liveLocalShift();
+    var old=document.getElementById('login-restore'); if(old) old.remove();
+    if(!live) return;
+    var m=Math.max(1,Math.round((live.draft.elapsedMs||0)/60000));
+    var t=(m>=60?(Math.floor(m/60)+'h '+(m%60)+'m'):(m+' min'));
+    var host=document.getElementById('login-screen'); if(!host) return;
+    var d=document.createElement('div');
+    d.id='login-restore'; d.className='login-restore';
+    d.innerHTML='<b>'+escHtml(vaDisp(live.va))+", you're still on shift \u2014 "+t+' logged.</b>'
+      +'<span>You were signed out by the page reloading, not by ending your shift. Nothing is lost.</span>'
+      +'<button onclick="selectVA(\''+live.va+'\')">\u21ba Back into my shift</button>';
+    host.insertBefore(d,host.firstChild);
+  }catch(e){}
+}
 function showLogin() {
   document.getElementById('login-screen').style.display = 'flex';
+  try{ loginRestoreBanner(); }catch(e){}
   document.getElementById('mera-setup').style.display = 'none';
   document.getElementById('suz-setup').style.display = 'none';
   document.getElementById('shift-screen').style.display = 'none';
@@ -7210,6 +7296,19 @@ function _openLeads(){
   var lv=document.getElementById('view-leads'); if(lv) lv.classList.add('active');
   updateNavBtn();
   try{ if(typeof renderList==='function') renderList(); }catch(e){}
+}
+/* Open the leads list on the SAME 30 days the dashboard tiles counted. A tile that
+   says 437 and then drops him into a list of 842 is the mismatch that makes him
+   distrust both numbers. */
+function showLeadsWindow(){
+  showLeadsView();
+  var tries=0;
+  (function apply(){
+    var sel=document.getElementById('f-date');
+    var lv=document.getElementById('view-leads');
+    if(!sel||!lv||!lv.classList.contains('active')){ if(++tries<30) setTimeout(apply,120); return; }
+    if(sel.value!=='30d'){ sel.value='30d'; try{ fDateChange(); }catch(e){} }
+  })();
 }
 function showLeadsView(){
   var lv=document.getElementById('view-leads');
@@ -8275,7 +8374,11 @@ function sbVaRowHTML(r){
       +(running?'<span class="sbv-live">● timing</span>':'')
     +'</div>'
     +'<div class="sbv-ctl">'
-      +(t.jbUrl?'<a class="sbv-open" href="'+String(t.jbUrl).replace(/"/g,'&quot;')+'" target="_blank" title="Open all '+n+' ASINs in one Keepa list">Keepa &#8599;</a>':'')
+      /* Jack: "if they open a Keepa link that auto starts the timer too" — same rule the
+         task-card Open links already follow. Opening the work IS starting the work; held
+         batches keep no timer button, so no auto-start there either. */
+      +(t.jbUrl?'<a class="sbv-open" href="'+String(t.jbUrl).replace(/"/g,'&quot;')+'" target="_blank" title="Open all '+n+' ASINs in one Keepa list — starts the timer"'
+        +(other?'':' onclick="event.stopPropagation();try{ttEnsureRunning('+i+','+ex+');renderTasks();saveShiftDraft(false);}catch(e){}"')+'>Keepa &#8599;</a>':'')
       +(other?'' :
         '<button type="button" class="sbv-t'+(running?' on':'')+'" onclick="ttToggle('+i+','+ex+')">'
           +'<span id="bp-el-'+bx+'">'+sfFmt(elapsed)+'</span> '+(running?'&#9632;':'&#9654;')+'</button>'
@@ -8333,13 +8436,28 @@ function renderShiftBar(){
   var goal=(function(){ try{ return vaGoal(state.currentVA)||12; }catch(e){ return 12; } })();
   var next=all.filter(function(t){return !t.done&&!t.skipped;})[0];
   var carried=all.filter(function(t){return !t.done&&!t.skipped&&t.jbCarried;}).length;
+  /* anything Jack lands mid-shift — a new task or a reopened card — pins a bright
+     chip in the FROZEN bar until dealt with, so it cannot scroll out of sight */
+  var freshJ=all.filter(function(t){return !t.done&&!t.skipped&&(t._reopenedAt||t._jbNewMid);}).length;
   host.innerHTML='<div class="sb-wrap">'
     +'<div class="sb-l"><div class="sb-nums"><b>'+done+'</b><span>/'+req.length+' tasks</span>'
       +'<b class="sb-leads">'+leads+'</b><span>/'+goal+' leads</span>'
-      +(carried?'<span class="sb-carry">⚠️ '+carried+' carried</span>':'')+'</div>'
+      +(carried?'<span class="sb-carry">⚠️ '+carried+' carried</span>':'')
+      +(freshJ?'<span class="sb-new" onclick="sbGoFreshJack()">\u{1F4E3} '+freshJ+' new from Jack</span>':'')+'</div>'
       +'<div class="sb-bar"><i style="width:'+pct+'%"></i></div></div>'
     +'<div class="sb-next">'+(next?'<span>Next up</span><b>'+escHtml(next.jbLabel||next.name||'')+'</b>':'<b class="sb-clear">🎉 Everything ticked</b>')+'</div>'
     +'</div>';
+}
+/* the frozen-bar chip jumps to the first thing Jack landed mid-shift */
+function sbGoFreshJack(){
+  try{
+    var t=(state.tasks.concat(state.extraTasks)).find(function(x){return !x.done&&!x.skipped&&(x._reopenedAt||x._jbNewMid);});
+    if(!t) return;
+    var rows=document.querySelectorAll('.task-item');
+    for(var z=0;z<rows.length;z++){
+      if(rows[z].textContent.indexOf(t.name)>=0){ rows[z].scrollIntoView({behavior:'smooth',block:'center'}); return; }
+    }
+  }catch(e){}
 }
 // flag the first task still to do, so a VA glancing at the list always knows where they are
 function markNextUpTask(){
@@ -8538,6 +8656,7 @@ function buildJackTaskEl(task, i, isExtra){
         + (task.sbPriority==='High' ? '<span class="jbcard-pri" title="Jack marked this high priority — do it first">\u25B2 HIGH</span>' : '')
         + (task.sbOwn ? '<span class="jbcard-own" title="Your own storefront list">YOURS</span>' : '')
         + ((task.jbCarried&&!task.done)?'<span class="jbcard-carry'+(task.jbCarryDays>=3?' overdue':'')+'" title="Sent '+(task.jbAddedOn||'earlier')+' — still open">'+(task.jbCarryDays>=3?'&#9888; '+task.jbCarryDays+'d':'&#8635; '+(task.jbCarryDays?task.jbCarryDays+'d':'carried'))+'</span>':'')
+        + ((task._reopenedAt&&!task.done)?'<span class="jbcard-reopen" title="You ticked this'+(task._reopenPrevTick?' at '+task._reopenPrevTick:'')+' — Jack then sent '+(task._reopenN||1)+' more into it. Your logged time and leads are kept; press Start to resume, tick again when the new bits are done.">&#10227; REOPENED '+task._reopenedAt+' &#183; Jack sent '+(task._reopenN||1)+' more</span>':'')
         + '</div>'
       + '<div class="'+metaCls+' task-sub"><span>'+meta+'</span></div>'
       /* This had it backwards: the +15m / +30m / leads strip appeared only AFTER she had
@@ -8648,6 +8767,18 @@ function buildTaskEl(task, i, isExtra) {
   else                  statusChip = '';
   // carried-over one-off tasks show a rollover badge (escalates to red overdue at 3+ days)
   if (task.jbCarried && !task.done) statusChip = (typeof jb_carryBadge==='function'? jb_carryBadge(task.jbAddedOn):'') + statusChip;
+  // Jack sent more into a card she had already ticked — the reopen badge explains
+  // why her tick came off, and that nothing she logged was lost
+  if (task._reopenedAt && !task.done) statusChip = '<span class="jbcard-reopen" title="You ticked this'+(task._reopenPrevTick?' at '+task._reopenPrevTick:'')+' — Jack then sent '+(task._reopenN||1)+' more into it. Your logged time and leads are kept; press Start to resume, tick again when the new bits are done.">&#10227; REOPENED '+task._reopenedAt+' &#183; Jack sent '+(task._reopenN||1)+' more</span>' + statusChip;
+  /* Sourcing Period has a 30 min/day floor (Jack, 31/08: "they should be doing their
+     own sourcing most of the time... 30 mins per day"). The chip shows live progress
+     against it — amber until the floor is met, green from there. */
+  if ((task.id==='sourcing'||task.id==='suz-sourcing') && !task.skipped) {
+    var _srcSec=(typeof ttElapsedT==='function'?ttElapsedT(task):(task.timerSec||0));
+    var _srcM=Math.max(Math.round(_srcSec/60),(parseInt(task.timeHrs)||0)*60+(parseInt(task.timeMins)||0));
+    var _hit=_srcM>=30;
+    statusChip = '<span class="src-floor'+(_hit?' hit':'')+'" title="Jack\'s minimum: 30 minutes of your own sourcing every day. Timer or typed time both count.">'+_srcM+'m / 30m day min'+(_hit?' \u2713':'')+'</span>' + statusChip;
+  }
 
   // Jack-sent items: Start/Stop timer chip on the row + link/ASIN buttons in the body
   var timerHtml='';
@@ -8852,6 +8983,34 @@ function tfExact(sfx){
   r.style.display=open?'none':'flex';
   if(!open){ var h=document.getElementById('th-'+sfx); if(h) h.focus(); }
 }
+/* Jack, running through the KPF links: "when clicking it shouldn't auto close it —
+   keep the section open, I wanna run through the links". Whether a card was expanded
+   lived ONLY in the DOM, and every link ▶/Open click calls renderTasks(), which
+   rebuilds the DOM — so the card he was working inside collapsed on every single
+   click. Snapshot which bodies are open before each render and re-open them after. */
+(function(){
+  function wrap(){
+    if(typeof window.renderTasks!=='function'){ return setTimeout(wrap,400); }
+    var _rt=window.renderTasks;
+    if(_rt._keepsOpen) return;
+    window.renderTasks=function(){
+      var open=[];
+      try{ document.querySelectorAll('.task-body.open').forEach(function(el){ if(el.id) open.push(el.id); }); }catch(e){}
+      var r=_rt.apply(this,arguments);
+      try{ open.forEach(function(id){
+        var el=document.getElementById(id);
+        if(el&&!el.classList.contains('open')){
+          el.classList.add('open');
+          var h=el.previousElementSibling;
+          if(h&&h.classList.contains('task-header')) h.classList.add('open-head');
+        }
+      }); }catch(e){}
+      return r;
+    };
+    window.renderTasks._keepsOpen=true;
+  }
+  wrap();
+})();
 function toggleBody(id) { var el=document.getElementById(id); if(!el) return; el.classList.toggle('open'); var h=el.previousElementSibling; if(h&&h.classList.contains('task-header')) h.classList.toggle('open-head', el.classList.contains('open')); }
 function lockedClick() { showToast('Task locked once completed. Contact Jack to amend.', true); }
 
@@ -9085,10 +9244,11 @@ function markDone(i, isExtra) {
      impossible. Pressing Done banks whatever the timer holds (stopping it if running),
      exactly like stopping it by hand would. No timer ever started → she is told to Start,
      not sent hunting for chips that are not there. */
+  var _stoppedTimer=false;
   if (task.sbBatchId) {
     var bankSec = (typeof ttElapsedT==='function') ? ttElapsedT(task) : (task.timerSec||0);
-    if (task.timerRun) { task.timerRun=false; task.timerStart=null; task.timerSec=bankSec; }
-    if (!task.timeHrs && !task.timeMins && bankSec>=30) {
+    if (task.timerRun) { task.timerRun=false; task.timerStart=null; task.timerSec=bankSec; _stoppedTimer=true; }
+    if (!task.timeHrs && !task.timeMins && bankSec>0) {
       var bm=Math.max(1,Math.round(bankSec/60));
       task.timeHrs=Math.floor(bm/60); task.timeMins=bm%60;
       task.time=fmtDur(task.timeHrs,task.timeMins); task._timeFromTimer=true;
@@ -9102,8 +9262,8 @@ function markDone(i, isExtra) {
        exactly as stopping it by hand would. Only asks for chips if no timer ever ran. */
     if (task.timerRun || task.timerSec) {
       var _sec=(typeof ttElapsedT==='function')?ttElapsedT(task):(task.timerSec||0);
-      if (task.timerRun){ task.timerRun=false; task.timerStart=null; task.timerSec=_sec; }
-      if (!task.timeHrs && !task.timeMins && _sec>=30){
+      if (task.timerRun){ task.timerRun=false; task.timerStart=null; task.timerSec=_sec; _stoppedTimer=true; }
+      if (!task.timeHrs && !task.timeMins && _sec>0){
         var _m=Math.max(1,Math.round(_sec/60));
         task.timeHrs=Math.floor(_m/60); task.timeMins=_m%60;
         task.time=fmtDur(task.timeHrs,task.timeMins); task._timeFromTimer=true;
@@ -9114,8 +9274,19 @@ function markDone(i, isExtra) {
       showToast('Log the time first &#8212; press &#9654; Start, or tap +15m / +30m / +1h', true); return;
     }
   }
+  /* Jack: "should be able to press Done if I find 0 leads — sometimes I find 0 leads".
+     The batch row's counter literally displays 0 before anyone touches it, so on a
+     batch, Done blocking with "set leads" is the app refusing the number it is showing
+     him. On batches the visible 0 IS the answer. Ordinary shift tasks keep the
+     explicit-tap rule — their quick-log shows a dash until tapped, so blank and zero
+     genuinely differ there. */
+  if (task.sbBatchId && (task.leads===''||task.leads===null||task.leads===undefined)) task.leads=0;
   if (task.leads === '' || task.leads === null || task.leads === undefined) {
-    if(!task.sbBatchId) qlFlash(sfxD);
+    /* Done banked and stopped the timer above, then this guard returned without a
+       repaint — so the row carried on LOOKING like it was timing ("pressing done
+       should stop the timer too haha"). Show the stop before pointing at the leads. */
+    if(_stoppedTimer){ try{ renderTasks(); }catch(e){} }
+    qlFlash(sfxD);
     showToast('Set leads found &#8212; tap + on the row (or &#8722; once for zero)', true); return;
   }
   // bank any link timer still running — forgetting to stop is the normal case
@@ -9392,13 +9563,19 @@ function ttToggle(i,isExtra){
   var t=isExtra?state.extraTasks[i]:state.tasks[i]; if(!t) return;
   if(t.timerRun){
     t.timerSec=ttElapsedT(t); t.timerRun=false; t.timerStart=null;
-    var mins=Math.round(t.timerSec/60);
+    /* Jack, 31/08: started THC, stopped after 9 seconds because there was nothing
+       new in the discord to look at, then could not tick it off. Math.round(9/60)
+       is 0, 0m reads everywhere as "no time logged", and Done refused him. The only
+       way forward was to tap +15m — so a guard meant to stop fake time was the thing
+       CREATING it. A timer that ran is real work: it never rounds down to nothing. */
+    var mins=t.timerSec>0?Math.max(1,Math.round(t.timerSec/60)):0;
     var typed=(parseInt(t.timeHrs)||0)*60+(parseInt(t.timeMins)||0);
     // only auto-fill Time Spent if they haven't typed their own figure over it
     if(!typed || t._timeFromTimer){
       t.timeHrs=Math.floor(mins/60); t.timeMins=mins%60; t._timeFromTimer=true;
       try{ t.time=fmtDur(t.timeHrs,t.timeMins); }catch(e){ t.time=t.timeHrs+'h '+t.timeMins+'m'; }
-      if(t.timerSec>0) showToast('Timer stopped \u2014 '+fmtSecs(t.timerSec)+' logged \u2713');
+      if(t.timerSec>0) showToast('Timer stopped \u2014 '+fmtSecs(t.timerSec)
+        +(t.timerSec<60?' logged as 1m \u2713':' logged \u2713'));
     } else if(mins>0){
       showToast('Timer stopped \u2014 '+mins+'m timed, kept your '+typed+'m');
     }
@@ -10435,7 +10612,9 @@ function vaStripHTML(va){
   function seg(v,col,lbl){ return '<span class="vs-seg"><b style="color:'+col+'">'+v+'</b><i>'+lbl+'</i></span>'; }
   var out='<span class="vs-cap">This week</span>'
     +seg(p.week.uniq,'#10d99a','leads')+seg(p.week.bought,'#38bdf8','bought')
-    +(p.week.spend>0?seg('£'+Math.round(p.week.spend).toLocaleString(),'#c084fc','spent'):'')
+    /* 'spent' clashed with the Spend tile, which reads the purchase ledger (actually
+       paid). This figure is the sum of QUOTED buy prices on bought leads — say so. */
+    +(p.week.spend>0?seg('£'+Math.round(p.week.spend).toLocaleString(),'#c084fc','lead buys'):'')
     +(h?seg(vaHM(h.total),(h.total/(h.target||1)>=1?'#3ac478':'#ffb830'),'of '+h.target+'h'):'')
     +'<span class="vs-div"></span><span class="vs-cap">'+p.monthName.slice(0,3)+'</span>'
     +seg(p.mtd.uniq,'#10d99a','')+seg(p.mtd.bought,'#38bdf8','')
@@ -11602,7 +11781,36 @@ function mgr_shiftCard(r,expanded){
     +(taskRows?'<div style="font-size:10px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:1px;margin:8px 0 3px;">Tasks</div>'+taskRows:'')
     +'</div></div>';
 }
-function mgr_toggleCard(id){var el=document.getElementById(id);if(el) el.classList.toggle('open');}
+/* Same disease as the VA task cards (fixed v47.4): open/closed lived only in the
+   DOM, and the dashboard REPAINTS ITSELF on a timer (mgr_liveTick) and on every
+   cloud sync — so a card Jack expanded collapsed under him within seconds. The
+   open set lives in a window map now, and mgr_restoreOpen() re-applies it after
+   every dashboard render. */
+window._mgrOpen=window._mgrOpen||{};
+function mgr_toggleCard(id){
+  var el=document.getElementById(id); if(!el) return;
+  window._mgrOpen[id]=el.classList.toggle('open');
+}
+function mgr_restoreOpen(){
+  try{
+    Object.keys(window._mgrOpen||{}).forEach(function(id){
+      if(!window._mgrOpen[id]) return;
+      var el=document.getElementById(id);
+      if(el&&!el.classList.contains('open')){
+        el.classList.add('open');
+        // source rows carry a caret that mirrors the state — keep it honest
+        var head=document.querySelector('[onclick*="\''+id+'\'"] .src-caret');
+        if(head) head.textContent='▾';
+      }
+    });
+    if(window._mgrOpen['src-rest']){
+      var r=document.getElementById('src-rest');
+      if(r){ r.style.display='block';
+        var b=r.nextElementSibling;
+        if(b&&b.classList.contains('src-more')) b.textContent='Show less ▴'; }
+    }
+  }catch(e){}
+}
 
 // ── GROUPED SHIFT RENDERER — horizontal grid ────────────────
 function mgr_shiftGroup(recs,vaFilter){
@@ -11944,13 +12152,14 @@ function mgr_sourcing(recs,va,useRange){
   var html='<div class="src-wrap">'+top.map(row).join('');
   if(rest.length){
     html+='<div class="src-rest" id="src-rest" style="display:none;">'+rest.map(function(e,i){return row(e,100+i);}).join('')+'</div>'
-      +'<button class="src-more" onclick="var e=document.getElementById(\'src-rest\');var o=e.style.display===\'none\';e.style.display=o?\'block\':\'none\';this.textContent=o?\'Show less ▴\':\'Show '+rest.length+' more sources · '+restLeads+' leads ▾\';">Show '+rest.length+' more sources · '+restLeads+' leads ▾</button>';
+      +'<button class="src-more" onclick="var e=document.getElementById(\'src-rest\');var o=e.style.display===\'none\';e.style.display=o?\'block\':\'none\';window._mgrOpen[\'src-rest\']=o;this.textContent=o?\'Show less ▴\':\'Show '+rest.length+' more sources · '+restLeads+' leads ▾\';">Show '+rest.length+' more sources · '+restLeads+' leads ▾</button>';
   }
   return html+'</div>';
 }
 function srcToggle(id,el){
   var k=document.getElementById(id); if(!k) return;
   var open=k.classList.toggle('open');
+  window._mgrOpen[id]=open;
   var c=el.querySelector('.src-caret'); if(c) c.textContent=open?'▾':'▸';
 }
 
@@ -12551,9 +12760,9 @@ function mgr_dayByDay(weekRecs,va,monStr){
            all, which is the thing worth chasing. */
         var _sec=(t.timerSec!=null?+t.timerSec:0);
         var _mins=(parseInt(t.timeHrs)||0)*60+(parseInt(t.timeMins)||0);
-        var _timed=(_sec>=30)||!!t._timeFromTimer;
+        var _timed=(_sec>0)||!!t._timeFromTimer;
         var spentHtml;
-        if(_mins>0||_sec>=30){
+        if(_mins>0||_sec>0){
           var _show=_mins>0?((_mins>=60?Math.floor(_mins/60)+'h ':'')+(_mins%60)+'m')
                            :(Math.round(_sec/60)+'m');
           spentHtml='<span style="color:'+(_timed?'#10d99a':'#f5a524')+';" title="'
@@ -12561,6 +12770,11 @@ function mgr_dayByDay(weekRecs,va,monStr){
             +(_timed?' \u23f1':' \u270e')+'</span>';
         } else {
           spentHtml='<span style="color:#3a4258;" title="no time recorded at all">\u2014</span>';
+        }
+        // sourcing under the 30m/day floor is the one shortfall Jack wants flagged
+        if((t.id==='sourcing'||t.id==='suz-sourcing') && !isSk){
+          var _sm=Math.max(Math.round(_sec/60),_mins);
+          if(_sm<30) spentHtml+=' <span style="color:#f2647f;font-weight:800;font-size:9.5px;" title="Jack\'s floor: 30 minutes of own sourcing per day">\u26a0 under 30m sourcing min</span>';
         }
         html+='<div style="display:flex;align-items:baseline;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.03);">'
           +'<span style="min-width:52px;color:'+timeCol+';font-size:10px;flex-shrink:0;">'+timeLabel+'</span>'
@@ -15705,7 +15919,7 @@ function vaBriefFill(va){
                'of '+T.flagshipMo+' &middot; £500+');
       out+='<div class="wb-r"><span>Bought</span>'
         +seg(p.week.bought,'#38bdf8','this week')
-        +(p.week.spend>0?seg('£'+Math.round(p.week.spend).toLocaleString(),'#c084fc','spent'):'')
+        +(p.week.spend>0?seg('£'+Math.round(p.week.spend).toLocaleString(),'#c084fc','lead buys'):'')
         +'<em>'+p.monthName.slice(0,3)+': '+p.mtd.uniq+' leads · '+p.mtd.bought+' bought'
         +(p.mtd.spend>0?' · £'+Math.round(p.mtd.spend).toLocaleString():'')+'</em></div>';
       if(p.dayOfMonth<=4&&p.lastMonth.n>0)
@@ -15928,7 +16142,11 @@ function showToast(msg,isError) {
      his live shift screen: "where are the KPIs hahaha". The verification ran the
      paint functions and read the numbers — it never once asked whether the tile
      was visible. Unknown keys now also default ON in applyPrefs as a backstop. */
-  var DEFAULTS={accent:'violet',density:'comfortable',kpi:{leads:1,tasks:1,hrs:1,lph:1,week:1,streak:1,month:1,break:1,
+  /* Jack: "is there too many KPIs here now" — yes. Week leads / Break time / Submit
+   streak were the three a VA never acts on mid-shift (and Break/Streak sat bare,
+   no target bar). Default OFF; any VA can flip them back on in VA Settings, and a
+   VA who already saved prefs keeps exactly what they chose. */
+var DEFAULTS={accent:'violet',density:'comfortable',kpi:{leads:1,tasks:1,hrs:1,lph:1,week:0,streak:0,month:1,break:0,
     spend:1,keepaadd:1,keepawk:1,over100:1,premium:1,flagship:1,thcwk:1},dailyTarget:12,weeklyTarget:60};
 
   function loadPrefs(){
@@ -16034,10 +16252,17 @@ function showToast(msg,isError) {
       // WEEK leads: last 7 days + today live, with sparkline
       var wc=document.getElementById('stat-week'), we=document.getElementById('kpi-week-extra');
       if(wc){
-        var wtot=(real?weekLeads(va):0)+leadsNow;
-        wc.textContent=wtot;
-        if(we){ var s7=real?leadsSeries(va,7):[]; s7.push(leadsNow);
-          we.innerHTML=(real?sparkSVG(s7):'')+'<div class="kpi-meta"><span>last 7 days</span><span><b>'+wtot+'</b> leads</span></div>'; }
+        if(!real){
+          // a confident 0 next to a strip saying 51 reads as broken maths — on Test
+          // profiles there are no submitted shifts to count, so say nothing instead
+          wc.textContent='—';
+          if(we) we.innerHTML='<div class="kpi-meta"><span>from submitted shifts</span><span>none on this profile</span></div>';
+        } else {
+          var wtot=weekLeads(va)+leadsNow;
+          wc.textContent=wtot;
+          if(we){ var s7=leadsSeries(va,7); s7.push(leadsNow);
+            we.innerHTML=sparkSVG(s7)+'<div class="kpi-meta"><span title="Counted from submitted shifts, rolling 7 days — the sheet numbers above use Mon-start weeks">last 7 days · shifts</span><span><b>'+wtot+'</b> leads</span></div>'; }
+        }
       }
       // KEEPA added today
       var kc=document.getElementById('stat-keepa'), ke=document.getElementById('kpi-keepa-extra');
@@ -16201,7 +16426,7 @@ function showToast(msg,isError) {
               return; }
             c.innerHTML='<span style="font-size:.62em;opacity:.55;vertical-align:.12em">\u00a3</span>'
               +Math.round(r.spend).toLocaleString();
-            if(e2) e2.innerHTML='<div class="kpi-meta"><span>'+mn2+' so far</span><span><b>'
+            if(e2) e2.innerHTML='<div class="kpi-meta"><span title="From the purchase ledger — money actually paid, not quoted lead prices">'+mn2+' paid (ledger)</span><span><b>'
               +r.units.toLocaleString()+'</b> unit'+(r.units===1?'':'s')+'</span></div>';
           });
         }
@@ -18108,6 +18333,9 @@ function pullNum(v){
   return isNaN(n)?null:n;
 }
 async function leadPullOnce(force){
+  /* the pull writes to the live DB (inserts, refresh upserts and — since v48.0 —
+     the lead-id reconcile). Test mode reads what's there and touches nothing. */
+  if(typeof IS_PREVIEW!=='undefined'&&IS_PREVIEW) return null;
   if(_leadPullBusy) return null;
   if(!force && Date.now()-_leadPullAt < 180000) return null;    // at most every 3 min
   if(!LEAD_PULL_KEY || typeof SHEET_NAMES==='undefined') return null;
@@ -18121,10 +18349,19 @@ async function leadPullOnce(force){
       /* asin joined this list when it joined SHEETCOLS — without it here, cur.asin is
          undefined, every row compares as "changed" and each pull re-uploads all 800.
          status / islead / writeback_pending are here for the decision fill below. */
-      var hres=await fetchT(SUPABASE_URL+'/rest/v1/leads?select=id,store,source_method,va_note,'
+      var _hbase='id,sheet_id,tab,row_index,store,source_method,va_note,'
         +'supplier_url,supplier_url2,amazon_url,category,title,discount_code,screenshot,date,buy,sell,spm,profit,roi,margin,fba'
-        +',asin,status,islead,writeback_pending'
+        +',asin,status,islead,writeback_pending';
+      var hres=await fetchT(SUPABASE_URL+'/rest/v1/leads?select='+_hbase+',jack_comment,decided_at,lead_id,superseded'
         +'&limit=5000',{headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
+      /* until the LEAD-IDS SQL has been run the two new columns 400 — pull the old
+         shape and skip everything lead-id (LID_READY gates all of it) */
+      if(hres.status===400){
+        window._LID_READY=false;
+        hres=await fetchT(SUPABASE_URL+'/rest/v1/leads?select='+_hbase
+          +'&limit=5000',{headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
+      } else window._LID_READY=true;
+      var LID_READY=window._LID_READY;
       if(hres.ok) (await hres.json()).forEach(function(r){ have[r.id]=r; });
     }catch(e){ errs++; }
     for(var sid in SHEET_NAMES){
@@ -18138,14 +18375,14 @@ async function leadPullOnce(force){
         var tab=tabs[ti], rows=[];
         try{
           var u='https://sheets.googleapis.com/v4/spreadsheets/'+sid+'/values/'
-               +encodeURIComponent(tab+'!A2:V1000')+'?key='+LEAD_PULL_KEY+'&valueRenderOption=UNFORMATTED_VALUE';
+               +encodeURIComponent(tab+'!A2:AB1000')+'?key='+LEAD_PULL_KEY+'&valueRenderOption=UNFORMATTED_VALUE';
           var sres=await fetchT(u);
           if(!sres.ok){ errs++; continue; }
           rows=(await sres.json()).values||[];
         }catch(e){ errs++; continue; }
         var batch=[], refresh=[];
         for(var i=0;i<rows.length;i++){
-          var r=rows[i].slice(); while(r.length<22) r.push('');
+          var r=rows[i].slice(); while(r.length<28) r.push('');
           var rowIndex=i+2;
           var asin=String(r[7]||'').trim(), buy=pullNum(r[12]);
           checked++;
@@ -18164,6 +18401,11 @@ async function leadPullOnce(force){
             va_note:String(r[4]||''), discount_code:String(r[20]||''), screenshot:String(r[21]||''),
             islead:String(r[2]||'').trim()||null, status:String(r[1]||'').trim()||null,
             jack_comment:String(r[3]||'')||null };
+          /* AA = the permanent lead id the Apps Script stamped. Only trusted when it
+             looks like one; only sent once the DB has the column. */
+          var _lid=String(r[26]||'').trim();
+          if(!/^BDL-[A-F0-9]{8,16}$/i.test(_lid)) _lid=null;
+          if(LID_READY) rec.lead_id=_lid;
           if(have[id]){ refresh.push(rec); } else { batch.push(rec); }
         }
         if(batch.length){
@@ -18199,9 +18441,34 @@ async function leadPullOnce(force){
             'amazon_url','category','title','discount_code','screenshot','date','buy','sell','spm',
             'profit','roi','margin','fba','asin'];
           var changed=[];
+          /* ── LEAD-ID RECONCILE (v48.0) ────────────────────────────────────────────
+             A row's DB identity is sheet_id::tab::row_index, so when a VA deletes a
+             duplicate row every row below gets a NEW occupant — and until now Jack's
+             decisions stayed glued to the row NUMBER, i.e. to the wrong product.
+             The AA lead id says who the occupant really is. Four cases per row:
+               adopt      DB has no lead_id yet (first pull after stamping) → store it,
+                          touch nothing else
+               normal     stored id == incoming id → plain refresh
+               displaced  stored id != incoming id → the occupant changed; fetch the
+                          decisions that belong to the INCOMING product from wherever
+                          they lived (dbByLid) and write them with it
+               hold       sheet row has no AA id yet (stamper runs hourly) but the DB
+                          row does → skip this row entirely until it is stamped, so a
+                          brand-new unstamped occupant can never inherit old decisions */
+          var dbByLid={};
+          if(LID_READY){ for(var _hk in have){ var _hv=have[_hk];
+            if(_hv&&_hv.sheet_id===sid&&_hv.tab===tab&&_hv.lead_id) dbByLid[_hv.lead_id]=_hv; } }
           refresh.forEach(function(rec2){
             var cur=have[rec2.id]; if(!cur||cur===true) return;
+            var displaced=false, donor=null;
+            if(LID_READY){
+              if(cur.lead_id&&!rec2.lead_id) return;                       // hold
+              if(cur.lead_id&&rec2.lead_id&&cur.lead_id!==rec2.lead_id){   // displaced
+                displaced=true; donor=dbByLid[rec2.lead_id]||null;
+              }
+            }
             var any=false;
+            if(LID_READY && String(cur.lead_id||'')!==String(rec2.lead_id||'')) any=true;  // adopt or displaced
             SHEETCOLS.forEach(function(k){
               var nv=rec2[k];
               if(nv===''||nv===null||nv===undefined) return;   // sheet blank → keep what we have
@@ -18249,8 +18516,27 @@ async function leadPullOnce(force){
             /* Same fixed shape on EVERY object or PostgREST answers PGRST102, so these two
                are always present — carrying the value already in the database unless the
                fill above applies. Never a bare null: that would wipe his decisions. */
-            row.status = (_fillSt!=null) ? _fillSt : (cur.status===undefined?null:cur.status);
-            row.islead = (_fillLd!=null) ? _fillLd : (cur.islead===undefined?null:cur.islead);
+            if(LID_READY){
+              row.lead_id=rec2.lead_id||cur.lead_id||null;
+              if(displaced){
+                /* decisions travel with the PRODUCT: the incoming occupant brings its
+                   own from wherever it lived; if it never had any, the sheet's cells
+                   (which shifted with the row) may fill the blank */
+                var _d=donor||{};
+                row.status      =(_d.status!=null)?_d.status:(rec2.status!=null?rec2.status:null);
+                row.islead      =(_d.islead!=null)?_d.islead:(rec2.islead!=null?rec2.islead:null);
+                row.jack_comment=(_d.jack_comment!=null)?_d.jack_comment:(rec2.jack_comment!=null?rec2.jack_comment:null);
+                row.decided_at  =(_d.decided_at!=null)?_d.decided_at:null;
+              } else {
+                row.status = (_fillSt!=null) ? _fillSt : (cur.status===undefined?null:cur.status);
+                row.islead = (_fillLd!=null) ? _fillLd : (cur.islead===undefined?null:cur.islead);
+                row.jack_comment=(cur.jack_comment===undefined?null:cur.jack_comment);
+                row.decided_at=(cur.decided_at===undefined?null:cur.decided_at);
+              }
+            } else {
+              row.status = (_fillSt!=null) ? _fillSt : (cur.status===undefined?null:cur.status);
+              row.islead = (_fillLd!=null) ? _fillLd : (cur.islead===undefined?null:cur.islead);
+            }
             changed.push(row);
           });
           if(changed.length){
@@ -18262,6 +18548,25 @@ async function leadPullOnce(force){
               if(up.ok) updated+=changed.length;
               else { errs++; try{ window.LEAD_PULL_ERR=(await up.text()).slice(0,300); }catch(e2){} }
             }catch(e){ errs++; window.LEAD_PULL_ERR=String(e&&e.message||e); }
+          }
+          /* ── GHOST SWEEP (v48.0). A deleted row shrinks the tab, leaving DB rows
+             pointing past the end of the sheet — the same product now lives one row
+             up, so the ghost would double-count on the board and in every KPI.
+             Marked superseded (hidden), NEVER deleted — nothing is ever lost.
+             Guards: only with lead ids live, only when the fetch was not truncated
+             (a 999-row tab would make real rows look past-the-end), only a handful
+             at a time (deleting duplicates is the only thing that makes ghosts). */
+          if(LID_READY && rows.length<950){
+            var _gmax=rows.length+1, _ghosts=[];
+            for(var _gk in have){ var _gv=have[_gk];
+              if(_gv&&_gv.sheet_id===sid&&_gv.tab===tab&&_gv.row_index>_gmax&&!_gv.superseded) _ghosts.push(_gk); }
+            if(_ghosts.length&&_ghosts.length<=40){
+              for(var _gi=0;_gi<_ghosts.length;_gi++){
+                try{ await fetchT(SUPABASE_URL+'/rest/v1/leads?id=eq.'+encodeURIComponent(_ghosts[_gi]),
+                  {method:'PATCH',headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+                    'Content-Type':'application/json'},body:JSON.stringify({superseded:true})}); }catch(e){}
+              }
+            } else if(_ghosts.length>40){ try{ window.LEAD_PULL_ERR='ghost sweep skipped: '+_ghosts.length+' on '+tab+' — too many to be dup deletions, check the tab'; }catch(e){} }
           }
         }
       }
@@ -18296,6 +18601,7 @@ async function loadLeadsFromDB(){
       {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
     if(!res.ok) return;
     var rows=await res.json();
+    rows=rows.filter(function(r){ return !r.superseded; });   // ghosts stay stored, never shown
     var keepSel=(leads.find(function(x){return x.id===selId;})||{})._sid;
     var n=1;
     leads=rows.map(function(r){
@@ -18798,7 +19104,7 @@ function populateMonthFilter(){
   sel.innerHTML='<option value="sheet">Whatever months I’ve ticked</option>'
     +'<option value="month">This calendar month</option>'
     +months.map(function(k){ var y=k.split('-')[0], m=+k.split('-')[1]; return '<option value="m:'+k+'">'+MN[m-1]+' '+y+'</option>'; }).join('')
-    +'<option value="today">Today</option><option value="yesterday">Yesterday</option><option value="thisweek">This week (Mon–now)</option><option value="lastweek">Last week (Mon–Sun)</option><option value="48h">Last 48h</option><option value="7d">Last 7 days</option><option value="14d">Last 14 days</option><option value="day">Pick a day…</option><option value="all">All dates</option>';
+    +'<option value="today">Today</option><option value="yesterday">Yesterday</option><option value="thisweek">This week (Mon–now)</option><option value="lastweek">Last week (Mon–Sun)</option><option value="48h">Last 48h</option><option value="7d">Last 7 days</option><option value="14d">Last 14 days</option><option value="30d">Last 30 days</option><option value="day">Pick a day…</option><option value="all">All dates</option>';
   sel.value=[].some.call(sel.options,function(o){return o.value===keep;})?keep:'sheet';
 }
 function getF(){
@@ -18902,6 +19208,7 @@ function getFNoFocus(){
       if(fd==='48h'&&(_dd<0||_dd>1))return false;
       if(fd==='7d'&&(_dd<0||_dd>6))return false;
       if(fd==='14d'&&(_dd<0||_dd>13))return false;
+      if(fd==='30d'&&(_dd<0||_dd>29))return false;
       if(fd==='thisweek'){ var _w=ldWeekOffset(_d,_now); if(_w<0||_w>6)return false; }
       if(fd==='lastweek'){ var _w2=ldWeekOffset(_d,_now); if(_w2<-7||_w2>-1)return false; } } }
     if(view==='lead'&&l.islead!==true)return false;
@@ -18958,6 +19265,7 @@ function _leadCtx(l, useView, useVa){
     if(fd.slice(0,2)==='d:'){ var iso=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2); if(iso!==fd.slice(2))return false; }
     if(fd==='today'&&dd!==0)return false; if(fd==='yesterday'&&dd!==1)return false; if(fd==='48h'&&(dd<0||dd>1))return false; if(fd==='7d'&&(dd<0||dd>6))return false;
     if(fd==='14d'&&(dd<0||dd>13))return false;
+    if(fd==='30d'&&(dd<0||dd>29))return false;
     // identical to getFNoFocus() — the audit rule checks these two never drift
     if(fd==='thisweek'){ var w=ldWeekOffset(d,now); if(w<0||w>6)return false; }
     if(fd==='lastweek'){ var w2=ldWeekOffset(d,now); if(w2<-7||w2>-1)return false; }
@@ -22576,11 +22884,15 @@ async function jb_cloudPull(va){
       var live=(state.currentVA===va)||(state._previewAs===va);
       if(o&&live){
         var added=0;
+        var _poaAt=function(){ return state.tasks.findIndex(function(x){return x.id==='jack-poa'||x.id==='suz-jack-poa';}); };
         (o.tasks||[]).filter(function(t){return !t.done;}).forEach(function(t){
           var id='oneoff-'+t.iid;
           if(!state.tasks.some(function(x){return x.id===id;})){
             var carried=jb_isCarried(t.addedOn);
-            state.tasks.push({id:id,jbOneoffIid:t.iid,name:'Task · '+t.name,jbCarried:carried,jbAddedOn:t.addedOn,mandatory:true,hint:(carried?'Carried over from '+t.addedOn+' — still needs doing.':'Task from Jack.'),hasLinks:false,done:false,skipped:false,skipReason:'',time:'',timeHrs:0,timeMins:0,leads:'',context:'',links:[]});
+            var nt={id:id,jbOneoffIid:t.iid,name:'Task · '+t.name,jbCarried:carried,jbAddedOn:t.addedOn,mandatory:true,hint:(carried?'Carried over from '+t.addedOn+' — still needs doing.':'Task from Jack.'),hasLinks:false,done:false,skipped:false,skipReason:'',time:'',timeHrs:0,timeMins:0,leads:'',context:'',links:[],_jbNewMid:1};
+            // land WITH Jack's other stuff, right under the POA card — same rule as
+            // shift start, not dumped at the bottom of the list
+            var pi=_poaAt(); if(pi>=0) state.tasks.splice(pi+1,0,nt); else state.tasks.push(nt);
             added++;
           }
         });
@@ -22591,26 +22903,56 @@ async function jb_cloudPull(va){
         if(_fresh.length){
           var _byType={};
           _fresh.forEach(function(it){ (_byType[it.t]=_byType[it.t]||[]).push(it); });
+          var _reopened=0;
           Object.keys(_byType).forEach(function(ty){
             var g=_byType[ty], host=jb_findHost(state.tasks,ty);
-            if(host){ jb_attachToHost(host,g); added+=g.length; return; }
-            g.forEach(function(it){ state.tasks.push(jb_itemTask(it)); added++; });
+            if(host){
+              jb_attachToHost(host,g); added+=g.length;
+              // sent into a card she already ticked → the card comes back open, time kept
+              if(jb_reopenTask(host,g.length)) _reopened++;
+              // sent into a card still open → no reopen needed, but the frozen-bar
+              // chip must still point at it until she deals with it
+              else host._jbNewMid=1;
+              return;
+            }
+            g.forEach(function(it){
+              var nt=jb_itemTask(it); nt._jbNewMid=1;
+              var pi=_poaAt(); if(pi>=0) state.tasks.splice(pi+1,0,nt); else state.tasks.push(nt);
+              added++;
+            });
           });
+          state._jbReopened=_reopened;
         }
         if(added){
-          // Jack added stuff after the VA already ticked POA → POA re-opens at the bottom
+          /* Jack added stuff after the VA already ticked POA → the SAME card reopens
+             with its banked time ("goes back open with a resume"). Replaces the old
+             "Jack POA — new additions" card that appeared at the bottom of the list,
+             disconnected from everything it was about. */
           var poaT=state.tasks.find(function(x){return x.id==='jack-poa'||x.id==='suz-jack-poa';});
-          if(poaT&&poaT.done&&!state.tasks.some(function(x){return x.id==='jack-poa-more';})){
-            state.tasks.push({id:'jack-poa-more',name:'Jack POA — new additions',mandatory:true,hint:'Jack added more after you ticked POA — the new items are just above this one. Work through them, then tick this.',hasLinks:false,done:false,skipped:false,skipReason:'',time:'',timeHrs:0,timeMins:0,leads:'',context:'',links:[]});
-          }
+          var rN=(state._jbReopened||0)+(poaT&&jb_reopenTask(poaT,added)?1:0);
+          state._jbReopened=0;
           state._jbItemCount=(o.items||[]).filter(function(it){return !it.done;}).length;
           renderTasks();
           try{ jb_addsBanner(va); }catch(e){}
-          try{ showToast('\u{1F4E3} Jack sent '+added+' new item'+(added===1?'':'s')+' — added to your tasks'); }catch(e){}
+          try{ showToast('\u{1F4E3} Jack sent '+added+' new item'+(added===1?'':'s')+(rN?' — a ticked task has reopened, your logged time is kept':' — added to your tasks')); }catch(e){}
         } else { renderTasks(); }
       }
     }catch(e){}
   }catch(e){}
+}
+/* Jack's rule (asked twice, 31/08): "if I add a task mid shift once they have
+   completed it — it goes back open with a resume." One card, one running total:
+   banked time and leads stay, the tick comes off, a badge says why, and the next
+   Done closes it again. Applies to the POA card AND host tasks (storefronts sent
+   into a ticked Storefronts card reopen it the same way) — otherwise a mid-shift
+   send can land inside a completed card nobody would ever look at again. */
+function jb_reopenTask(t,addedN){
+  if(!t||!t.done) return false;
+  t.done=false; t.skipped=false;
+  t._reopenedAt=new Date().toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:false});
+  t._reopenN=(t._reopenN||0)+(addedN||1);
+  t._reopenPrevTick=t.tickedAt||null;   // audit trail: done 11:30 · reopened 16:04 · done 16:21
+  return true;
 }
 function jb_secLabel(txt,extra){ return '<div class="jb-seclabel"'+(extra?' style="'+extra+'"':'')+'>'+txt+'</div>'; }
 function jb_ageNum(addedOn){ var p=(addedOn||'').split('/'); if(p.length!==3) return 99999999; return (+p[2])*10000+(+p[1])*100+(+p[0]); }
@@ -22885,6 +23227,7 @@ function sbQueueById(id){ return (SB_QUEUES||[]).filter(function(q){ return q.id
 
 /* ── batches ────────────────────────────────────────────────────────────────*/
 var SB_BATCHES=null;
+var SB_BATCHES_ALL=null;   // includes binned ones — the paste log, see sbLoadBatches
 function sbLoadBatches(force){
   if(SB_BATCHES && !force) return Promise.resolve(SB_BATCHES);
   if(!DB_ENABLED){ SB_BATCHES=[]; return Promise.resolve(SB_BATCHES); }
@@ -22897,8 +23240,19 @@ function sbLoadBatches(force){
       if(r.status===404) window.SB_TABLES_MISSING=true;
       return r.ok?r.json():[];
     })
-    .then(function(rows){ SB_BATCHES=Array.isArray(rows)?rows:[]; return SB_BATCHES; })
-    .catch(function(){ SB_BATCHES=[]; return SB_BATCHES; });
+    .then(function(rows){
+      /* Jack, 31/08: "we have the log she pasted — I bin it if it's shit, but it
+         should still count that Sarah pasted it." A bin used to DELETE the batch and
+         its ASINs, so the paste stopped existing: Process 4 read "4 weeks ago" for a
+         tag she had pasted into days earlier. Scrapped batches are now KEPT.
+         SB_BATCHES = the working board (scrapped filtered out, so every existing
+         consumer behaves exactly as before). SB_BATCHES_ALL = the true paste log. */
+      var all=Array.isArray(rows)?rows:[];
+      SB_BATCHES_ALL=all;
+      SB_BATCHES=all.filter(function(b){ return !b.scrapped; });
+      return SB_BATCHES;
+    })
+    .catch(function(){ SB_BATCHES=[]; SB_BATCHES_ALL=[]; return SB_BATCHES; });
 }
 function sbToday(){ return ukDateShort(); }
 function sbBatchesToday(){ var t=sbToday(); return (SB_BATCHES||[]).filter(function(b){ return b.date===t; }); }
@@ -23025,7 +23379,7 @@ async function sbSubmit(qid, raw, opts){
              'Content-Type':'application/json',Prefer:'return=minimal'},
     body:JSON.stringify(patch)});
 
-  SB_BATCHES=null;
+  SB_BATCHES=null; SB_BATCHES_ALL=null;
   return {ok:true, added:parsed.asins.length, dupes:parsed.dupes, bad:parsed.bad.length,
           total:all.length, batchNo:batch.batch_number, isNew:isNew,
           assignedTo:batch.assigned_to, manual:!!q.manual_review, queue:q.name};
@@ -23047,7 +23401,7 @@ async function sbPatch(batchId, patch, keepLocal){
       headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
                'Content-Type':'application/json',Prefer:'return=minimal'},
       body:JSON.stringify(patch)});
-    if(r.ok && !keepLocal) SB_BATCHES=null;   // keepLocal: the caller already applied it
+    if(r.ok && !keepLocal){ SB_BATCHES=null; SB_BATCHES_ALL=null; }   // keepLocal: the caller already applied it
     return r.ok;
   }catch(e){ return false; }
 }
@@ -23325,6 +23679,16 @@ async function sbScrapBatch(batchId){
       if(br.ok) keptBatch=(await br.json())[0]||null;
       var ir=await fetchT(base+'storefront_batch_items?batch_id=eq.'+eid+'&select=*',{headers:h});
       if(ir.ok) keptItems=(await ir.json())||[];
+      /* SOFT BIN. This used to DELETE the batch and every ASIN in it, which erased
+         the fact Sarah ever pasted — a tag pasted into days ago reported "4 weeks
+         ago". Marking it scrapped takes it off the board exactly the same way, but
+         the paste stays on the record and Undo is a one-field flip. Falls back to
+         the old delete if SCRAPPED-BATCHES-run-in-supabase.sql has not been run. */
+      var pr=await fetchT(base+'storefront_batches?id=eq.'+eid,{method:'PATCH',
+        headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+                 'Content-Type':'application/json',Prefer:'return=minimal'},
+        body:JSON.stringify({scrapped:true, scrapped_at:new Date().toISOString(), scrapped_by:'Jack'})});
+      if(pr.ok) return {ok:true, soft:true, batch:keptBatch, items:keptItems};
       await fetchT(base+'storefront_batch_items?batch_id=eq.'+eid,{method:'DELETE',headers:h});
       var r=await fetchT(base+'storefront_batches?id=eq.'+eid,{method:'DELETE',headers:h});
       if(!r.ok) return {ok:false};
@@ -23377,6 +23741,20 @@ async function sbBinUndo(){
   showToast('Putting it back…');
   var res=null;
   try{ res=await u.job; }catch(e){ res=null; }
+  if(res&&res.ok&&res.soft){
+    // soft bin → put it back by clearing the flag, no re-insert needed
+    var uid=encodeURIComponent((res.batch&&res.batch.id)||'');
+    var ur=await fetchT(SUPABASE_URL+'/rest/v1/storefront_batches?id=eq.'+uid,{method:'PATCH',
+      headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+               'Content-Type':'application/json',Prefer:'return=minimal'},
+      body:JSON.stringify({scrapped:false, scrapped_at:null, scrapped_by:null})});
+    if(!ur.ok){ showToast('Couldn\'t put it back — try again',true); return; }
+    SB_BATCHES=null; SB_BATCHES_ALL=null;
+    try{ await sbLoadBatches(true); }catch(e){}
+    try{ sbPaintJack(); sbRenderImport(); }catch(e){}
+    showToast('Put back \u2713');
+    return;
+  }
   if(!res||!res.ok||!res.batch){ showToast('Couldn\'t put it back — the copy never came back from the server',true); return; }
   var items=res.items||[];
   var h={apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,'Content-Type':'application/json',Prefer:'resolution=ignore-duplicates'};
@@ -23767,8 +24145,15 @@ async function sbRouteBulk(who){
 /* same delete as sbScrapBatch but without its own confirm — the bulk one already asked */
 async function sbScrapBatchSilent(batchId){
   var h={apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY};
-  await fetchT(SUPABASE_URL+'/rest/v1/storefront_batch_items?batch_id=eq.'+encodeURIComponent(batchId),{method:'DELETE',headers:h});
-  return fetchT(SUPABASE_URL+'/rest/v1/storefront_batches?id=eq.'+encodeURIComponent(batchId),{method:'DELETE',headers:h});
+  var eid=encodeURIComponent(batchId);
+  // soft bin first — same reasoning as sbScrapBatch; delete only if the column isn't there
+  var pr=await fetchT(SUPABASE_URL+'/rest/v1/storefront_batches?id=eq.'+eid,{method:'PATCH',
+    headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+             'Content-Type':'application/json',Prefer:'return=minimal'},
+    body:JSON.stringify({scrapped:true, scrapped_at:new Date().toISOString(), scrapped_by:'Jack'})});
+  if(pr.ok) return pr;
+  await fetchT(SUPABASE_URL+'/rest/v1/storefront_batch_items?batch_id=eq.'+eid,{method:'DELETE',headers:h});
+  return fetchT(SUPABASE_URL+'/rest/v1/storefront_batches?id=eq.'+eid,{method:'DELETE',headers:h});
 }
 function sbRouteBarHTML(drafts){
   var ids=drafts.map(function(b){ return b.id; });
@@ -24232,7 +24617,7 @@ async function sbAssign(batchId, who, quiet){
           body:JSON.stringify(asins.map(function(a){return {batch_id:clone.id, asin:a};}))});
       }
     }
-    SB_BATCHES=null;
+    SB_BATCHES=null; SB_BATCHES_ALL=null;
     if(!quiet) showToast('Sent to '+vaDisp('Mera')+' and '+vaDisp('Suz')+' ✓');
     sbRefreshJack();                       // a NEW row exists server-side — must refetch
     return;
@@ -24364,13 +24749,17 @@ function sbPasteISO(b){
   return (typeof sbToISO==='function'?sbToISO(b&&b.date):'')||String((b&&b.date)||'').slice(0,10);
 }
 function sbLastPaste(qid){
-  var newest='', forDate='';
-  (SB_BATCHES||[]).forEach(function(b){
+  var newest='', forDate='', wasBinned=false, binned=0;
+  /* the FULL log, binned included — Jack bins what is no good, but she still pasted it */
+  (SB_BATCHES_ALL||SB_BATCHES||[]).forEach(function(b){
     if(b.storefront_id!==qid) return;
+    if(b.scrapped) binned++;
     var iso=sbPasteISO(b);
-    if(iso&&iso>newest){ newest=iso; forDate=b.date||''; }
+    if(iso&&iso>newest){ newest=iso; forDate=b.date||''; wasBinned=!!b.scrapped; }
   });
   sbLastPaste._for=forDate;
+  sbLastPaste._binned=binned;
+  sbLastPaste._lastWasBinned=wasBinned;
   return newest;
 }
 function sbAgoLabel(iso){
@@ -24384,9 +24773,10 @@ function sbAgoLabel(iso){
   if(days===1) return {txt:'yesterday', cls:'fresh', d:1};
   if(days<=3)  return {txt:days+' days ago', cls:'ok', d:days};
   if(days<=7)  return {txt:days+' days ago', cls:'warn', d:days};
-  if(days<=27) return {txt:days+' days ago', cls:'cold', d:days};
-  var w=Math.floor(days/7);
-  return {txt:(days<60?w+' weeks ago':Math.floor(days/30)+' months ago'), cls:'cold', d:days};
+  /* was: days up to 27 then "4 weeks ago" — so 27 and 28 days looked a category
+     apart. Days all the way to 60 keeps neighbouring rows comparable at a glance. */
+  if(days<60) return {txt:days+' days ago', cls:'cold', d:days};
+  return {txt:Math.floor(days/30)+' months ago', cls:'cold', d:days};
 }
 function sbQueueRowHTML(q){
   /* lbl() lets the option READ differently from the value it stores — the priority
@@ -24424,10 +24814,20 @@ function sbQueueRowHTML(q){
       +'" placeholder="e.g. household brands \u00b7 Sarah builds it Mondays" '
       +'onchange="sbQueueSet(\''+q.id+'\',\'notes\',this.value)"></td>'
     +(function(){ var iso=sbLastPaste(q.id), fd=sbLastPaste._for, a=sbAgoLabel(iso);
+        var binned=sbLastPaste._binned||0, lastBin=sbLastPaste._lastWasBinned;
+        /* Two dates, because they legitimately differ: WHEN she pasted (what this
+           column measures) and the day the batch was FOR (she can backdate). Showing
+           only the first made a backdated paste look like a wrong number. */
+        var differs = fd && typeof sbToISO==='function' && sbToISO(fd)!==iso;
         var tip = (a.d==null) ? 'Sarah has never pasted into this tag'
-          : ('Sarah pasted '+a.d+' day'+(a.d===1?'':'s')+' ago'
-             + (fd && sbToISO && sbToISO(fd)!==iso ? ' \u2014 she dated that batch '+fd+', so the two differ' : ''));
-        return '<td class="sb-ctr"><span class="sbq-ago '+a.cls+'" title="'+escHtml(tip)+'">'+a.txt+'</span></td>'; })()
+          : ('Sarah pasted this '+(a.d===0?'today':a.d+' day'+(a.d===1?'':'s')+' ago')
+             + (differs ? ' \u2014 she dated that batch '+fd+', which is why the two differ' : '')
+             + (lastBin ? ' \u2014 you binned that one, but it still counts as a paste' : '')
+             + (binned ? ' \u00b7 '+binned+' batch'+(binned===1?'':'es')+' from this tag binned in total' : ''));
+        return '<td class="sb-ctr"><span class="sbq-ago '+a.cls+'" title="'+escHtml(tip)+'">'+a.txt
+          +(lastBin?'<em class="sbq-binned" title="You binned this batch \u2014 the paste still counts">binned</em>':'')
+          +(differs?'<em class="sbq-for">for '+escHtml(String(fd))+'</em>':'')
+          +'</span></td>'; })()
     +(SB_SHOW_DETAILS
        ? '<td><input class="sb-inp" value="'+escHtml(q.frequency||'')+'" placeholder="Daily" onchange="sbQueueSet(\''+q.id+'\',\'frequency\',this.value)"></td>'
        : '')
@@ -25496,7 +25896,7 @@ function sbJackHTML(){
         +'<button class="btn btn-success" onclick="sbCopySQL(this)">&#128203; Copy the SQL</button>'
         +'<a class="btn btn-ghost" href="https://supabase.com/dashboard/project/ffbdazepqrsyurhouxif/sql/new" target="_blank">Open Supabase SQL editor &#8599;</a>'
         +'<button class="btn btn-ghost" onclick="sbToggleSQL()">Show it</button>'
-        +'<button class="btn btn-ghost" onclick="window.SB_TABLES_MISSING=false;SB_QUEUES=null;SB_BATCHES=null;mgr_renderStorefronts()">Check again</button>'
+        +'<button class="btn btn-ghost" onclick="window.SB_TABLES_MISSING=false;SB_QUEUES=null;SB_BATCHES=null;SB_BATCHES_ALL=null;mgr_renderStorefronts()">Check again</button>'
       +'</div>'
       +'<div id="sb-sql-box" style="display:none;"><textarea readonly spellcheck="false" onclick="this.select()">'
         +escHtml(sbSetupSQL())+'</textarea></div>'
@@ -26798,38 +27198,101 @@ function leadsSnapshotHTML(){
         +'<div class="s-sub" style="display:flex;align-items:center;gap:8px;"><span class="mgr-spin"></span>Loading your leads&hellip;</div></div></div>'
         +'<div class="kpi-row">'+skc+skc+skc+skc+'</div>';
     }
-    // "New" counted only leads Jack had never OPENED, while "Going stale" counted every
-    // undecided lead 36h+ — so the stale figure could exceed the new one (258 of 256),
-    // which reads as broken maths and makes the whole panel untrustworthy. The real
-    // workload is everything undecided; stale is now strictly a subset of it.
-    var pending=leads.filter(function(l){return l.islead===null&&!l.status;});
+    /* LAST 30 DAYS ONLY (Jack, 31/08). All-time these tiles read 842 waiting and
+       842 stale — a number that includes leads from months back he is never going
+       to work, so it is a guilt counter, not a worklist. Windowed to 30 days it is
+       437, which is a real week's work. Buy rate is windowed too, so it measures how
+       he is buying NOW instead of an average dragged flat by July.
+       The window uses the same day-diff maths as the list's own "Last 30 days"
+       filter, and every click hands off to that filter — so the number on the tile
+       and the number of rows he lands on are always the same figure. */
+    var LD_WIN=30;
+    var _t0=(function(){ var nw=new Date(); return new Date(nw.getFullYear(),nw.getMonth(),nw.getDate()); })();
+    function inWin(l){
+      var q=String(l.date||'').split('/'); if(q.length!==3) return false;
+      var dd=Math.round((_t0-new Date(+q[2],+q[1]-1,+q[0]))/86400000);
+      return dd>=0 && dd<LD_WIN;
+    }
+    var recent=leads.filter(inWin);
+    var pendingAll=leads.filter(function(l){return l.islead===null&&!l.status;});
+    var pending=pendingAll.filter(inWin);
+    var older=pendingAll.length-pending.length;   // shown, never silently dropped
     var un=pending.length;
     var unseen=pending.filter(function(l){return !l.seen;}).length;
-    var stale=pending.filter(function(l){return isStale(l);}).length;
-    var basket=leads.filter(function(l){return ['atbq','atba2a','waiting'].indexOf(l.status)>-1;}).length;
-    var bought=leads.filter(function(l){return l.status==='bought';});
-    var bp=bought.reduce(function(a,b){return a+b.profit;},0);
-    var dec=leads.filter(function(l){return l.islead!==null;}).length;
+    /* "Going stale" was isStale() = 36h+. Inside a 30-day window that is now EVERY
+       pending lead — the freshest in the queue is 58h old, because a lead is already
+       a day or two old by the time the sheet sync brings it in — so the tile showed
+       437 next to a Waiting tile also showing 437. Two tiles, one number, no
+       information. The rotting slice is the week-plus one, carrying the profit that
+       is sat in it: that is the figure that should make him open the list. */
+    var STALE_D=7;
+    var staleL=pending.filter(function(l){return l.hrs>=STALE_D*24;});
+    var stale=staleL.length;
+    var staleP=staleL.reduce(function(a,b){return a+(+b.profit||0);},0);
+    var basket=recent.filter(function(l){return ['atbq','atba2a','waiting'].indexOf(l.status)>-1;}).length;
+    var bought=recent.filter(function(l){return l.status==='bought';});
+    var bp=bought.reduce(function(a,b){return a+(+b.profit||0);},0);
+    var dec=recent.filter(function(l){return l.islead!==null;}).length;
     var br=dec?Math.round(bought.length/dec*100):0;
+    /* the previous 30 days, so buy rate carries a direction instead of floating alone */
+    function inPrev(l){
+      var q=String(l.date||'').split('/'); if(q.length!==3) return false;
+      var dd=Math.round((_t0-new Date(+q[2],+q[1]-1,+q[0]))/86400000);
+      return dd>=LD_WIN && dd<LD_WIN*2;
+    }
+    var prev=leads.filter(inPrev);
+    var pDec=prev.filter(function(l){return l.islead!==null;}).length;
+    var pBr=pDec?Math.round(prev.filter(function(l){return l.status==='bought';}).length/pDec*100):null;
+    var brDelta=(pBr===null)?null:(br-pBr);
     var newCard=mgr_kpi({icon:'inbox',label:'Waiting on you',value:un,tone:un>0?'purple':'off',
-      badge:un>0?{t:'Review',tone:'purple'}:{t:'All clear',tone:'green'},
-      sub:un>0?('<b>'+unseen+'</b> never opened &#183; <b>'+(un-unseen)+'</b> opened, still undecided'):'nothing waiting',
-      act:un>0?'Review '+un+' leads':null, onclick:"showLeadsView()"});
+      badge:un>0?{t:'30 days',tone:'purple'}:{t:'All clear',tone:'green'},
+      sub:un>0?('<b>'+unseen+'</b> never opened &#183; <b>'+(un-unseen)+'</b> opened'
+        +(older>0?' &#183; <span style="opacity:.55">'+older+' older than 30d not counted</span>':'')):'nothing waiting',
+      act:un>0?'Review '+un+' leads':null, onclick:"showLeadsWindow()"});
     var staleCard=mgr_kpi({icon:'clock',label:'Going stale',value:stale,tone:stale>0?'red':'off',
-      badge:stale>0?{t:'Urgent',tone:'red'}:{t:'All clear',tone:'green'},
-      sub:stale>0?(stale===un?('<b>all '+stale+'</b> have sat 36h+'):('<b>'+stale+'</b> of the '+un+' have sat 36h+')):'no stale leads',
-      act:stale>0?'Clear the backlog':null, onclick:"showLeadsView()"});
+      badge:stale>0?{t:'7 days+',tone:'red'}:{t:'All clear',tone:'green'},
+      sub:stale>0?('<b>£'+Math.round(staleP).toLocaleString()+'</b> of profit sat '+STALE_D+'+ days &#183; '+Math.round(stale/un*100)+'% of the queue'):'nothing over '+STALE_D+' days',
+      act:stale>0?'Clear the backlog':null, onclick:"showLeadsWindow()"});
     var basketCard=mgr_kpi({icon:'cart',label:'ATB / waiting',value:basket,tone:basket>0?'amber':'off',
       badge:basket>0?{t:'Pending',tone:'amber'}:{t:'Empty',tone:'off'},
       sub:basket>0?'<b>£'+Math.round(bp).toLocaleString()+'</b> queued to buy':'nothing waiting to buy',
-      onclick:"showLeadsView()"});
+      onclick:"showLeadsWindow()"});
     var buyCard=mgr_kpi({icon:'target',label:'Buy rate',value:br,unit:'%',tone:'cyan',
-      sub:'<b>'+bought.length+'</b> of <b>'+dec+'</b> decisions ended in a buy'});
-    return '<div class="mgr-sec2 leads-eyes"><div><div class="s-ttl">Leads — needs your eyes</div><div class="s-sub">'+(un>0?un+' lead'+(un===1?'':'s')+' waiting for review':'nothing waiting — you\'re on top of it')+'</div></div>'
-      +'<div class="s-right"><a class="s-act" onclick="showLeadsView()">Open leads →</a></div></div>'
+      badge:brDelta===null?{t:'30 days',tone:'cyan'}:{t:(brDelta>0?'&#9650; ':brDelta<0?'&#9660; ':'')+(brDelta===0?'level':Math.abs(brDelta)+'pt'),tone:brDelta>=0?'green':'amber'},
+      sub:'<b>'+bought.length+'</b> of <b>'+dec+'</b> decisions ended in a buy'
+        +(pBr===null?'':' &#183; <span style="opacity:.55">prev 30d '+pBr+'%</span>')});
+    return '<div class="mgr-sec2 leads-eyes"><div><div class="s-ttl">Leads — needs your eyes</div><div class="s-sub">'+(un>0?un+' lead'+(un===1?'':'s')+' waiting for review &#183; last 30 days':'nothing waiting — you\'re on top of it')+'</div></div>'
+      +'<div class="s-right"><a class="s-act" onclick="showLeadsWindow()">Open leads →</a></div></div>'
       +'<div class="kpi-row">'+newCard+staleCard+basketCard+buyCard+'</div>';
   }catch(e){return '';}
 }
+/* every dashboard repaint — live tick, cloud sync, tab switch — restores what
+   Jack had expanded (see mgr_restoreOpen above) */
+(function(){
+  function wrapOne(fn){
+    var _f=window[fn];
+    if(typeof _f!=='function'||_f._restoresOpen) return;
+    var w=function(){
+      var r=_f.apply(this,arguments);
+      try{ mgr_restoreOpen(); }catch(e){}
+      setTimeout(function(){ try{ mgr_restoreOpen(); }catch(e){} },300);   // async fills
+      return r;
+    };
+    w._restoresOpen=true;
+    window[fn]=w;
+  }
+  /* installSwitchTab (the Trends/Audit installer) REPLACES mgr_switchTab outright
+     rather than wrapping it — its own comment says so — which silently killed the
+     first version of this hook. Re-check on a slow heartbeat and re-wrap whatever
+     is current, so the restore survives no matter who replaces what at startup. */
+  function assert_(){
+    if(typeof window.mgr_restoreOpen==='function'){
+      wrapOne('mgr_renderOverview'); wrapOne('mgr_switchTab');
+    }
+    setTimeout(assert_,1500);
+  }
+  assert_();
+})();
 (function(){
   function hook(){
     if(typeof window.mgr_renderOverview!=='function')return setTimeout(hook,400);
