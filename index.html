@@ -838,10 +838,12 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .sbwt-done:hover{background:var(--green);color:#08120e;}
 .sbwt-done.solo{grid-column:1 / -1;}
 .sbr.sbwt.running{border-color:color-mix(in srgb,var(--green) 45%,transparent);}
-#view-leads .d-next{background:rgba(255,255,255,.06);border:1px solid var(--b2);color:var(--t2);
-  border-radius:7px;padding:3px 10px;font-family:inherit;font-size:10.5px;font-weight:700;
-  cursor:pointer;margin-left:8px;white-space:nowrap;}
-#view-leads .d-next:hover{border-color:var(--acc,#8b5cf6);color:#fff;}
+/* 03/09: was a 10px ghost button. After a decision it is THE next action, so it
+   reads like one. Not auto-advance — Jack wants to move himself. */
+#view-leads .d-next{background:var(--cyan,#18c8f0);border:1px solid transparent;color:#04141a;
+  border-radius:9px;padding:9px 16px;font-family:inherit;font-size:12.5px;font-weight:900;letter-spacing:.2px;
+  cursor:pointer;margin-left:auto;white-space:nowrap;box-shadow:0 4px 16px rgba(24,200,240,.28);}
+#view-leads .d-next:hover{filter:brightness(1.08);transform:translateY(-1px);}
 .ql-split{font-size:10px;color:var(--muted-2);font-family:var(--font-mono);}
 .ql-kp{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;border-radius:5px;padding:2px 7px;}
 .ql-kp.yes{color:#10d99a;background:color-mix(in srgb,#10d99a 15%,transparent);}
@@ -1793,8 +1795,17 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
      on screen. contain-intrinsic-size keeps the scrollbar honest so the thumb does
      not jump. No markup or behaviour change; the rows are still real DOM, so search,
      keyboard nav and Ctrl+F all work exactly as before. */
+  /* ── "scrolling moves stuff" ────────────────────────────────────────────
+     content-visibility skips layout for off-screen rows, and the browser uses
+     contain-intrinsic-size as the stand-in height until a row scrolls into view.
+     That number was GUESSED at 110px (and a second rule elsewhere guessed 88px)
+     while a real row is 127px. Every row that scrolled in was 17px taller than
+     reserved, so the page kept growing under the scrollbar — ~8,000px of drift
+     across 468 rows. That is the jump: the content genuinely moves as you scroll.
+     --ld-row-h is measured from a real row after each render (ldSyncRowH), so it
+     is right at any width and density instead of wrong at all of them. */
   & .litem{position:relative;display:flex;gap:10px;padding:8px 13px;border-bottom:1px solid var(--b1);border-left:3px solid transparent;cursor:pointer;transition:background .12s;
-    content-visibility:auto;contain-intrinsic-size:auto 110px}
+    content-visibility:auto;contain-intrinsic-size:auto var(--ld-row-h,127px)}
   & .litem-body{flex:1;min-width:0}
   & .litem-thumb{flex-shrink:0;width:46px;height:46px;border-radius:8px;overflow:hidden;position:relative;background:var(--s3);border:1px solid var(--b2)}
   & .litem-thumb img{position:relative;z-index:1;width:100%;height:100%;object-fit:contain;background:#fff;display:block}
@@ -2007,7 +2018,7 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
   & .d-why em{font-style:normal;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#8d95aa;margin-right:2px;}
   & .d-why-b{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:#cfd6e4;
       border-radius:7px;padding:5px 8px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;
-      text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+      text-align:left;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.25;}
   & .d-why-b:hover{background:rgba(255,255,255,.16);color:#fff;}
   & .d-why-b.k-score:hover{border-color:#ffb84d;color:#ffc978;}
   & .d-why-b.k-data:hover{border-color:#18c8f0;color:#7fdcf5;}
@@ -2971,6 +2982,13 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 #view-leads .dup-note.same{color:var(--t3);background:rgba(255,255,255,.05);border:1px solid var(--b2);}
 #view-leads .dup-note.cross{color:var(--t2);background:color-mix(in srgb,var(--cyan) 10%,transparent);border:1px solid color-mix(in srgb,var(--cyan) 32%,transparent);}
 #view-leads .dup-note b{color:var(--t1);}
+/* 03/09, seen on the phone: .dup-note is a flex row, so its loose text becomes an
+   anonymous flex item squeezed beside the buttons — "Mera found this too" wrapped one
+   word per line in a 60px column. Stack it on narrow screens. */
+@media(max-width:700px){
+  #view-leads .dup-note{display:block;}
+  #view-leads .dup-note .dup-both,#view-leads .dup-note .dup-prior,#view-leads .dup-note .dup-why{margin-top:9px;}
+}
 #view-leads .litem-leaving{animation:litemOut .26s ease-in forwards;pointer-events:none;}
 @keyframes litemOut{to{opacity:0;transform:translateX(-14px);max-height:0;padding-top:0;padding-bottom:0;}}
 #lead-undo-bar{position:absolute;left:50%;bottom:22px;transform:translate(-50%,14px);z-index:60;
@@ -3047,6 +3065,10 @@ html.force-mobile #view-leads .litem-quick{display:flex;}
 .d-shot:hover{border-color:var(--accent);}
 .d-shot.d-shot-fail img{display:none;}
 .d-shot.d-shot-fail span::after{content:' — preview unavailable, opens in a new tab';}
+.d-shot.d-shot-fail.d-shot-why span::after{content:'';}   /* the span already says why */
+.ld-arch-sum{cursor:pointer;opacity:.8;}
+.ld-arch-sum:hover{opacity:1;}
+.eod-lc-miss{color:var(--amber);font-weight:600;}
 .d-rowref{font-family:var(--font-mono);font-size:10.5px;font-weight:700;color:var(--muted-2);
   background:rgba(255,255,255,.06);border-radius:999px;padding:2px 8px;margin-left:7px;text-transform:none;letter-spacing:0;}
 .vres{background:rgba(255,255,255,.028);border:1px solid var(--line-2);border-radius:11px;
@@ -4182,7 +4204,56 @@ a.sbi-mini{text-decoration:none;display:inline-block;}
 /* Destinations carry the SAME colour as the person, everywhere in the app, so the
    button you press and the tile it produces are visibly the same thing. */
 .dup-tag.dup-ok{background:rgba(34,211,154,.16);color:#22d39a;border:1px solid rgba(34,211,154,.45);}
-.litem{content-visibility:auto;contain-intrinsic-size:auto 88px;}
+/* signal chips — same shape as the CHEAPER badge, because that is the one that worked */
+.dd-menu{position:fixed;z-index:9000;overflow-y:auto;padding:5px;border-radius:12px;
+  background:var(--panel,#12141d);border:1px solid var(--line-2,rgba(255,255,255,.14));
+  box-shadow:0 18px 50px rgba(0,0,0,.6);font-size:13px;
+  animation:ddIn .11s ease-out;}
+@keyframes ddIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
+.dd-opt{display:flex;align-items:center;gap:8px;padding:8px 11px;border-radius:8px;cursor:pointer;
+  color:var(--t2,#b6bccb);white-space:nowrap;}
+.dd-opt:hover,.dd-opt.on{background:color-mix(in srgb,var(--accent,#8b5cf6) 22%,transparent);color:#fff;}
+.dd-opt.sel{color:#fff;font-weight:700;}
+.dd-tick{width:13px;flex-shrink:0;color:var(--accent,#8b5cf6);font-weight:900;}
+select.dd-active{border-color:var(--accent,#8b5cf6)!important;}
+.mx-wrap{overflow-x:auto;margin-top:12px;}
+.mx-table{border-collapse:separate;border-spacing:6px;width:100%;min-width:520px;}
+.mx-table th{font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--muted-2);text-align:left;padding:2px 4px;white-space:nowrap;}
+.mx-cell{background:rgba(255,255,255,.04);border:1px solid var(--line-2,rgba(255,255,255,.12));border-radius:10px;padding:8px 9px;vertical-align:top;min-width:118px;}
+.mx-cell.mx-ok{border-color:rgba(34,211,154,.45);}
+.mx-cell.mx-warn{border-color:rgba(255,184,48,.5);}
+.mx-cell.mx-bad{border-color:rgba(242,100,127,.6);background:rgba(242,100,127,.07);}
+.mx-cell.mx-edited{box-shadow:inset 0 0 0 1px rgba(139,92,246,.5);}
+.mx-in{width:52px;background:#0b0c12;border:1px solid var(--line-2);border-radius:7px;color:var(--text);
+  font-family:var(--font-head,inherit);font-size:18px;font-weight:800;padding:4px 6px;text-align:center;}
+.mx-in:focus{outline:none;border-color:var(--accent);}
+.mx-rate{display:block;margin-top:6px;font-size:10.5px;color:var(--muted-2);line-height:1.35;}
+.mx-rate b{color:var(--text);}
+.mx-rate em{display:block;font-style:normal;font-size:9.5px;opacity:.7;}
+.mx-rate.none{opacity:.45;}
+.mx-legend{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:11px;font-size:10.5px;color:var(--muted-2);}
+.mx-key{width:11px;height:11px;border-radius:3px;display:inline-block;margin-left:9px;}
+.mx-key.mx-ok{background:rgba(34,211,154,.5);}
+.mx-key.mx-warn{background:rgba(255,184,48,.5);}
+.mx-key.mx-bad{background:rgba(242,100,127,.6);}
+.mx-note{margin-left:auto;opacity:.65;}
+.mx-sep{margin-top:12px;padding:10px 13px;border-radius:10px;font-size:12.5px;line-height:1.5;
+  background:rgba(34,211,154,.09);border:1px solid rgba(34,211,154,.3);color:var(--text);}
+.mx-sep.weak{background:rgba(255,184,48,.1);border-color:rgba(255,184,48,.42);}
+.mx-aside{margin-top:8px;padding:8px 12px;border-radius:9px;font-size:11.5px;line-height:1.5;
+  color:var(--muted-2);background:rgba(255,255,255,.04);border:1px solid var(--line-2);}
+.ldd-prevent{margin:2px 0 10px;padding:9px 12px;border-radius:9px;font-size:11.5px;line-height:1.5;
+  color:var(--text);background:rgba(255,184,48,.1);border:1px solid rgba(255,184,48,.38);}
+.ldd-prevent b{color:var(--amber);}
+.mx-sep em{display:block;font-style:normal;font-size:10.5px;color:var(--muted-2);margin-top:3px;}
+.sig-row{display:flex;flex-wrap:wrap;gap:7px;margin:-2px 0 13px;}
+.sig{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:900;letter-spacing:.4px;
+  text-transform:uppercase;padding:4px 10px;border-radius:7px;white-space:nowrap;cursor:help;}
+.sig-good{background:rgba(34,211,154,.14);color:#22d39a;border:1px solid rgba(34,211,154,.42);}
+.sig-warn{background:rgba(255,184,48,.14);color:#ffb830;border:1px solid rgba(255,184,48,.42);}
+@media(max-width:700px){ .sig{white-space:normal;} }
+/* the .litem intrinsic size lives with the row rule above and measures itself —
+   this second, contradicting guess (88px) is why the estimate was wrong twice over */
 .ld-band{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.4px;
   padding:3px 8px;border-radius:20px;text-transform:uppercase;white-space:nowrap;
   color:var(--bc);background:color-mix(in srgb,var(--bc) 15%,transparent);
@@ -6575,7 +6646,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v48.2';
+var APP_VERSION='v49.3';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -6686,6 +6757,10 @@ function getAppSettings(){
     if(Array.isArray(saved.savedFilters)) settings.savedFilters=saved.savedFilters;
     ['swRoi','swProfit','swDemand','swMargin'].forEach(function(k){ var n=parseFloat(saved[k]); if(!isNaN(n)&&n>=0&&n<=2) settings[k]=n; });
     if(saved.scoreMode==='smart'||saved.scoreMode==='manual') settings.scoreMode=saved.scoreMode;
+    /* getAppSettings rebuilds from the defaults and copies back a WHITELIST, so any key
+       not named here is written to storage and then silently ignored on the next read.
+       The matrix overrides hit exactly that: edits saved, scores never moved. */
+    if(saved.dealMatrix && typeof saved.dealMatrix==='object') settings.dealMatrix=saved.dealMatrix;
     if(Array.isArray(saved.savedFilters)) settings.savedFilters=saved.savedFilters;
     if(saved.leadsStartDate!==undefined) settings.leadsStartDate=String(saved.leadsStartDate);
     if(saved.quietFrom!==undefined) settings.quietFrom=String(saved.quietFrom);
@@ -6923,7 +6998,7 @@ var DEFAULT_BADGES=[
   {on:1,metric:'margin',op:'lt',val:6,label:'Low margin'},
   {on:1,metric:'fba',op:'gt',val:15,label:'Crowded (15+ sellers)'},
   {on:1,metric:'roi',op:'lt',val:12,label:'Low ROI'},
-  {on:1,metric:'profit',op:'lt',val:8,label:'Thin profit'}
+  {on:1,metric:'profit',op:'lt',val:3,label:'Thin profit'}    // 03/09: was 8 — contradicted the rubric's 'Mid profit £3–£9 / Strong buy'
 ];
 var BADGE_METRICS=[['roi','ROI %'],['profit','Net profit £'],['margin','Margin %'],['fba','FBA sellers'],['spm','SPM']];
 function getBadges(){ var s; try{s=getAppSettings();}catch(e){s={};} return Array.isArray(s.badges)?s.badges:DEFAULT_BADGES.slice(); }
@@ -7691,6 +7766,55 @@ function draftStartFresh(va){
   var setup=document.getElementById(va==='Suz'?'suz-setup':'mera-setup'); if(setup) setup.style.display='block';
   try{ document.getElementById('view-va').classList.add('setup-active'); }catch(e){}
 }
+/* ── YESTERDAY HAS TO BE CLOSED BEFORE TODAY OPENS ──────────────────────────
+   Jack, 03/09: "on her next day tho if she didn't press submit that's what she
+   should be doing before starting a new shift."
+   It happened for real on 02/09: Mera worked 7h18m, put 16 leads on her sheet and
+   simply shut the app — no clock_out, no submit. Nobody knew until he asked why her
+   tab looked empty, and her week is a full day short. Nothing stopped her opening a
+   fresh shift the next morning on top of it.
+   The event log already holds the answer, so this asks for nothing she has to
+   remember: it finds the most recent day she clocked in, never submitted, and shows
+   what the log says she worked. She confirms, it submits, then today starts. */
+function seDayKeysBack(days){
+  var out=[];
+  for(var i=1;i<=days;i++){
+    var d=new Date(); d.setDate(d.getDate()-i);
+    out.push(String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear());
+  }
+  return out;
+}
+/* the newest earlier day with a clock-in and no submitted shift record */
+function findUnclosedShift(va){
+  try{
+    if(!seEnabled || !seEnabled()) return Promise.resolve(null);
+    var days=seDayKeysBack(5);
+    var submitted={};
+    try{ (mgr_getLog()||[]).forEach(function(r){ if(r&&r.va===va) submitted[r.date]=1; }); }catch(e){}
+    var todo=days.filter(function(d){ return !submitted[d]; });
+    if(!todo.length) return Promise.resolve(null);
+    var i=0;
+    function step(){
+      if(i>=todo.length) return Promise.resolve(null);
+      var day=todo[i++];
+      return seFetch(va,day).then(function(evts){
+        if(!evts||!evts.length) return step();
+        /* seCompute runs the clock to NOW when there is no clock_out — right for a
+           shift happening this second, badly wrong for a past day: Mera's 02/09 came
+           back as 2,086 minutes (34h) because it counted every hour since. For a day
+           already gone, the last event IS the end of the shift. */
+        var lastMs=0;
+        evts.forEach(function(e){ var t=+e.client_ms||0; if(t>lastMs) lastMs=t; });
+        var c=seCompute(evts, lastMs||Date.now());
+        if(c.clockIn===null) return step();
+        if(c.clockedMs < 20*60000) return step();          // a couple of minutes is not a shift
+        if(c.clockedMs > 16*3600000) return step();        // nonsense — don't ask her about it
+        return { day:day, clockedMs:c.clockedMs, breakMs:c.breakMs, clockIn:c.clockIn, clockOut:c.clockOut||lastMs };
+      });
+    }
+    return step();
+  }catch(e){ return Promise.resolve(null); }
+}
 function selectVA(va) {
   /* The two-tab blocker that used to live here is GONE, deliberately. It asked the
      other tabs for permission, and when the VA pressed its "Close this tab" button
@@ -7701,6 +7825,35 @@ function selectVA(va) {
      anything. Two tabs, a shut laptop, a crash and a reopen are now the same thing.
      The safest code here is no code. */
   renderNewsletterSchedulePanels();
+  /* Before anything else: did she leave an earlier shift open? If so she closes that
+     first — see findUnclosedShift. Only ever asks about a day with real logged time,
+     and a "not me / skip" answer is remembered so it cannot nag her every morning. */
+  if ((va === 'Mera' || va === 'Suz') && DB_ENABLED && !window._skipUnclosed) {
+    try{
+      findUnclosedShift(va).then(function(u){
+        if(!u){ window._skipUnclosed=1; selectVA(va); return; }
+        var skipKey='bdl_unclosed_skip_'+va+'_'+u.day;
+        var skipped=false; try{ skipped=localStorage.getItem(skipKey)==='1'; }catch(e){}
+        if(skipped){ window._skipUnclosed=1; selectVA(va); return; }
+        var m=Math.round(u.clockedMs/60000), bm=Math.round(u.breakMs/60000);
+        var hh=Math.floor(m/60)+'h '+String(m%60).padStart(2,'0')+'m';
+        var msg='You never submitted your shift for '+u.day+'.\n\n'
+          +'From your own clock that day: '+hh+' worked'+(bm?' and '+bm+' minutes of break':'')+'.\n\n'
+          +'Press OK to open that day and submit it now — nothing is lost and your hours get counted.\n'
+          +'Press Cancel to skip it and start today instead.';
+        if(confirm(msg)){
+          window._skipUnclosed=1;
+          try{ showToast('Opening '+u.day+' — check it over and submit'); }catch(e){}
+          try{ localStorage.setItem('bdl_closeday_'+va, JSON.stringify(u)); }catch(e){}
+        } else {
+          try{ localStorage.setItem(skipKey,'1'); }catch(e){}
+          window._skipUnclosed=1;
+        }
+        selectVA(va);
+      }).catch(function(){ window._skipUnclosed=1; selectVA(va); });
+    }catch(e){ window._skipUnclosed=1; }
+    return;
+  }
   // Check Supabase for an in-progress draft first
   if ((va === 'Mera' || va === 'Suz') && DB_ENABLED) {
     document.getElementById('login-screen').style.display = 'none';
@@ -8403,12 +8556,13 @@ function sbVaGroupEl(rows){
   });
   /* oldest first inside the card — the "clear this one first" rule enforced by ORDER,
      not by repeating a warning sentence on every row. High priority still tops it. */
+  /* Jack's order (03/09): High → Medium → Low, and newest first inside each band.
+     See sbOrderCmp. Was oldest-first; the 5-day auto-remove now handles staleness. */
   var ordered=rows.slice().sort(function(x,y){
-    var px=(x.t.sbPriority==='High')?0:1, py=(y.t.sbPriority==='High')?0:1;
-    if(px!==py) return px-py;
-    var ax=sbAgeDays(((SB_BATCHES||[]).find(function(b){return b.id===x.t.sbBatchId;})||{}).date)||0;
-    var ay=sbAgeDays(((SB_BATCHES||[]).find(function(b){return b.id===y.t.sbBatchId;})||{}).date)||0;
-    return ay-ax;
+    function bat(t){ return (SB_BATCHES||[]).find(function(b){ return b.id===t.sbBatchId; })||{}; }
+    var bx=bat(x.t), by=bat(y.t);
+    return sbOrderCmp({priority:x.t.sbPriority||bx.priority, date:bx.date, storefront_name:bx.storefront_name},
+                      {priority:y.t.sbPriority||by.priority, date:by.date, storefront_name:by.storefront_name});
   });
   sec.innerHTML='<div class="tk-sec-h sbv-h">\u{1F3EC} Storefront batches'
     +'<span class="sbv-sum"><b>'+rows.length+'</b> to work · <b>'+totA+'</b> ASINs'
@@ -14776,6 +14930,7 @@ function mgr_renderSettings(){
         +'<button class="btn btn-ghost" onclick="mgr_resetSettings()">Reset Defaults</button>'
       +'</div>'
     +'</div>'
+    +'<div id="mx-panel-host">'+matrixPanelHTML()+'</div>'
     +'<div class="settings-card" data-sg="vas">'
       +'<div class="settings-title">What VAs can do</div>'
       +'<div class="settings-sub">Turn features on the VA shift screen on or off. Off = the VA never sees it.</div>'
@@ -17386,6 +17541,189 @@ function scoreLift(l,s){
   });
   return (out.spm||out.profit)?out:{now:now,spm:null,profit:null,topped:now>=10};
 }
+/* ── THE MATRIX, AND HOW TO TELL WHETHER IT IS ANY GOOD ──────────────────────
+   Jack, 03/09: "make it easy to help improve the scoring side, it's still a bit
+   shit". Measured on his own 228 decisions, he is right and here is the proof:
+   a 7/10 lead is bought 69% of the time, an 8/10 68%, a 9/10 67%. The score does
+   not separate — bought leads average 7.87 and rejected leads 7.10, a gap of 0.77
+   on a 10-point scale. 44 leads scored 8+ and were rejected.
+   It was also unfixable: DEAL_MATRIX was a const in the file, so the only way to
+   change a score was a new build. Now every cell can be overridden from Settings,
+   each cell is shown WITH the buy rate it actually produced, and one button
+   proposes scores straight from his own decisions. */
+function mxOverrides(){
+  try{ var o=getAppSettings().dealMatrix; return (o&&typeof o==='object')?o:{}; }catch(e){ return {}; }
+}
+function mxKey(band,tier){ return band+'|'+tier; }
+function mxCell(band,tier){
+  var base=(DEAL_MATRIX[band]||DEAL_MATRIX['under 10'])[tier];
+  var ov=mxOverrides()[mxKey(band,tier)];
+  if(ov==null||isNaN(parseFloat(ov))) return base;
+  return [Math.max(0,Math.min(10,parseFloat(ov))), base[1]];
+}
+function mxSet(band,tier,val){
+  var st=getAppSettings();
+  var o=(st.dealMatrix&&typeof st.dealMatrix==='object')?st.dealMatrix:{};
+  var k=mxKey(band,tier);
+  if(val===''||val==null) delete o[k]; else o[k]=Math.max(0,Math.min(10,parseFloat(val)||0));
+  st.dealMatrix=o; saveAppSettings(st);
+  try{ pushSettingsCloud(st); }catch(e){}
+  try{ leads.forEach(function(l){ l._sc=calcScore({roi:l.roi,profit:l.profit,spm:l.spm,fba:l.fba,margin:l.margin,status:l.status,islead:l.islead}); }); }catch(e){}
+  try{ renderList(); }catch(e){}
+  try{ renderMatrixPanel(); }catch(e){}
+}
+function mxReset(){
+  var st=getAppSettings(); delete st.dealMatrix; saveAppSettings(st);
+  try{ pushSettingsCloud(st); }catch(e){}
+  try{ leads.forEach(function(l){ l._sc=calcScore({roi:l.roi,profit:l.profit,spm:l.spm,fba:l.fba,margin:l.margin,status:l.status,islead:l.islead}); }); renderList(); }catch(e){}
+  try{ renderMatrixPanel(); }catch(e){}
+  try{ showToast('Matrix put back to the built-in scores'); }catch(e){}
+}
+/* ── A REJECT THAT WAS NOT ABOUT THE NUMBERS TEACHES NOTHING ─────────────────
+   Jack, 03/09, asked for this directly. Passing a 9/10 because it was gated, or
+   because he already has a pallet of them, is not evidence the 9/10 profile is
+   wrong — but the cell was counted as a miss all the same. Measured on his live
+   board: 20 of 82 rejects are "world" reasons, and they were dragging good cells
+   down and corrupting every suggestion made from them.
+   The reason is taken from reasonAny(), so it uses the tag when he set one and
+   otherwise reads the words he already typed ("got loads left in stock", "gated")
+   — 36 of 82 rejects are now classified, 28 of them from his own free text. */
+function mxIsNumbersDecision(l){
+  if(l.status==='bought'||l.status==='atbq'||l.status==='atba2a') return true;   // buys always count
+  try{
+    var a=(typeof reasonAny==='function')?reasonAny(l.notes):null;
+    if(a && a.r && a.r.k==='world') return false;      // out of stock, gated, already have it…
+  }catch(e){}
+  return true;
+}
+/* every decision he has made, grouped by the matrix cell it fell in */
+function mxStats(){
+  var out={};
+  (window.leads||[]).forEach(function(l){
+    if(!(l.status||l.islead!==null)) return;
+    if(!mxIsNumbersDecision(l)) return;                // see mxIsNumbersDecision
+    var s=l._sc; if(!s||!s.band||!s.tier) return;
+    var k=mxKey(s.band,s.tier);
+    out[k]=out[k]||{n:0,b:0};
+    out[k].n++;
+    if(l.status==='bought'||l.status==='atbq'||l.status==='atba2a') out[k].b++;
+  });
+  return out;
+}
+/* how many decisions are being set aside, so the panel can say so out loud */
+function mxSetAside(){
+  var n=0;
+  (window.leads||[]).forEach(function(l){
+    if(!(l.status||l.islead!==null)) return;
+    if(!mxIsNumbersDecision(l)) n++;
+  });
+  return n;
+}
+/* Propose a score per cell straight from his buy rate there. Deliberately simple and
+   deliberately shown before it is applied: 90%+ -> 10, and down in even steps. Cells
+   with fewer than 8 decisions are left alone — there is no evidence to move them. */
+function mxSuggest(){
+  var st=mxStats(), prop=[];
+  Object.keys(DEAL_MATRIX).forEach(function(band){
+    ['high','mid','low'].forEach(function(tier){
+      var k=mxKey(band,tier), d=st[k];
+      if(!d||d.n<8) return;
+      var rate=d.b/d.n;
+      var want=Math.round(rate*10);
+      if(want<1) want=1;
+      var cur=mxCell(band,tier)[0];
+      if(Math.abs(want-cur)>=2) prop.push({band:band,tier:tier,from:cur,to:want,n:d.n,rate:Math.round(rate*100)});
+    });
+  });
+  return prop;
+}
+function mxApplySuggest(){
+  var prop=mxSuggest();
+  if(!prop.length){ try{ showToast('Nothing to change — every cell with enough decisions already lines up'); }catch(e){} return; }
+  var msg='Apply '+prop.length+' change'+(prop.length===1?'':'s')+' from your own decisions?\n\n'
+    +prop.map(function(p){ return '  '+p.band+' x '+p.tier+':  '+p.from+' -> '+p.to+'   (you buy '+p.rate+'% of these, '+p.n+' decided)'; }).join('\n')
+    +'\n\nNothing else changes and you can put it all back with Reset.';
+  if(!confirm(msg)) return;
+  var stg=getAppSettings();
+  var o=(stg.dealMatrix&&typeof stg.dealMatrix==='object')?stg.dealMatrix:{};
+  prop.forEach(function(p){ o[mxKey(p.band,p.tier)]=p.to; });
+  stg.dealMatrix=o; saveAppSettings(stg);
+  try{ pushSettingsCloud(stg); }catch(e){}
+  try{ leads.forEach(function(l){ l._sc=calcScore({roi:l.roi,profit:l.profit,spm:l.spm,fba:l.fba,margin:l.margin,status:l.status,islead:l.islead}); }); renderList(); }catch(e){}
+  try{ renderMatrixPanel(); }catch(e){}
+  try{ showToast('Applied '+prop.length+' change'+(prop.length===1?'':'s')+' \u2713'); }catch(e){}
+}
+/* how well the score currently predicts him — the number that says whether any of
+   this is working */
+function mxSeparation(){
+  var b=[],r=[];
+  (window.leads||[]).forEach(function(l){
+    if(!(l.status||l.islead!==null)) return;
+    if(!mxIsNumbersDecision(l)) return;                // same rule as mxStats
+    var s=l._sc&&l._sc.total; if(s==null) return;
+    if(l.status==='bought'||l.status==='atbq'||l.status==='atba2a') b.push(s); else r.push(s);
+  });
+  function avg(a){ return a.length?a.reduce(function(x,y){return x+y;},0)/a.length:null; }
+  if(!b.length||!r.length) return null;
+  return { bought:+avg(b).toFixed(2), rejected:+avg(r).toFixed(2), gap:+(avg(b)-avg(r)).toFixed(2), nB:b.length, nR:r.length };
+}
+/* The panel: the matrix as a grid, every cell carrying the buy rate it actually
+   produced, editable in place. Red where the score and his behaviour disagree —
+   that is the whole point, it shows WHERE to fix rather than saying "it's off". */
+function matrixPanelHTML(){
+  var st=mxStats(), ov=mxOverrides(), sep=mxSeparation();
+  var bands=Object.keys(DEAL_MATRIX);
+  var head='<tr><th>Sales / month</th>'+['high','mid','low'].map(function(t){
+    return '<th>'+(t==='high'?'High profit £9+':t==='mid'?'Mid £3–£9':'Low under £3')+'</th>'; }).join('')+'</tr>';
+  var body=bands.map(function(b){
+    return '<tr><th>'+b+'</th>'+['high','mid','low'].map(function(t){
+      var k=mxKey(b,t), cur=mxCell(b,t)[0], d=st[k], edited=(ov[k]!=null);
+      var rate=d&&d.n>=1?Math.round(d.b/d.n*100):null;
+      /* "expected" = the score as a percentage. A 9/10 cell he buys 46% of is the
+         disagreement worth showing; a 9/10 he buys 90% of is working. */
+      var gap=(rate!=null&&d.n>=8)?Math.abs(rate-cur*10):null;
+      var cls=gap==null?'':(gap>=30?' mx-bad':gap>=15?' mx-warn':' mx-ok');
+      return '<td class="mx-cell'+cls+(edited?' mx-edited':'')+'">'
+        +'<input class="mx-in" type="number" min="0" max="10" step="1" value="'+cur+'" '
+        +'title="Score for '+b+' sales/month at '+t+' profit'+(edited?' — you changed this from '+((DEAL_MATRIX[b]||{})[t]||[0])[0]:'')+'" '
+        +'onchange="mxSet(\''+b+'\',\''+t+'\',this.value)">'
+        +(d&&d.n>=1
+          ? '<span class="mx-rate">you buy <b>'+rate+'%</b><em>'+d.b+'/'+d.n+' decided</em></span>'
+          : '<span class="mx-rate none">no decisions yet</span>')
+        +'</td>';
+    }).join('')+'</tr>';
+  }).join('');
+  var prop=mxSuggest();
+  var sepLine=sep
+    ? '<div class="mx-sep'+(sep.gap<1.5?' weak':'')+'">Right now a lead you <b>buy</b> averages <b>'+sep.bought
+      +'</b>/10 and one you <b>reject</b> averages <b>'+sep.rejected+'</b>/10 — a gap of <b>'+sep.gap+'</b>.'
+      +(sep.gap<1.5?' That is too small to be useful: the score is barely telling them apart.':' Bigger is better.')
+      +' <em>'+sep.nB+' bought · '+sep.nR+' not</em></div>'
+    : '';
+  return '<div class="settings-card" data-sg="leads">'
+    +'<div class="settings-title">Lead scoring matrix</div>'
+    +'<div class="settings-sub">Every score comes from this grid: sales per month down the side, profit per unit across. '
+      +'Each cell shows how often you actually bought the leads that landed in it — where the two disagree, the cell is the thing to change.</div>'
+    +sepLine
+    +(function(){ var sa=mxSetAside(); return sa
+        ? '<div class="mx-aside">'+sa+' decision'+(sa===1?'':'s')+' set aside \u2014 rejected for reasons that had nothing to do with the numbers '
+          +'(out of stock, gated, already have stock). Counting those as scoring misses is how a good cell gets marked bad.</div>'
+        : ''; })()
+    +'<div class="mx-wrap"><table class="mx-table">'+head+body+'</table></div>'
+    +'<div class="mx-legend"><span class="mx-key mx-ok"></span>score matches your buying'
+      +'<span class="mx-key mx-warn"></span>drifting'
+      +'<span class="mx-key mx-bad"></span>clearly wrong'
+      +'<span class="mx-note">cells with under 8 decisions are not judged</span></div>'
+    +'<div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">'
+      +'<button class="btn btn-success" onclick="mxApplySuggest()">'
+        +(prop.length?'Suggest '+prop.length+' change'+(prop.length===1?'':'s')+' from my decisions':'Check against my decisions')+'</button>'
+      +'<button class="btn btn-ghost" onclick="mxReset()">Reset to built-in</button>'
+    +'</div></div>';
+}
+function renderMatrixPanel(){
+  var h=document.getElementById('mx-panel-host');
+  if(h) h.innerHTML=matrixPanelHTML();
+}
 function calcScore(l,forceManual){
   var spm=parseFloat(l&&l.spm); if(isNaN(spm)) spm=parseSpm(l&&l.spm);
   var profit=parseFloat(l&&l.profit)||0;
@@ -17407,7 +17745,7 @@ function calcScore(l,forceManual){
   }
 
   var band=spmBand(spm), tier=profitTier(profit);
-  var cell=(DEAL_MATRIX[band.name]||DEAL_MATRIX['under 10'])[tier];
+  var cell=mxCell(band.name,tier);
   var base=cell[0], verdict=cell[1], note='', roiExempt=false;
 
   // ── ROI safety check ──────────────────────────────────────────────────────
@@ -17676,10 +18014,49 @@ function eodLeadCheckHTML(va){
     +'<div class="eod-lc-f">You can still submit \u2014 Jack sees the same numbers.</div>'
     +'</div>';
 }
+/* Jack, 03/09: "before the VA finishes the shift they should have a message saying
+   leads x x x are missing xxx". Today's rows on her sheet, checked for the fields
+   Jack cannot decide without. Supplier link is not demanded on Amazon-store rows
+   (the Amazon link IS the source there). A prnt.sc screenshot is called out by
+   name: it exists, but Jack's connection cannot open it, so it is as good as missing. */
+function eodMissingList(va){
+  var c=eodLeadCheck(va); if(!c||!c.rows||!c.rows.length) return [];
+  var out=[];
+  c.rows.forEach(function(l){
+    var miss=[];
+    if(!String(l.src||'').trim())   miss.push('source method');
+    if(!String(l.store||'').trim()) miss.push('store');
+    var amazonStore=/amazon/i.test(String(l.store||''));
+    if((!l.sup||l.sup==='#') && !amazonStore) miss.push('supplier link');
+    var sh=String(l.screenshot||'').trim();
+    if(!sh) miss.push('screenshot');
+    else if(/prnt\.sc/i.test(sh)) miss.push('screenshot is on prnt.sc \u2014 Jack can\u2019t open those, use Gyazo');
+    if(miss.length) out.push({row:l.sheetRow, tab:l.sheetTab, title:String(l.title||'(untitled)').slice(0,46), miss:miss});
+  });
+  out.sort(function(a,b){ return (a.row||0)-(b.row||0); });
+  return out;
+}
+function eodMissingHTML(va){
+  var m=eodMissingList(va);
+  if(!m.length) return '';
+  var li=m.map(function(x){
+    return '<li><b class="eod-lc-row">row '+(x.row||'?')+'</b>'+escHtml(x.title)
+      +' <span class="eod-lc-miss">\u2014 missing: '+escHtml(x.miss.join(', '))+'</span></li>';
+  });
+  var first=li.slice(0,6).join(''), rest=li.slice(6).join('');
+  var list=first+(rest
+    ? '</ul><details class="eod-lc-more"><summary>show the other '+(li.length-6)+'</summary><ul>'+rest+'</ul></details><ul style="display:none">'
+    : '');
+  return '<div class="eod-lc warn">'
+    +'<div class="eod-lc-h">\u26a0\ufe0f '+m.length+' of today\u2019s leads '+(m.length===1?'is':'are')+' missing details</div>'
+    +'<div class="eod-lc-b">Jack can\u2019t decide a lead he can\u2019t see the source or screenshot for \u2014 fill these in on your sheet before you submit.</div>'
+    +'<div class="eod-lc-l"><ul>'+list+'</ul></div>'
+    +'</div>';
+}
 function eodRenderLeadCheck(){
   var el=document.getElementById('eod-leadcheck');
   var va=(state.currentVA==='Test'?state._previewAs:state.currentVA);
-  if(el) el.innerHTML=eodLeadCheckHTML(va)+eodDupCheckHTML(va);
+  if(el) el.innerHTML=eodLeadCheckHTML(va)+eodMissingHTML(va)+eodDupCheckHTML(va);
 }
 /* ── DUPS SHE STILL HAS TO DEAL WITH ──────────────────────────────────────────
    Jack's rule: a repeat is only allowed if there is a reason — different
@@ -17809,6 +18186,28 @@ function payRunCycle(runK,ref){
 /* Reminder taper. Day 0-2: three a day. Day 3+: midday only. Day 10: one last message,
    then silence — an alert that never stops is an alert you stop reading. */
 var PAY_TAPER_DAYS=3, PAY_GIVEUP_DAYS=10;
+/* Jack, 31/08: the Discord reminder said "Every 2 weeks, Friday" for a run he had
+   moved to the 15th & last day months ago. The label was TYPED IN — 'admin' got
+   "15th & 30th", everything else got the fortnightly text — so it described a
+   schedule that no longer existed while the DATES beside it were right. Say what
+   the settings actually hold. */
+function payScheduleText(run){
+  try{
+    if(run && run.type==='monthly'){
+      var d=(run.days||[]).slice().sort(function(a,b){ return a-b; });
+      if(!d.length) return 'monthly';
+      var parts=d.map(function(x){
+        if(x>=29) return 'last day';                        // 31 in a short month = its last day
+        var sfx=(x%10===1&&x!==11)?'st':(x%10===2&&x!==12)?'nd':(x%10===3&&x!==13)?'rd':'th';
+        return x+sfx;
+      });
+      return parts.join(' & ')+' of each month';
+    }
+    var wk=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][(run&&run.weekday)||5]||'Friday';
+    var ev=parseInt(run&&run.everyWeeks)||2;
+    return (ev===1?'Every week, ':'Every '+ev+' weeks, ')+wk;
+  }catch(e){ return 'see settings'; }
+}
 function payFlagKey(iso){ return 'paid_'+iso; }
 function payIsPaid(iso){
   try{ if(localStorage.getItem('bdl_'+payFlagKey(iso))==='1') return true; }catch(e){}
@@ -17933,7 +18332,12 @@ function payPingCheck(){
     if(mins<12*60||mins>=22*60) return;
     var today=payISO(new Date(now.getFullYear(),now.getMonth(),now.getDate()));
     // whichever run is due and unpaid — sourcing and admin are tracked separately
-    var run=null,c=null,daysOver=0;
+    /* Jack, 31/08: "but only sourcing not admin va - why not?" — this loop used to
+       `break` on the first run that was due and unpaid. Sourcing sits first in the
+       list, so while it was outstanding the admin run was never even looked at, and
+       Sarah's pay went unreminded every single cycle. Every due run gets its own
+       reminder now; they are separate people and separate money. */
+    var due=[];
     var _runs=payRuns();
     for(var i=0;i<_runs.length;i++){
       var r=_runs[i];
@@ -17943,9 +18347,15 @@ function payPingCheck(){
       if(today<cyc.last) continue;
       var d=Math.round((new Date(today)-new Date(cyc.last))/86400000);
       if(d===0 && mins<12*60) continue;
-      run=r; c=cyc; daysOver=d; break;
+      due.push({run:r, c:cyc, daysOver:d});
     }
-    if(!run) return;
+    if(!due.length) return;
+    due.forEach(function(item){ payPingSend(item.run, item.c, item.daysOver, s, hook, mins); });
+  }catch(e){}
+}
+/* one run's reminder — split out of payPingCheck so several can go in the same tick */
+function payPingSend(run, c, daysOver, s, hook, mins){
+  try{
     // Three pings a day, every day, for ever is how a reminder becomes noise you ignore.
     // Days 0-2: 12pm / 4pm / 8pm. Days 3-9: 12pm only. Day 10: one final message, then stop.
     var hourSlot=Math.floor((mins-12*60)/240);          // 0 = 12pm, 1 = 4pm, 2 = 8pm
@@ -17990,7 +18400,7 @@ function payPingCheck(){
                     : 'Open **BDL VA HQ \u2192 Overview** and hit **Mark paid** to stop these reminders.\n\u200b'),
               fields:[
                 {name:'Who',value:names,inline:true},
-                {name:'Schedule',value:(run.k==='admin'?'15th & 30th':'Every 2 weeks, Friday'),inline:true},
+                {name:'Schedule',value:payScheduleText(run),inline:true},
                 {name:'Next run',value:payFmt(c.next),inline:true}
               ],
               footer:{text:cadence},
@@ -18315,6 +18725,30 @@ function pullISO(v){                       // Sheets serial (epoch 1899-12-30) o
   var t=String(v||'').trim(); if(!t) return '';
   var m=t.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
   if(m) return m[3]+'-'+String(m[1]).padStart(2,'0')+'-'+String(m[2]).padStart(2,'0');
+  /* ── THE DATE WITH NO YEAR ────────────────────────────────────────────────
+     01/09/2026, Mera's first day on the September tab: 19 leads, none of them
+     reached the app. Her date column had reformatted itself to "09/01" — day and
+     month, NO YEAR. Nothing here matched it, so pullISO handed back the raw text,
+     the caller's /^\d{4}-\d{2}-\d{2}$/ test failed, and EVERY row was skipped in
+     silence. Her sync had been dead since 28/08 and nothing said a word.
+     A missing year is not a broken date — take the year from the tab we are
+     reading (its month is authoritative), and pick the year that puts the date
+     nearest today so a December tab read in January still lands right. */
+  var m2=t.match(/^(\d{1,2})\/(\d{1,2})$/);
+  if(m2){
+    var a=+m2[1], b=+m2[2];
+    var now=new Date(), yr=now.getFullYear();
+    function mk(y,mo,dy){ return y+'-'+String(mo).padStart(2,'0')+'-'+String(dy).padStart(2,'0'); }
+    // both orders are plausible; pullISOForTab settles day-vs-month from the tab name
+    var cand=mk(yr,a,b);
+    var dt=new Date(yr,a-1,b);
+    if(!isNaN(dt.getTime())){
+      var diff=(dt-now)/86400000;
+      if(diff>200) cand=mk(yr-1,a,b);          // far future → it belongs to last year
+      else if(diff<-200) cand=mk(yr+1,a,b);    // far past  → next year
+    }
+    return cand;
+  }
   return t.slice(0,10);
 }
 /* identical rule to the Apps Script's isoDateForTab() and to leadDateFix() */
@@ -18380,15 +18814,15 @@ async function leadPullOnce(force){
           if(!sres.ok){ errs++; continue; }
           rows=(await sres.json()).values||[];
         }catch(e){ errs++; continue; }
-        var batch=[], refresh=[];
+        var batch=[], refresh=[], _badDate=0, _badEg='', checkedThisTab=0;
         for(var i=0;i<rows.length;i++){
           var r=rows[i].slice(); while(r.length<28) r.push('');
           var rowIndex=i+2;
           var asin=String(r[7]||'').trim(), buy=pullNum(r[12]);
-          checked++;
+          checked++; checkedThisTab++;
           if(!asin||buy===null) continue;
           var iso=pullISOForTab(r[0],tab);
-          if(!/^\d{4}-\d{2}-\d{2}$/.test(iso)||iso<floor) continue;
+          if(!/^\d{4}-\d{2}-\d{2}$/.test(iso)||iso<floor){ _badDate++; _badEg=_badEg||String(r[0]); continue; }
           var id=sid+'::'+tab+'::'+rowIndex;
           var fba=pullNum(r[19]);
           var rec={ id:id, sheet_id:sid, tab:tab, row_index:rowIndex, va:va, date:iso,
@@ -18568,6 +19002,36 @@ async function leadPullOnce(force){
               }
             } else if(_ghosts.length>40){ try{ window.LEAD_PULL_ERR='ghost sweep skipped: '+_ghosts.length+' on '+tab+' — too many to be dup deletions, check the tab'; }catch(e){} }
           }
+        }
+        /* ── A DEAD SYNC MUST NEVER BE SILENT ──────────────────────────────────
+           Mera's date column reformatted itself to "09/01" — no year — so every
+           row failed the date test above and was skipped without a word. Her leads
+           stopped reaching the app on 28/08 and the first anyone knew was Jack
+           asking why her tab was empty on 01/09. A tab that has rows in it but
+           yields NOTHING usable is broken, and it now says so out loud, once a day
+           per tab so it can't turn into noise. */
+        if(_badDate>0 && _badDate===checkedThisTab && rows.length>0){
+          try{
+            var _wk='leadsync_'+sid.slice(0,8)+'_'+tab+'_'+(new Date().toISOString().slice(0,10));
+            var _wr=await fetchT(SUPABASE_URL+'/rest/v1/app_flags',{method:'POST',
+              headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+                'Content-Type':'application/json',Prefer:'resolution=ignore-duplicates,return=representation'},
+              body:JSON.stringify({k:_wk,v:'warned'})});
+            var _rows2=await _wr.json();
+            if(Array.isArray(_rows2)&&_rows2.length){
+              var _s2=getAppSettings();
+              var _hook=(_s2.whPay||'').trim()||DISCORD_WEBHOOK;
+              if(_hook) fetch(_hook,{method:'POST',headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({content:'\u26a0\uFE0F **'+va+"'s leads are not syncing**",
+                  embeds:[{title:'Tab "'+tab+'" \u2014 '+_badDate+' row'+(_badDate===1?'':'s')+' unreadable',
+                    color:15881515,
+                    description:'Every row on this tab was skipped because the DATE could not be read.\n\n'
+                      +'First bad value: `'+String(_badEg).slice(0,24)+'`\n\n'
+                      +'Her leads are NOT reaching the app. Check the date column format on that tab.',
+                    footer:{text:'BDL VA HQ \u00b7 lead sync watchdog \u00b7 once a day per tab'}}]})}).catch(function(){});
+            }
+          }catch(e){}
+          try{ window.LEAD_SYNC_DEAD=(window.LEAD_SYNC_DEAD||[]); window.LEAD_SYNC_DEAD.push(va+' / '+tab+' ('+_badDate+' rows, e.g. "'+_badEg+'")'); }catch(e){}
         }
       }
     }
@@ -18865,9 +19329,9 @@ function scCol(s){return s>=7?'var(--green)':s>=5?'var(--amber)':'var(--red)'}
 function scGrade(s){return s>=9?'Banger':s>=7.5?'Strong':s>=6?'Decent':s>=4?'Weak':'Poor'}
 function scHealth(s){return s>=7?'sh-green':s>=5?'sh-amber':'sh-red'}
 function roiC(r){return r>=20?'vg':r>=12?'vg':r>=10?'va-c':'vr'}
-function profC(p){return p>=50?'vg':p>=20?'vg':p>=10?'va-c':'vr'}
+function profC(p){return p>=9?'vg':p>=3?'va-c':'vr'}   // rubric tiers: high £9+, mid £3–£9, low under £3
 function spmC(s){return s>=500?'vc':s>=100?'vg':s>=30?'va-c':'vr'}
-function fbaC(f){return f<=3?'vg':f<=6?'va-c':'vr'}
+function fbaC(f){return f<=6?'vg':f<=15?'va-c':'vr'}   // red only where the 'Crowded (15+)' badge also fires
 function marC(m){return m>=6?'vg':'vr'}
 function f2(n){return(+n).toFixed(2)}
 function spml(s){return s>=1000?'>1000':s>=500?'>500':s>=300?'>300':s>=100?'>100':s>=50?'>50':s}
@@ -19610,6 +20074,37 @@ if(!window._ldSearchBound){
 var LD_PAGE=70;                 // rows built on the first pass — about two screens
 /* Append the rest in chunks: once on the next frame (so a short list completes instantly)
    and again whenever she scrolls near the bottom. Never blocks typing. */
+/* Measure one real row and hand the number to contain-intrinsic-size, so the
+   browser's guess for off-screen rows matches what it will actually find. Without
+   this the page height keeps correcting itself while you scroll. */
+function ldSyncRowH(){
+  try{
+    var el=document.getElementById('list-scroll'); if(!el) return;
+    /* MEASURE A ROW THE BROWSER IS ACTUALLY LAYING OUT.
+       First attempt at this read a row that content-visibility was SKIPPING, so
+       getBoundingClientRect handed back the placeholder — i.e. the very number we
+       had just written. Each render then fed its own output back in and the value
+       ratcheted 127 -> 144 -> 161 -> 178px. Force one row to render, measure that,
+       put it back. Median of a few, in case one row is atypical. */
+    var rs=[].slice.call(el.querySelectorAll('.litem')).slice(0,6);
+    if(!rs.length) return;
+    var hs=[];
+    rs.forEach(function(x){
+      var prev=x.style.contentVisibility;
+      x.style.contentVisibility='visible';               // opt this row out of skipping
+      var v=Math.round(x.getBoundingClientRect().height);
+      x.style.contentVisibility=prev||'';
+      if(v>40 && v<400) hs.push(v);
+    });
+    if(!hs.length) return;
+    hs.sort(function(a,b){ return a-b; });
+    var h=hs[Math.floor(hs.length/2)];
+    if(!h || h<40 || h>400) return;                       // nonsense guard
+    if(window._ldRowH===h) return;                        // unchanged, don't touch the DOM
+    window._ldRowH=h;
+    document.documentElement.style.setProperty('--ld-row-h', h+'px');
+  }catch(e){}
+}
 function ldFillMore(){ /* retired 31/08 — the list renders in full now; the queue
   approach appended rows AFTER the date headings and orphaned everything past ~70. */ }
 if(!window._ldScrollBound){
@@ -19629,6 +20124,95 @@ function searchTyped(){
   window._searchT=setTimeout(function(){ try{ renderList(); }catch(e){} },140);
 }
 function searchNow(){ clearTimeout(window._searchT); try{ renderList(); }catch(e){} }
+/* The notices strip (archived / older hidden / ASIN mismatches / dups held) used to
+   be painted inline by renderList only. Selecting a lead repaints the DETAIL, not
+   the list — so the 'fold while a lead is open' rule (03/09) never fired on the
+   click that opened the lead, only on the next list repaint. Own function, called
+   from both places, so the strip always reflects whether a lead is open. */
+function ldPaintNotices(){
+    var _ae=document.getElementById('archive-line');
+    if(_ae){
+      var _n=ldArchivedCount();
+      var _q=(document.getElementById('search')?.value||'').trim();
+      var _cM=0,_cS=0;
+      try{(window.leads||[]).forEach(function(l){ if(leadAsinConflict(l)){ if(l.va==='VA M')_cM++; else if(l.va==='VA S')_cS++; } });}catch(e){}
+      /* The app routes around the bad column, but the SHEET is still wrong and every
+         tool that reads it raw inherits the fault. One click builds the row-by-row
+         repair list for that VA \u2014 Jack pastes it into Discord, she fixes her sheet,
+         and the number here falls to zero. Fix the source, not just the symptom. */
+      var _cx=(_cM+_cS)
+        ? '<span class="ld-arch" title="Rows where the ASIN column and the Amazon link name different products. The app follows the link; the sheet still needs fixing.">'
+          +'\u26a0 <b>'+(_cM+_cS)+'</b> ASIN mismatches \u2014 copy fix-list:'
+          +(_cM?' <button class="ld-arch-b" onclick="asinFixCopy(\'VA M\')">'+vaDisp('Mera')+' ('+_cM+')</button>':'')
+          +(_cS?' <button class="ld-arch-b" onclick="asinFixCopy(\'VA S\')">'+vaDisp('Suz')+' ('+_cS+')</button>':'')
+          +'</span>'
+        : '';
+      /* The start-date cutoff is Jack's own setting, so it stays \u2014 but it is no longer
+         allowed to be silent. Nothing is deleted; these are older than the day he began
+         using the app. One click to see them if he ever wants. */
+      var _hs=(+window._ldHiddenByStart||0);
+      var _hsHtml=window._ldStartOverride
+        ? '<span class="ld-arch" title="Showing everything, including leads from before you '
+          +'started using the app. This lasts until you reload.">\u{1F4C5} showing <b>all</b> leads'
+          +' <button class="ld-arch-b" onclick="ldHideOlder()">Back to normal</button></span>'
+        : (_hs
+        ? '<span class="ld-arch" title="Older than '+escHtml(window._ldStartDate||'your start date')
+          +' \u2014 the day you started using the app. Nothing is deleted; they are still in the '
+          +'database and still in the VAs\u2019 sheets.">\u{1F4C5} <b>'+_hs+'</b> older leads hidden'
+          +' <button class="ld-arch-b" onclick="ldShowOlder()">Show them</button></span>'
+        : '');
+      var _dh=0; try{ (window.leads||[]).forEach(function(l){
+        if(!(l.status||l.islead!==null)&&ldDupUnexplained(l)) _dh++; }); }catch(e){}
+      var _dhHtml=_dh
+        ? '<span class="ld-arch" title="Same ASIN, same supplier, same price, same month, '
+          +'no VA note. Held off your board and out of every KPI until the VA adds a reason '
+          +'or deletes the row. Search still finds them.">&#9851; <b>'+_dh+'</b> dup'
+          +(_dh===1?'':'s')+' held back</span>'
+        : '';
+      var _arch=(_n
+        ? '<span class="ld-arch" title="They are only hidden from this list. Search still '
+          +'finds them and nothing is removed from the sheet.">\u{1F5C4} <b>'+_n+'</b> archived'
+          +(_q?' (shown \u2014 you\u2019re searching)':'')+'</span>'
+        : '');
+      /* 03/09: while he is inside a lead these four chips are noise over the work.
+         Fold them to a single count; one click brings them back. */
+      var _parts=[_dhHtml,_arch,_hsHtml,_cx].filter(Boolean);
+      /* "a lead is open" is read from the detail pane itself (renderDetail stamps
+         data-lid), not from selId — that binding is not dependable at every point
+         this runs, and the fold button vanished on the phone because of it. */
+      var _dp=document.getElementById('detail-pane');
+      /* selectLead() paints the pane directly and never stamps data-lid (only
+         renderDetail does), so the stamp alone missed the very click that opens a
+         lead. A rendered .detail inside the pane is the truth in both layouts. */
+      var _leadOpen=(selId!==null&&selId!==undefined) || !!(_dp && ((_dp.dataset&&_dp.dataset.lid) || _dp.querySelector('.detail')));
+      if(_leadOpen && !window._ldChipsOpen && _parts.length){
+        _ae.innerHTML='<span class="ld-arch ld-arch-sum" title="Folded while a lead is open \u2014 click to see them" '
+          +'onclick="window._ldChipsOpen=true;renderList()">&#9873; <b>'+_parts.length+'</b> notice'+(_parts.length===1?'':'s')+' &#9656;</span>';
+      } else {
+        _ae.innerHTML=_parts.join('')
+          +((_leadOpen&&_parts.length)?' <button class="ld-arch-b" onclick="window._ldChipsOpen=false;renderList()">fold</button>':'');
+      }
+    }
+  }
+/* The notices strip must follow the DETAIL PANE, whatever repainted it. selectLead()
+   writes the pane directly (it does not go through renderDetail), so a strip
+   repaint hung off renderList/renderDetail alone missed the tap that opens a lead.
+   Watch the pane; repaint the strip once per frame when it changes. The painter
+   only touches #archive-line, so this cannot feed back into itself. */
+(function(){
+  var armed=false;
+  function arm(){
+    var dp=document.getElementById('detail-pane');
+    if(!dp){ return setTimeout(arm,300); }
+    if(armed) return; armed=true;
+    var queued=false;
+    new MutationObserver(function(){
+      if(queued) return; queued=true;
+      requestAnimationFrame(function(){ queued=false; try{ ldPaintNotices(); }catch(e){} });
+    }).observe(dp,{childList:true});
+  }
+  arm();
+})();
 function renderList(){
   if(!document.getElementById('list-scroll'))return;
   /* buildDupeMap() walked all 735 leads on EVERY render, including every keystroke.
@@ -19749,57 +20333,12 @@ function renderList(){
   });
   el.innerHTML=asinCheckHTML()+h;
   window._ldQueue=null;
+  try{ ldSyncRowH(); setTimeout(ldSyncRowH,350); }catch(e){}   // again once fonts/images settle
   try{
     var _fe=document.getElementById('focus-entry');
     if(_fe) _fe.innerHTML=focusEntryHTML();
   }catch(e){}
-  try{
-    var _ae=document.getElementById('archive-line');
-    if(_ae){
-      var _n=ldArchivedCount();
-      var _q=(document.getElementById('search')?.value||'').trim();
-      var _cM=0,_cS=0;
-      try{(window.leads||[]).forEach(function(l){ if(leadAsinConflict(l)){ if(l.va==='VA M')_cM++; else if(l.va==='VA S')_cS++; } });}catch(e){}
-      /* The app routes around the bad column, but the SHEET is still wrong and every
-         tool that reads it raw inherits the fault. One click builds the row-by-row
-         repair list for that VA \u2014 Jack pastes it into Discord, she fixes her sheet,
-         and the number here falls to zero. Fix the source, not just the symptom. */
-      var _cx=(_cM+_cS)
-        ? '<span class="ld-arch" title="Rows where the ASIN column and the Amazon link name different products. The app follows the link; the sheet still needs fixing.">'
-          +'\u26a0 <b>'+(_cM+_cS)+'</b> ASIN mismatches \u2014 copy fix-list:'
-          +(_cM?' <button class="ld-arch-b" onclick="asinFixCopy(\'VA M\')">'+vaDisp('Mera')+' ('+_cM+')</button>':'')
-          +(_cS?' <button class="ld-arch-b" onclick="asinFixCopy(\'VA S\')">'+vaDisp('Suz')+' ('+_cS+')</button>':'')
-          +'</span>'
-        : '';
-      /* The start-date cutoff is Jack's own setting, so it stays \u2014 but it is no longer
-         allowed to be silent. Nothing is deleted; these are older than the day he began
-         using the app. One click to see them if he ever wants. */
-      var _hs=(+window._ldHiddenByStart||0);
-      var _hsHtml=window._ldStartOverride
-        ? '<span class="ld-arch" title="Showing everything, including leads from before you '
-          +'started using the app. This lasts until you reload.">\u{1F4C5} showing <b>all</b> leads'
-          +' <button class="ld-arch-b" onclick="ldHideOlder()">Back to normal</button></span>'
-        : (_hs
-        ? '<span class="ld-arch" title="Older than '+escHtml(window._ldStartDate||'your start date')
-          +' \u2014 the day you started using the app. Nothing is deleted; they are still in the '
-          +'database and still in the VAs\u2019 sheets.">\u{1F4C5} <b>'+_hs+'</b> older leads hidden'
-          +' <button class="ld-arch-b" onclick="ldShowOlder()">Show them</button></span>'
-        : '');
-      var _dh=0; try{ (window.leads||[]).forEach(function(l){
-        if(!(l.status||l.islead!==null)&&ldDupUnexplained(l)) _dh++; }); }catch(e){}
-      var _dhHtml=_dh
-        ? '<span class="ld-arch" title="Same ASIN, same supplier, same price, same month, '
-          +'no VA note. Held off your board and out of every KPI until the VA adds a reason '
-          +'or deletes the row. Search still finds them.">&#9851; <b>'+_dh+'</b> dup'
-          +(_dh===1?'':'s')+' held back</span>'
-        : '';
-      _ae.innerHTML=_dhHtml+(_n
-        ? '<span class="ld-arch" title="They are only hidden from this list. Search still '
-          +'finds them and nothing is removed from the sheet.">\u{1F5C4} <b>'+_n+'</b> archived'
-          +(_q?' (shown \u2014 you\u2019re searching)':'')+'</span>'
-        : '')+_hsHtml+_cx;
-    }
-  }catch(e){}
+  try{ ldPaintNotices(); }catch(e){}
   try{
     var _be=document.getElementById('bulk-entry');
     if(_be){
@@ -19823,6 +20362,10 @@ function renderList(){
        different lead — Jack: "wait for me to click off leads". Leave the pane. */
     selId=null; try{ renderDetail(); }catch(e){}
   }
+  /* Paint the notices strip LAST, after the selection above has been restored or
+     cleared — painted earlier in this function it read the pane mid-rebuild and
+     decided no lead was open, so the fold never showed on the phone. */
+  try{ ldPaintNotices(); }catch(e){}
 }
 /* ══════════ THE ROW THUMBNAIL — WHY THIS IS SO PLAIN NOW ════════════════════
    Measured on Jack's board: a lead row was 2,490 bytes of HTML, and ~940 of them
@@ -19944,6 +20487,184 @@ function dupePriceMove(l){
   var diff=cb-pb, pct=diff/pb;
   return { prev:pb, now:cb, diff:diff, pct:pct,
            cheaper:pct<=-0.02, same:Math.abs(pct)<0.02, dearer:pct>=0.02 };
+}
+/* ── THE DROPDOWNS ──────────────────────────────────────────────────────────
+   Jack, 03/09: "improve popup/dropdown thingy". The filter bar uses native
+   <select>, and while the CLOSED control is styled to match the app, the OPEN menu
+   is drawn by macOS — grey, system font, its own blue highlight, nothing to do with
+   the app around it. There is no CSS that can reach inside it.
+   So: keep every <select> exactly as it is (it stays the source of truth, keyboard
+   and mobile behaviour untouched, every existing onchange still fires) and overlay
+   a styled menu on top when it is clicked. If anything here fails the native menu
+   is simply what happens — this can degrade, it cannot break.
+   Phones keep the native wheel, which is the better control there. */
+var _ddOpen=null;
+function ddClose(){
+  if(!_ddOpen) return;
+  try{ _ddOpen.menu.remove(); }catch(e){}
+  try{ _ddOpen.sel.classList.remove('dd-active'); }catch(e){}
+  _ddOpen=null;
+  document.removeEventListener('keydown',ddKey,true);
+}
+function ddKey(e){
+  if(!_ddOpen) return;
+  var items=[].slice.call(_ddOpen.menu.querySelectorAll('.dd-opt'));
+  var cur=items.findIndex(function(x){ return x.classList.contains('on'); });
+  if(e.key==='Escape'){ e.preventDefault(); ddClose(); return; }
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){
+    e.preventDefault();
+    var nx=Math.max(0,Math.min(items.length-1,cur+(e.key==='ArrowDown'?1:-1)));
+    items.forEach(function(x){ x.classList.remove('on'); });
+    items[nx].classList.add('on'); items[nx].scrollIntoView({block:'nearest'});
+    return;
+  }
+  if(e.key==='Enter'){ e.preventDefault(); if(items[cur]) items[cur].click(); }
+}
+function ddOpen(sel){
+  if(_ddOpen && _ddOpen.sel===sel){ ddClose(); return; }
+  ddClose();
+  var r=sel.getBoundingClientRect();
+  var m=document.createElement('div');
+  m.className='dd-menu';
+  var opts=[].slice.call(sel.options);
+  m.innerHTML=opts.map(function(o,i){
+    return '<div class="dd-opt'+(o.selected?' on sel':'')+'" data-i="'+i+'">'
+      +(o.selected?'<span class="dd-tick">\u2713</span>':'<span class="dd-tick"></span>')
+      +'<span>'+escHtml(o.text)+'</span></div>';
+  }).join('');
+  document.body.appendChild(m);
+  // place it under the control, flipping up if there is no room below
+  var mh=Math.min(m.scrollHeight, Math.round(innerHeight*0.6));
+  m.style.maxHeight=mh+'px';
+  var below=innerHeight-r.bottom;
+  m.style.left=Math.max(8,Math.min(r.left, innerWidth-m.offsetWidth-8))+'px';
+  m.style.minWidth=Math.max(r.width,190)+'px';
+  if(below<mh+12 && r.top>mh+12) m.style.top=(r.top-mh-6)+'px';
+  else m.style.top=(r.bottom+6)+'px';
+  sel.classList.add('dd-active');
+  m.addEventListener('click',function(e){
+    var o=e.target.closest('.dd-opt'); if(!o) return;
+    var i=+o.dataset.i;
+    if(sel.selectedIndex!==i){
+      sel.selectedIndex=i;
+      sel.dispatchEvent(new Event('change',{bubbles:true}));   // whatever it already does, still happens
+    }
+    ddClose();
+  });
+  var onSel=m.querySelector('.dd-opt.sel'); if(onSel) onSel.scrollIntoView({block:'nearest'});
+  _ddOpen={sel:sel,menu:m};
+  document.addEventListener('keydown',ddKey,true);
+}
+(function(){
+  /* innerWidth reports 0 in a hidden or backgrounded tab, which made "<760" true and
+     silently switched the styled menu off. Width only counts when it is a real
+     measurement; a coarse pointer is the reliable phone signal. */
+  function isPhone(){
+    var w=innerWidth||document.documentElement.clientWidth||0;
+    if(matchMedia('(pointer:coarse)').matches) return true;
+    return w>0 && w<760;
+  }
+  document.addEventListener('mousedown',function(e){
+    if(_ddOpen && !e.target.closest('.dd-menu') && e.target!==_ddOpen.sel) ddClose();
+  },true);
+  document.addEventListener('mousedown',function(e){
+    if(isPhone()) return;                                  // native wheel is better on a phone
+    var sel=e.target.closest('#view-leads select, #filters select');
+    if(!sel || sel.disabled || sel.multiple) return;
+    e.preventDefault();                                    // stop the OS menu
+    ddOpen(sel);
+  },true);
+  addEventListener('resize',ddClose);
+  addEventListener('scroll',function(){ if(_ddOpen) ddClose(); },true);
+})();
+/* ── SIGNALS: THE "£2.27 CHEAPER" IDEA, GENERALISED ──────────────────────────
+   Jack, 03/09: "love this! more of these!". What made that badge work is that it
+   is not a fact, it is a VERDICT WITH THE NUMBER IN IT — he does not have to hold
+   the old price in his head to know the re-send was fair.
+   Four more, all computed from decisions he has already made (163 bought, 260
+   decided), and all measured against his own behaviour rather than a rule I made up:
+     · cheapest this ASIN has ever been on his board       (61 qualify today)
+     · profit vs the median he actually buys at, £9.55     (his real median)
+     · how often he buys from THIS source method           (KPF Brand 88% v Storefront 47%)
+     · how often he buys in THIS category                  (Home&Garden 78% v Computers 52%)
+   Each one is SILENT unless it is notable — a chip on every lead is wallpaper, and
+   he has already told me twice that noise is the thing he hates. */
+var _sigCache=null, _sigSig='';
+function sigStats(){
+  var sig=(window.leads||[]).length+'|'+(window._sessDecided||0);
+  if(_sigCache && _sigSig===sig) return _sigCache;
+  var src={}, cat={}, prof=[];
+  (window.leads||[]).forEach(function(l){
+    var decided=(l.status||l.islead!==null);
+    if(!decided) return;
+    var isBuy=(l.status==='bought'||l.status==='atbq'||l.status==='atba2a');
+    var sm=String(l.src||'').trim(); if(sm){ src[sm]=src[sm]||[0,0]; src[sm][0]++; if(isBuy) src[sm][1]++; }
+    var ct=String(l.cat||'').trim(); if(ct){ cat[ct]=cat[ct]||[0,0]; cat[ct][0]++; if(isBuy) cat[ct][1]++; }
+    if(isBuy){ var pv=parseFloat(l.profit); if(!isNaN(pv)) prof.push(pv); }
+  });
+  prof.sort(function(a,b){ return a-b; });
+  /* Percentiles of his OWN buys, not a multiple of the median. First cut used
+     "50% off the median" and fired on 781 of 1145 leads — wallpaper. The 10th/90th
+     of what he actually pays for is the honest definition of unusual: £2.37 and
+     £55.81 on today's 146 buys. */
+  function pc(q){ return prof.length?prof[Math.max(0,Math.min(prof.length-1,Math.floor(prof.length*q)))]:null; }
+  _sigCache={ src:src, cat:cat, nBuys:prof.length,
+              medProfit:pc(0.5), loProfit:pc(0.10), hiProfit:pc(0.90) };
+  _sigSig=sig;
+  return _sigCache;
+}
+/* lowest buy price this ASIN has ever carried on his board */
+function sigCheapestEver(l){
+  try{
+    var a=asinKey(l); if(!a) return null;
+    var cur=parseFloat(l.buy); if(!cur) return null;
+    var prev=null;
+    (window.leads||[]).forEach(function(x){
+      if(x.id===l.id) return;
+      if(asinKey(x)!==a) return;
+      var b=parseFloat(x.buy); if(!b) return;
+      if(prev===null||b<prev) prev=b;
+    });
+    if(prev===null) return null;
+    /* 2% alone let "CHEAPEST YET \u00b7 \u00a30.33 under" through on a cheap item — true,
+       and not worth a chip. Needs to be both a real percentage AND real money. */
+    if(cur >= prev*0.98) return null;
+    if(prev-cur < 1) return null;
+    return { saving:prev-cur, prev:prev, seen:true };
+  }catch(e){ return null; }
+}
+function sigChips(l){
+  try{
+    var out=[], st=sigStats();
+    // 1 — cheapest it has ever been (stronger than "cheaper than last time")
+    var ce=sigCheapestEver(l);
+    if(ce) out.push('<span class="sig sig-good" title="Lowest buy price this ASIN has ever had on your board — previous best was \u00a3'
+      +ce.prev.toFixed(2)+'.">\u2b07 CHEAPEST YET \u00b7 \u00a3'+ce.saving.toFixed(2)+' under</span>');
+    // 2 — profit against the profit he actually buys at
+    var pv=parseFloat(l.profit);
+    if(st.hiProfit!==null && st.nBuys>=20 && !isNaN(pv) && pv>0){
+      if(pv>=st.hiProfit) out.push('<span class="sig sig-good" title="Top 10% of the '+st.nBuys
+        +' leads you have bought \u2014 those start at \u00a3'+st.hiProfit.toFixed(2)+' profit (your median is \u00a3'
+        +st.medProfit.toFixed(2)+').">\u2b06 \u00a3'+pv.toFixed(2)+' \u00b7 TOP 10% OF YOUR BUYS</span>');
+      else if(pv<=st.loProfit) out.push('<span class="sig sig-warn" title="Bottom 10% of the '+st.nBuys
+        +' leads you have bought \u2014 those end at \u00a3'+st.loProfit.toFixed(2)+' profit (your median is \u00a3'
+        +st.medProfit.toFixed(2)+').">\u2b07 \u00a3'+pv.toFixed(2)+' \u00b7 THINNER THAN 90% OF YOUR BUYS</span>');
+    }
+    // 3 — his own hit rate on this source method
+    var sm=String(l.src||'').trim(), sr=sm&&st.src[sm];
+    if(sr && sr[0]>=15){
+      var pct=Math.round(sr[1]/sr[0]*100);
+      if(pct>=80) out.push('<span class="sig sig-good" title="You have bought '+sr[1]+' of the '+sr[0]
+        +' leads you decided from '+escHtml(sm)+'.">\u{1F3AF} '+escHtml(sm)+' \u00b7 you buy '+pct+'%</span>');
+      else if(pct<=30) out.push('<span class="sig sig-warn" title="You have bought only '+sr[1]+' of the '+sr[0]
+        +' leads you decided from '+escHtml(sm)+'.">\u{1F3AF} '+escHtml(sm)+' \u00b7 you buy just '+pct+'%</span>');
+    }
+    /* A category chip was here. Measured on his real board the spread is only
+       52% (Computers) to 81% (Home & Garden) — not enough to change a decision —
+       and it would have printed on 216 leads in one category alone. A chip that
+       appears on every lead in a category is not a signal, it is a label. Cut. */
+    return out.length?'<div class="sig-row">'+out.join('')+'</div>':'';
+  }catch(e){ return ''; }
 }
 function dupeBadge(l){
   var d=dupeOf(l); if(!d) return '';
@@ -20280,8 +21001,14 @@ function dupeNote(l){
   }else if(other){
     both='<div class="dup-both done">'+escHtml(vaDisp(d.otherVA))+'&rsquo;s copy: <b>'+escHtml(decisionLabel(other))+'</b></div>';
   }
+  /* 03/09: this used dupeWhy(), which nags for a VA Note — the SAME-VA re-send rule.
+     Two VAs landing on one product independently is a different fact and needs no
+     reason. Say that, and put the one useful control first. */
+  var crossNote=String(l.vanote||'').trim()
+    ? '<div class="dup-why"><b>'+escHtml(vaDisp(l.va))+'&rsquo;s note:</b> '+escHtml(String(l.vanote).trim().slice(0,220))+'</div>' : '';
   return '<div class="dup-note cross">&#128101; <b>'+escHtml(vaDisp(d.otherVA))+' found this too</b>, '+ago
-    +' &mdash; both of them landed on it independently.'+dupeWhy(l)+dupePriorHTML(l)+both+'</div>';
+    +' &mdash; two independent finds, not a re-send, so no reason is needed. One decision can cover both.'
+    +both+crossNote+dupePriorHTML(l)+'</div>';
 }
 /* Decide this lead and the other VA's copy in one go. Arms a flag that setSt reads,
    so both go through the SAME code path (sheet write-back, logging, learning) —
@@ -20797,6 +21524,7 @@ function renderDetail(){
   });
   host.innerHTML = l ? detailH(l) : emptyDetail();
   host.dataset.lid = l ? l.id : '';
+  try{ ldPaintNotices(); }catch(e){}   // fold/unfold the notices strip for this selection
   if(keep){
     var t2=host.querySelector('#'+keep.id);
     // only restore into the SAME lead's box — never paste one lead's note onto another
@@ -20958,7 +21686,7 @@ function detailH(l){
       </div>`:'';
     decH+=`<div class="nb-wrap${isNo?' nb-no':isBuy?' nb-buy':''}">
       ${qtyRow}
-      <div class="nb-lbl">${isNo?'Why is it a no? — saved to the sheet':'Add a note (optional) — saved to the sheet'}</div>
+      <div class="nb-lbl">${isNo?'Why is it a no? — saved to the sheet':'Note (optional) — goes to the sheet’s Jack Comment column'}</div>
       ${nbChips?`<div class="nb-chips">${nbChips}</div>`:''}
       <!-- reasonStrip: the raw note starts "[why:oos] …" and showing that tag in the
            box meant select-all-and-retype silently deleted the reason. The tag stays
@@ -20989,7 +21717,7 @@ function detailH(l){
         <span class="d-va-badge">${vaShort(l)}</span>
         <span class="d-va-name">${vaName(l)}</span>
         <span class="d-eyebrow-sep">·</span>
-        <span class="d-eyebrow-txt">${l._id} · added ${l.date}</span>
+        <span class="d-eyebrow-txt">${l._id} · added ${l.date}</span>${l.sheetRow?` <span class="d-rowref" title="Where this sits on the Google Sheet">row ${l.sheetRow}${l.sheetTab?' · '+l.sheetTab:''}</span>`:''}
         <span class="d-age-badge${isStale(l)?' stale':''}" style="margin-left:auto">${isStale(l)?'⚠ ':''}${ageTxt(l.hrs)}</span>
         <span class="d-status-tag ${scls}">${stxt}</span>
       </div>
@@ -21004,7 +21732,6 @@ function detailH(l){
       <div class="d-asin-row d-asin-top">
         <button class="d-asin" onclick="cpA('${leadUseAsin(l)}',event)">${ICO.copy} ${leadUseAsin(l)}</button>
         <span class="d-asin-hint">${leadAsinConflict(l)?'Click to copy — from the link; the column says '+leadAsinConflict(l).col:'Click to copy ASIN'}</span>
-        <span class="d-asin-hint" style="margin-left:auto">Sourced via <b style="color:var(--va)">${l.src}</b></span>
       </div>
       <div class="d-tags">
         <span class="d-tag ${priCls(l)}">${priority(l)} priority</span>
@@ -21014,6 +21741,7 @@ function detailH(l){
         ${l.cat&&l.cat.trim()?`<span class="d-tag tag-cat">${l.cat}</span>`:''}
         ${discountChipHTML(l)}
       </div>
+      ${sigChips(l)}
       ${asinConflictHTML(l)}
       <div class="d-tags" style="display:none">
       </div>
@@ -21044,16 +21772,23 @@ function detailH(l){
           <div class="d-num"><div class="d-num-l">Margin</div><div class="d-num-v ${marC(l.margin)}">${l.margin}%</div></div>
           <div class="d-num"><div class="d-num-l">SPM (sales/mo)</div><div class="d-num-v ${spmC(l.spm)}">${spml(l.spm)}</div></div>
           <div class="d-num"><div class="d-num-l">FBA Sellers</div><div class="d-num-v ${fbaC(l.fba)}">${l.fba}</div></div>
-          <div class="d-num"><div class="d-num-l">Source Method</div><div class="d-num-v vn" style="font-size:13px;">${l.src}</div></div>
         </div>
       </div>
       ${l.screenshot?(function(){
           var _src=shotImg(l.screenshot);
           // No usable image address = draw the fallback state and make NO request.
-          return `<a class="d-shot${_src?'':' d-shot-fail'}" href="${String(l.screenshot).replace(/"/g,'&quot;')}" title="Click to view it full size, without leaving the app" onclick="event.preventDefault();shotOpen('${String(l.screenshot).replace(/'/g,'')}','${String(l.title||'').replace(/[`'\\"<>]/g,'').slice(0,60)}')">
+          /* 03/09: "preview unavailable" said nothing. Name the host and what to do —
+             prnt.sc in particular is blocked on Jack's connection, so it is the VA's
+             tool that needs changing, not the app. */
+          var _host=(String(l.screenshot).match(/^https?:\/\/(?:www\.)?([^\/]+)/i)||[])[1]||'';
+          var _why=_src ? '📸 VA screenshot — click to view it full size here'
+            : (/prnt\.sc/i.test(_host)
+                ? '📸 On prnt.sc — your connection can’t load it here. Opens in a new tab · ask '+vaName(l)+' to use Gyazo'
+                : '📸 On '+_host+' — can’t be previewed here, opens in a new tab');
+          return `<a class="d-shot${_src?'':' d-shot-fail d-shot-why'}" href="${String(l.screenshot).replace(/"/g,'&quot;')}" title="Click to view it full size, without leaving the app" onclick="event.preventDefault();shotOpen('${String(l.screenshot).replace(/'/g,'')}','${String(l.title||'').replace(/[`'\\"<>]/g,'').slice(0,60)}')">
             ${_src?`<img src="${_src}" alt="VA screenshot" loading="lazy"
                  onerror="shotFix(this,'${String(l.screenshot).replace(/'/g,'')}')">`:''}
-            <span>📸 VA screenshot — click to view it full size here</span></a>`;
+            <span>${_why}</span></a>`;
         })():''}
       ${buyTogetherHTML(l)}
       <div class="d-sec">
@@ -21062,14 +21797,10 @@ function detailH(l){
         ${s.smart?smartWhy(l,s):''}
         <div class="d-score-rubric">${bars}</div>
       </div>
-      <div class="d-sec" style="margin-bottom:0">
-        <div class="d-sec-lbl">Notes${l.sheetRow?` <span class="d-rowref" title="Where this sits on the Google Sheet">row ${l.sheetRow}${l.sheetTab?' · '+l.sheetTab:''}</span>`:''}</div>
-        <textarea class="notes" id="mn" placeholder="Add notes for this lead…">${l.notes}</textarea>
-        <div class="note-row">
-          <button class="note-save" onclick="saveN(${l.id})">Save note</button>
-          <span class="note-sync">${ICO.check} Saves to the sheet's Jack Comment column (syncs ~1 min)</span>
-        </div>
-      </div>
+      <!-- 03/09: the second note box lived here. It and the rail's note box both wrote
+           the SAME column (jack_comment) — Jack typed in one, saw the other empty, and
+           could not tell whether it had saved. One box now: the rail's, which opens under
+           the decision. The row reference moved up to the eyebrow so it is not lost. -->
     </div>
     <div class="d-rail">
       <div class="rail-card rail-score">
@@ -21167,7 +21898,19 @@ var REASON_KW=[
   ['test',    ['trying 1','only bought 1','only tried','test buy','tester','trying a few']],
   ['bulk',    ['bulk','case of','pallet','loads of stock','loads left','got some left','plenty of stock']],
   ['margin',  ['banger','great margin','lovely margin','strong margin']],
-  ['fast',    ['sells fast','fast seller','flies','quick seller']]
+  ['fast',    ['sells fast','fast seller','flies','quick seller']],
+  /* ── 03/09: phrases taken from the 19 reject notes the reader could not place.
+     Jack: "sometimes it should read my note on why i rejected it". These are his
+     actual words off the board, not invented examples — each one was sitting in a
+     note that was teaching the matrix nothing. */
+  ['badprice',['can\'t sell at that price','cant sell at that price','sell price is','sell rice is',
+               'needs to drop','needs to drop lower','dropped lower before','was cheaper',
+               'find it cheaper','no prof','not worth at that price']],
+  ['demand',  ['not selling','no movement','not moving','barely sells']],
+  ['comp',    ['fba sellers are there','too much comp','sellers on it']],
+  ['bulk',    ['moq','minimum order','can only buy']],
+  ['gated',   ['restriced','restrcited']],                       // his usual typos
+  ['wrong',   ['dup','duplicate']]
 ];
 function reasonGuess(note){
   var s=String(note||'').toLowerCase(); if(!s.trim()) return null;
@@ -23249,7 +23992,15 @@ function sbLoadBatches(force){
          consumer behaves exactly as before). SB_BATCHES_ALL = the true paste log. */
       var all=Array.isArray(rows)?rows:[];
       SB_BATCHES_ALL=all;
-      SB_BATCHES=all.filter(function(b){ return !b.scrapped; });
+      /* scrapped = binned or auto-removed at 5+ days. Also hide anything already
+         past the expiry even if the sweep has not written yet, so the board never
+         shows a batch it is about to remove. */
+      SB_BATCHES=all.filter(function(b){
+        if(b.scrapped) return false;
+        try{ if(typeof sbIsExpired==='function' && sbIsExpired(b)) return false; }catch(e){}
+        return true;
+      });
+      try{ setTimeout(sbExpireSweep,1200); }catch(e){}
       return SB_BATCHES;
     })
     .catch(function(){ SB_BATCHES=[]; SB_BATCHES_ALL=[]; return SB_BATCHES; });
@@ -23274,6 +24025,70 @@ function sbAgeDays(uk){
   var d=new Date(iso+'T12:00:00'), n=new Date();
   n=new Date(n.getFullYear(),n.getMonth(),n.getDate(),12,0,0);
   return Math.round((n-d)/86400000);
+}
+/* ── JACK'S ORDER, 03/09 ─────────────────────────────────────────────────────
+   "priority should be high today then high yesterday - till oldest - then medium
+   today to oldest then low today till oldest."
+   So: PRIORITY BANDS FIRST, and inside each band NEWEST first. This is the
+   opposite of the oldest-first rule the VA list used to use, and it is deliberate:
+   he wants today's high-priority work cleared before anything else, whatever age.
+   The 5-day expiry below is what stops that burying anything for ever. */
+function sbPriRank(p){
+  var v=String(p||'Normal').toLowerCase();
+  if(v==='high') return 0;
+  if(v==='low')  return 2;
+  return 1;                                    // Normal / Medium / anything else
+}
+function sbOrderCmp(a,b){
+  var pa=sbPriRank(a&&a.priority), pb=sbPriRank(b&&b.priority);
+  if(pa!==pb) return pa-pb;                    // High, then Medium, then Low
+  var aa=sbAgeDays(a&&a.date), ab=sbAgeDays(b&&b.date);
+  aa=(aa===null||aa===undefined)?9999:aa; ab=(ab===null||ab===undefined)?9999:ab;
+  if(aa!==ab) return aa-ab;                    // inside a band: today first, then back
+  return String((a&&a.storefront_name)||'').localeCompare(String((b&&b.storefront_name)||''));
+}
+/* ── 5-DAY AUTO-REMOVE ──────────────────────────────────────────────────────
+   Jack: "anything 5 days or older needs to auto remove now."
+   A storefront list five days old is stale stock and stale prices — working it is
+   worse than not working it. These drop off the board on their own.
+   NOTHING IS DELETED: an expired batch is marked scrapped (the same soft-bin added
+   on 31/08), so the paste still counts on the tag's last-paste and it can be
+   brought back. A batch a VA has already STARTED is never auto-removed — she is
+   mid-way through it. */
+var SB_EXPIRE_DAYS=5;
+function sbIsExpired(b){
+  if(!b || b.scrapped) return false;
+  if(b.status==='Completed'||b.status==='Started') return false;   // finished, or in someone's hands
+  var a=sbAgeDays(b.date);
+  return a!==null && a>=SB_EXPIRE_DAYS;
+}
+function sbExpireSweep(){
+  try{
+    if(typeof IS_PREVIEW!=='undefined'&&IS_PREVIEW) return;
+    if(!DB_ENABLED || !window._mgrUnlocked) return;                // Jack's app does the sweep
+    var due=(SB_BATCHES||[]).filter(sbIsExpired);
+    if(!due.length) return;
+    var names=due.map(function(b){ return (b.storefront_name||'batch')+' ('+sbAgeDays(b.date)+'d, '+(b.asin_count||0)+' ASINs)'; });
+    var done=0;
+    (function next(i){
+      if(i>=due.length){
+        if(done){
+          SB_BATCHES=null; SB_BATCHES_ALL=null;
+          try{ sbLoadBatches(true).then(function(){ try{ mgr_renderStorefronts(); }catch(e){} }); }catch(e){}
+          try{ showToast('\u{1F5D1} '+done+' batch'+(done===1?'':'es')+' auto-removed at '+SB_EXPIRE_DAYS+'+ days old'); }catch(e){}
+        }
+        return;
+      }
+      var b=due[i];
+      fetchT(SUPABASE_URL+'/rest/v1/storefront_batches?id=eq.'+encodeURIComponent(b.id),{method:'PATCH',
+        headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+          'Content-Type':'application/json',Prefer:'return=minimal'},
+        body:JSON.stringify({scrapped:true, scrapped_at:new Date().toISOString(), scrapped_by:'auto-'+SB_EXPIRE_DAYS+'d'})})
+        .then(function(r){ if(r.ok) done++; }).catch(function(){})
+        .then(function(){ next(i+1); });
+    })(0);
+    window.SB_EXPIRED_LAST=names;
+  }catch(e){}
 }
 function sbAgeCls(n){
   if(n===null) return '';
@@ -24567,13 +25382,7 @@ function sbTodayHTML(){
   out+=group('Being worked',  going,   '');
   // his own queue is a WORKLIST: big Start, everything else tucked away
   if(mineQ.length){
-    var mineFlat=mineQ.slice().sort(function(a,b){
-      var pa=(a.priority==='High')?0:1, pb=(b.priority==='High')?0:1;
-      if(pa!==pb) return pa-pb;
-      var da=sbToISO(a.date)||'', db=sbToISO(b.date)||'';
-      if(da!==db) return db<da?-1:1;
-      return String(a.storefront_name||'').localeCompare(String(b.storefront_name||''));
-    });
+    var mineFlat=mineQ.slice().sort(sbOrderCmp);
     out+='<div class="mgr-section">\u{1F535} Yours to work<span style="margin-left:auto;font-size:10.5px;font-weight:600;color:var(--muted-2);">'
       +mineA.toLocaleString()+' ASINs across '+mineQ.length+' batch'+(mineQ.length===1?'':'es')+' \u00b7 high first, then newest</span></div>'
       +'<div class="sbr-tiles">'+mineFlat.map(sbWorkRowHTML).join('')+'</div>';
@@ -24643,7 +25452,7 @@ async function sbCyclePriority(batchId){
   var next=SB_PRIORITY[(i+1)%SB_PRIORITY.length];
   b.priority=next;                              // optimistic — it's one field, instantly reversible
   var host=document.getElementById('mgr-storefronts-content');
-  if(host) host.innerHTML=sbJackHTML();
+  sbPaintSafe(host);
   await sbPatch(batchId,{priority:next}, true);
   sbSyncSoon();
 }
@@ -24703,7 +25512,7 @@ async function sbComplete(batchId){
    the save fails. The DB stops being in the click path. */
 function sbPaintJack(){                              // instant, local state only
   var host=document.getElementById('mgr-storefronts-content');
-  if(host) host.innerHTML=sbJackHTML();
+  sbPaintSafe(host);
 }
 function sbRefreshJack(){                            // refetch THEN paint — for the
   sbLoadBatches(true).then(sbPaintJack);             // cases that really changed server-side
@@ -24856,7 +25665,7 @@ function sbSelAll(on){
 function sbSelClear(){ SB_SEL={}; sbAdminRepaint(); }
 function sbAdminRepaint(){
   var host=document.getElementById('mgr-storefronts-content');
-  if(host) host.innerHTML=sbJackHTML();
+  sbPaintSafe(host);
 }
 function sbToggleDetails(){ SB_SHOW_DETAILS=!SB_SHOW_DETAILS; sbAdminRepaint(); }
 async function sbBulkSet(field, val){
@@ -24933,7 +25742,7 @@ async function sbQueueMove(id, dir){
   if(pa===pb){ pa=i+1; pb=j+1; }             // never seen, but a tie would make the swap a no-op
   a.pos=pb; b.pos=pa;
   SB_QUEUES.sort(function(x,y){ return (x.pos||0)-(y.pos||0); });
-  var host=document.getElementById('mgr-storefronts-content'); if(host) host.innerHTML=sbJackHTML();
+  var host=document.getElementById('mgr-storefronts-content'); sbPaintSafe(host);
   // A silent preview no-op here looks EXACTLY like a save: the row moves, nothing
   // complains, and the order snaps back on refresh. Say it every time.
   if(IS_PREVIEW){ showToast('Order changed here only — saving is OFF in this copy, so it will reset on refresh. Use the live app (or Switch saving on).', true); return; }
@@ -25056,7 +25865,7 @@ async function sbQueueDel(id){
   }
   SB_QUEUES=null;
   await sbLoadQueues(true);
-  var host=document.getElementById('mgr-storefronts-content'); if(host) host.innerHTML=sbJackHTML();
+  var host=document.getElementById('mgr-storefronts-content'); sbPaintSafe(host);
   showToast('"'+q.name+'" removed ✓'+(used?' — its '+used+' past batch'+(used===1?' is':'es are')+' still in your history':''));
 }
 /* A browser prompt() can only ask one question, so a new tag always landed as
@@ -25123,7 +25932,7 @@ async function sbQueueAddSave(){
     }catch(e){ showToast('Couldn\'t add that queue',true); return; }
   }
   await sbLoadQueues(true);
-  var host=document.getElementById('mgr-storefronts-content'); if(host) host.innerHTML=sbJackHTML();
+  var host=document.getElementById('mgr-storefronts-content'); sbPaintSafe(host);
   showToast('"'+name+'" added — it goes to you for review until you change it ✓');
 }
 /* ── Jack's real tag list, straight off the master sheet's dropdown ──────────
@@ -25163,7 +25972,7 @@ async function sbAddSheetTags(){
     }catch(e){ showToast('Couldn\'t add those — check your connection',true); return; }
   }
   await sbLoadQueues(true);
-  var host=document.getElementById('mgr-storefronts-content'); if(host) host.innerHTML=sbJackHTML();
+  var host=document.getElementById('mgr-storefronts-content'); sbPaintSafe(host);
   showToast(missing.length+' tag'+(missing.length===1?'':'s')+' added ✓ — set where each goes in the table');
 }
 /* the Keepa template lives here so it can be corrected without a code change */
@@ -25755,6 +26564,11 @@ function sbPerfHTML(){
     var doneP=r.batches?Math.round(r.done/r.batches*100):0;
     var openN=r.batches-r.done;
     var hasR=(r.worked>0 && r.leads>0);
+    /* Leads came back, but no shift hours are attached to this tag, so there IS no
+       rate to show. hasR stays true — the card must still say it produced a lead —
+       and only the leads/hour figure goes dark. Reading hasR as "has a rate" is what
+       threw on r.lph.toFixed and took the whole tab down. */
+    var hasRate=hasR && typeof r.lph==='number' && isFinite(r.lph);
     var lphW=Math.min(100,Math.round((r.lph||0)/(med||1)*100));   // 100% = hitting target
     var topLph=hasR && bestLph && r.lph>=bestLph-0.001;
     var topApl=hasR && bestApl && r.apl && r.apl<=bestApl+0.001;
@@ -25790,8 +26604,8 @@ function sbPerfHTML(){
         +(r.hrs>0?'<span>'+r.hrs.toFixed(1)+'h spent</span>':'')
         +(r.manual?'<span class="spx-hand">'+r.manual+' hand-logged</span>':'')+'</div>'
       +'<div class="spx-kpi">'
-        +'<div class="spx-k'+(hasR?'':' off')+'"><b>'+(hasR?r.lph.toFixed(1):'—')+'</b><em>leads / hour</em>'
-          +(hasR?'<span class="spx-mini"><i style="width:'+lphW+'%"></i></span>':'')+'</div>'
+        +'<div class="spx-k'+(hasRate?'':' off')+'"><b>'+(hasRate?r.lph.toFixed(1):'—')+'</b><em>leads / hour</em>'
+          +(hasRate?'<span class="spx-mini"><i style="width:'+lphW+'%"></i></span>':'')+'</div>'
         +'<div class="spx-k'+(hasR&&r.apl?'':' off')+'"><b>'+(hasR&&r.apl?Math.round(r.apl):'—')+'</b><em>ASINs per lead</em>'
           +'<span class="spx-note">'+(hasR&&r.apl?(r.apl<=15?'cheap to run':r.apl<=40?'reasonable':'expensive'):'needs a worked batch')+'</span></div>'
       +'</div>'
@@ -25853,9 +26667,15 @@ function sbPerfHTML(){
     +'</div>';
 
   var verdict='';
-  if(worked.length>=2){
-    var top=worked.slice().sort(function(a,b){return b.lph-a.lph;})[0];
-    var low=worked.slice().sort(function(a,b){return a.lph-b.lph;})[0];
+  /* A tag can have leads back but NO hours against it — a batch worked in a shift
+     that was never logged. sbPerf then sets lph=null, that row sorted straight into
+     `low`, and low.lph.toFixed(1) threw. One tag (TFTJ: 1 lead, 0h) took the entire
+     Storefronts tab down to a permanent spinner. Rank on tags that actually have a
+     rate; the rest still appear as cards below. */
+  var rated=worked.filter(function(r){ return typeof r.lph==='number' && isFinite(r.lph); });
+  if(rated.length>=2){
+    var top=rated.slice().sort(function(a,b){return b.lph-a.lph;})[0];
+    var low=rated.slice().sort(function(a,b){return a.lph-b.lph;})[0];
     /* The three questions a storefront board should answer without being asked:
        what's best, what's costing me, and what am I still sending ASINs into for
        nothing. The last one is where the money leaks. */
@@ -26105,12 +26925,43 @@ function audHTML(){
 }
 function mgr_renderAudit(){
   var el=document.getElementById('mgr-audit-content'); if(!el) return;
+  /* Same fault the Storefronts tab had: a throw inside the repaint was swallowed and
+     "Loading leads…" never cleared. Paint always lands, and names the fault. */
+  function paint(){
+    try{ el.innerHTML=audHTML(); }
+    catch(e){
+      console.error('Audit render failed', e);
+      el.innerHTML='<div class="sb-empty">Audit couldn\u2019t draw.'
+        +'<span>'+escHtml(String((e&&e.message)||e))+'</span>'
+        +'<span><button class="sbp-t" onclick="mgr_renderAudit()">Try again</button></span></div>';
+    }
+  }
   if(!(window.leads||[]).length && typeof loadLeadsFromDB==='function'){
     el.innerHTML='<div class="sk-note">Loading leads…</div>';
-    loadLeadsFromDB().then(function(){ el.innerHTML=audHTML(); });
+    loadLeadsFromDB().then(paint).catch(function(e){
+      console.error('Audit load failed', e);
+      el.innerHTML='<div class="sb-empty">Couldn\u2019t load leads.'
+        +'<span>'+escHtml(String((e&&e.message)||e))+'</span>'
+        +'<span><button class="sbp-t" onclick="mgr_renderAudit()">Try again</button></span></div>';
+    });
     return;
   }
-  el.innerHTML=audHTML();
+  paint();
+}
+/* Every repaint of the Storefronts board goes through here — the tab render AND the
+   seven action buttons (priority, reorder, add queue…). A throw inside sbJackHTML()
+   used to be swallowed as an unhandled rejection: the skeleton sat there forever, or
+   a click wiped the board to nothing, with no clue why. Now the board always shows
+   something, and names the fault. */
+function sbPaintSafe(host){
+  if(!host) return;
+  try{ host.innerHTML=sbJackHTML(); }
+  catch(e){
+    console.error('Storefronts render failed', e);
+    host.innerHTML='<div class="sb-empty">Storefronts couldn\u2019t draw.'
+      +'<span>'+escHtml(String((e&&e.message)||e))+'</span>'
+      +'<span><button class="sbp-t" onclick="mgr_renderStorefronts()">Try again</button></span></div>';
+  }
 }
 function mgr_renderStorefronts(){
   // the filter league needs filter_usage; pull it once, then repaint when it lands
@@ -26121,13 +26972,22 @@ function mgr_renderStorefronts(){
     sbLoadSrcLists().then(function(){ if(mgr_currentTab==='storefronts') mgr_renderStorefronts(); });
   } }catch(e){}
   var el=document.getElementById('mgr-storefronts-content'); if(!el) return;
+  /* Every paint goes through sbSafePaint. Before, a throw inside sbJackHTML() was
+     swallowed as an unhandled rejection and the skeleton sat there forever with no
+     clue why. Now the tab always ends up showing something, and it names the fault. */
+  function sbSafePaint(){ sbPaintSafe(el); }
   if(!SB_QUEUES||!SB_BATCHES){
     el.innerHTML='<div class="sk-note">Loading batches…</div>'+skTiles(3,3);
-    Promise.all([sbLoadQueues(), sbLoadBatches(true)]).then(function(){ el.innerHTML=sbJackHTML(); });
+    Promise.all([sbLoadQueues(), sbLoadBatches(true)]).then(sbSafePaint).catch(function(e){
+      console.error('Storefronts load failed', e);
+      el.innerHTML='<div class="sb-empty">Couldn\u2019t load batches.'
+        +'<span>'+escHtml(String((e&&e.message)||e))+'</span>'
+        +'<span><button class="sbp-t" onclick="mgr_renderStorefronts()">Try again</button></span></div>';
+    });
     return;
   }
-  el.innerHTML=sbJackHTML();
-  sbLoadBatches(true).then(function(){ el.innerHTML=sbJackHTML(); });
+  sbSafePaint();
+  sbLoadBatches(true).then(sbSafePaint).catch(function(e){ console.error('Storefronts refresh failed', e); });
 }
 
 /* ── SELF-CHECK ─────────────────────────────────────────────────────────────
@@ -26455,13 +27315,10 @@ function sbVAHTML(va){
     return sbGoesTo(b,va) && b.status!=='Completed' && b.status!=='Draft';
   });
   if(!mine.length) return '';
-  /* High first, then OLDEST first. A batch sitting for 8 days is the one that
-     needs doing — burying it under today's is how it got to 8 days old. */
-  mine.sort(function(a,b){
-    var pa=(a.priority==='High')?0:1, pb=(b.priority==='High')?0:1;
-    if(pa!==pb) return pa-pb;
-    return (sbAgeDays(b.date)||0)-(sbAgeDays(a.date)||0);
-  });
+  /* Jack's order (03/09): High → Medium → Low, newest first inside each band.
+     The old rule was oldest-first, to stop anything rotting; that job now belongs
+     to the 5-day auto-remove, so today's priority work leads. */
+  mine.sort(sbOrderCmp);
   var stale=mine.filter(function(b){ return (sbAgeDays(b.date)||0)>=2; }).length;
   var oldest=0; mine.forEach(function(b){ var d=sbAgeDays(b.date)||0; if(d>oldest) oldest=d; });
   return '<div class="sf-section"><div class="sf-head">'
@@ -27170,10 +28027,31 @@ function mgr_renderLeadsDash(){
   });
   var whyList=Object.keys(why).map(function(k){ return {k:k,n:why[k]}; }).sort(function(a,b){ return b.n-a.n; });
   var whyTotal=whyList.reduce(function(a,x){ return a+x.n; },0);
+  /* ── HOW MUCH OF THIS NEVER NEEDED TO REACH HIM ─────────────────────────────
+     The card already lists WHY leads die. What it never said is that a big slice of
+     them are not judgement calls at all: gated, out of stock, or stock he already
+     holds. Measured on his live board, 22 of 82 rejects — better than a quarter —
+     and at ~101 seconds a lead that is real time spent saying no to things a VA
+     could have filtered. The reason kind is already computed ('world' = nothing to
+     do with the numbers), so this is a count, not a new judgement. */
+  var preventable=0;
+  try{
+    /* same set the card counts above: islead===false or status 'passed' */
+    rows.filter(function(l){ return l.islead===false||l.status==='passed'; }).forEach(function(l){
+      var a=(typeof reasonAny==='function')?reasonAny(l.notes):null;
+      if(a && a.r && a.r.k==='world') preventable++;
+    });
+  }catch(e){}
+  var preventLine=(whyTotal>0 && preventable>0)
+    ? '<div class="ldd-prevent"><b>'+preventable+' of '+whyTotal+'</b> ('+ldDashPct(preventable,whyTotal)+'%) '
+      +'were gated, out of stock, or stock you already hold \u2014 not judgement calls. '
+      +'Your VAs could catch most of these before they reach you.</div>'
+    : '';
   var whyCard=whyList.length
     ? '<div class="ldd-card"><div class="ldd-h">Why leads die</div>'
       +'<div class="ldd-sub">Across '+whyTotal.toLocaleString()+' rejected leads. Anything big here is worth telling both VAs. '
         +'<b>*</b> = read from the words you wrote, not a reason you pressed.</div>'
+      +preventLine
       +'<div class="ldd-tbl">'+whyList.slice(0,8).map(function(x){
           return '<div class="ldd-tr"><span class="ldd-name">'+escHtml(x.k)+'</span>'
             +'<span class="ldd-n">'+x.n+'</span><span></span>'
