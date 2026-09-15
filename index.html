@@ -6646,7 +6646,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v49.3';
+var APP_VERSION='v49.7';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -7149,14 +7149,20 @@ function renderNewsletterSchedulePanels(){
 }
 
 // ── TASK TEMPLATES ───────────────────────────────────────
+/* 15/09: the Sourcing app is now the VAs' filter list. ShiftTrack links INTO it and holds
+   no filter links of its own for the everyday task. New tab always — its per-browser name
+   and unsent-changes queue live under its own origin (Safari partitions frames). */
+var SOURCING_APP_URL='https://jackbithellamazon.github.io/BDL-Sourcing-Suite/';
+var SOURCING_DUE_URL=SOURCING_APP_URL+'#due';
+var SOURCING_HOW='Open the link (new tab). Press Run on each red row, open its Keepa filter, export, drop the file in, then press \u201cOpen all in Keepa\u201d and eyeball them. Log the keepers as today\u2019s, come back here, tick this, and log your time + leads.';
 var taskTemplates = {
   Mera: [
     { id:'leadsheet',    name:'Lead Sheet - Check Jack\'s comments & action everything',  mandatory:true,  hint:'If you disagree with a comment, message Jack with data.' },
-    { id:'telegram',     name:'Telegram - Keepa Tracker Check',                           mandatory:true,  hint:'Check your Keepa tracker notifications — you should be getting 1-2 free leads every single day just from this. Items back in stock, price drops, deal alerts. This is easy leads for almost zero effort — do not skip it.' },
+    { id:'telegram',     name:'Telegram - Keepa Tracker Check',                           mandatory:true,  hint:'Check your Keepa tracker notifications — you should be getting 1-2 free leads every single day just from this. Items back in stock, price drops, deal alerts. This is easy leads for almost zero effort — do not skip it. THC Discord — also check these channels: #a2a-biz, #a2a-biz-10-20.' },
     // Newsletter slot A — after Telegram (only if newsletter day — injected in startShift)
     { id:'pp-main',      name:'PP Main Run - Deal Watch Mera + High Ticket A2A',           mandatory:true,  hint:'Run all your PP channels fully. Log all EU brand drops in chat.' },
     { id:'ht-filters',   name:'High Ticket & A2A Filters (Not Active)',                    mandatory:true,  hint:'To be added at a later date by Jack. Just tick off for now.' },
-    { id:'kpf-daily',    name:'KPF Filters - 7 Day Drops (Every Day)',                    mandatory:true,  hint:'Run daily - link changes regularly, check mera-poa-filters-saved on Discord.' },
+    { id:'kpf-daily',    name:'KPF Filters - Everyday Filters',                          mandatory:true,  hint:'Your everyday filters now live in the Sourcing app \u2014 the link is below. '+SOURCING_HOW },
     { id:'jack-poa',     name:'Missed Yesterday + Jack POA',                               mandatory:true,  hint:'Finish anything missed from yesterday (filters, storefront ASINs etc) then check tasks/filters Jack sent.', hasLinks:true },
     { id:'sourcing',     name:'Sourcing Period - Your Own Sourcing Time',                  mandatory:true,  hint:'KPF (brand/category), Manual, Newsletter, Reverse KPF A2A, Arbi. Find a strong lead from a brand sale or promo - dig deep and pull multiple.', hasLinks:true },
     { id:'eu-sheets',    name:'EU Sheets (if there is any) → Complete them',               mandatory:true,  hint:'Check if any EU sheets need completing. If brands dropped → complete the EU sheet fully. Log time spent and leads found.' },
@@ -7173,15 +7179,15 @@ var taskTemplates = {
     },
     {
       id:'suz-telegram', name:'Telegram - Keepa Tracker Check', mandatory:true,
-      hint:'Check your Keepa tracker notifications — you should be getting 1-2 free leads every single day just from this. Items back in stock, price drops, deal alerts. This is easy leads for almost zero effort — do not skip it.'
+      hint:'Check your Keepa tracker notifications — you should be getting 1-2 free leads every single day just from this. Items back in stock, price drops, deal alerts. This is easy leads for almost zero effort — do not skip it. THC Discord — also check these channels: #automated-leads, #a2a-leads, #a2a-non-keepa, #a2a-beta, #a2a-eu.'
     },
     {
       id:'suz-pp', name:'ProfitPath Main Run (50spm-eu-suz / uk-a2a-suz / uk-biz-suz / no-variations-eu-suz / 20spm-eu-suz)', mandatory:true,
       hint:'Run all your PP channels fully. Once PP is done → send a list in chat of ALL EU brands that have dropped (no excuses). If a brand drops multiple times → post: EU sheet needed then - brands.'
     },
     {
-      id:'suz-kpf-daily', name:'KPF Filters - Everyday Filters (suz-poa-filters-saved)', mandatory:true,
-      hint:'Run daily - link changes regularly, check #suz-poa-filters-saved on Discord. Two everyday filter sets to run.'
+      id:'suz-kpf-daily', name:'KPF Filters - Everyday Filters', mandatory:true,
+      hint:'Your everyday filters now live in the Sourcing app \u2014 the link is below. '+SOURCING_HOW
     },
     {
       id:'suz-jack-poa', name:'Missed Yesterday + Jack POA', mandatory:true,
@@ -8720,6 +8726,11 @@ function jb_cleanLabel(it){
     // one is telling apart at a glance.
     try{
       var dec=decodeURIComponent(String(it.v));
+      /* Sourcing app links: "#run=bialetti" reads as "Run · Bialetti", "#due" as the due list.
+         Without this the card said "jackbithellamazon.github.io", which tells the VA nothing. */
+      var sr=dec.match(/BDL-Sourcing-Suite\/?#run=([a-z0-9-]+)/i);
+      if(sr) return 'Run \u00b7 '+sr[1].split('-').map(function(w){ return w? w[0].toUpperCase()+w.slice(1) : ''; }).join(' ');
+      if(/BDL-Sourcing-Suite\/?#due/i.test(dec)) return 'Sourcing app \u2014 what\u2019s due today';
       var m=dec.match(/\b(B0[A-Z0-9]{8})\b/i);
       if(m) return jb_cleanHost(it.v)+' · '+m[1].toUpperCase();
     }catch(e){}
@@ -8971,6 +8982,31 @@ function buildTaskEl(task, i, isExtra) {
 
 function buildFields(task, i, isExtra) {
   if (taskIsTickOnly(task)) {
+    /* Mera, 15/09: "hello sir I cant see any Asin". Two or more ASINs become ONE group card,
+       and the group is tick-only — but this branch returned before any list was drawn, and
+       a group has jbIids not jbIid, so it fell through to the lead-sheet sentence. Every
+       multi-ASIN send since the group went tick-only showed the VA nothing to check.
+       Draw each ASIN with the same copy + Open on Amazon controls a single ASIN gets. */
+    if (task.jbGroup && task.jbType==='asin') {
+      var _names=task.linkNames||[];
+      var _as=(task.jbAsins&&task.jbAsins.length) ? task.jbAsins
+        : _names.map(function(n){ var m=String(n||'').toUpperCase().match(/\b[A-Z0-9]{10}\b/); return m?m[0]:''; });
+      var _rows='';
+      _as.forEach(function(a,k){
+        var c=String(a||'').replace(/[^0-9A-Za-z]/g,'');
+        if(!c) return;
+        var why=String(_names[k]||'').split(' — ').slice(1).join(' — ');
+        _rows+='<div class="jb-openrow">'
+          +'<span class="jb-asin" onclick="event.stopPropagation();navigator.clipboard.writeText(\''+c+'\');showToast(\'ASIN copied &#10003;\')">'+c+' &#128203;</span>'
+          +'<a class="jb-open" href="https://www.amazon.co.uk/dp/'+encodeURIComponent(c)+'" target="_blank" onclick="event.stopPropagation()">Open on Amazon &#8599;</a>'
+          +(why?'<span class="task-hint" style="margin:0 0 0 6px">'+escHtml(why)+'</span>':'')
+          +'</div>';
+      });
+      if(!_rows) _rows='<div class="tk-note" style="color:var(--amber)">Couldn’t read the ASINs on this card — message Jack and he’ll resend them.</div>';
+      return _rows
+        + '<div class="tk-note"><div class="field-label">Anything to tell Jack? (optional)</div>'
+        + '<input class="field-input" type="text" placeholder="e.g. done, nothing worth adding" value="'+String(task.context||'').replace(/"/g,'&quot;')+'" oninput="updateField('+i+','+isExtra+',\'context\',this.value)"></div>';
+    }
     // a From-Jack one-off with nothing to measure — give them a way to answer him back
     if (task.jbIid || task.jbOneoffIid) {
       return '<div class="tk-note"><div class="field-label">Anything to tell Jack? (optional)</div>'
@@ -9653,6 +9689,7 @@ function jb_groupTask(ty,items){
     iids.push(it.iid||('x'+n));
   });
   return { id:'jbgrp-'+ty, jbGroup:true, jbIids:iids, jbType:ty,
+    jbAsins:(ty==='asin'?items.map(function(it){ return String(it.v||'').trim().toUpperCase(); }):[]),
     name:'From Jack · '+items.length+' '+t[1].toLowerCase(),
     jbLabel:items.length+' '+t[1].toLowerCase(),
     jbReason:'', jbCarried:carried>0, jbCarryDays:oldest, mandatory:true,
@@ -11084,6 +11121,31 @@ async function submitEOD() {
   if (state.currentVA !== 'Test' && keepaTodayVal === '') {
     eodBlock(keepaInput,'Enter your Keepa tracker count first — scrolled to it for you');
     return;
+  }
+  /* Last look before she closes the day. Fresh pull (the sheet may have changed in the last
+     minute), repaint, and if there are duplicates or loss-making leads, bring the list to her
+     and ask for a second tap. Not a hard block — a sync lag must never trap her on shift —
+     but it can no longer be missed. Same counts on the second tap = she has seen it, let it go. */
+  if (state.currentVA !== 'Test' && !state._eodWasEdit) {
+    if (state._eodChecking) return;
+    state._eodChecking = true;
+    try{
+      try{ await Promise.race([loadLeadsFromDB(), new Promise(function(r){ setTimeout(r,6000); })]); }catch(e){}
+      try{ eodRenderLeadCheck(); }catch(e){}
+      var _dN=0,_lN=0;
+      try{ _dN=eodDupList(state.currentVA).length; }catch(e){}
+      try{ _lN=eodLossList(state.currentVA).length; }catch(e){}
+      var _sig=_dN+'|'+_lN;
+      if ((_dN||_lN) && state._eodWarnAck!==_sig) {
+        state._eodWarnAck=_sig;
+        var _bits=[];
+        if(_dN) _bits.push(_dN+' duplicate'+(_dN===1?'':'s'));
+        if(_lN) _bits.push(_lN+' losing money');
+        eodBlock(document.getElementById('eod-leadcheck'),
+          '⚠️ '+_bits.join(' and ')+' on your sheet — fix '+((_dN+_lN)===1?'it':'them')+', or tap Submit again to finish anyway');
+        return;
+      }
+    } finally { state._eodChecking = false; }
   }
   // validation passed — NOW lock out a second submission
   state._eodSubmitting = true;
@@ -18056,7 +18118,39 @@ function eodMissingHTML(va){
 function eodRenderLeadCheck(){
   var el=document.getElementById('eod-leadcheck');
   var va=(state.currentVA==='Test'?state._previewAs:state.currentVA);
-  if(el) el.innerHTML=eodLeadCheckHTML(va)+eodMissingHTML(va)+eodDupCheckHTML(va);
+  if(!el) return;
+  var html=eodLeadCheckHTML(va)+eodMissingHTML(va)+eodDupCheckHTML(va)+eodLossHTML(va);
+  if(el._lcLast===html) return;
+  el._lcLast=html; el.innerHTML=html;
+}
+/* Jack, 14/09: "number 2 should flag before she finishes a shift" — Nescafé Decaf went on
+   Suz's sheet at -£1.11 profit, -11% ROI. A lead that loses money on the numbers she typed
+   is either a typo or not a lead. Today's rows only: it is her day she is closing out. */
+function eodLossList(va){
+  var c=eodLeadCheck(va); if(!c||!c.rows||!c.rows.length) return [];
+  var out=[];
+  c.rows.forEach(function(l){
+    var pr=parseFloat(l.profit);
+    if(isNaN(pr) || pr>=0) return;
+    out.push({ row:l.sheetRow, title:String(l.title||'(untitled)').slice(0,46), profit:pr, roi:parseFloat(l.roi)||0 });
+  });
+  out.sort(function(a,b){ return (a.row||0)-(b.row||0); });
+  return out;
+}
+function eodLossHTML(va){
+  var m=eodLossList(va);
+  if(!m.length) return '';
+  var li=m.map(function(x){
+    return '<li><b class="eod-lc-row">row '+(x.row||'?')+'</b>'+escHtml(x.title)
+      +' <span style="color:#ff6b81;font-weight:800;">−£'+Math.abs(x.profit).toFixed(2)
+      +(x.roi?' · '+x.roi.toFixed(0)+'% ROI':'')+'</span></li>';
+  }).join('');
+  return '<div class="eod-lc warn">'
+    +'<div class="eod-lc-h">💸 '+m.length+' of today’s leads '+(m.length===1?'loses':'lose')+' money</div>'
+    +'<div class="eod-lc-l"><ul>'+li+'</ul></div>'
+    +'<div class="eod-lc-b" style="margin-top:7px">Check the buy price, sell price and fees on your sheet. '
+    +'If the numbers are right it isn’t a lead — <b>delete the row</b>. If one is a typo, fix it before you submit.</div>'
+    +'</div>';
 }
 /* ── DUPS SHE STILL HAS TO DEAL WITH ──────────────────────────────────────────
    Jack's rule: a repeat is only allowed if there is a reason — different
@@ -19317,7 +19411,14 @@ setInterval(function(){
   if(leadsEditing()) return;                  // mid-note / mid-quantity — leave him alone
   var lv=document.getElementById('view-leads');
   var onShift=window.state&&state.shiftStart&&!state.submitted;
-  if((lv&&lv.classList.contains('active'))||onShift) loadLeadsFromDB();
+  if((lv&&lv.classList.contains('active'))||onShift){
+    var _lp=loadLeadsFromDB();
+    /* Suz, 14/09: the end-of-shift warnings were painted ONCE, when the shift screen opened
+       at 03:01 with no leads on her sheet. Leads refreshed every minute after that, but the
+       panel never did — so at 12:53 she was looking at the 03:01 picture: no duplicate
+       warning for row 131, no "11 logged vs 18 on sheet". Repaint whenever leads land. */
+    if(onShift && _lp && _lp.then) _lp.then(function(){ try{ eodRenderLeadCheck(); }catch(e){} });
+  }
 },60000);
 // prefetch spend in the background on startup so the overview shows instantly (no "loading" wait)
 setTimeout(function(){ try{ loadSpend(); }catch(e){} },1500);
@@ -22550,6 +22651,22 @@ function sfltAttachToPoa(tasks,va){
   var attached=sfltInsertOwnRows(tasks,va);
   if(!tasks||!tasks.length) return attached;
   tasks.forEach(function(t){
+    /* The everyday task always carries the Sourcing app's "due today" link FIRST — before
+       any pinned filters, and regardless of whether there are any. Once Suz's "20+" and
+       "7-40" are archived, this task has no pins at all; the old code returned right here
+       with no link and the Discord hint. Any filter still pinned (Mera's "200+") follows it. */
+    if((t.id==='kpf-daily'||t.id==='suz-kpf-daily') && typeof SOURCING_DUE_URL==='string'){
+      t.hasLinks=true;
+      t.links=t.links||[]; t.linkLeads=t.linkLeads||[]; t.linkFilterIds=t.linkFilterIds||[]; t.linkNames=t.linkNames||[];
+      if(t.linkFilterIds.indexOf('sourcing-due')<0){
+        var _n=Math.max(t.links.length,t.linkNames.length,t.linkLeads.length,t.linkFilterIds.length);
+        while(t.links.length<_n) t.links.push(''); while(t.linkNames.length<_n) t.linkNames.push('');
+        while(t.linkLeads.length<_n) t.linkLeads.push(''); while(t.linkFilterIds.length<_n) t.linkFilterIds.push('');
+        t.links.unshift(SOURCING_DUE_URL); t.linkNames.unshift('Sourcing app \u2014 what\u2019s due today');
+        t.linkLeads.unshift(''); t.linkFilterIds.unshift('sourcing-due');
+      }
+      t._poaFilters=true;
+    }
     var mine=sfltForTask(va,t.id).filter(function(f){ return sfltMode(f)!=='own'; });
     if(!mine.length) return;
     t.hasLinks=true;
@@ -22563,7 +22680,7 @@ function sfltAttachToPoa(tasks,va){
       attached.push(f.id);
     });
     // drop the "check Discord" hint — the library replaces that channel
-    if(/Discord/i.test(t.hint||'')) t.hint='Your saved filters are listed below — run each one and log the leads it gave you.';
+    if(/Discord/i.test(t.hint||'') && t.id!=='kpf-daily' && t.id!=='suz-kpf-daily') t.hint='Your saved filters are listed below — run each one and log the leads it gave you.';
     t._poaFilters=true;
   });
   return attached;
