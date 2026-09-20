@@ -4979,6 +4979,33 @@ select.dd-active{border-color:var(--accent,#8b5cf6)!important;}
   .stat-val{font-size:20px;}
   .task-status{display:none;}   /* tiniest phones: the checkbox already shows state */
 }
+
+.oa-wrap{border:1px solid var(--line,#242a3d);background:var(--card,#12141f);border-radius:14px;padding:14px 16px;margin-bottom:16px;}
+.oa-head{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.oa-head b{font-size:15px;}
+.oa-head span{color:var(--muted-2,#8b93a8);font-size:12.5px;}
+.oa-open{margin-left:auto;color:var(--accent,#8b5cff);font-weight:700;font-size:12.5px;text-decoration:none;}
+.oa-kpis{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
+.oa-k{background:rgba(0,0,0,.22);border:1px solid var(--line,#242a3d);border-radius:10px;padding:8px 14px;text-align:center;min-width:92px;}
+.oa-k b{display:block;font-family:var(--font-mono,monospace);font-size:20px;font-weight:800;color:var(--text,#e8ebf3);line-height:1;}
+.oa-k em{font-style:normal;font-size:10.5px;color:var(--muted-2,#8b93a8);font-weight:700;}
+.oa-k.hot b{color:#f5a524;} .oa-k.good b{color:#10d99a;}
+.oa-who{margin-left:auto;color:var(--muted-2,#8b93a8);font-size:12.5px;}
+.oa-sec{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-2,#8b93a8);font-weight:800;margin:12px 0 6px;}
+.oa-row{display:grid;grid-template-columns:minmax(150px,1.6fr) 76px 66px 152px 1fr auto;gap:10px;align-items:center;padding:7px 0;border-top:1px solid rgba(255,255,255,.05);font-size:12.5px;}
+.oa-row.done{opacity:.85;}
+.oa-name{font-weight:700;color:var(--text,#e8ebf3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.oa-own{color:var(--text,#e8ebf3);font-weight:700;font-size:11.5px;}
+.oa-own.pool{color:var(--muted-2,#8b93a8);font-weight:600;}
+.oa-cad,.oa-nums{color:var(--muted-2,#8b93a8);}
+.oa-nums b{color:var(--text,#e8ebf3);}
+.oa-nums.wide{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.oa-due{font-weight:700;} .oa-due i{font-style:normal;font-weight:500;color:var(--muted-2,#8b93a8);}
+.oa-due.red{color:#ff6b81;} .oa-due.amber{color:#f5a524;} .oa-due.green{color:#10d99a;} .oa-due.off{color:var(--muted-2,#8b93a8);}
+.oa-go{color:#0b0d14;background:var(--accent,#8b5cff);border-radius:8px;padding:4px 11px;font-weight:800;font-size:11.5px;text-decoration:none;white-space:nowrap;}
+.oa-go.ghost{background:transparent;color:var(--muted-2,#8b93a8);border:1px solid var(--line,#242a3d);}
+.oa-none,.oa-more{color:var(--muted-2,#8b93a8);font-size:12.5px;padding:6px 0;}
+.oa-foot{margin-top:10px;color:var(--muted-2,#8b93a8);font-size:11.5px;}
 </style>
 </head>
 <body>
@@ -6646,7 +6673,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v49.7';
+var APP_VERSION='v50.1';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -8511,7 +8538,7 @@ function sbVaRowHTML(r){
   /* Jack: "some stuff goes to both VAs to do — not locked when Mera has it". A batch
      assigned to Both/All is EVERYONE'S work: the other VA starting it is information,
      never a lock. Only a batch owned by one person locks for anyone else. */
-  var shared=(b.assigned_to==='Both'||b.assigned_to==='All');
+  var shared=(sbPeople(b.assigned_to).length>1);
   var otherBy=(by && by!==state.currentVA && by!==me && by!=='')?by:null;
   var other=(!shared && otherBy)?otherBy:null;
   var alsoOn=(shared && otherBy)?otherBy:null;
@@ -8527,9 +8554,12 @@ function sbVaRowHTML(r){
       +ageChip
       +((b.priority==='High')?'<span class="sbv-hi">HIGH</span>':'')
       +(other?'<span class="sbv-held" title="Started by '+escHtml(vaDisp(other))+' — leave it with them">'+escHtml(vaDisp(other))+' has it</span>':'')
-      +(shared?'<span class="sbv-share" title="Sent to both of you — you each do your own pass, it only closes when everyone has">BOTH'
-          +(waiting.length?' · '+escHtml(waiting.map(vaDisp).join(' + '))+' still to do':' · you are the last one')+'</span>':'')
-      +(alsoOn?'<span class="sbv-also" title="'+escHtml(vaDisp(alsoOn))+' is working it right now">'+escHtml(vaDisp(alsoOn))+' on it now</span>':'')
+      /* Jack, 19/09: "why do VAs need to know who else is doing it". They don't. The
+         "BOTH · Suz still to do" and "Suz on it now" pills came from the old shared-row
+         design; since v49.9 every VA gets a batch of her own anyway. Her Done still
+         records her own pass on older shared rows — only the display is gone. Jack's
+         board keeps showing who holds what. The "has it" lock above stays: that one
+         stops her working a batch someone else owns. */
       +(running?'<span class="sbv-live">● timing</span>':'')
     +'</div>'
     +'<div class="sbv-ctl">'
@@ -14147,6 +14177,128 @@ function filterPerfPanel(where){
 /* ── FILTERS TAB — the whole saved-filter library in one place ──────────────
    Was a card buried in Settings → Leads, which doesn't work once there are
    thousands of them. Library + bulk import + what each one actually produces. */
+/* ── OA SOURCING, SEEN FROM HERE ─────────────────────────────────────────────
+   Jack, 20/09: "you just concentrate on seeing the OA sourcing through ShiftTrack —
+   I will design and fix OA sourcing myself". So this is a WINDOW, never a copy:
+     · it READS src_sources and src_runs and shows counts and links, nothing else
+     · no sell price, VAT, velocity or demand maths is repeated here — that lives in
+       the Sourcing app and must only ever live there
+     · it spends no Keepa tokens; a run costs tokens only inside the Sourcing app
+     · it removes nothing. The saved-filter library, the VA logging and the leads page
+       all stay exactly as they are (Jack, 20/09: "don't ever remove anything").
+   Due dates use the Sourcing app's own rule (cadence days after the last run, overdue
+   once that day has passed) so the two screens never disagree. */
+var OA_SRC=null, OA_RUNS=null, OA_AT=0, OA_LOADING=false, OA_ERR='';
+var OA_CADENCE_DAYS={daily:1,'2 days':2,'3 days':3,weekly:7,adhoc:0};
+function oaAppUrl(){ return (typeof SOURCING_APP_URL==='string'&&SOURCING_APP_URL)||'https://jackbithellamazon.github.io/BDL-Sourcing-Suite/'; }
+/* #run=<key>&who=<Name> opens that run screen with the name already set, so the
+   who-are-you gate never appears. The Sourcing app matches who= anywhere in the hash. */
+function oaRunLink(key,who){ return oaAppUrl()+'#run='+encodeURIComponent(key)+(who?'&who='+encodeURIComponent(who):''); }
+function oaDueLink(who){ return oaAppUrl()+'#due'+(who?'&who='+encodeURIComponent(who):''); }
+function oaTodayISO(){ try{ return sbToISO(sbToday()); }catch(e){ return new Date().toISOString().slice(0,10); } }
+function oaLoad(force){
+  if(!force && OA_SRC && OA_RUNS && (Date.now()-OA_AT)<120000) return Promise.resolve(true);
+  if(typeof SUPABASE_URL==='undefined' || typeof DB_ENABLED==='undefined' || !DB_ENABLED) return Promise.resolve(false);
+  if(OA_LOADING) return Promise.resolve(false);
+  OA_LOADING=true; OA_ERR='';
+  var h={apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY};
+  var since=new Date(Date.now()-60*86400000).toISOString().slice(0,10);
+  return Promise.all([
+    fetchT(SUPABASE_URL+'/rest/v1/src_sources?select=key,data',{headers:h}).then(function(r){ return r.ok?r.json():[]; }),
+    fetchT(SUPABASE_URL+'/rest/v1/src_runs?select=source_key,day,at,who,data&day=gte.'+since+'&order=at.desc',{headers:h}).then(function(r){ return r.ok?r.json():[]; })
+  ]).then(function(a){ OA_SRC=a[0]||[]; OA_RUNS=a[1]||[]; OA_AT=Date.now(); OA_LOADING=false; return true; })
+   .catch(function(e){ OA_ERR=String((e&&e.message)||e); OA_LOADING=false; return false; });
+}
+function oaLastRun(key){
+  var rs=(OA_RUNS||[]).filter(function(r){ return r.source_key===key; });   // already newest-first
+  return rs.length?rs[0]:null;
+}
+/* the Sourcing app's own dueState(), mirrored */
+function oaDue(src){
+  var d=(src&&src.data)||{}, t=oaTodayISO();
+  if(d.status==='paused') return {label:'Paused', due:false, rank:9000, tone:'off'};
+  var last=oaLastRun(src.key), days=OA_CADENCE_DAYS[String(d.cadence||'')]||0;
+  if(!last) return {label:'Never run', due:true, rank:1, tone:'amber', sub:'no run recorded'};
+  var lastDay=String(last.day||last.at||'').slice(0,10);
+  if(lastDay===t) return {label:'Done today', due:false, rank:8000, tone:'green', sub:'by '+(String(last.who||'').trim()||'no name')};
+  if(!days) return {label:'One-off', due:false, rank:5000, tone:'off'};
+  var nx=new Date(String(last.at)); nx.setDate(nx.getDate()+days);
+  var nxDay=nx.toISOString().slice(0,10);
+  if(nxDay<t){ var od=Math.round((new Date(t)-new Date(nxDay))/864e5);
+    return {label:'Overdue · '+od+'d', due:true, rank:0, tone:'red', sub:'last run '+lastDay}; }
+  if(nxDay===t) return {label:'Due today', due:true, rank:1, tone:'amber', sub:'last run '+lastDay};
+  var inD=Math.round((new Date(nxDay)-new Date(t))/864e5);
+  return {label:'in '+inD+'d', due:false, rank:100+inD, tone:'off', sub:'last run '+lastDay};
+}
+function oaNum(v){ return (v===0||v)?v:'—'; }
+function oaPanelHTML(){
+  var OPEN='<a class="oa-open" target="_blank" rel="noopener" href="'+oaDueLink('Jack')+'">Open the Sourcing app ↗</a>';
+  if(!OA_SRC||!OA_RUNS){
+    return '<div class="oa-wrap"><div class="oa-head"><b>\u{1F50E} OA sourcing</b>'
+      +'<span>'+(OA_ERR?('couldn’t read it — '+escHtml(OA_ERR)):'reading the Sourcing app’s runs…')+'</span>'+OPEN+'</div></div>';
+  }
+  var t=oaTodayISO();
+  var live=(OA_SRC||[]).filter(function(x){ return ((x.data||{}).status||'active')!=='paused'; });
+  var paused=(OA_SRC||[]).length-live.length;
+  var today=(OA_RUNS||[]).filter(function(r){ return String(r.day||'').slice(0,10)===t; });
+  var tLeads=0,tNew=0;
+  today.forEach(function(r){ var d=r.data||{}; tLeads+=(+d.leads||0); tNew+=(+d.new||0); });
+  var rows=live.map(function(x){ return {src:x, due:oaDue(x)}; }).sort(function(a,b){ return a.due.rank-b.due.rank; });
+  var dueRows=rows.filter(function(r){ return r.due.due; });
+  var doneRows=rows.filter(function(r){ return r.due.label==='Done today'; });
+  /* Who ran what is the question this panel exists to answer, so it is the headline —
+     and it must stay honest when the answer is "nobody has told us". */
+  var whoTally={};
+  today.forEach(function(r){ var w=String(r.who||'').trim()||'(no name)'; whoTally[w]=(whoTally[w]||0)+1; });
+  var whoLine=Object.keys(whoTally).length
+    ? Object.keys(whoTally).map(function(w){ return '<b>'+escHtml(w)+'</b> '+whoTally[w]; }).join(' · ')
+    : '<i>nobody yet today</i>';
+  var head='<div class="oa-head"><b>\u{1F50E} OA sourcing</b>'
+    +'<span>'+live.length+' live source'+(live.length===1?'':'s')+(paused?(' · '+paused+' paused'):'')+'</span>'+OPEN+'</div>';
+  var strip='<div class="oa-kpis">'
+    +'<div class="oa-k'+(dueRows.length?' hot':'')+'"><b>'+dueRows.length+'</b><em>due now</em></div>'
+    +'<div class="oa-k"><b>'+doneRows.length+'</b><em>run today</em></div>'
+    +'<div class="oa-k'+(tLeads?' good':'')+'"><b>'+tLeads+'</b><em>leads back today</em></div>'
+    +'<div class="oa-k"><b>'+tNew+'</b><em>new vs last run</em></div>'
+    +'<div class="oa-who">Ran by '+whoLine+'</div>'
+    +'</div>';
+  function line(r){
+    var d=r.src.data||{}, du=r.due, last=oaLastRun(r.src.key), ld=last?(last.data||{}):{};
+    var who=(d.owner&&['Jack','Mera','Suz'].indexOf(d.owner)>=0)?d.owner:'';
+    return '<div class="oa-row">'
+      +'<b class="oa-name">'+escHtml(d.name||r.src.key)+'</b>'
+      +'<span class="oa-own'+(who?'':' pool')+'">'+escHtml(d.owner||'—')+'</span>'
+      +'<span class="oa-cad">'+escHtml(d.cadence||'—')+'</span>'
+      +'<span class="oa-due '+du.tone+'">'+escHtml(du.label)+(du.sub?'<i> · '+escHtml(du.sub)+'</i>':'')+'</span>'
+      +'<span class="oa-nums">'+(last?('<b>'+oaNum(ld.leads)+'</b> leads'+(ld.new?(' · '+ld.new+' new'):'')):'—')+'</span>'
+      +'<a class="oa-go" target="_blank" rel="noopener" href="'+oaRunLink(r.src.key,who||'Jack')+'">Run ↗</a>'
+      +'</div>';
+  }
+  var body='';
+  if(dueRows.length){
+    body+='<div class="oa-sec">Due now — '+dueRows.length+'</div>'
+       +dueRows.slice(0,14).map(line).join('')
+       +(dueRows.length>14?'<div class="oa-more">+'+(dueRows.length-14)+' more in the app</div>':'');
+  } else {
+    body+='<div class="oa-sec">Due now</div><div class="oa-none">Nothing due — everything is on cadence.</div>';
+  }
+  if(today.length){
+    body+='<div class="oa-sec">Run today — '+today.length+'</div>'
+      +today.slice(0,10).map(function(r){
+        var d=r.data||{};
+        return '<div class="oa-row done">'
+          +'<b class="oa-name">'+escHtml(d.name||r.source_key)+'</b>'
+          +'<span class="oa-own">'+escHtml(String(r.who||'').trim()||'(no name)')+'</span>'
+          +'<span class="oa-cad">'+escHtml(String(r.at||'').slice(11,16))+'</span>'
+          +'<span class="oa-nums wide"><b>'+oaNum(d.rowsIn)+'</b> rows in → <b>'+oaNum(d.leads)+'</b> leads'
+            +(d.new?(' · '+d.new+' new'):'')+(d.better?(' · '+d.better+' better'):'')+(d.gone?(' · '+d.gone+' gone'):'')+'</span>'
+          +'<a class="oa-go ghost" target="_blank" rel="noopener" href="'+oaRunLink(r.source_key,String(r.who||'').trim()||'Jack')+'">Open ↗</a>'
+          +'</div>'; }).join('');
+  }
+  return '<div class="oa-wrap">'+head+strip+body
+    +'<div class="oa-foot">Read straight from the Sourcing app — nothing here is typed in by anyone, and opening a link costs no Keepa tokens.</div>'
+    +'</div>';
+}
 function mgr_renderFilters(){
   var host=document.getElementById('mgr-filters-content'); if(!host) return;
   var all=getSavedFilters();
@@ -14159,6 +14311,7 @@ function mgr_renderFilters(){
   var html='<div class="mgr-sec2"><div><div class="s-ttl">Saved filters</div>'
     +'<div class="s-sub">Your KPF / Keepa library. Your VAs get this as a searchable panel at the top of their shift — nothing here is ever binned automatically.</div></div>'
     +'<div class="s-right"><a class="s-act" onclick="mgr_switchTab(\'trends\')">Full lead insights →</a></div></div>';
+  try{ html=oaPanelHTML()+html; }catch(e){}
   try{ html+=sfltRunsPreviewHTML(); }catch(e){}
   try{ html+=sfltPerfHTML(); }catch(e){}
   html+='<div class="kpi-row" style="margin-bottom:14px;">'
@@ -14177,6 +14330,7 @@ function mgr_renderFilters(){
   host.innerHTML=html;
   // usage numbers live in their own table — pull once, then repaint
   try{ if(!window._fuCloud && typeof fuLoadCloud==='function'){ fuLoadCloud().then(function(){ if(mgr_currentTab==='filters') mgr_renderFilters(); }); } }catch(e){}
+  try{ if(!OA_SRC && typeof oaLoad==='function'){ oaLoad().then(function(ok){ if(ok && mgr_currentTab==='filters') mgr_renderFilters(); }); } }catch(e){}
 }
 function mgr_renderSpend(){
   var el=document.getElementById('mgr-spend-content'); if(!el) return;
@@ -24252,6 +24406,47 @@ function sbSetImportDate(iso){
 }
 function sbResetImportDate(){ SB_IMPORT_DATE=null; SB_FLASH=null; window._sbBackOk=false; sbRenderImport(); }
 /* the batch a new paste should join: today's highest-numbered one that is NOT started */
+/* Every batch a group route creates is a real batch of its own — same tag, same day,
+   same batch number, same ASINs, one owner each. The per-VA done flags stay in the file
+   for rows written before this (assigned_to 'Both'/'All'), which still read correctly
+   through sbPeople — nothing is migrated, nothing is lost. */
+async function sbFanOut(batch, people, asins){
+  if(IS_PREVIEW) return {made:0, people:people.slice()};
+  var made=0;
+  for(var i=1;i<people.length;i++){
+    var clone={ id:'b_'+sbUid(), storefront_id:batch.storefront_id, storefront_name:batch.storefront_name,
+                date:batch.date, batch_number:batch.batch_number, status:'Assigned', assigned_to:people[i],
+                priority:batch.priority, keepa_url:batch.keepa_url, asin_count:(asins||[]).length,
+                created_by:batch.created_by };
+    var r=await fetchT(SUPABASE_URL+'/rest/v1/storefront_batches',{method:'POST',
+      headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+               'Content-Type':'application/json',Prefer:'return=minimal'},
+      body:JSON.stringify(clone)});
+    if(!r.ok) continue;
+    made++;
+    if((asins||[]).length){
+      await fetchT(SUPABASE_URL+'/rest/v1/storefront_batch_items',{method:'POST',
+        headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+                 'Content-Type':'application/json',Prefer:'return=minimal'},
+        body:JSON.stringify(asins.map(function(a){ return {batch_id:clone.id, asin:a}; }))});
+    }
+  }
+  return {made:made, people:people.slice()};
+}
+/* Sarah keeps pasting into a tag all morning. Once a group route has split the tag into
+   one batch per VA, a later paste has to reach EVERY one of them — appending to just the
+   first would quietly give one VA a shorter list than the other. */
+function sbOpenGroup(qid){
+  var t=sbWorkDate();
+  var mine=(SB_BATCHES||[]).filter(function(b){ return b.storefront_id===qid && b.date===t && !b.scrapped; })
+    .sort(function(a,b){ return (b.batch_number||1)-(a.batch_number||1); });
+  if(!mine.length) return {group:[], nextNumber:1};
+  var topNo=mine[0].batch_number||1;
+  var group=mine.filter(function(b){ return (b.batch_number||1)===topNo; });
+  var locked=group.some(function(b){ return b.status==='Started'||b.status==='Completed'; });
+  if(locked) return {group:[], nextNumber:topNo+1};
+  return {group:group, nextNumber:topNo};
+}
 function sbOpenBatch(qid){
   var t=sbWorkDate();
   var mine=(SB_BATCHES||[]).filter(function(b){ return b.storefront_id===qid && b.date===t; })
@@ -24280,41 +24475,61 @@ async function sbSubmit(qid, raw, opts){
                          queue:q.name, assignedTo:(q.manual_review?'Jack':(q.default_assignee||'Jack')), manual:!!q.manual_review};
 
   await sbLoadBatches(true);
-  var slot=sbOpenBatch(qid);
-  var batch=slot.batch, isNew=!batch, newNumber=slot.nextNumber;
+  var slot=sbOpenGroup(qid);
+  var group=slot.group, isNew=!group.length, newNumber=slot.nextNumber;
+  /* A tag routed to a pair or to Both is TWO pieces of work, so it is two batches from
+     the moment Sarah submits — not one row that both VAs are told to share. Manual-review
+     tags stay a single Draft: Jack decides who it goes to. */
+  var people = q.manual_review ? ['Jack'] : sbPeople(q.default_assignee||'Jack');
+  if(!people.length) people=['Jack'];
 
   if(isNew){
-    var assignee = q.manual_review ? 'Jack' : (q.default_assignee||'Jack');
-    batch={ id:'b_'+sbUid(), storefront_id:qid, storefront_name:q.name, date:sbWorkDate(),
+    var first={ id:'b_'+sbUid(), storefront_id:qid, storefront_name:q.name, date:sbWorkDate(),
             batch_number:newNumber, status: q.manual_review?'Draft':'Assigned',
-            assigned_to: assignee, priority:q.priority||'Normal',
+            assigned_to: people[0], priority:q.priority||'Normal',
             asin_count:0, created_by:(opts.by||'Sarah') };
     var ins=await fetchT(SUPABASE_URL+'/rest/v1/storefront_batches',{method:'POST',
       headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
                'Content-Type':'application/json',Prefer:'return=representation'},
-      body:JSON.stringify(batch)});
+      body:JSON.stringify(first)});
     if(!ins.ok) return {ok:false, msg:'Couldn\'t create the batch — check your connection and try again.'};
+    group=[first];
+    if(people.length>1){
+      var extra=await sbFanOut(first, people, []);       // ASINs are added to each below
+      if(extra.made){
+        SB_BATCHES=null; SB_BATCHES_ALL=null;
+        await sbLoadBatches(true);
+        group=sbOpenGroup(qid).group;
+        if(!group.length) group=[first];
+      }
+    }
   }
 
-  var rows=parsed.asins.map(function(a){ return {batch_id:batch.id, asin:a}; });
-  var ir=await fetchT(SUPABASE_URL+'/rest/v1/storefront_batch_items',{method:'POST',
-    headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
-             'Content-Type':'application/json',Prefer:'return=minimal'},
-    body:JSON.stringify(rows)});
-  if(!ir.ok) return {ok:false, msg:'Couldn\'t save those ASINs — nothing was added. Try again.'};
+  // every open batch on this tag gets this paste — one VA must never end up short
+  for(var gi=0; gi<group.length; gi++){
+    var tgt=group[gi];
+    var ir=await fetchT(SUPABASE_URL+'/rest/v1/storefront_batch_items',{method:'POST',
+      headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+               'Content-Type':'application/json',Prefer:'return=minimal'},
+      body:JSON.stringify(parsed.asins.map(function(a){ return {batch_id:tgt.id, asin:a}; }))});
+    if(!ir.ok && gi===0) return {ok:false, msg:'Couldn\'t save those ASINs — nothing was added. Try again.'};
+  }
 
   // Keepa link is regenerated from the WHOLE batch, not just this paste
-  var all=await sbBatchAsins(batch.id);
-  var patch={ asin_count:all.length, keepa_url:sbKeepaUrl(all) };
-  await fetchT(SUPABASE_URL+'/rest/v1/storefront_batches?id=eq.'+encodeURIComponent(batch.id),{method:'PATCH',
-    headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
-             'Content-Type':'application/json',Prefer:'return=minimal'},
-    body:JSON.stringify(patch)});
+  var all=await sbBatchAsins(group[0].id);
+  for(var gp=0; gp<group.length; gp++){
+    await fetchT(SUPABASE_URL+'/rest/v1/storefront_batches?id=eq.'+encodeURIComponent(group[gp].id),{method:'PATCH',
+      headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
+               'Content-Type':'application/json',Prefer:'return=minimal'},
+      body:JSON.stringify({ asin_count:all.length, keepa_url:sbKeepaUrl(all) })});
+  }
 
   SB_BATCHES=null; SB_BATCHES_ALL=null;
   return {ok:true, added:parsed.asins.length, dupes:parsed.dupes, bad:parsed.bad.length,
-          total:all.length, batchNo:batch.batch_number, isNew:isNew,
-          assignedTo:batch.assigned_to, manual:!!q.manual_review, queue:q.name};
+          total:all.length, batchNo:group[0].batch_number, isNew:isNew,
+          assignedTo:(people.length>1?people.join(' + '):group[0].assigned_to),
+          splitInto:(people.length>1?people.length:0),
+          manual:!!q.manual_review, queue:q.name};
 }
 async function sbBatchAsins(batchId){
   try{
@@ -24472,13 +24687,12 @@ function sbRecentHTML(){
 function sbDestCls(q){
   if(q.manual_review) return 'dest-review';
   var a=q.default_assignee||'Jack';
-  return a==='Mera'?'dest-mera' : a==='Suz'?'dest-suz'
-       : a==='Both'?'dest-both' : a==='All'?'dest-all' : 'dest-jack';
+  return 'dest-'+sbRouteCls(a);
 }
 function sbDestName(q){
   if(q.manual_review) return 'Jack (routes it)';
   var a=q.default_assignee||'Jack';
-  return a==='Both'?'Both VAs' : a==='All'?'All 3 of us' : vaDisp(a);
+  return sbRouteLabel(a);
 }
 function sbChipsHTML(){
   var f=String(SB_QFILTER||'').trim().toLowerCase();
@@ -24918,7 +25132,9 @@ async function sbImportSubmit(){
     return;
   }
   lines.push('Batch size now: <b>'+r.total+'</b>');
-  lines.push(r.manual ? 'Waiting for Jack to assign it' : ('Sent to <b>'+vaDisp(r.assignedTo)+'</b>'));
+  lines.push(r.manual ? 'Waiting for Jack to assign it'
+    : (r.splitInto ? ('Split into <b>'+r.splitInto+' batches</b> — one each for <b>'+escHtml(String(r.assignedTo).replace('Jack','you'))+'</b>')
+                   : ('Sent to <b>'+vaDisp(r.assignedTo)+'</b>')));
   if(sbIsBackdated()) lines.push('Filed under <b>'+sbDayLabel(sbWorkDate())+'</b>');
   SB_FLASH='<b>✓ '+escHtml(r.queue||'')+'</b> — '+lines.join('<br>');
   // reload so the chip counts and the "already in" list are true, then repaint
@@ -24975,7 +25191,11 @@ function sbCardHTML(b, forVA){
         +(b.status==='Assigned'?'<span class="sb-reroute-l">Reroute</span>':'')
         +'<button class="sb-btn sb-send'+(b.assigned_to==='Mera'?' on':'')+'" onclick="sbAssign(\''+b.id+'\',\'Mera\')">'+vaDisp('Mera')+'</button>'
         +'<button class="sb-btn sb-send'+(b.assigned_to==='Suz'?' on':'')+'" onclick="sbAssign(\''+b.id+'\',\'Suz\')">'+vaDisp('Suz')+'</button>'
-        +'<button class="sb-btn sb-send" onclick="sbAssign(\''+b.id+'\',\'Both\')">Both</button>'
+        +'<button class="sb-btn sb-send'+(b.assigned_to==='Both'?' on':'')+'" onclick="sbAssign(\''+b.id+'\',\'Both\')">Both</button>'
+        /* the pair routes belong on the reroute row too — this card is the third place
+           routing is offered, and a value missing from one of them is bug class 2 again. */
+        +'<button class="sb-btn sb-send'+(b.assigned_to==='JackMera'?' on':'')+'" onclick="sbAssign(\''+b.id+'\',\'JackMera\')" title="Open for you and '+escHtml(vaDisp('Mera'))+'">Me+'+escHtml(String(vaDisp('Mera')).charAt(0))+'</button>'
+        +'<button class="sb-btn sb-send'+(b.assigned_to==='JackSuz'?' on':'')+'" onclick="sbAssign(\''+b.id+'\',\'JackSuz\')" title="Open for you and '+escHtml(vaDisp('Suz'))+'">Me+'+escHtml(String(vaDisp('Suz')).charAt(0))+'</button>'
         +'<button class="sb-btn sb-send'+(b.assigned_to==='Jack'?' on':'')+'" onclick="sbAssign(\''+b.id+'\',\'Jack\')" '
           +'title="Move this batch onto your own board">'
           +((b.assigned_to && b.assigned_to!=='Jack') ? '&#8592; Back to me' : 'Keep')+'</button>'
@@ -25004,10 +25224,7 @@ function sbCardHTML(b, forVA){
   // amber edge means "nobody has this yet, act on it". A batch Jack deliberately kept
   // is owned, so it gets its own indigo — otherwise his own work sat in the board's
   // to-do colour for ever and read as unrouted.
-  var vaCls = b.assigned_to==='Mera'?' sb-va-mera' : b.assigned_to==='Suz'?' sb-va-suz'
-            : b.assigned_to==='Both'?' sb-va-both'
-            : b.assigned_to==='All'?' sb-va-both'      /* was falling through to "unrouted" */
-            : b.assigned_to==='Jack'?' sb-va-jack' : ' sb-va-none';
+  var vaCls = b.assigned_to ? (' sb-va-'+(sbRouteCls(b.assigned_to)==='all'?'both':sbRouteCls(b.assigned_to))) : ' sb-va-none';
   var priCls = (b.priority==='High' && b.status!=='Completed')?' sb-hi':'';
   /* data-bid lets sbCollapseTiles() find every on-screen copy of one batch and
      animate it away before the board repaints — see sbScrapBatch(). */
@@ -25072,7 +25289,7 @@ async function sbRouteBulk(who){
   SB_ROUTE_SEL={};
   sbPaintJack();                        // each sbAssign already applied locally
   sbSyncSoon();
-  showToast(done+' batch'+(done===1?'':'es')+' sent to '+(who==='All'?'all 3 of you':who==='Both'?'both VAs':vaDisp(who))+' \u2713');
+  showToast(done+' batch'+(done===1?'':'es')+' sent to '+sbRouteToast(who)+' \u2713');
 }
 /* same delete as sbScrapBatch but without its own confirm — the bulk one already asked */
 async function sbScrapBatchSilent(batchId){
@@ -25143,7 +25360,7 @@ async function sbRouteTag(tag, who){
   var done=0;
   for(var j=0;j<ids.length;j++){ try{ await sbAssign(ids[j], who, true); done++; }catch(e){} }
   sbLand(ids[0]); sbPaintJack(); sbSyncSoon();
-  showToast(done+' × '+tag+' → '+(who==='All'?'all 3 of you':who==='Both'?'both VAs':who==='Jack'?'you':vaDisp(who))+' ✓');
+  showToast(done+' × '+tag+' → '+sbRouteToast(who)+' ✓');
 }
 function sbTagCardsHTML(drafts){
   /* Jack on v1 of these cards: "where can I copy asins and view keepa" (they were
@@ -25193,7 +25410,7 @@ function sbTagCardsHTML(drafts){
         +'<button class="sbtc-cp" onclick="sbCopyAsins(\''+b.id+'\')">Copy</button>'
         +(open
           ?'<span class="sbtc-rr">'
-            +[['Mera','M'],['Suz','S'],['Both','B'],['All','A3'],['Jack','Me']].map(function(v){
+            +[['Mera','M'],['Suz','S'],['Both','B'],['JackMera','Me+M'],['JackSuz','Me+S'],['All','A3'],['Jack','Me']].map(function(v){
                 return '<button class="sbr-b sm" data-w="'+v[0]+'" title="Just this batch → '+v[0]+'" '
                   +'onclick="sbAssign(\''+b.id+'\',\''+v[0]+'\')">'+v[1]+'</button>'; }).join('')
             +'<button class="sbr-b sm bin" title="Bin just this batch" onclick="sbScrapBatch(\''+b.id+'\')">✕</button>'
@@ -25206,7 +25423,7 @@ function sbTagCardsHTML(drafts){
       +[['Mera',''],['Suz',''],['Both','Both'],['All','All 3'],['Jack','Me']].map(function(v){
           var who=v[0];
           return '<button class="sbr-b" data-w="'+who+'" title="Send '+(rows.length===1?'it':'all '+rows.length)+' to '
-            +(who==='All'?'all 3':who==='Both'?'both VAs':who==='Jack'?'you':escHtml(vaDisp(who)))
+            +escHtml(sbRouteToast(who))
             +'" onclick="sbRouteTag(\''+esc+'\',\''+who+'\')">'+escHtml(v[1]||vaDisp(who))+'</button>';
         }).join('')
       +'<button class="sbr-b bin" title="Bin the whole tag" onclick="sbRouteTag(\''+esc+'\',\'bin\')">✕</button>'
@@ -25247,7 +25464,8 @@ function sbWorkRowHTML(b){
            Re-sending an All batch to Mera is not a send at all — she already has it —
            so the menu now says what each option would actually DO. */
         +[['Mera','→ '+escHtml(vaDisp('Mera'))],['Suz','→ '+escHtml(vaDisp('Suz'))],
-          ['Both','→ Both VAs'],['All','→ All 3 of us']].map(function(v){
+          ['Both','→ Both VAs'],['JackMera','→ Me + '+escHtml(vaDisp('Mera'))],
+          ['JackSuz','→ Me + '+escHtml(vaDisp('Suz'))],['All','→ All 3 of us']].map(function(v){
             var cur=String(b.assigned_to||'');
             if(cur===v[0]) return '<button class="is-cur" disabled title="This is already where it is">'
               +v[1]+' <i>current</i></button>';
@@ -25316,9 +25534,7 @@ function sbRowHTML(b){
   var started=(b.status==='Started');
   var doneB=(b.status==='Completed');
   var jackOn=started&&(b.started_by==='Jack'||mine);
-  var vaCls = b.assigned_to==='Mera'?'mera' : b.assigned_to==='Suz'?'suz'
-            : b.assigned_to==='Both'?'both' : b.assigned_to==='All'?'all'
-            : mine?'jack':'none';
+  var vaCls = b.assigned_to ? sbRouteCls(b.assigned_to) : (mine?'jack':'none');
   var keepa=b.keepa_url
     ? '<a class="sbr-key" href="'+String(b.keepa_url).replace(/"/g,'&quot;')+'" target="_blank" '
       +'title="Opens all '+(b.asin_count||0)+' ASINs in one Keepa list">&#128200; Keepa <b>'+(b.asin_count||0)+'</b> &#8599;</a>'
@@ -25352,6 +25568,8 @@ function sbRowHTML(b){
         }).join('')
       +'<details class="sbr-more"><summary title="Everything else">&#8943;</summary><div class="sbw-menu">'
         +'<button onclick="sbAssign(\''+b.id+'\',\'Both\')">&#8594; Both VAs</button>'
+        +'<button onclick="sbAssign(\''+b.id+'\',\'JackMera\')">&#8594; Me + '+escHtml(vaDisp('Mera'))+'</button>'
+        +'<button onclick="sbAssign(\''+b.id+'\',\'JackSuz\')">&#8594; Me + '+escHtml(vaDisp('Suz'))+'</button>'
         +'<button onclick="sbAssign(\''+b.id+'\',\'All\')">&#8594; All 3 of us</button>'
         +(mine?'<button onclick="sbJackStart(\''+b.id+'\')">&#9654; Start it now</button>'
               +'<button onclick="sbJackComplete(\''+b.id+'\')">&#10003; Mark done</button>':'')
@@ -25525,27 +25743,19 @@ async function sbAssign(batchId, who, quiet){
     if(!quiet) showToast('That batch is locked — it\'s already been started',true);
     return;
   }
-  if(who==='Both'){
+  var _grp=sbPeople(who);
+  if(_grp.length>1){
+    /* one batch each — "each va should be doing it". This row becomes the first
+       person's; the rest get their own copy with the same ASINs. */
     var asins=await sbBatchAsins(batchId);
-    var ok=await sbPatch(batchId,{assigned_to:'Mera',status:'Assigned'});
-    var clone={ id:'b_'+sbUid(), storefront_id:b.storefront_id, storefront_name:b.storefront_name,
-                date:b.date, batch_number:b.batch_number, status:'Assigned', assigned_to:'Suz',
-                priority:b.priority, keepa_url:b.keepa_url, asin_count:asins.length, created_by:b.created_by };
-    if(!IS_PREVIEW){
-      var r=await fetchT(SUPABASE_URL+'/rest/v1/storefront_batches',{method:'POST',
-        headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
-                 'Content-Type':'application/json',Prefer:'return=minimal'},
-        body:JSON.stringify(clone)});
-      if(r.ok && asins.length){
-        await fetchT(SUPABASE_URL+'/rest/v1/storefront_batch_items',{method:'POST',
-          headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,
-                   'Content-Type':'application/json',Prefer:'return=minimal'},
-          body:JSON.stringify(asins.map(function(a){return {batch_id:clone.id, asin:a};}))});
-      }
-    }
+    var ok=await sbPatch(batchId,{assigned_to:_grp[0],status:'Assigned'});
+    await sbFanOut({ storefront_id:b.storefront_id, storefront_name:b.storefront_name, date:b.date,
+                     batch_number:b.batch_number, priority:b.priority, keepa_url:b.keepa_url,
+                     created_by:b.created_by }, _grp, asins);
     SB_BATCHES=null; SB_BATCHES_ALL=null;
-    if(!quiet) showToast('Sent to '+vaDisp('Mera')+' and '+vaDisp('Suz')+' ✓');
-    sbRefreshJack();                       // a NEW row exists server-side — must refetch
+    if(!quiet) showToast(_grp.length+' batches — one each for '
+      +_grp.map(function(x){ return x==='Jack'?'you':vaDisp(x); }).join(' and ')+' ✓');
+    sbRefreshJack();                       // NEW rows exist server-side — must refetch
     return;
   } else {
     // paint first: the tile moving to its new section IS the confirmation, so there is
@@ -25718,10 +25928,11 @@ function sbQueueRowHTML(q){
   var cls=[]; if(q.active===false) cls.push('sbq-off'); if(SB_SEL[q.id]) cls.push('sbq-sel');
   // one control, one decision: where does a paste on this tag END UP?
   var dest = q.manual_review ? 'review' : (q.default_assignee||'Jack');
-  if(!q.manual_review && ['Mera','Suz','Both','All','Jack'].indexOf(dest)<0) dest='Jack';
+  if(!q.manual_review && !sbRoute(dest)) dest='Jack';
   var destSel='<select class="sb-inp sb-dest sb-dest-'+String(dest).toLowerCase()+'" '
     +'onchange="sbQueueDest(\''+q.id+'\',this.value)">'
     +[['Mera','\u2192 Mera'],['Suz','\u2192 Suz'],['Both','\u2192 Both VAs (Mera + Suz)'],
+      ['JackMera','\u2192 Me + Mera'],['JackSuz','\u2192 Me + Suz'],
       ['All','\u2192 All 3 of us (Mera + Suz + me)'],
       ['Jack','\u2192 Just me (straight through)'],['review','\u23f8 Me to route first']]
       .map(function(o){ return '<option value="'+o[0]+'"'+(dest===o[0]?' selected':'')+'>'+o[1]+'</option>'; }).join('')
@@ -26002,6 +26213,8 @@ function sbQueueAdd(){
       +'<option value="Mera">\u2192 Mera</option>'
       +'<option value="Suz">\u2192 Suz</option>'
       +'<option value="Both">\u2192 Both VAs (Mera + Suz)</option>'
+      +'<option value="JackMera">\u2192 Me + Mera</option>'
+      +'<option value="JackSuz">\u2192 Me + Suz</option>'
       +'<option value="All">\u2192 All 3 of us (Mera + Suz + me)</option>'
       +'<option value="Jack">\u2192 Me (straight through)</option>'
     +'</select>'
@@ -27144,6 +27357,13 @@ function selfTest(){
     ok('Batch routing: Mera',  to('Mera')==='Mera', to('Mera'));
     ok('Batch routing: Both',  to('Both')==='Mera+Suz', to('Both'));
     ok('Batch routing: All',   to('All')==='Mera+Suz+Jack', to('All'));
+    ok('Batch routing: Me+Mera', to('JackMera')==='Mera+Jack', to('JackMera'));
+    ok('Batch routing: Me+Suz',  to('JackSuz')==='Suz+Jack',  to('JackSuz'));
+    /* every value the UI can store must be understood by every reader of the enum */
+    ok('Every route resolves to people', SB_ROUTES.every(function(r){ return sbPeople(r.v).length>0; }),
+       SB_ROUTES.map(function(r){ return r.v+':'+sbPeople(r.v).length; }).join(' '));
+    ok('Every route has label+colour+voice', SB_ROUTES.every(function(r){
+       return !!sbRouteLabel(r.v) && sbRouteCls(r.v)!=='none' && !!sbRouteToast(r.v); }));
     ok('Batch routing: blank', to('')==='', to('')||'(nobody)');
   });
 
@@ -27239,12 +27459,45 @@ setTimeout(function(){
    Jack asked six times for an all-three option; this is why adding it wasn't enough. */
 /* One place that answers "who actually holds this batch", so a tile, a menu and a
    filter can never disagree about it again. */
+/* Jack, 17/09: "open for just me and mera and me and suz". Two new values. The enum now
+   lives in ONE table — sbPeople, sbGoesTo, sbNeededBy, the labels, the classes and the
+   menus all read it, so a value can never again be understood in one place and not
+   another. Stored verbatim in storefront_batches.assigned_to (plain text, no constraint).
+   Pairs follow the 'All' model: ONE row that reaches two people, with a per-VA done flag
+   — not the old 'Both' split. */
+var SB_ROUTES=[
+  {v:'Mera',     people:['Mera'],              cls:'mera'},
+  {v:'Suz',      people:['Suz'],               cls:'suz'},
+  {v:'Both',     people:['Mera','Suz'],        cls:'both', label:'Both VAs',   short:'B'},
+  {v:'JackMera', people:['Jack','Mera'],       cls:'both', label:'Me + Mera',  short:'Me+M'},
+  {v:'JackSuz',  people:['Jack','Suz'],        cls:'both', label:'Me + Suz',   short:'Me+S'},
+  {v:'All',      people:['Mera','Suz','Jack'], cls:'all',  label:'All 3 of us',short:'A3'},
+  /* no label: falls back to vaDisp('Jack') so existing tag chips read exactly as they
+     did before this change. The menus say "Just me" in their own words. */
+  {v:'Jack',     people:['Jack'],              cls:'jack',                     short:'Me'}
+];
+function sbRoute(v){
+  var a=String(v||'');
+  for(var i=0;i<SB_ROUTES.length;i++) if(SB_ROUTES[i].v===a) return SB_ROUTES[i];
+  return null;
+}
+function sbRouteLabel(v){
+  var r=sbRoute(v); if(!r) return vaDisp(v);
+  if(r.label) return r.label.replace('Mera',vaDisp('Mera')).replace('Suz',vaDisp('Suz'));
+  return vaDisp(r.v);
+}
+/* toast voice: "sent to you and Mera", never "sent to JackMera" */
+function sbRouteToast(v){
+  var r=sbRoute(v); if(!r) return vaDisp(v);
+  if(r.v==='All') return 'all 3 of you';
+  if(r.v==='Both') return 'both VAs';
+  if(r.v==='Jack') return 'you';
+  return r.people.map(function(x){ return x==='Jack'?'you':vaDisp(x); }).join(' and ');
+}
+function sbRouteCls(v){ var r=sbRoute(v); return r?r.cls:'none'; }
 function sbPeople(assigned){
-  var a=String(assigned||'');
-  if(a==='Both') return ['Mera','Suz'];
-  if(a==='All')  return ['Mera','Suz','Jack'];
-  if(a==='Mera'||a==='Suz'||a==='Jack') return [a];
-  return [];
+  var r=sbRoute(assigned);
+  return r?r.people.slice():[];
 }
 function sbHolders(b){
   var p=sbPeople(b&&b.assigned_to);
@@ -27257,11 +27510,7 @@ function sbHoldersShort(b){
   return p.map(function(x){ return x==='Jack'?'YOU':String(vaDisp(x)).toUpperCase(); }).join(' + ');
 }
 function sbGoesTo(b, va){
-  var a=String(b&&b.assigned_to||'');
-  if(a===va) return true;
-  if(a==='Both') return va==='Mera'||va==='Suz';
-  if(a==='All')  return va==='Mera'||va==='Suz'||va==='Jack';
-  return false;
+  return sbPeople(b&&b.assigned_to).indexOf(va)>=0;
 }
 
 /* ── SHARED BATCHES: BOTH MEANS BOTH ───────────────────────────────────────
@@ -27272,10 +27521,7 @@ function sbGoesTo(b, va){
    Stored in app_flags (a plain key/value table that already exists) — no schema change,
    nothing to run, and it survives across devices and shifts. */
 function sbNeededBy(b){
-  var a=String((b&&b.assigned_to)||'');
-  if(a==='Both') return ['Mera','Suz'];
-  if(a==='All')  return ['Mera','Suz','Jack'];
-  return a?[a]:[];
+  return sbPeople(b&&b.assigned_to);
 }
 function sbIsShared(b){ return sbNeededBy(b).length>1; }
 function sbDoneKey(batchId,va){ return 'sbdone:'+batchId+':'+va; }
