@@ -3,7 +3,7 @@
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v51.0';
+var APP_VERSION='v51.1';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -74,7 +74,7 @@ function getAppSettings(){
       settings.poaNotes.Suz = String(saved.poaNotes.Suz||'');
     }
     if(saved.managerPin !== undefined && String(saved.managerPin).trim()) settings.managerPin = String(saved.managerPin).trim();
-    ['whMain','whWeekly','whTasks','whBreaks','whShiftStart','whPay','whLeadsMera','whLeadsSuz'].forEach(function(k){
+    ['whMain','whWeekly','whTasks','whBreaks','whShiftStart','whPay','whLeadsMera','whLeadsSuz','sheetsApiKey'].forEach(function(k){
       if(saved[k] !== undefined) settings[k] = String(saved[k]).trim();
     });
     ['nMain','nWeekly','nTasks','nBreaks','nShiftStart','nLeadsMera','nLeadsSuz'].forEach(function(k){
@@ -138,6 +138,9 @@ function applyWebhookSettings(){
     if(s.whBreaks) DISCORD_BREAK_WEBHOOK=s.whBreaks;
     if(s.whShiftStart) DISCORD_SHIFT_START_WEBHOOK=s.whShiftStart; else if(s.whMain) DISCORD_SHIFT_START_WEBHOOK=s.whMain;
     if(s.whPay) DISCORD_PAY_WEBHOOK=s.whPay; else if(s.whMain) DISCORD_PAY_WEBHOOK=s.whMain;
+    /* v51.1: the Google Sheets key comes from Settings, never from the file (see manager-tabs.js).
+       LEAD_PULL_KEY is the sheet-ingestion copy of the same key (sheets.js). */
+    if(typeof s.sheetsApiKey==='string' && s.sheetsApiKey.trim()){ SPEND_API_KEY=s.sheetsApiKey.trim(); try{ LEAD_PULL_KEY=SPEND_API_KEY; }catch(e){} }
     // toggles: off → blank the runtime URL so every sender's guard skips it
     if(s.nMain===0) DISCORD_WEBHOOK='';
     if(s.nWeekly===0) DISCORD_WEEKLY_WEBHOOK='';
@@ -163,7 +166,7 @@ function whBadMsg(v){
 var WH_NAMES={main:'Main \u2014 EOD reports',weekly:'Weekly Monday summary',tasks:'Task ticks',breaks:'Breaks',
   shiftstart:'Shift start',pay:'\u{1F4B7} Important \u2014 pay & admin'};
 var WH_KEY={main:'whMain',weekly:'whWeekly',tasks:'whTasks',breaks:'whBreaks',shiftstart:'whShiftStart',
-  pay:'whPay'};
+  pay:'whPay', sheetskey:'sheetsApiKey'};   // sheetskey is not a webhook — whValidate skips the URL check for it
 /* Webhook fields now save AS YOU TYPE. Requiring a separate Save press meant a valid URL
    could sit in the box, test fine (the test reads the box directly) and still never be
    stored — which is exactly what kept happening. */
@@ -172,11 +175,12 @@ function whValidate(el){
     var kind=el.id.replace('setting-wh-','');
     var box=document.getElementById('wh-bad-'+kind);
     var val=String(el.value||'').trim();
-    if(box) box.innerHTML=whBadMsg(val);
+    var isKey=(kind==='sheetskey');
+    if(box) box.innerHTML=isKey?(val&&!/^AIza[0-9A-Za-z_-]{35}$/.test(val)?'⚠️ A Google API key starts with <b>AIza</b> and is 39 characters.':''):whBadMsg(val);
     var key=WH_KEY[kind]; if(!key) return;
     clearTimeout(window['_whT_'+kind]);
     window['_whT_'+kind]=setTimeout(function(){
-      if(val && whBadMsg(val)) return;                 // don't store something invalid
+      if(val && (isKey?!/^AIza[0-9A-Za-z_-]{35}$/.test(val):whBadMsg(val))) return;   // don't store something invalid
       var st=getAppSettings(); st[key]=val; saveAppSettings(st);
       try{ applyWebhookSettings(); }catch(e){}
       try{ pushSettingsCloud(st); }catch(e){}

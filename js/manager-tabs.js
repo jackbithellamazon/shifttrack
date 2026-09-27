@@ -48,7 +48,11 @@ function mgr_trendStrip(){
 }
 // ── SPEND (reads the same Google Sheet as Jack's Spend Dashboard) ──
 var SPEND_SHEET_ID='1vK0RICVAYyE4sDDwlGfuBlBNU6xNzdO8u4aoaTCzrrI';
-var SPEND_API_KEY='AIzaSyB3oGNbQ27XUlBWPEMxm0B9_Ilsd5wq0EE';
+/* v51.1 (27/09): the Sheets key is NOT in this file any more. It lives in Jack's Settings
+   (Notifications card → "Google Sheets API key") and syncs through app_settings like the
+   webhooks — applyWebhookSettings() fills it in. The old key sat in the public repo in every
+   push since at least 30 Aug and Google's scanner flagged it; it has been rotated. */
+var SPEND_API_KEY='';
 var SPEND_DASH_URL='https://jackbithellamazon.github.io/Spend-Dashboard/';
 var _spendCache=null;
 // Mirrors the Spend Dashboard EXACTLY: same quarter tab ('Q{q} AMZ - OA'), same columns

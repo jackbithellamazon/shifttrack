@@ -772,6 +772,11 @@ function mgr_renderSettings(){
             +'<div class="wh-ok" id="wh-ok-'+w[0]+'"></div></div>';
         }).join('')
       +'</div>'
+      +'<div class="wh-lbl-row" style="margin-top:18px;"><span class="settings-label">Google Sheets API key</span></div>'
+      +'<div class="settings-sub" style="margin-bottom:6px;">Used to read your Google Sheets: the Spend tab, the lead-sheet pull and storefront history. '
+        +'It is stored here and synced to the VAs\' machines through Settings \u2014 never in the app file. In Google Cloud, restrict it to this address and to the Sheets API only.</div>'
+      +'<div class="wh-row"><input class="settings-input" id="setting-wh-sheetskey" type="text" placeholder="AIza\u2026 (39 characters)" value="'+escHtml(settings.sheetsApiKey||'')+'" oninput="whValidate(this)"></div>'
+      +'<div class="wh-bad" id="wh-bad-sheetskey"></div><div class="wh-ok" id="wh-ok-sheetskey"></div>'
       +'<div class="wh-lbl-row" style="margin-top:18px;"><span class="settings-label">@ mention you on weekly review</span></div>'
       +'<div style="display:flex;align-items:center;gap:9px;"><input class="settings-input" id="setting-discord-id" type="text" style="width:220px;" placeholder="your Discord user ID (numbers)" value="'+escHtml(settings.discordUserId||'')+'"><span style="font-size:11px;color:var(--muted-2);">Discord → Settings → Advanced → Developer Mode on, then right-click your name → Copy User ID</span></div>'
       +'<div class="wh-lbl-row" style="margin-top:18px;"><span class="settings-label">Live idle alert after</span></div>'
@@ -817,7 +822,7 @@ function mgr_renderSettings(){
    is blank, and never clobbered by a blank local value on push. wbUrl/wbToken belong
    here — without them the writeback endpoint silently stays unconfigured on any
    browser that didn't type it in, which is exactly what happened on 06/08/2026. */
-var SETTINGS_PROTECT=['whMain','whWeekly','whLeadsMera','whLeadsSuz','whTasks','whBreaks','whShiftStart','whPay','appUrl','leadMention','discordUserId','leadsStartDate','jbPresets','jbNoteSnips','payOtRate','payOtHours','payAdminMonthEnd','wbUrl','wbToken','sbHowText','sfLeadsPerDay'];
+var SETTINGS_PROTECT=['sheetsApiKey','whMain','whWeekly','whLeadsMera','whLeadsSuz','whTasks','whBreaks','whShiftStart','whPay','appUrl','leadMention','discordUserId','leadsStartDate','jbPresets','jbNoteSnips','payOtRate','payOtHours','payAdminMonthEnd','wbUrl','wbToken','sbHowText','sfLeadsPerDay'];
 async function pushSettingsCloud(s){
   if(IS_PREVIEW) return;
   try{
@@ -859,7 +864,7 @@ function mgr_saveSettings(){
   if(!isNaN(daily)&&daily>0) settings.dailyHoursTarget=daily;
   if(!isNaN(oos)&&oos>=0) settings.oosHoursTarget=oos;
   if(pin) settings.managerPin=pin;
-  [['setting-wh-main','whMain'],['setting-wh-weekly','whWeekly'],['setting-wh-tasks','whTasks'],['setting-wh-breaks','whBreaks'],['setting-wh-shiftstart','whShiftStart'],['setting-wh-pay','whPay']].forEach(function(p){
+  [['setting-wh-main','whMain'],['setting-wh-weekly','whWeekly'],['setting-wh-tasks','whTasks'],['setting-wh-breaks','whBreaks'],['setting-wh-shiftstart','whShiftStart'],['setting-wh-pay','whPay'],['setting-wh-sheetskey','sheetsApiKey']].forEach(function(p){
     var el=document.getElementById(p[0]);
     // an EMPTY field never wipes a stored webhook URL (a device with blank fields kept
     // killing notifications on save) — to change one, paste the new URL over it
