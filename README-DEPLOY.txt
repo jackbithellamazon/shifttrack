@@ -1,4 +1,4 @@
-BDL VA HQ (ShiftTrack) — folder build, since v51.1 (27 Sep 2026)
+BDL VA HQ (ShiftTrack) — folder build, since v51.6 (28 Sep 2026)
 Live: https://jackbithellamazon.github.io/shifttrack/  ·  repo jackbithellamazon/shifttrack  ·  Supabase (anon key in js/config.js, that is fine)
 Master lives in ~/Documents/Claude/bdl-shifttrack-harness/BDL-SHIFTTRACK/ — edit there, then: bash gate.sh (checks + preview), python3 build.py push.
 
@@ -44,4 +44,8 @@ js/ in load order (order matters — earlier files must not call later ones whil
   leads-page        the leads page boot — loads last
 
 tests/sandbox-checks.js  paste into the preview's console: blocks every non-GET request, then runs selfTest + a tab sweep + storage checks.
-Rules: never a real webhook URL or a secret key in these files (build.py push refuses). Preview at 127.0.0.1 never writes to the cloud (IS_PREVIEW).
+Rules: never a real webhook URL, Google key or secret key in these files (build.py push refuses). Preview at 127.0.0.1 never writes to the cloud (IS_PREVIEW).
+SHIP GATE (gate.sh): every js file parses; the single-file checks run on the rejoined file; no file calls a later file while loading; no secrets;
+  then smoke.ts opens the app in headless Chrome with NO Sheets key and NO cached data, waits for real data, presses every dashboard tab, the leads page
+  and a VA shift, and FAILS if anything hangs or throws (28 Sep 2026: the Storefronts tab looped forever without a key — this catches exactly that).
+  A build that has not passed gate.sh is not shippable.

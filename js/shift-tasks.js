@@ -359,6 +359,7 @@ function taskMeta(task){
   var s=((task.id||'')+' '+(task.name||'')).toLowerCase();
   function has(){ for(var k=0;k<arguments.length;k++){ if(s.indexOf(arguments[k])>=0) return true; } return false; }
   if(has('lead sheet','leadsheet')) return ['\u{1F4CB}','#9d8bff'];
+  if(has('discord')) return ['\u{1F4AC}','#5865f2'];
   if(has('telegram')) return ['✈️','#38bdf8'];
   if(has('newsletter','email')) return ['\u{1F4F0}','#f5a524'];
   if(has('kpf','filter')) return ['\u{1F3AF}','#18c8f0'];

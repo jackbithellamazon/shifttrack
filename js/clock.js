@@ -74,6 +74,44 @@ function timerSelfTest(){
    and every call becomes a no-op. The app then behaves exactly as v44.4. */
 var SE_OK   = null;                      // null = untested · false = table absent
 var SE_TAB  = Math.random().toString(36).slice(2) + Date.now().toString(36);
+/* ── TWO TABS, ONE SHIFT (v51.5) ─────────────────────────────────────────────
+   28/09: Suz had the same shift open in two tabs; each saved over the other and the second
+   one brought back an older copy of her day (a task ticked twice, two Discord pings). Every
+   tab announces itself on a BroadcastChannel every 4s; a tab that hears another tab running
+   the same VA's shift shows a plain warning. Nothing is blocked — the old two-tab blocker
+   cost hours once — it just says what is happening. */
+var TAB_CH=null, TAB_OTHERS={};
+function tabWatchPaint(){
+  try{
+    var va=(window.state&&state.currentVA)||'', running=!!(window.state&&state.shiftStart&&!state.submitted);
+    var clash=running && Object.keys(TAB_OTHERS).some(function(t){ return TAB_OTHERS[t].va===va; });
+    var b=document.getElementById('tab-clash');
+    if(!clash){ if(b) b.remove(); return; }
+    if(b) return;
+    var host=document.getElementById('shift-bar')||document.getElementById('mandatory-tasks'); if(!host||!host.parentNode) return;
+    b=document.createElement('div'); b.id='tab-clash'; b.className='save-warn';
+    b.innerHTML='<span>&#9888;</span><div><b>This shift is open in another tab too.</b>'
+      +'<span>Use one tab only \u2014 two tabs save over each other, and the other one can bring back an older copy of your day.</span></div>';
+    host.parentNode.insertBefore(b,host);
+  }catch(e){}
+}
+function tabWatchStart(){
+  try{
+    if(!('BroadcastChannel' in window) || TAB_CH) return;
+    TAB_CH=new BroadcastChannel('bdl-shifttrack-tabs');
+    TAB_CH.onmessage=function(e){
+      var msg=(e&&e.data)||{}; if(!msg.tab || msg.tab===SE_TAB) return;
+      if(msg.va && msg.running) TAB_OTHERS[msg.tab]={va:msg.va,at:Date.now()}; else delete TAB_OTHERS[msg.tab];
+      tabWatchPaint();
+    };
+    setInterval(function(){
+      try{ TAB_CH.postMessage({tab:SE_TAB, va:(window.state&&state.currentVA)||'', running:!!(window.state&&state.shiftStart&&!state.submitted)}); }catch(e){}
+      var cut=Date.now()-12000; Object.keys(TAB_OTHERS).forEach(function(t){ if(TAB_OTHERS[t].at<cut) delete TAB_OTHERS[t]; });
+      tabWatchPaint();
+    },4000);
+  }catch(e){}
+}
+try{ setTimeout(tabWatchStart,3000); }catch(e){}
 var SE_BEAT_MS = 60000;
 var SE_ALERTED = {};                     // one Discord ping per shift per kind
 

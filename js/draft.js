@@ -20,6 +20,15 @@ function shiftDayKey(){
   return ukDateShort();
 }
 var DRAFT_MAX_AGE_MS = 16*60*60*1000;
+/* Jack, 28/09: "should short tab-closed gaps count as worked time?" — "yes". Suz lost 28 minutes
+   that morning across three tab closes; the clock only ran while a tab was open. A gap of up
+   to 15 minutes between the last save and the restore is now counted as worked (she was
+   working — the tab wasn't). Longer than that is a break in all but name and still is not. */
+var GAP_COUNT_MAX_MS = 15*60*1000;
+function gapToCount(savedAt, onBreak){
+  var gap = Date.now() - (+savedAt || Date.now());
+  return (!onBreak && gap > 0 && gap <= GAP_COUNT_MAX_MS) ? gap : 0;
+}
 function draftAgeMs(row, draft){
   var t = (draft&&draft.savedAt) || 0;
   if(!t && row && row.updated_at){ var d=new Date(row.updated_at); if(!isNaN(d)) t=d.getTime(); }
@@ -173,6 +182,7 @@ function saveShiftDraft(manual) {
    it used to be reported only when she pressed Save by hand. */
 function saveFailed(manual, msg){
   window._saveFails = (window._saveFails||0) + 1;
+  try{ errLog('save_fail',{msg:'draft: '+String(msg||'')}); }catch(e){}
   if (manual || window._saveFails === 1) { try{ showToast(msg, true); }catch(e){} }
   if (window._saveFails >= 2) { try{ saveWarnBanner(true); }catch(e){} }
 }
@@ -197,6 +207,7 @@ function retrySave(){
    row failed a check. Combined with an unordered rows[0] read, one stale row was enough
    to take today's work with it. Scope the delete to the row actually being discarded. */
 async function deleteDraft(va, date) {
+  if (typeof IS_PREVIEW!=='undefined' && IS_PREVIEW) return;   // v51.5: a preview must never touch a live draft
   if (!DB_ENABLED) return;
   try {
     await fetch(SUPABASE_URL + '/rest/v1/draft_shifts?va=eq.' + va
@@ -248,6 +259,28 @@ async function checkAndRestoreDraft(va) {
     var row = rows[0];
     var draft = row.data;
     if (!draft) return 'none';
+    /* 28/09 (Jack: "dup bug?"). Suz opened a new tab at 09:19; it restored a cloud copy from
+       before her 08:55 tick, so the Newsletter task came back UNDONE and she ticked it again —
+       two Discord pings, and the device's own clock had to be repaired 23 minutes forward.
+       The cloud row was taken on trust because it existed. Now the newest copy wins, wherever
+       it lives — this device keeps one every minute too — and the restore says which it used. */
+    try{
+      var _ld = (!window._draftForceFresh) ? localDraft(va) : null;
+      if (_ld && (+_ld.savedAt||0) > (+draft.savedAt||0) + 60000) {
+        window._draftSrc = {from:'device', savedAt:+_ld.savedAt||0, cloudSavedAt:+draft.savedAt||0};
+        draft = _ld; row = { date: shiftDayKey(), data: _ld };
+      } else {
+        window._draftSrc = {from:'cloud', savedAt:+draft.savedAt||0, localSavedAt:_ld?(+_ld.savedAt||0):0};
+      }
+      /* if this device has clocked MORE worked time than the copy we are about to restore,
+         the copy is stale — say so in the event log, so the next one of these is diagnosable */
+      var _hw = parseInt(lsGet('bdl_maxel_'+va+'_'+shiftDayKey())||'0',10)||0;
+      if (_hw && _hw - (+draft.elapsedMs||0) > 120000 && typeof seLog==='function') {
+        seLog('anomaly',{ body:'Restored a '+window._draftSrc.from+' copy that is '+Math.round((_hw-(+draft.elapsedMs||0))/60000)
+          +' min behind this device\u2019s last save (copy saved '+new Date(window._draftSrc.savedAt).toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit'})
+          +'). Tasks ticked in between may show as not done.' });
+      }
+    }catch(e){}
 
     /* Was: row.date !== ukDateShort() -> delete. That threw away a LIVE draft the
        instant London ticked past midnight, which for a Manila-hours VA is the middle
@@ -301,6 +334,8 @@ async function checkAndRestoreDraft(va) {
        The v41.0 fix made the break VISIBLE on restore but left this arithmetic
        alone, so the hours kept vanishing. Include the live break in the base. */
     var restoredElapsed = draft.elapsedMs || 0;
+    window._gapCounted = gapToCount(draft.savedAt, draft.onBreak);      // v51.6: the tab was shut, she was not
+    restoredElapsed += window._gapCounted;
     var restoredBreakMs = draft.totalBreakMs || 0;
     var fakeShiftStart = restoreBase(restoredElapsed, restoredBreakMs,
                                      draft.onBreak, draft.breakStart, Date.now());

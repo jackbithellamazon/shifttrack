@@ -184,9 +184,15 @@ function sbInjectBatchTasks(va, tasks){
   // storefront section, batches first (they carry the ASINs), then the manual link boxes
   // for anything the VA finds on their own. Falls back to appending if the host isn't
   // in this VA's ticklist.
+  /* v51.2 BUG FIX — Jack, 27/09: "where's Jack's POA?" The host used to be looked up through
+     JB_ROUTE.sf, and since v50.2 routed every From-Jack type to the POA task that resolved to
+     "Missed Yesterday + Jack POA": the batches slid in under it and the POA task was then
+     deleted below as the "duplicate manual Storefronts task". The host is the manual
+     Storefronts task, by id, or nothing. (Never live — v50.2–v51.1 were not pushed.) */
+  var SB_HOST_IDS=['storefronts','suz-storefronts'];
   var hostAt=-1;
   for(var h=0;h<tasks.length;h++){
-    if(JB_ROUTE.sf.indexOf(tasks[h].id)>=0){ hostAt=h; break; }
+    if(SB_HOST_IDS.indexOf(tasks[h].id)>=0){ hostAt=h; break; }
   }
   var fresh=mine.filter(function(b){
     return !tasks.some(function(t){ return t.id==='sbatch-'+b.id; });
@@ -216,7 +222,14 @@ function sbInjectBatchTasks(va, tasks){
                   (host.linkNames||[]).some(function(n){ return n && String(n).trim(); }));
     if(!touched) tasks.splice(hostAt,1);
   } else {
-    fresh.forEach(function(t){ tasks.push(t); });
+    /* no manual Storefronts task any more (retired 27/09) — batches sit after Jack's POA,
+       or after the Sourcing Suite task, so Main work reads: filters → Jack's items → batches */
+    var at2=-1, anchors=['jack-poa','suz-jack-poa','kpf-daily','suz-kpf-daily'];
+    for(var a=0;a<anchors.length&&at2<0;a++){
+      for(var k=0;k<tasks.length;k++){ if(tasks[k].id===anchors[a]){ at2=k+1; break; } }
+    }
+    if(at2<0){ fresh.forEach(function(t){ tasks.push(t); }); }
+    else{ while(at2<tasks.length && tasks[at2] && tasks[at2].sbBatchId) at2++; tasks.splice.apply(tasks,[at2,0].concat(fresh)); }
   }
   return mine.length;
 }

@@ -99,6 +99,15 @@ function dcDelta(cur,prev,unit){
 }
 async function discord_task_notify(task) {
   if (IS_PREVIEW) return;
+  /* 28/09: Suz's Newsletter task pinged Discord twice (08:55 and 09:26) after a reload put it
+     back to undone. The same task with the same numbers never pings twice in one shift; if the
+     numbers changed the ping says "re-ticked" so Jack knows it is an update, not a second task.
+     The signature lives on the task, so it survives the draft round-trip. */
+  try{
+    var _sig=[task.done?1:0, parseInt(task.leads)||0, String(task.time||''), Math.round(task.timerSec||0)].join('|');
+    if(task._dcSig===_sig) return;
+    task._dcAgain=!!task._dcSig; task._dcSig=_sig;
+  }catch(e){}
   try{ if(inQuietHours()) return; }catch(e){}
   if (!DISCORD_TASKS_WEBHOOK) return;
   if (!state.currentVA || state.currentVA === 'Test') return;
@@ -133,7 +142,7 @@ async function discord_task_notify(task) {
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({embeds:[{
         author: {name: emoji+' '+vaDisp(state.currentVA)},
-        title: task.name.slice(0,120),
+        title: task.name.slice(0,110)+(task._dcAgain?'  \u00b7  re-ticked':''),
         color: colour,
         description: bits.length?bits.join('  \u00b7  '):undefined,
         fields: fields,

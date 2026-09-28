@@ -352,6 +352,7 @@ function weeklyTeamLog(fromGB,toGB){
 }
 function maybeSendWeeklySummary(){
   try{
+    if(typeof IS_PREVIEW!=='undefined' && IS_PREVIEW) return;   // v51.2: a preview must never write the "sent" flag or post
     if(typeof DISCORD_WEEKLY_WEBHOOK==='undefined'||!DISCORD_WEEKLY_WEBHOOK) return;
     var monThis=mgr_weekStart();
     if(lsGet('st_weekly_summary_sent')===monThis) return;
@@ -646,7 +647,13 @@ function selectVA(va) {
               }
             }catch(e){}
           },600);
-        } else showToast('✓ Shift restored — picked up where you left off!');
+        } else {
+          var _ds=window._draftSrc||{}, _when='';
+          try{ if(_ds.savedAt) _when=' (copy saved '+new Date(_ds.savedAt).toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit'})+(_ds.from==='device'?', from this device':'')+')'; }catch(e){}
+          var _g=Math.round((window._gapCounted||0)/60000);
+          showToast('✓ Shift restored — picked up where you left off!'+_when+(_g?' · +'+_g+' min while the tab was closed counted':''));
+          if(_g){ try{ seLog('gap_counted',{mins:_g}); }catch(e){} }
+        }
       } else {
         /* LAST LINE OF DEFENCE. "No draft" from the cloud is not proof there is no work —
            this device may still be holding it. Suz reported closing the tab and being put
@@ -667,7 +674,8 @@ function selectVA(va) {
               /* Was `now - elapsed - totalBreakMs` — the SAME missing live-break term
                  that cost Suz two hours, sitting in a second copy of the sum. Found by
                  auditing for copies after the first fix; now on the shared clock. */
-              state.shiftStart = restoreBase(_ld.elapsedMs||0, state.totalBreakMs,
+              window._gapCounted = gapToCount(_ld.savedAt, _ld.onBreak);   // v51.6
+              state.shiftStart = restoreBase((_ld.elapsedMs||0)+window._gapCounted, state.totalBreakMs,
                                              state.onBreak, state.breakStart, Date.now());
               state.breaks = _ld.breaks || [];
               state.tasks = _ld.tasks || [];
@@ -691,7 +699,9 @@ function selectVA(va) {
               try{ renderStorefronts(); }catch(e){}
               try{ jb_addsBanner(va); }catch(e){}
               startTimer();
-              showToast('\u2713 Restored from this device \u2014 nothing lost');
+              var _g2=Math.round((window._gapCounted||0)/60000);
+              showToast('\u2713 Restored from this device \u2014 nothing lost'+(_g2?' \u00b7 +'+_g2+' min while the tab was closed counted':''));
+              if(_g2){ try{ seLog('gap_counted',{mins:_g2}); }catch(e){} }
               return;
             }
           }
@@ -768,7 +778,7 @@ function startShift(va, newsletterDay, previewVA) {
       hasLinks:false, done:false, skipped:false, skipReason:'', time:'', timeHrs:0, timeMins:0, leads:'', context:'', links:[] };
 
     // Slot A: right after Telegram (index 1 = Telegram for both VAs)
-    tasks.splice(2, 0, Object.assign({}, nlTask, { id:'newsletter-a', name:'Newsletter Check (After Telegram)' }));
+    tasks.splice(2, 0, Object.assign({}, nlTask, { id:'newsletter-a', name:'Newsletter Check (After Discord)' }));
 
     // Slot B: after sourcing
     var srcId = tmplVA === 'Suz' ? 'suz-sourcing' : 'sourcing';
@@ -778,16 +788,8 @@ function startShift(va, newsletterDay, previewVA) {
     }
   }
 
-  if (tmplVA === 'Mera') {
-    var day = ukDayOfWeek();
-    var kpfIdx = tasks.findIndex(function(t){ return t.id === 'kpf-daily'; });
-    var insertAt = kpfIdx >= 0 ? kpfIdx + 1 : 5;
-    if (day === 2) {
-      tasks.splice(insertAt, 0, {id:'kpf-tue', name:'KPF Filters - Tuesday: Laptops & Hoovers A2A', mandatory:true, hint:'Link changes regularly - check mera-poa-filters-saved on Discord.', hasLinks:false, done:false, skipped:false, skipReason:'', time:'', timeHrs:0, timeMins:0, leads:'', context:'', links:[]});
-    } else if (day === 4) {
-      tasks.splice(insertAt, 0, {id:'kpf-thu', name:'KPF Filters - Thursday Filters', mandatory:true, hint:'Link changes regularly - check mera-poa-filters-saved on Discord.', hasLinks:false, done:false, skipped:false, skipReason:'', time:'', timeHrs:0, timeMins:0, leads:'', context:'', links:[]});
-    }
-  }
+  /* v51.2: the Tuesday laptops/hoovers and Thursday filter tasks are gone — both are daily
+     sources in the Sourcing Suite now (mera-highticket, mera-150plus) and would double-nag. */
 
   // Inject Jack's rolling items + one-off tasks — they persist day-to-day until ticked off.
   // Slot them RIGHT AFTER the "Jack POA" task so everything from Jack sits together.
@@ -859,6 +861,7 @@ function startShift(va, newsletterDay, previewVA) {
       // vanish. Give those their own row rather than silently dropping them.
       sfltForVA(va).forEach(function(f){
         if(!sfltRunsToday(f)) return;            // no days set = her library only, never a task
+        if(typeof SFLT_VA_RETIRED!=='undefined' && SFLT_VA_RETIRED) return;   // 27/09: no saved filters on a VA's shift — the Suite is the list
         if(_attached.indexOf(f.id)<0) _jbTasks.push(sfltPoaTask(f));
       });
     }catch(e){}
@@ -1177,8 +1180,10 @@ function renderTasks() {
      it shows how much got through, never a red "incomplete", because not finishing it is
      normal. Only the checks at each end are things that must be ticked. */
   if(mand.length){
-    var PHASE_START=['leadsheet','telegram','pp-main','ht-filters','kpf-daily','kpf-tue','kpf-thu',
-                     'suz-leadsheet','suz-telegram','suz-pp','suz-kpf-daily','newsletter-a'];
+    /* v51.2: the Sourcing Suite task is her main sourcing block, not a "quick check" — it
+       opens Main work now, ahead of Jack's POA and the storefront batches. */
+    var PHASE_START=['leadsheet','telegram','pp-main',
+                     'suz-leadsheet','suz-telegram','suz-pp','newsletter-a'];
     var PHASE_END=['pp-light','telegram-eod','oos-sheet','leadsheet-eod',
                    'suz-pp-light','suz-telegram-eod','suz-oos-sheet','suz-leadsheet-eod'];
     function phaseOf(t){

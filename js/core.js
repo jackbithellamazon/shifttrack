@@ -3,7 +3,7 @@
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v51.1';
+var APP_VERSION='v51.6';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -86,6 +86,9 @@ function getAppSettings(){
     if(saved.spendShowCombined !== undefined) settings.spendShowCombined = saved.spendShowCombined?1:0;
     if(saved.spendShowPace !== undefined) settings.spendShowPace = saved.spendShowPace?1:0;
     if(Array.isArray(saved.badges)) settings.badges = saved.badges;
+    // v51.5: the VAs' ticklists ride in Settings like everything else, so an edit on Jack's
+    // machine reaches theirs (it used to stay in his browser — see getCustomTaskTemplateMap)
+    if(saved.taskTemplates && typeof saved.taskTemplates==='object' && !Array.isArray(saved.taskTemplates)) settings.taskTemplates = saved.taskTemplates;
     ['vaCanAddTasks','vaShowBreak','vaShowStreak','vaShowMomentum','vaCelebrate'].forEach(function(k){
       if(saved[k] !== undefined) settings[k] = saved[k]?1:0;
     });
@@ -515,21 +518,24 @@ function renderNewsletterSchedulePanels(){
    and unsent-changes queue live under its own origin (Safari partitions frames). */
 var SOURCING_APP_URL='https://jackbithellamazon.github.io/BDL-Sourcing-Suite/';
 var SOURCING_DUE_URL=SOURCING_APP_URL+'#due';
-var SOURCING_HOW='Open the link (new tab). Press Run on each red row, open its Keepa filter, export, drop the file in, then press \u201cOpen all in Keepa\u201d and eyeball them. Log the keepers as today\u2019s, come back here, tick this, and log your time + leads.';
+var SOURCING_HOW='Open \u201cWhat\u2019s due\u201d first (new tab), then work down the rows below \u2014 late ones first. In the Suite: Run \u2192 open its Keepa filter \u2192 export \u2192 drop the file in \u2192 \u201cOpen all in Keepa\u201d and eyeball them. Log the keepers on your sheet as today\u2019s. A run you finish there ticks itself off here within a few minutes. Not signed in to the Suite? Ask Jack for your link.';
+/* 27/09 (Jack, via the Sourcing brief): the VAs' saved filters are RETIRED. Their daily list is the
+   Sourcing Suite's due list and nothing else. These ids no longer belong on anyone's ticklist,
+   including a custom one Jack saved months ago — templateRefresh() strips them on the way in. */
+var TEMPLATE_RETIRED=['ht-filters','eu-sheets','suz-eu','storefronts','suz-storefronts','kpf-tue','kpf-thu'];
+var TASK_SOURCING_NAME='Sourcing Suite - Everyday Filters';
+var TASK_SOURCING_HINT='Everything you run each day lives in the Sourcing Suite now \u2014 this is your filter list. '+SOURCING_HOW;
 var taskTemplates = {
   Mera: [
     { id:'leadsheet',    name:'Lead Sheet - Check Jack\'s comments & action everything',  mandatory:true,  hint:'If you disagree with a comment, message Jack with data.' },
-    { id:'telegram',     name:'Telegram - Keepa Tracker Check',                           mandatory:true,  hint:'Check your Keepa tracker notifications — you should be getting 1-2 free leads every single day just from this. Items back in stock, price drops, deal alerts. This is easy leads for almost zero effort — do not skip it. THC Discord — also check these channels: #a2a-biz, #a2a-biz-10-20.' },
-    // Newsletter slot A — after Telegram (only if newsletter day — injected in startShift)
+    { id:'telegram',     name:'Discord - Keepa Tracker Check',                           mandatory:true,  hint:'Check your Keepa tracker alerts in Jack\'s Discord — you should be getting 1-2 free leads every single day just from this. Items back in stock, price drops, deal alerts. This is easy leads for almost zero effort — do not skip it. THC Discord — also check these channels: #a2a-biz, #a2a-biz-10-20.' },
+    // Newsletter slot A — after the Discord check (only if newsletter day — injected in startShift)
     { id:'pp-main',      name:'PP Main Run - Deal Watch Mera + High Ticket A2A',           mandatory:true,  hint:'Run all your PP channels fully. Log all EU brand drops in chat.' },
-    { id:'ht-filters',   name:'High Ticket & A2A Filters (Not Active)',                    mandatory:true,  hint:'To be added at a later date by Jack. Just tick off for now.' },
-    { id:'kpf-daily',    name:'KPF Filters - Everyday Filters',                          mandatory:true,  hint:'Your everyday filters now live in the Sourcing app \u2014 the link is below. '+SOURCING_HOW },
+    { id:'kpf-daily',    name:TASK_SOURCING_NAME,                                        mandatory:true,  hint:TASK_SOURCING_HINT },
     { id:'jack-poa',     name:'Missed Yesterday + Jack POA',                               mandatory:true,  hint:'Finish anything missed from yesterday (filters, storefront ASINs etc) then check tasks/filters Jack sent.', hasLinks:true },
     { id:'sourcing',     name:'Sourcing Period - Your Own Sourcing Time',                  mandatory:true,  hint:'KPF (brand/category), Manual, Newsletter, Reverse KPF A2A, Arbi. Find a strong lead from a brand sale or promo - dig deep and pull multiple.', hasLinks:true },
-    { id:'eu-sheets',    name:'EU Sheets (if there is any) → Complete them',               mandatory:true,  hint:'Check if any EU sheets need completing. If brands dropped → complete the EU sheet fully. Log time spent and leads found.' },
-    { id:'storefronts',  name:'Storefronts',                                               mandatory:true,  hint:'Usually late afternoon/evening UK time. If working - do them. If not - log reason and add to tomorrow\'s POA.', hasLinks:true },
     { id:'pp-light',     name:'PP Light Check (Later in Shift)',                           mandatory:true,  hint:'Quick scan for new pings only - do this later in your shift.' },
-    { id:'telegram-eod', name:'Telegram - End of Shift Check',                            mandatory:true,  hint:'Quick Telegram check before you finish. There should be at least 2 leads added to your lead sheet from this — check for back in stock alerts, price drops and deal pings. Log anything relevant.' },
+    { id:'telegram-eod', name:'Discord - End of Shift Check',                            mandatory:true,  hint:'Quick Discord check before you finish — the Keepa tracker alerts land there now. There should be at least 2 leads added to your lead sheet from this — check for back in stock alerts, price drops and deal pings. Log anything relevant.' },
     { id:'oos-sheet', name:'OOS Sheet', mandatory:true, hint:'Log any out-of-stock items to the OOS sheet. Target is 2.5 hours per week minimum — this directly impacts restocking decisions. Time how long you spend and log it.', hasLinks:false },
     { id:'leadsheet-eod', name:'Lead Sheet - Final Check Before Logging Off',             mandatory:true,  hint:'Last thing before you finish — check the lead sheet one more time. Action any new comments Jack has left. Tick off when done.' }
   ],
@@ -539,16 +545,16 @@ var taskTemplates = {
       hint:'Check Jack\'s comments and action everything. If you disagree with a comment, message Jack with data.'
     },
     {
-      id:'suz-telegram', name:'Telegram - Keepa Tracker Check', mandatory:true,
-      hint:'Check your Keepa tracker notifications — you should be getting 1-2 free leads every single day just from this. Items back in stock, price drops, deal alerts. This is easy leads for almost zero effort — do not skip it. THC Discord — also check these channels: #automated-leads, #a2a-leads, #a2a-non-keepa, #a2a-beta, #a2a-eu.'
+      id:'suz-telegram', name:'Discord - Keepa Tracker Check', mandatory:true,
+      hint:'Check your Keepa tracker alerts in Jack\'s Discord — you should be getting 1-2 free leads every single day just from this. Items back in stock, price drops, deal alerts. This is easy leads for almost zero effort — do not skip it. THC Discord — also check these channels: #automated-leads, #a2a-leads, #a2a-non-keepa, #a2a-beta, #a2a-eu.'
     },
     {
       id:'suz-pp', name:'ProfitPath Main Run (50spm-eu-suz / uk-a2a-suz / uk-biz-suz / no-variations-eu-suz / 20spm-eu-suz)', mandatory:true,
       hint:'Run all your PP channels fully. Once PP is done → send a list in chat of ALL EU brands that have dropped (no excuses). If a brand drops multiple times → post: EU sheet needed then - brands.'
     },
     {
-      id:'suz-kpf-daily', name:'KPF Filters - Everyday Filters', mandatory:true,
-      hint:'Your everyday filters now live in the Sourcing app \u2014 the link is below. '+SOURCING_HOW
+      id:'suz-kpf-daily', name:TASK_SOURCING_NAME, mandatory:true,
+      hint:TASK_SOURCING_HINT
     },
     {
       id:'suz-jack-poa', name:'Missed Yesterday + Jack POA', mandatory:true,
@@ -559,20 +565,12 @@ var taskTemplates = {
       hint:'KPF (brand/category), Manual, Newsletter, Reverse KPF A2A, Arbi. Find a strong lead from a brand sale or promo - dig deep and pull multiple.', hasLinks:true
     },
     {
-      id:'suz-eu', name:'EU Sheets (if there is any) → Complete them', mandatory:true,
-      hint:'Check if any EU sheets need completing. If brands dropped → complete the EU sheet fully.'
-    },
-    {
-      id:'suz-storefronts', name:'Storefronts', mandatory:true,
-      hint:'Usually late afternoon/evening UK time. If working - do them. If not - log reason and add to tomorrow\'s POA.', hasLinks:true
-    },
-    {
       id:'suz-pp-light', name:'PP Light Check (Later in Shift)', mandatory:true,
       hint:'Quick scan for new pings only - do this later in your shift.'
     },
     {
-      id:'suz-telegram-eod', name:'Telegram - End of Shift Check', mandatory:true,
-      hint:'Quick Telegram check before you finish. There should be at least 2 leads added to your lead sheet from this — check for back in stock alerts, price drops and deal pings. Log anything relevant.'
+      id:'suz-telegram-eod', name:'Discord - End of Shift Check', mandatory:true,
+      hint:'Quick Discord check before you finish — the Keepa tracker alerts land there now. There should be at least 2 leads added to your lead sheet from this — check for back in stock alerts, price drops and deal pings. Log anything relevant.'
     },
     {
       id:'suz-oos-sheet', name:'OOS Sheet', mandatory:true,
@@ -609,24 +607,70 @@ function cloneTaskTemplates(tasks){
     };
   });
 }
+/* 28/09 — the bug behind "why does my ticklist say 7 Day Drops and hers says Everyday Filters":
+   every ticklist edit Jack made in Settings was saved to HIS browser only (this key), while the
+   VAs ran the code defaults. None of his edits had ever reached them. The shared ticklist now
+   lives in app_settings.taskTemplates and syncs like the webhooks. The old browser copy is not
+   applied any more; tplLegacyBannerHTML() offers it back to Jack once, to adopt or discard. */
 function getCustomTaskTemplateMap(){
+  try{ var st=getAppSettings(); if(st.taskTemplates && typeof st.taskTemplates==='object') return st.taskTemplates; }catch(e){}
+  return {};
+}
+function tplLegacyLocalMap(){
   try { return JSON.parse(lsGet(CUSTOM_TASK_TEMPLATES_KEY)||'{}') || {}; }
   catch(e){ return {}; }
 }
+function tplLegacyBannerHTML(){
+  try{
+    var loc=tplLegacyLocalMap(), cloud=getCustomTaskTemplateMap(), out='';
+    ['Mera','Suz'].forEach(function(va){
+      var l=loc[va]; if(!Array.isArray(l)||!l.length) return;
+      if(cloud[va] && cloud[va].length) return;                 // the shared one exists — the old copy is moot
+      out+='<div class="save-warn" style="margin:0 0 12px;"><span>&#9888;</span><div><b>This browser holds an older saved ticklist for '+vaDisp(va)+' ('+l.length+' tasks).</b>'
+        +'<span>It was saved before 28 Sep and never reached her \u2014 she has been running the built-in list. Use it as the shared ticklist, or discard it and keep the built-in one.</span></div>'
+        +'<button onclick="tplAdoptLocal(\''+va+'\')">Use it</button> <button class="sf-x" onclick="tplDiscardLocal(\''+va+'\')">Discard</button></div>';
+    });
+    return out;
+  }catch(e){ return ''; }
+}
+function tplAdoptLocal(va){
+  var loc=tplLegacyLocalMap(); if(!loc[va]) return;
+  saveTaskTemplateSource(va, templateRefresh(cloneTaskTemplates(loc[va])));
+  delete loc[va]; lsPut(CUSTOM_TASK_TEMPLATES_KEY, JSON.stringify(loc));
+  showToast(vaDisp(va)+'\u2019s ticklist is now the shared one \u2014 it reaches her next shift');
+  try{ mgr_repaintTicklist(); }catch(e){}
+}
+function tplDiscardLocal(va){
+  var loc=tplLegacyLocalMap(); delete loc[va]; lsPut(CUSTOM_TASK_TEMPLATES_KEY, JSON.stringify(loc));
+  showToast('Old copy discarded \u2014 '+vaDisp(va)+' keeps the built-in ticklist');
+  try{ mgr_repaintTicklist(); }catch(e){}
+}
+/* A ticklist Jack customised in Settings months ago still says "KPF Filters - 7 Day Drops",
+   "Telegram" and carries EU Sheets — his screenshots on 27/09 were exactly that. Whatever the
+   source, retired ids go and the renamed tasks take the current name and hint, so nothing old
+   can come back through a saved copy. Everything else in his custom list is left alone. */
+function templateRefresh(list){
+  var byId={}; ['Mera','Suz'].forEach(function(v){ (taskTemplates[v]||[]).forEach(function(t){ byId[t.id]=t; }); });
+  var RENAMED=['kpf-daily','suz-kpf-daily','telegram','suz-telegram','telegram-eod','suz-telegram-eod'];
+  return (list||[]).filter(function(t){ return !t || TEMPLATE_RETIRED.indexOf(t.id)<0; })
+    .map(function(t){
+      if(t && RENAMED.indexOf(t.id)>=0 && byId[t.id]){ t.name=byId[t.id].name; t.hint=byId[t.id].hint; }
+      return t;
+    });
+}
 function getTaskTemplateSource(va){
   var custom=getCustomTaskTemplateMap();
-  if(custom[va] && Array.isArray(custom[va]) && custom[va].length) return cloneTaskTemplates(custom[va]);
-  return cloneTaskTemplates(taskTemplates[va]||[]);
+  if(custom[va] && Array.isArray(custom[va]) && custom[va].length) return templateRefresh(cloneTaskTemplates(custom[va]));
+  return templateRefresh(cloneTaskTemplates(taskTemplates[va]||[]));
 }
 function saveTaskTemplateSource(va,tasks){
-  var custom=getCustomTaskTemplateMap();
-  custom[va]=cloneTaskTemplates(tasks);
-  lsPut(CUSTOM_TASK_TEMPLATES_KEY,JSON.stringify(custom));
+  var st=getAppSettings(); st.taskTemplates=(st.taskTemplates&&typeof st.taskTemplates==='object')?st.taskTemplates:{};
+  st.taskTemplates[va]=cloneTaskTemplates(tasks);
+  saveAppSettings(st); try{ pushSettingsCloud(st); }catch(e){}
 }
 function resetTaskTemplateSource(va){
-  var custom=getCustomTaskTemplateMap();
-  delete custom[va];
-  lsPut(CUSTOM_TASK_TEMPLATES_KEY,JSON.stringify(custom));
+  var st=getAppSettings(); if(st.taskTemplates&&typeof st.taskTemplates==='object') delete st.taskTemplates[va];
+  saveAppSettings(st); try{ pushSettingsCloud(st); }catch(e){}
 }
 function enrichTasksWithPOA(va,tasks){
   var poa=(getAppSettings().poaNotes||{})[va]||'';

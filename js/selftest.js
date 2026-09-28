@@ -45,6 +45,16 @@ function selfTest(){
     ok('Batch routing: blank', to('')==='', to('')||'(nobody)');
   });
 
+  // 2a. the 28/09 freeze must never come back: a loader that a repaint waits on must never
+  //     resolve to nothing, and the storefront repaint must only ever ask once per page load
+  attempt('No-key storefront loader',function(){
+    var savedKey=SPEND_API_KEY, savedL=SB_SRC_LISTS; SPEND_API_KEY=''; SB_SRC_LISTS=null;
+    sbLoadSrcLists().then(function(v){ ok('sbLoadSrcLists never resolves null', v!==null && v!==undefined, JSON.stringify(v)); });
+    ok('sbLoadSrcLists sets its flag without a key', SB_SRC_LISTS!==null);
+    SPEND_API_KEY=savedKey; SB_SRC_LISTS=savedL;
+    ok('Storefront repaint is one-shot', /_sbSrcTried/.test(String(mgr_renderStorefronts)) && /_sbFuTried/.test(String(mgr_renderStorefronts)));
+  });
+
   // 2b. storage (v50.9) — one helper, never throws, history is memory-only
   attempt('Storage helper',function(){
     ok('lsPut/lsGet round-trip', (lsPut('st_selftest','x'), lsGet('st_selftest')==='x'));

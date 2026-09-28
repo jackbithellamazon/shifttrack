@@ -510,12 +510,21 @@ function mgr_changeWeek(dir){
 }
 function mgr_deleteBtn(id){return '<button onclick="event.stopPropagation();mgr_del('+id+')" style="background:rgba(242,100,127,0.1);border:1px solid rgba(242,100,127,0.25);color:#f2647f;font-family:var(--font-mono);font-size:10px;padding:4px 10px;border-radius:6px;cursor:pointer;flex-shrink:0;">Delete</button>';}
 
+/* v51.5: Jack's rule is "never delete". This used to DELETE the Supabase row (and, for rows
+   filed under the stable va+date id, silently missed it, because the card carries data.id).
+   Now the shift is flagged archived by va+date, leaves the dashboard, and stays in the table. */
 function mgr_del(id){
-  if(!confirm('Delete this shift?\n\nThis cannot be undone.')) return;
-  var l=mgr_getLog().filter(function(r){return r.id!==id;});
-  window._shiftLog=l;
-  if(DB_ENABLED) db_delete('shifts', id);
-  showToast('Shift deleted');
+  if(!confirm('Archive this shift?\n\nIt leaves the dashboard but stays in Supabase, marked archived. Nothing is deleted.')) return;
+  var rec=mgr_getLog().filter(function(r){return r.id===id;})[0];
+  window._shiftLog=mgr_getLog().filter(function(r){return r.id!==id;});
+  if(DB_ENABLED && rec && rec.va && rec.date){
+    try{
+      dbWrite('Archive a shift', SUPABASE_URL+'/rest/v1/shifts?va=eq.'+encodeURIComponent(rec.va)+'&date=eq.'+encodeURIComponent(rec.date),
+        {method:'PATCH',headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,'Content-Type':'application/json',Prefer:'return=minimal'},
+         body:JSON.stringify({data:Object.assign({},rec,{archived:true,archivedAt:new Date().toISOString()})})}).catch(function(){});
+    }catch(e){}
+  }
+  showToast('Shift archived \u2014 still in Supabase');
   mgr_switchTab(mgr_currentTab);
 }
 

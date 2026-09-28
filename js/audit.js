@@ -239,10 +239,12 @@ function sbPaintSafe(host){
 }
 function mgr_renderStorefronts(){
   // the filter league needs filter_usage; pull it once, then repaint when it lands
-  try{ if(!window._fuCloud && typeof fuLoadCloud==='function'){
+  /* one attempt per page load, whatever the outcome — a "load then repaint" that keys off
+     a value the loader might leave empty is how the 28/09 freeze happened (see sbLoadSrcLists) */
+  try{ if(!window._fuCloud && !window._sbFuTried && typeof fuLoadCloud==='function'){ window._sbFuTried=true;
     fuLoadCloud().then(function(){ if(mgr_currentTab==='storefronts') mgr_renderStorefronts(); });
   } }catch(e){}
-  try{ if(!SB_SRC_LISTS && typeof sbLoadSrcLists==='function'){
+  try{ if(!SB_SRC_LISTS && !window._sbSrcTried && typeof sbLoadSrcLists==='function'){ window._sbSrcTried=true;
     sbLoadSrcLists().then(function(){ if(mgr_currentTab==='storefronts') mgr_renderStorefronts(); });
   } }catch(e){}
   var el=document.getElementById('mgr-storefronts-content'); if(!el) return;

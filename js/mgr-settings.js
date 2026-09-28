@@ -515,6 +515,8 @@ function storageCardHTML(){
     +'<div class="stg-line"><span>AVM HQ</span><b>'+lsMB(u.ours)+'</b></div>'
     +'<div class="stg-line"><span>Your other apps here</span><b>'+lsMB(u.others)+'</b></div>'
     +(u.mem?'<div class="stg-line warn"><span>Held in memory (pot full)</span><b>'+u.mem+'</b></div>':'')
+    +(function(){ try{ var raw=lsGet('shifttrack_eod_log'); if(raw==null) return ''; var n=0; try{ n=(JSON.parse(raw)||[]).length; }catch(e){}
+        return '<div class="stg-line warn"><span>Old shift copy still here \u2014 kept because some rows are not in Supabase</span><b>'+n+' rows</b></div>'; }catch(e){ return ''; } })()
     +'<details class="stg-det"><summary>What AVM HQ keeps, biggest first</summary>'+rows+'</details>'
     +'</div>';
 }
@@ -806,6 +808,7 @@ function mgr_renderSettings(){
   // auto-run the image diagnostic once so the actual problem shows without a click
   try{ if((window.leads||[]).length && !window._imgScanned){ window._imgScanned=1; scanLeadImages(); } }catch(e){}
   try{ var _shell=el.querySelector('.settings-shell'); if(_shell) _shell.insertAdjacentHTML('beforeend', storageCardHTML()); }catch(e){}
+  try{ var _lb=tplLegacyBannerHTML(); if(_lb) el.insertAdjacentHTML('afterbegin', _lb); }catch(e){}
   try{ setSettingsGroup(window._settingsGroup||'all'); }catch(e){}
   // re-pack after fonts + async content (tab picker / score teach) settle
   setTimeout(settingsMasonry,60); setTimeout(settingsMasonry,300); setTimeout(settingsMasonry,800);

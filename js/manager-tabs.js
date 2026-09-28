@@ -59,6 +59,11 @@ var _spendCache=null;
 // (date=A, qty=G, provider=M, spend=O col-14), same VA-A/VA-S provider split, same Targets tab.
 async function loadSpend(force){
   try{
+    if(!SPEND_API_KEY){
+      var _h=document.getElementById('spend-tile')||document.getElementById('mgr-spend-content');
+      if(_h && !_spendCache) _h.innerHTML='<div class="sb-empty">Google Sheets key needed \u2014 Settings \u2192 Notifications \u2192 \u201cGoogle Sheets API key\u201d.</div>';
+      return;
+    }
     // hydrate from localStorage so the tile shows instantly (no "Loading…" flicker on every reload)
     if(!_spendCache){ try{ var _c=JSON.parse(lsGet('spend_cache_v1')||'null'); if(_c&&_c.vaA){ _spendCache=_c; renderSpendTile(); try{mgr_renderSpend();}catch(e){} } }catch(e){} }
     if(_spendCache && !force && (Date.now()-_spendCache.t < 600000)){ renderSpendTile(); return; }
@@ -626,13 +631,52 @@ function mgr_renderVA(va,containerId){
   document.getElementById(containerId).innerHTML=html;
 }
 
+/* v51.5 — what broke on THEIR machines, read back from shift_events (error / save_fail /
+   anomaly, last 7 days), grouped, newest first. This is the panel that did not exist on
+   28/09 when Suz's morning restored a stale copy and nothing said why. */
+function mgr_machineErrorsLoad(){
+  if(typeof SUPABASE_URL==='undefined'||!DB_ENABLED) return Promise.resolve([]);
+  var since=Date.now()-7*86400000;
+  return fetchT(SUPABASE_URL+'/rest/v1/shift_events?select=va,kind,client_ms,meta&kind=in.(error,save_fail,anomaly)&client_ms=gte.'+since+'&order=client_ms.desc&limit=400',
+      {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}})
+    .then(function(r){ return r.ok?r.json():[]; }).catch(function(){ return []; });
+}
+function mgr_machineErrorsHTML(rows){
+  if(!rows||!rows.length) return '<div class="s-sub" style="padding:6px 0 14px;">\u2705 Nothing broke on their machines in the last 7 days \u2014 no errors, no failed saves, no clock repairs.</div>';
+  var by={};
+  rows.forEach(function(r){
+    var m=r.meta||{}; var msg=String(m.msg||m.body||'').replace(/\s+/g,' ').slice(0,140);
+    var k=r.va+'|'+r.kind+'|'+msg; var g=by[k]||(by[k]={va:r.va,kind:r.kind,msg:msg,n:0,last:0,ver:m.ver||''});
+    g.n++; if(r.client_ms>g.last) g.last=r.client_ms;
+  });
+  var list=Object.keys(by).map(function(k){ return by[k]; }).sort(function(a,b){ return b.last-a.last; });
+  var KC={error:'#f5455f',save_fail:'#f5a524',anomaly:'#8ed8ff'}, KL={error:'error',save_fail:'save failed',anomaly:'clock / restore'};
+  return '<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;">'+list.slice(0,30).map(function(g){
+    var when=new Date(g.last).toLocaleString('en-GB',{timeZone:'Europe/London',weekday:'short',hour:'2-digit',minute:'2-digit'});
+    var vaCol=(g.va==='Mera')?'var(--mera)':(g.va==='Suz')?'var(--suz)':'var(--muted)';
+    return '<div class="issue-card" style="border-left:3px solid '+KC[g.kind]+';padding:9px 12px;">'
+      +'<div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap;font-size:11px;margin-bottom:4px;">'
+      +'<span style="color:'+KC[g.kind]+';font-weight:800;text-transform:uppercase;letter-spacing:1px;">'+(KL[g.kind]||g.kind)+'</span>'
+      +'<span style="font-weight:700;color:'+vaCol+';">\u25cf '+escHtml(g.va||'?')+'</span>'
+      +'<span style="color:var(--muted-2);">'+escHtml(when)+(g.n>1?' \u00b7 \u00d7'+g.n:'')+(g.ver?' \u00b7 '+escHtml(g.ver):'')+'</span></div>'
+      +'<div style="font-size:12.5px;color:var(--text);line-height:1.5;">'+escHtml(g.msg||'(no message)')+'</div></div>';
+  }).join('')+'</div>';
+}
 function mgr_renderIssues(){
   var reports=mgr_getReports();
+  try{
+    mgr_machineErrorsLoad().then(function(rows){
+      var host=document.getElementById('mgr-machine-errors'); if(host && mgr_currentTab==='issues') host.innerHTML=mgr_machineErrorsHTML(rows);
+    });
+  }catch(e){}
   var tl={'broken-link':'Broken Link','task-unclear':'Task Unclear','technical':'Technical','missing-info':'Missing Info','other':'Other'};
   /* Was the last tab on the launch-era palette — #444 text on #0d0d1a cards, and
      "Clear ALL shift logs" sitting as a bare button on a page Jack opens most days.
      House tokens now, and the destructive dev tools live behind a fold. */
-  var html='<div class="mgr-sec2" style="margin-bottom:14px;"><div>'
+  var html='<div class="mgr-sec2" style="margin-bottom:8px;"><div><div class="s-ttl">From their machines \u2014 last 7 days</div>'
+    +'<div class="s-sub">Errors, failed saves and clock repairs the app recorded by itself, newest first</div></div></div>'
+    +'<div id="mgr-machine-errors"><div class="s-sub" style="padding:6px 0 14px;">Reading\u2026</div></div>'
+    +'<div class="mgr-sec2" style="margin-bottom:14px;"><div>'
     +'<div class="s-ttl">Reported issues'+(reports.length?' <span style="color:var(--red)">('+reports.length+')</span>':'')+'</div>'
     +'<div class="s-sub">What the VAs flagged from their shift screens — newest first</div></div>'
     +(reports.length?'<button class="wb-btn" style="color:var(--red);border-color:rgba(242,100,127,.35)" onclick="mgr_clearIssues()">Clear all</button>':'')
@@ -882,7 +926,7 @@ function mgr_renderTicklist(){
   var el=document.getElementById('mgr-ticklist-content'); if(!el) return;
   var y=(document.getElementById('mgr-tab-ticklist')||{}).style&&document.getElementById('mgr-tab-ticklist').style.display!=='none'
         ?(window.pageYOffset||0):0;
-  el.innerHTML='<div class="tkl-intro">'
+  el.innerHTML=tplLegacyBannerHTML()+'<div class="tkl-intro">'
     +'<div class="tkl-h">🗂️ Recurring Ticklist</div>'
     +'<div class="tkl-p">The permanent tasks Mera &amp; Suz get at the start of <b>every</b> shift, in this order. '
       +'Attach saved filters to a task and they arrive pre-loaded as named link rows the VA just opens and logs against.<br>'

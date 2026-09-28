@@ -145,7 +145,38 @@ function eodIssues(va){
   try{ eodMissingList(va).forEach(function(m){ out.push({id:'miss:'+m.row, kind:'missing details', label:'Row '+m.row+' missing '+m.miss.join(', ')}); }); }catch(e){}
   try{ eodDupList(va).forEach(function(d){ out.push({id:'dup:'+d.row, kind:'duplicate', hard:true, label:'Row '+d.row+' duplicate'}); }); }catch(e){}
   try{ eodLossList(va).forEach(function(l){ out.push({id:'loss:'+l.row, kind:'loses money', label:'Row '+l.row+' loses money'}); }); }catch(e){}
+  try{ eodSourcingList(va).forEach(function(s){ out.push({id:'src:'+s.key, kind:'Sourcing run still due', label:'Run \u00b7 '+s.name+' \u2014 '+s.label}); }); }catch(e){}
   return out;
+}
+/* 27/09: the Suite is her filter list, so a source that was due today and never run is an
+   end-of-shift issue like any other — run it (it clears itself on the next re-check) or
+   acknowledge it with a reason Jack will read. Never hard: a Suite she cannot sign in to
+   must not trap her, and if we could not read the Suite at all there is nothing to show. */
+function eodSourcingList(va){
+  try{
+    if(typeof oaTodayList!=='function' || typeof OA_SRC==='undefined' || !OA_SRC || !OA_RUNS) return [];
+    return oaTodayList(va).filter(function(r){ return r.due.due; }).map(function(r){
+      return {key:r.src.key, name:String((r.src.data||{}).name||r.src.key), label:r.due.label, url:oaRunLink(r.src.key,va)};
+    });
+  }catch(e){ return []; }
+}
+function eodSourcingHTML(va){
+  var d=eodSourcingList(va);
+  if(!d.length) return '';
+  var li=d.map(function(x){
+    return '<li'+(eodIsAcked('src:'+x.key)?' class="acked"':'')+'><a href="'+escHtml(x.url)+'" target="_blank" rel="noopener"><b>'+escHtml(x.name)+'</b></a>'
+      +' <span class="eod-lc-miss">\u2014 '+escHtml(x.label)+'</span> '
+      +eodAckBtn('src:'+x.key,'Run \u00b7 '+x.name+' \u2014 '+x.label)+'</li>';
+  });
+  var first=li.slice(0,8).join(''), rest=li.slice(8).join('');
+  var list=first+(rest
+    ? '</ul><details class="eod-lc-more"><summary>show the other '+(li.length-8)+'</summary><ul>'+rest+'</ul></details><ul style="display:none">'
+    : '');
+  return '<div class="eod-lc warn">'
+    +'<div class="eod-lc-h">\u26a0\ufe0f '+d.length+' Sourcing run'+(d.length===1?'':'s')+' still due today</div>'
+    +'<div class="eod-lc-b">These were on your list today and the Suite has no run for them. Run them now (they clear here within a few minutes), or acknowledge each one and say why.</div>'
+    +'<div class="eod-lc-l"><ul>'+list+'</ul></div>'
+    +'</div>';
 }
 /* she fixed it on the sheet — go and look, rather than take her word for it */
 var _eodRechecking=false;
@@ -156,6 +187,7 @@ function eodRecheck(){
   var before=0; try{ before=eodOpenIssues(state.currentVA).length; }catch(e){}
   Promise.resolve()
     .then(function(){ return (typeof loadLeadsFromDB==='function')?loadLeadsFromDB():null; })
+    .then(function(){ return (typeof oaLoad==='function')?oaLoad(true):null; })          // a run she just did in the Suite counts too
     .then(function(){
       window._eodSheetUnreadable=false;
       /* _duxSig is (rows : first id) — a note added to an existing row changes neither,
@@ -201,7 +233,7 @@ function eodRenderLeadCheck(){
   var el=document.getElementById('eod-leadcheck');
   var va=(state.currentVA==='Test'?state._previewAs:state.currentVA);
   if(!el) return;
-  var html=eodGateHTML(va)+eodLeadCheckHTML(va)+eodMissingHTML(va)+eodDupCheckHTML(va)+eodLossHTML(va);
+  var html=eodGateHTML(va)+eodLeadCheckHTML(va)+eodMissingHTML(va)+eodDupCheckHTML(va)+eodLossHTML(va)+eodSourcingHTML(va);
   if(el._lcLast===html) return;
   el._lcLast=html; el.innerHTML=html;
 }

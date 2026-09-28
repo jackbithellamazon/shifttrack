@@ -13,6 +13,10 @@
   out.history=(window._shiftLog||[]).length;
   [].slice.call(document.querySelectorAll('[id^="mgr-tab-"]')).map(function(e){return e.id.replace('mgr-tab-','');}).forEach(function(t){ try{ mgr_switchTab(t); }catch(e){ errs.push(t+': '+e.message); } });
   await new Promise(function(r){setTimeout(r,800);});
+  /* 28/09: the Storefronts tab with NO Sheets key used to loop forever — press it with the key blanked and prove the tab survives */
+  var _k=SPEND_API_KEY; SPEND_API_KEY=''; SB_SRC_LISTS=null; window._sbSrcTried=false;
+  var _s=performance.now(); try{ mgr_switchTab('storefronts'); }catch(e){ errs.push('storefronts: '+e.message); }
+  await new Promise(function(r){setTimeout(r,2000);}); out.storefrontsNoKeyMs=Math.round(performance.now()-_s); SPEND_API_KEY=_k;
   out.storage=lsUsage().ours; out.errors=errs; out.writesAttempted=window.__SENT;
   console.log(JSON.stringify(out,null,1)); return out;
 })();

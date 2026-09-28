@@ -42,17 +42,17 @@ function oaDue(src){
   var d=(src&&src.data)||{}, t=oaTodayISO();
   if(d.status==='paused') return {label:'Paused', due:false, rank:9000, tone:'off'};
   var last=oaLastRun(src.key), days=OA_CADENCE_DAYS[String(d.cadence||'')]||0;
-  if(!last) return {label:'Never run', due:true, rank:1, tone:'amber', sub:'no run recorded'};
+  if(!last) return {label:'First run', due:true, rank:1, tone:'amber', sub:'never run yet'};
   var lastDay=String(last.day||last.at||'').slice(0,10);
   if(lastDay===t) return {label:'Done today', due:false, rank:8000, tone:'green', sub:'by '+(String(last.who||'').trim()||'not recorded')};
   if(!days) return {label:'One-off', due:false, rank:5000, tone:'off'};
   var nx=new Date(String(last.at)); nx.setDate(nx.getDate()+days);
   var nxDay=nx.toISOString().slice(0,10);
   if(nxDay<t){ var od=Math.round((new Date(t)-new Date(nxDay))/864e5);
-    return {label:'Overdue · '+od+'d', due:true, rank:0, tone:'red', sub:'last run '+lastDay}; }
+    return {label:od+(od===1?' day late':' days late'), due:true, rank:-od, tone:'red', sub:'last run '+lastDay}; }   // Sourcing's own words, latest first
   if(nxDay===t) return {label:'Due today', due:true, rank:1, tone:'amber', sub:'last run '+lastDay};
   var inD=Math.round((new Date(nxDay)-new Date(t))/864e5);
-  return {label:'in '+inD+'d', due:false, rank:100+inD, tone:'off', sub:'last run '+lastDay};
+  return {label:'in '+inD+(inD===1?' day':' days'), due:false, rank:100+inD, tone:'off', sub:'last run '+lastDay};
 }
 function oaNum(v){ return (v===0||v)?v:'—'; }
 /* ── WHO IS ALLOWED TO SEE A SOURCE ──────────────────────────────────────────
@@ -78,35 +78,72 @@ function oaVisible(list,person){ return (list||[]).filter(function(x){ return oa
    count per link. Everything goes through oaCanSee, so she only ever sees her own:
    never Suz's, never Mera's, and never an unassigned brand run.
    Jack is deliberately holding the unowned ones, so a short list is the right list. */
-function oaAttachSources(tasks,va){
-  if(va!=='Mera'&&va!=='Suz') return 0;
-  if(!OA_SRC||!OA_RUNS) return 0;
-  var t=null;
-  for(var i=0;i<tasks.length;i++){ if(tasks[i].id==='kpf-daily'||tasks[i].id==='suz-kpf-daily'){ t=tasks[i]; break; } }
-  if(!t) return 0;
-  var due=oaVisible(OA_SRC,va)
+/* 27/09 (Jack, via the Sourcing brief): "their daily list is Sourcing's due list, nothing else".
+   So the everyday task carries EVERY source that is hers and due — own and shared — latest
+   first, then due today, then first runs; the cap of six is gone. A run she finishes in the
+   Suite stays on the list as "Done today" (her logged leads on that row must survive) and
+   drops to the bottom. Labels are re-stamped on every refresh, so the row she ran at 10:00
+   reads Done by 10:03 without her touching anything (oaStartRefresh). */
+function oaTaskOf(tasks){
+  for(var i=0;i<(tasks||[]).length;i++){ if(tasks[i].id==='kpf-daily'||tasks[i].id==='suz-kpf-daily') return tasks[i]; }
+  return null;
+}
+function oaTodayList(va){
+  if(!OA_SRC||!OA_RUNS) return [];
+  return oaVisible(OA_SRC,va)
     .filter(function(x){ return ((x.data||{}).status||'active')!=='paused'; })
     .map(function(x){ return {src:x, due:oaDue(x)}; })
-    .filter(function(r){ return r.due.due; })
-    .sort(function(a,b){ return a.due.rank-b.due.rank; })
-    .slice(0,6);                       // her day, not a backlog wall
-  if(!due.length) return 0;
+    .filter(function(r){ return r.due.due || r.due.label==='Done today'; })
+    .sort(function(a,b){ return a.due.rank-b.due.rank; });
+}
+function oaAttachSources(tasks,va){
+  if(va!=='Mera'&&va!=='Suz') return 0;
+  var t=oaTaskOf(tasks); if(!t) return 0;
+  var rows=oaTodayList(va);
+  if(!rows.length) return 0;
   t.hasLinks=true;
   t.links=t.links||[]; t.linkLeads=t.linkLeads||[]; t.linkFilterIds=t.linkFilterIds||[]; t.linkNames=t.linkNames||[];
   var n=0;
-  due.forEach(function(r){
-    var id='oa:'+r.src.key;
-    if(t.linkFilterIds.indexOf(id)>=0) return;                 // never twice
+  rows.forEach(function(r){
+    var id='oa:'+r.src.key, label='Run \u00b7 '+String((r.src.data||{}).name||r.src.key)+' \u2014 '+r.due.label;
+    var at=t.linkFilterIds.indexOf(id);
+    if(at>=0){ if(t.linkNames[at]!==label){ t.linkNames[at]=label; n++; } return; }   // already there — refresh its state
     var _n=Math.max(t.links.length,t.linkNames.length,t.linkLeads.length,t.linkFilterIds.length);
     while(t.links.length<_n) t.links.push(''); while(t.linkNames.length<_n) t.linkNames.push('');
     while(t.linkLeads.length<_n) t.linkLeads.push(''); while(t.linkFilterIds.length<_n) t.linkFilterIds.push('');
     t.links.push(oaRunLink(r.src.key,va));
-    t.linkNames.push('Run · '+String((r.src.data||{}).name||r.src.key)+' — '+r.due.label);
+    t.linkNames.push(label);
     t.linkLeads.push(''); t.linkFilterIds.push(id);
     n++;
   });
   return n;
 }
+/* keep her list honest while the shift runs: re-read the Suite every 3 minutes and when she
+   comes back to this tab, and only repaint if a row actually changed */
+function oaSig(tasks){ var t=oaTaskOf(tasks); return t?JSON.stringify([t.linkFilterIds,t.linkNames]):''; }
+function oaRefreshShift(force){
+  try{
+    if(!window.state || !state.shiftStart || state.submitted) return;
+    var va=(state.currentVA==='Test')?state._previewAs:state.currentVA;
+    if(va!=='Mera'&&va!=='Suz') return;
+    oaLoad(!!force).then(function(ok){
+      if(!ok) return;
+      var before=oaSig(state.tasks);
+      oaAttachSources(state.tasks,va);
+      if(oaSig(state.tasks)!==before){
+        try{ renderTasks(); }catch(e){}
+        try{ saveShiftDraft(false); }catch(e){}
+      }
+    });
+  }catch(e){}
+}
+var _oaRefreshTimer=0;
+function oaStartRefresh(){
+  if(_oaRefreshTimer) return;
+  _oaRefreshTimer=setInterval(function(){ oaRefreshShift(true); },180000);
+  try{ document.addEventListener('visibilitychange',function(){ if(!document.hidden) oaRefreshShift(false); }); }catch(e){}
+}
+try{ setTimeout(oaStartRefresh,5000); }catch(e){}
 /* One line on the Overview: where OA sourcing stands, and a way in. Same reader as the
    full panel, so the two can never disagree. Overdue is stated plainly — Jack, via the
    Sourcing Suite, 21/09: "well if she needs to do it as it's overdue, she needs to do it."

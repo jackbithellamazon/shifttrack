@@ -227,16 +227,23 @@ function vaBriefFill(va){
           +(ls?' · last shift '+escHtml(String(ls.date).slice(0,5))+' ('+ls.hrs+'h)':''));
       }
       var oaWeekTarget=T.oaDay*5;
-      out+=kpi('Leads', p.week.uniq, (p.week.uniq/T.leadsWeek)*100, 'of '+T.leadsWeek+' this week');
+      /* Jack, 27/09: "we not prorating the month ones?" The ticket bands below already were;
+         these weekly ones showed a bare month total with nothing to measure it against. The
+         month line now says what the weekly target adds up to BY TODAY (Mon–Fri elapsed / 5),
+         so "month 8" reads as "month 8 of 38 by today" and means something. */
+      var _mp=null; try{ _mp=moPace(); }catch(_){ _mp=null; }
+      function _moBy(wk){ if(!_mp||!(wk>0)) return ''; return ' of '+Math.max(1,Math.round(wk*_mp.done/5))+' by today'; }
+      out+=kpi('Leads', p.week.uniq, (p.week.uniq/T.leadsWeek)*100, 'of '+T.leadsWeek+' this week',
+               p.mtd.uniq?('month '+p.mtd.uniq+_moBy(T.leadsWeek)):'');
       var _kAdd=((h&&h.keepaAdded)||0)
         +((window.state&&!state.submitted&&typeof keepaGetValues==='function')?(keepaGetValues().count||0):0);
       out+=kpi('Trackers added', _kAdd, (_kAdd/T.keepaAddWk)*100, 'of '+T.keepaAddWk+' this week');
       out+=kpi('Keepa leads', p.week.keepa, (p.week.keepa/T.keepaWk)*100, 'of '+T.keepaWk+' this week',
-               p.mtd.keepa?('month '+p.mtd.keepa+(p.mtd.keepaBought?' · '+p.mtd.keepaBought+' bought':'')):'');
+               p.mtd.keepa?('month '+p.mtd.keepa+_moBy(T.keepaWk)+(p.mtd.keepaBought?' · '+p.mtd.keepaBought+' bought':'')):('month 0'+_moBy(T.keepaWk)));
       out+=kpi('THC discord', p.week.thc, (p.week.thc/T.thcWk)*100, 'of '+T.thcWk+' this week',
-               p.mtd.thc?('month '+p.mtd.thc):'');
+               p.mtd.thc?('month '+p.mtd.thc+_moBy(T.thcWk)):('month 0'+_moBy(T.thcWk)));
       out+=kpi('Normal OA', p.week.oa, (p.week.oa/oaWeekTarget)*100, 'of '+oaWeekTarget+' this week',
-               (p.mtd.oa||p.lastMonth.oa)?('month '+p.mtd.oa+(p.lastMonth.oa?' vs '+p.lastMonth.oa+' in '+p.lastMonthName.slice(0,3)+(p.mtd.oa<p.lastMonth.oa?' ▼':' ▲'):'')):'');
+               (p.mtd.oa||p.lastMonth.oa)?('month '+p.mtd.oa+_moBy(oaWeekTarget)+(p.lastMonth.oa?' · '+p.lastMonth.oa+' in '+p.lastMonthName.slice(0,3)+(p.mtd.oa<p.lastMonth.oa?' ▼':' ▲'):'')):'');
       /* The three ticket targets are MONTHLY and were sitting in the middle of the
          weekly ones, so the list alternated "this week / this month" and neither
          read as a set. Own section, at the end, where the month is the question. */

@@ -408,7 +408,13 @@ var SB_SRC_LISTS=null;
 async function sbLoadSrcLists(){
   if(SB_SRC_LISTS) return SB_SRC_LISTS;
   var key=(typeof SPEND_API_KEY!=='undefined')?SPEND_API_KEY:'';
-  if(!key||typeof SHEET_NAMES==='undefined') return null;
+  /* 28/09 — THE FREEZE. With no Sheets key this returned null WITHOUT setting SB_SRC_LISTS,
+     and mgr_renderStorefronts re-called itself from the .then() because the flag was still
+     null: a resolved promise each time, so a microtask loop that never yields — Chrome's
+     main thread locked, no clicks, DevTools blind. It was latent for months and v51.1
+     (key moved out of the file) was the first build to run without a key. An empty result
+     is still a result: set the flag, never loop. */
+  if(!key||typeof SHEET_NAMES==='undefined'){ SB_SRC_LISTS={}; return SB_SRC_LISTS; }
   var out={};
   for(var sid in SHEET_NAMES){
     try{

@@ -1343,8 +1343,25 @@ function dupeBadge(l){
                           : ' at the same price — no reason to re-send')
               : '';
   if(d.sameVA){
+    /* 27/09 — Jack, on Mera's Instax row: "there needs to be a reason". She HAD written one
+       ("instock in OA") and used a different supplier, and this chip still said "no reason"
+       because it only looked at price. It now answers the same question the end-of-shift
+       gate asks (ldDupUnexplained: note / different supplier / cheaper, same month) and
+       shows her note, so Jack judges the reason instead of being told there isn't one. */
+    var unexpl=false; try{ unexpl=ldDupUnexplained(l); }catch(e){}
+    var note=String(l.vanote||'').trim();
+    var prevRow=(window.leads||[]).find(function(x){ return x.id===d.otherId; })||null;
+    var supA=String((prevRow&&prevRow.sup)||'').trim().toLowerCase().replace(/\/+$/,''), supB=String(l.sup||'').trim().toLowerCase().replace(/\/+$/,'');
+    var newSup=!!(prevRow && supA!==supB);
+    if(note){
+      return '<span class="dup-tag '+(unexpl?'dup-same':'dup-ok')+'" title="'+who+' already sent this '+ago+'. Her reason: '+escHtml(note)+'">'
+        +'DUPE · \u201c'+escHtml(note.slice(0,30))+(note.length>30?'\u2026':'')+'\u201d</span>';
+    }
+    if(!unexpl && newSup){
+      return '<span class="dup-tag dup-ok" title="'+who+' sent this '+ago+' from a different supplier \u2014 that counts as a reason.">DUPE · new supplier</span>';
+    }
     return '<span class="dup-tag dup-same" title="'+who+' already sent this '+ago+why+'">'
-      +(m&&!m.cheaper?'DUPE · no reason':'DUPE')+'</span>';
+      +(unexpl?'DUPE · no reason':'DUPE')+'</span>';
   }
   return '<span class="dup-tag dup-cross" title="'+who+' sent this '+ago+why+'">BOTH VAs</span>';
 }
@@ -1520,7 +1537,10 @@ function buildDupUnexplainedMap(){
       var sb=String(cur.sup||'').trim().toLowerCase().replace(/\/+$/,'');
       if(sa!==sb) continue;                               // different supplier — valid
       var pb=parseFloat(prev.buy)||0, cb=parseFloat(cur.buy)||0;
-      if(pb&&cb&&Math.abs(cb-pb)/pb>=0.02) continue;      // price moved — valid
+      /* Jack's rule, in this file's own words: "same supplier at the same or a HIGHER price
+         with no note is not a lead". The code accepted any 2% move — dearer included. Only
+         cheaper counts. (27/09) */
+      if(pb&&cb&&cb<=pb*0.98) continue;                   // cheaper by 2%+ — valid
       map[cur.id]=1;
     }
   });

@@ -20,7 +20,34 @@ function saveOk(label){ if(SAVE_FAILS[label]){ delete SAVE_FAILS[label]; renderS
 function saveFail(label, why, retry){
   SAVE_FAILS[label]={why:why, retry:retry||null, at:Date.now()};
   renderSaveBar();
+  try{ errLog('save_fail',{msg:label+' \u2014 '+why}); }catch(e){}
 }
+/* ── ERRORS FROM THEIR MACHINES (v51.5) ────────────────────────────────────────
+   Hundreds of try/catch blocks keep this app on its feet, and the price was that a broken
+   screen on a VA's laptop was invisible until she messaged Jack. Every uncaught error, every
+   unhandled promise and every failed cloud save is now written to shift_events (kind error /
+   save_fail), once per distinct message per session, capped so a storm cannot flood the table.
+   Jack's Issues tab reads them back ("From their machines"). Never in preview. */
+var ERR_SENT={}, ERR_COUNT=0;
+function errLog(kind, meta){
+  try{
+    if(typeof IS_PREVIEW!=='undefined' && IS_PREVIEW) return;
+    if(typeof SUPABASE_URL==='undefined' || typeof DB_ENABLED==='undefined' || !DB_ENABLED) return;
+    var key=kind+'|'+String((meta&&meta.msg)||'').slice(0,80);
+    if(ERR_SENT[key]) return; ERR_SENT[key]=1;
+    if(++ERR_COUNT>25) return;
+    var va=(window.state&&state.currentVA&&state.currentVA!=='Test')?state.currentVA:'Jack';
+    var day=''; try{ day=shiftDayKey(); }catch(e){ day=new Date().toLocaleDateString('en-GB'); }
+    var row={va:va, day:day, kind:kind, client_ms:Date.now(), tab:(typeof SE_TAB!=='undefined'?SE_TAB:''),
+      meta:Object.assign({ver:(typeof APP_VERSION!=='undefined'?APP_VERSION:''), where:(location.hash||'').slice(0,40)}, meta||{})};
+    fetch(SUPABASE_URL+'/rest/v1/shift_events',{method:'POST',headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,'Content-Type':'application/json',Prefer:'return=minimal'},
+      body:JSON.stringify([row])}).catch(function(){});
+  }catch(e){}
+}
+try{
+  window.addEventListener('error',function(e){ errLog('error',{msg:String((e&&e.message)||'error').slice(0,200), src:String((e&&e.filename)||'').split('/').pop().split('?')[0].slice(0,50), line:(e&&e.lineno)||0}); });
+  window.addEventListener('unhandledrejection',function(e){ var r=e&&e.reason; errLog('error',{msg:'unhandled: '+String((r&&(r.message||r))||'').slice(0,200), src:String((r&&r.stack)||'').split('\n')[1]||''}); });
+}catch(e){}
 function renderSaveBar(){
   var keys=Object.keys(SAVE_FAILS);
   var bar=document.getElementById('save-fail-bar');
@@ -93,6 +120,26 @@ var IS_PREVIEW = (function(){ try{
   }
   return !h;
 }catch(e){ return false; } })();
+/* ── PREVIEW NEVER WRITES — enforced at the network, not by discipline (v51.5) ──────────
+   28/09: the ship gate's smoke run submitted a test shift on a 127.0.0.1 copy and the app
+   fired a real DELETE at Mera's cloud draft (eodSaved → deleteDraft was never gated). Dozens
+   of writes are individually guarded with IS_PREVIEW; one that is not can wipe a VA's live
+   day from a preview tab. So in preview every non-GET request to anywhere, and every Discord
+   URL, is swallowed here and answered with an empty 200 — the caller believes it saved, which
+   is exactly what a preview should do. Reads stay real, so the data on screen is real. */
+if(IS_PREVIEW){ (function(){
+  try{
+    var real=window.fetch; window._previewBlocked=[];
+    window.fetch=function(u,o){
+      var m=((o&&o.method)||'GET').toUpperCase(), url=String(u);
+      if(m!=='GET' || /discord\.com\/api\/webhooks/i.test(url)){
+        try{ window._previewBlocked.push(m+' '+url.replace(/^https?:\/\/[^/]+/,'').split('?')[0]); console.warn('[preview] blocked '+m+' '+url.slice(0,100)); }catch(e){}
+        return Promise.resolve(new Response('[]',{status:200,headers:{'Content-Type':'application/json'}}));
+      }
+      return real.apply(this,arguments);
+    };
+  }catch(e){}
+})(); }
 /* Turn saving on for this browser (file:// copies only). */
 function enableLiveWrites(){
   try{
@@ -175,7 +222,7 @@ async function db_loadAll() {
   if (!DB_ENABLED) return null;
   var rows = await db_fetch('shifts', 'order=submitted_at.desc&limit=120');
   if (!rows || !Array.isArray(rows)) return null;
-  return rows.map(function(r) { return r.data; });
+  return rows.map(function(r) { return r.data; }).filter(function(d){ return d && !d.archived; });   // v51.5: archived stays in Supabase, off the dashboard
 }
 
 /* ── THE VA'S OWN HISTORY, FROM SUPABASE (v50.9) ──────────────────────────────
@@ -187,7 +234,7 @@ async function db_loadAll() {
 function vaHistLoad(va){
   if(!(va==='Mera'||va==='Suz') || !DB_ENABLED) return Promise.resolve(mgr_getLog());
   return fetchT(SUPABASE_URL+'/rest/v1/shifts?select=id,va,date,submitted_at,totalLeads:data->>totalLeads,hoursWorked:data->>hoursWorked'
-      +'&va=eq.'+encodeURIComponent(va)+'&order=submitted_at.desc&limit=60',
+      +'&va=eq.'+encodeURIComponent(va)+'&data->>archived=neq.true&order=submitted_at.desc&limit=60',
       {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}})
     .then(function(r){ return r.ok?r.json():null; })
     .then(function(rows){

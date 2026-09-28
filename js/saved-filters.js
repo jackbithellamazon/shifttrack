@@ -450,8 +450,13 @@ function sfltToggleVA(id,va){
    the number — and we can attribute leads back to the exact filter. */
 /* Insert 'own task' filters as their own row directly after the task they are
    pinned to — walking backwards so earlier splices don't shift later indexes. */
+/* 27/09: the VAs' saved filters are retired — the Sourcing Suite is their list (see
+   TEMPLATE_RETIRED in core.js). Jack's library stays for Jack; nothing attaches to a VA's
+   shift from it any more. Flip this off and everything below works exactly as before. */
+var SFLT_VA_RETIRED=true;
 function sfltInsertOwnRows(tasks,va){
   var added=[];
+  if(SFLT_VA_RETIRED && (va==='Mera'||va==='Suz')) return added;
   if(!tasks||!tasks.length) return added;
   for(var i=tasks.length-1;i>=0;i--){
     var tid=tasks[i]&&tasks[i].id; if(!tid) continue;
@@ -491,6 +496,7 @@ function sfltAttachToPoa(tasks,va){
       }
       t._poaFilters=true;
     }
+    if(SFLT_VA_RETIRED && (va==='Mera'||va==='Suz')) return;      // no pinned saved filters on a VA's task
     var mine=sfltForTask(va,t.id).filter(function(f){ return sfltMode(f)!=='own'; });
     if(!mine.length) return;
     t.hasLinks=true;
@@ -1131,6 +1137,7 @@ function vafMore(){ vafShow+=50; renderSavedFiltersVA(true); }
 function vafSetTag(t){ vafTag=(vafTag===t?'':t); vafShow=25; renderSavedFiltersVA(true); }
 function renderSavedFiltersVA(keepOpen){
   var host=document.getElementById('va-filters'); if(!host) return;
+  if(SFLT_VA_RETIRED){ host.innerHTML=''; return; }                // the Suite is the list now
   var all=getSavedFilters().filter(function(f){ return !f.archived; });
   if(!all.length){ host.innerHTML=''; return; }
   var TAGC={KPF:'#18c8f0',Keepa:'#8b5cff','A2A':'#f5a524',Storefront:'#10d99a',Other:'#7c8598'};
