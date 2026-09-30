@@ -96,6 +96,15 @@ try{ setTimeout(lsHousekeep,2500); }catch(e){}
 ;
 
 /* ═══ config.js ═══ */
+/* v52.3: the Google Sheets key globals are DECLARED here, second file in the bundle, and
+   nowhere else. They used to be `var SPEND_API_KEY=''` in manager-tabs.js and
+   `var LEAD_PULL_KEY=…` in sheets.js — both AFTER core.js had already filled them from
+   Settings, so the initialisers wiped the key on every load: the dashboard shouted "no key"
+   and no lead reached the app from the sheets although the key sat in Settings the whole
+   time. A later `var X = …` re-runs its initialiser on a global that already has a value.
+   bundle.py now refuses any later-file `var X = …` that an earlier file assigns. */
+var SPEND_API_KEY='';
+var LEAD_PULL_KEY='';
 // ╔══════════════════════════════════════════════════════════╗
 // ║  SHIFTTRACK CONFIG — paste your values below            ║
 // ╚══════════════════════════════════════════════════════════╝
@@ -1378,7 +1387,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v52.2';
+var APP_VERSION='v52.3';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -1520,7 +1529,7 @@ function applyWebhookSettings(){
     if(s.whPay) DISCORD_PAY_WEBHOOK=s.whPay; else if(s.whMain) DISCORD_PAY_WEBHOOK=s.whMain;
     /* v51.1: the Google Sheets key comes from Settings, never from the file (see manager-tabs.js).
        LEAD_PULL_KEY is the sheet-ingestion copy of the same key (sheets.js). */
-    if(typeof s.sheetsApiKey==='string' && s.sheetsApiKey.trim()){ SPEND_API_KEY=s.sheetsApiKey.trim(); try{ LEAD_PULL_KEY=SPEND_API_KEY; }catch(e){} }
+    if(typeof s.sheetsApiKey==='string' && s.sheetsApiKey.trim()){ SPEND_API_KEY=s.sheetsApiKey.trim(); LEAD_PULL_KEY=SPEND_API_KEY; }
     // toggles: off → blank the runtime URL so every sender's guard skips it
     if(s.nMain===0) DISCORD_WEBHOOK='';
     if(s.nWeekly===0) DISCORD_WEEKLY_WEBHOOK='';
@@ -1665,7 +1674,8 @@ applyWebhookSettings();
           if(!lv&&cv){ st[k]=cloud[k]; localFix=true; }
           else if(lv&&!cv){ cloudFix=true; }
         });
-        if(localFix){ saveAppSettings(st); applyWebhookSettings(); }
+        if(localFix){ saveAppSettings(st); applyWebhookSettings();
+          try{ if(typeof mgr_flagBanner==='function' && typeof mgr_getLog==='function' && document.getElementById('mgr-flag-banner')) mgr_flagBanner(mgr_getLog()); }catch(e){} }
         if(cloudFix && typeof pushSettingsCloud==='function'){ pushSettingsCloud(st); }
       }).catch(function(){});
   },1200);
@@ -8109,8 +8119,9 @@ var SPEND_SHEET_ID='1vK0RICVAYyE4sDDwlGfuBlBNU6xNzdO8u4aoaTCzrrI';
 /* v51.1 (27/09): the Sheets key is NOT in this file any more. It lives in Jack's Settings
    (Notifications card → "Google Sheets API key") and syncs through app_settings like the
    webhooks — applyWebhookSettings() fills it in. The old key sat in the public repo in every
-   push since at least 30 Aug and Google's scanner flagged it; it has been rotated. */
-var SPEND_API_KEY='';
+   push since at least 30 Aug and Google's scanner flagged it; it has been rotated.
+   v52.3: declared in config.js now — a `var` with an initialiser here re-ran AFTER core.js
+   had filled it and blanked the key on every load. */
 var SPEND_DASH_URL='https://jackbithellamazon.github.io/Spend-Dashboard/';
 var _spendCache=null;
 // Mirrors the Spend Dashboard EXACTLY: same quarter tab ('Q{q} AMZ - OA'), same columns
@@ -14413,7 +14424,9 @@ function payBannerHTML(){
    so the two can run side by side forever without ever duplicating a lead.
    Writebacks (your Bought/Lead?/comment going back INTO the sheet) still need the
    Apps Script — an API key can read a sheet but cannot write to one. */
-var LEAD_PULL_KEY=(typeof SPEND_API_KEY!=='undefined')?SPEND_API_KEY:'';
+/* LEAD_PULL_KEY is declared in config.js and filled by applyWebhookSettings() (v52.3) —
+   the old `var LEAD_PULL_KEY=SPEND_API_KEY` here ran after the wipe and copied a blank. */
+if(!LEAD_PULL_KEY && SPEND_API_KEY) LEAD_PULL_KEY=SPEND_API_KEY;
 var _leadPullAt=0, _leadPullBusy=false;
 window.LEAD_PULL_LAST=null;
 
