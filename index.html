@@ -6,7 +6,7 @@
 <title>BDL VA HQ</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<link rel="stylesheet" href="css/app.css?v=v52.0">
+<link rel="stylesheet" href="css/app.css?v=v52.2">
 </head>
 <body>
 <div class="app-shell" data-view="va">
@@ -300,6 +300,7 @@
       <div class="eod-head">
         <div>
           <h3>Wrap up your shift</h3>
+          <div class="eod-rescue">Pressed Submit and nothing happened? <a href="#" onclick="eodManualSave();return false;">Save my shift now</a> — it keeps your hours, tasks and leads exactly as they are.</div>
           <p class="eod-sub">Quick check &#8212; then you're done for the day.</p>
         </div>
         <div class="eod-recap" id="eod-recap"></div>
@@ -690,6 +691,6 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="js/app.js?v=v52.0"></script>
+<script src="js/app.js?v=v52.2"></script>
 </body>
 </html>

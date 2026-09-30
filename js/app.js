@@ -195,6 +195,18 @@ function liveFromFileBanner(){
    app_flags (written at ship time); every copy checks it on boot and owns up when
    it is behind. Dismiss remembers PER VERSION, so it comes back only when he falls
    behind again. Preview copies stay silent — they are meant to be whatever they are. */
+/* v52.1 — "the fix was sitting in Downloads": Claude writes app_flags.ready_build ("v52.1|what it fixes")
+   whenever a push folder is cut. If that is newer than what is running, Jack's dashboard says so, in red. */
+function readyBuildLoad(){
+  try{
+    if(!DB_ENABLED) return;
+    fetchT(SUPABASE_URL+'/rest/v1/app_flags?k=eq.ready_build&select=v',{headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}})
+      .then(function(r){ return r.ok?r.json():null; })
+      .then(function(rows){ var v=rows&&rows[0]&&String(rows[0].v||''); if(v) window._readyBuild=v; try{ if(typeof mgr_flagBanner==='function') mgr_flagBanner(mgr_getLog()); }catch(e){} })
+      .catch(function(){});
+  }catch(e){}
+}
+try{ setTimeout(readyBuildLoad,4000); }catch(e){}
 function staleBuildNudge(){
   try{
     if(IS_PREVIEW||!DB_ENABLED) return;
@@ -904,6 +916,22 @@ function gapToCount(savedAt, onBreak){
    A designed choice, not a browser confirm(): what the shift is, how long since she touched
    it, and two clear ways forward. Closing it = the normal wrap-up (Keepa count, Submit), so
    there is one submit path, not two. Resolves 'carry' or 'close'. */
+/* the same designed card for any two-way question — never a browser confirm() again */
+function askChoice(o){
+  return new Promise(function(resolve){
+    try{
+      var old=document.getElementById('osc'); if(old) old.remove();
+      var el=document.createElement('div'); el.id='osc'; el.className='osc';
+      function btn(b,primary){ return '<button class="osc-btn'+(primary?' primary':'')+'" data-osc="'+b.k+'"><b>'+b.t+'</b>'+(b.s?'<span>'+b.s+'</span>':'')+'</button>'; }
+      el.innerHTML='<div class="osc-card" role="dialog" aria-modal="true"><div class="osc-ico">'+(o.icon||'\u2753')+'</div>'
+        +'<div class="osc-t">'+o.title+'</div>'+(o.sub?'<div class="osc-s">'+o.sub+'</div>':'')+'<div style="height:14px"></div>'
+        +btn(o.primary,true)+btn(o.secondary,false)+(o.foot?'<div class="osc-f">'+o.foot+'</div>':'')+'</div>';
+      el.addEventListener('click',function(ev){ var b=ev.target.closest&&ev.target.closest('[data-osc]'); if(!b) return; var k=b.getAttribute('data-osc'); el.remove(); resolve(k); });
+      document.body.appendChild(el);
+      try{ el.querySelector('.osc-btn.primary').focus(); }catch(e){}
+    }catch(e){ resolve(o.primary&&o.primary.k); }
+  });
+}
 function openShiftChooser(va, draft, idleMs){
   return new Promise(function(resolve){
     try{
@@ -1350,7 +1378,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v52.0';
+var APP_VERSION='v52.2';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -1433,6 +1461,8 @@ function getAppSettings(){
     if(saved.spendShowCombined !== undefined) settings.spendShowCombined = saved.spendShowCombined?1:0;
     if(saved.spendShowPace !== undefined) settings.spendShowPace = saved.spendShowPace?1:0;
     if(Array.isArray(saved.badges)) settings.badges = saved.badges;
+    // v52.1 emergency lever: when on, NOTHING but the Submit press stands between a VA and ending her shift
+    if(saved.eodRelax !== undefined) settings.eodRelax = !!saved.eodRelax;
     // v51.5: the VAs' ticklists ride in Settings like everything else, so an edit on Jack's
     // machine reaches theirs (it used to stay in his browser — see getCustomTaskTemplateMap)
     if(saved.taskTemplates && typeof saved.taskTemplates==='object' && !Array.isArray(saved.taskTemplates)) settings.taskTemplates = saved.taskTemplates;
@@ -2604,20 +2634,21 @@ function selectVA(va) {
      and a "not me / skip" answer is remembered so it cannot nag her every morning. */
   if ((va === 'Mera' || va === 'Suz') && DB_ENABLED && !window._skipUnclosed) {
     try{
-      findUnclosedShift(va).then(function(u){
+      findUnclosedShift(va).then(async function(u){
         if(!u){ window._skipUnclosed=1; selectVA(va); return; }
         var skipKey='bdl_unclosed_skip_'+va+'_'+u.day;
         var skipped=false; try{ skipped=lsGet(skipKey)==='1'; }catch(e){}
         if(skipped){ window._skipUnclosed=1; selectVA(va); return; }
         var m=Math.round(u.clockedMs/60000), bm=Math.round(u.breakMs/60000);
         var hh=Math.floor(m/60)+'h '+String(m%60).padStart(2,'0')+'m';
-        var msg='You never submitted your shift for '+u.day+'.\n\n'
-          +'From your own clock that day: '+hh+' worked'+(bm?' and '+bm+' minutes of break':'')+'.\n\n'
-          +'Press OK to open that day and submit it now — nothing is lost and your hours get counted.\n'
-          +'Press Cancel to skip it and start today instead.';
-        if(confirm(msg)){
+        var pick=await askChoice({
+          icon:'\uD83D\uDCC5', title:'You never submitted '+u.day, sub:'From your own clock that day: <b>'+hh+' worked</b>'+(bm?' and <b>'+bm+' min</b> of break':'')+'.',
+          primary:{k:'open', t:'Open that day and submit it', s:'Nothing is lost \u2014 your hours get counted'},
+          secondary:{k:'skip', t:'Skip it and start today', s:'You can still ask Jack to add it'},
+          foot:'Nothing is deleted either way.' });
+        if(pick==='open'){
           window._skipUnclosed=1;
-          try{ showToast('Opening '+u.day+' — check it over and submit'); }catch(e){}
+          try{ showToast('Opening '+u.day+' \u2014 check it over and submit'); }catch(e){}
           try{ lsPut('bdl_closeday_'+va, JSON.stringify(u)); }catch(e){}
         } else {
           try{ lsPut(skipKey,'1'); }catch(e){}
@@ -5942,7 +5973,66 @@ function addIssueTag(label, kind) {
   ta.selectionStart = ta.selectionEnd = ta.value.length;
 }
 
-async function submitEOD() {
+/* ══ A SUBMIT ALWAYS LANDS (v52.1) ═══════════════════════════════════════════════════════
+   30/09: both VAs spent two days unable to end a shift. Some of it was checks (removed), and
+   one was worse: an error while building the end-of-day report ("showToast is not defined")
+   killed the submit silently — she pressed Submit and nothing happened. So submitEOD is now a
+   wrapper. If ANYTHING in the normal path throws, the shift is saved anyway from what is in
+   memory (hours, leads, tasks, Keepa count), through the outbox, and she is let go. The error
+   is reported to Jack's Issues tab. The only thing that can stop her is an empty Keepa count
+   (Jack's rule) — and even that switches off with app_settings.eodRelax, the emergency lever
+   Claude can flip in Supabase without a push. */
+async function submitEOD(){
+  if (state.submitted && !state._eodWasEdit) return;
+  try{ return await _submitEODInner(); }
+  catch(err){
+    try{ errLog('error',{msg:'submitEOD threw — emergency save: '+String((err&&err.message)||err).slice(0,160)}); }catch(_){}
+    try{ await eodEmergencySave(err); }catch(_){}
+  }
+}
+/* the link under the wrap-up: if the normal Submit does nothing, this saves the shift from memory */
+function eodManualSave(){ try{ if(!state.currentVA||!state.shiftStart){ showToast('No shift running',true); return; } eodEmergencySave(new Error('manual "save my shift now"')); }catch(e){} }
+function eodKeepaRequired(){ try{ return !getAppSettings().eodRelax; }catch(e){ return true; } }
+async function eodEmergencySave(err){
+  var va=state.currentVA; if(!va) return;
+  var kv=''; try{ kv=String((document.getElementById('keepa-today')||{}).value||'').trim(); }catch(e){}
+  if(va!=='Test' && kv==='' && eodKeepaRequired()){
+    state._eodSubmitting=false;
+    try{ showToast('Enter your Keepa tracker count, then press Submit again',true); }catch(e){}
+    try{ document.getElementById('keepa-today').focus(); }catch(e){}
+    return;
+  }
+  var all=(state.tasks||[]).concat(state.extraTasks||[]);
+  var leads=0; all.forEach(function(t){ leads+=parseInt(t.leads)||0; });
+  var ms=0; try{ ms=workedMs(); }catch(e){}
+  var day=''; try{ var s0=state._trueStart||state.shiftStart; day=s0?new Date(s0).toLocaleDateString('en-GB',{timeZone:'Asia/Manila'}):new Date().toLocaleDateString('en-GB',{timeZone:'Asia/Manila'}); }catch(e){}
+  var rec={ id:Date.now(), va:va, date:day, dateUK:new Date().toLocaleDateString('en-GB',{timeZone:'Europe/London'}),
+    submittedAt:new Date().toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit'}),
+    hoursWorked:(ms/3600000).toFixed(1), totalLeads:leads, breakMins:Math.round((state.totalBreakMs||0)/60000),
+    tasksDone:all.filter(function(t){return t.done;}).length, tasksSkipped:all.filter(function(t){return t.skipped;}).length,
+    keepaCount:parseInt(kv)||0, notes:String((document.getElementById('eod-notes')||{}).value||'').trim(),
+    tasks:all.map(function(t){ return {id:t.id,name:t.name,done:!!t.done,skipped:!!t.skipped,skipReason:t.skipReason||'',leads:t.leads,time:t.time||'',links:t.links||[],linkLeads:t.linkLeads||[]}; }),
+    emergency:true, emergencyWhy:String((err&&err.message)||err||'').slice(0,200) };
+  state.submitted=true; state._eodSubmitting=false;
+  try{ clearInterval(state.timerInterval); clearInterval(state.liveInterval); }catch(e){}
+  try{ seLog('clock_out',{hours:rec.hoursWorked,tasksDone:rec.tasksDone,emergency:true}); }catch(e){}
+  try{ db_pushLiveStatus(); }catch(e){}
+  if(va==='Test') return;
+  var row={ id: shiftKeyId(va, day), va: va, date: day, submitted_at: new Date().toISOString(), data: rec, keepa_count: rec.keepaCount, keepa_total: null };
+  try{ shiftOutboxAdd(row); }catch(e){}
+  var sent=false; try{ await db_upsertShift(row); shiftOutboxDone(row.id); sent=true; }catch(e){ try{ outboxBar(); }catch(_){} }
+  if(sent){ try{ deleteDraft(va); }catch(e){} try{ lsDrop('bdl_draft_'+va); }catch(e){} }
+  try{
+    var f=document.getElementById('eod-form'); if(f) f.style.display='none';
+    var box=document.getElementById('eod-emergency')||document.createElement('div'); box.id='eod-emergency'; box.className='osc-cta';
+    box.innerHTML='<div><b>Shift submitted \u2014 '+rec.hoursWorked+'h, '+leads+' leads.</b><span>'+(sent?'Saved to Jack\u2019s dashboard.':'Saved on this device \u2014 it sends itself when the connection is back.')+' You\u2019re free to go.</span></div>'
+      +'<button class="btn btn-success" onclick="startFreshAfterClose()">Done \u2192</button>';
+    if(f && f.parentNode && !box.parentNode) f.parentNode.insertBefore(box,f);
+    box.scrollIntoView({behavior:'smooth',block:'center'});
+  }catch(e){}
+  try{ showToast(sent?'Shift submitted \u2713':'Saved on this device \u2014 it will send itself. You can finish.'); }catch(e){}
+}
+async function _submitEODInner() {
   if (state._eodSubmitting) { showToast('Already submitting\u2026 hang on', true); return; }
   // The double-tap lock is taken AFTER validation, not before. Taking it first meant a
   // missing skip-reason or Keepa count jammed the Submit button for 12 seconds and
@@ -5968,7 +6058,7 @@ async function submitEOD() {
   // Keepa validation
   var keepaInput = document.getElementById('keepa-today');
   var keepaTodayVal = keepaInput ? keepaInput.value.trim() : '';
-  if (state.currentVA !== 'Test' && keepaTodayVal === '') {
+  if (state.currentVA !== 'Test' && keepaTodayVal === '' && eodKeepaRequired()) {
     eodBlock(keepaInput,'Enter your Keepa tracker count first — scrolled to it for you');
     return;
   }
@@ -5976,7 +6066,7 @@ async function submitEOD() {
      minute), repaint, and if there are duplicates or loss-making leads, bring the list to her
      and ask for a second tap. Not a hard block — a sync lag must never trap her on shift —
      but it can no longer be missed. Same counts on the second tap = she has seen it, let it go. */
-  if (state.currentVA !== 'Test' && !state._eodWasEdit) {
+  if (state.currentVA !== 'Test' && !state._eodWasEdit && eodKeepaRequired()) {      // eodRelax skips the whole check
     if (state._eodChecking) return;
     state._eodChecking = true;
     try{
@@ -6168,7 +6258,7 @@ async function submitEOD() {
       try{ paintBreakUI(); }catch(e){}
     }
     var breakMins      = Math.round(state.totalBreakMs/60000);
-    var rec = { id:Date.now(), va:state.currentVA, date:phShiftDay, dateUK:today, submittedAt:ukTimeString(),
+    var rec = { id:Date.now(), va:state.currentVA, date:phShiftDay, dateUK:today, submittedAt:ukTimeString(), trueStart:(+state._trueStart||+state.shiftStart||0),
       shiftStart:shiftStartTime, shiftEnd:shiftEndTime, breakMins:breakMins,
       breaks:state.breaks.map(function(b){return {startTime:b.startTime,endTime:b.endTime,durationMins:b.durationMins,startMs:b.startMs,endMs:b.endMs};}),
       hoursWorked:hrs, totalLeads:leads, leadsPerHr:leads>0&&hrs>0?(leads/parseFloat(hrs)).toFixed(1):'-',
@@ -6202,7 +6292,11 @@ async function submitEOD() {
       /* A SUBMIT CANNOT BE LOST (v52.0). The row goes into this device's outbox first; it
          leaves only when Supabase confirms it. If the send fails she is NOT put back on shift
          as before — she is told it is saved here and will send itself, and she can go. */
-      var _row={ id: shiftKeyId(rec.va, rec.date), va: rec.va, date: rec.date, submitted_at: new Date().toISOString(), data: rec, keepa_count: keepaVals.count, keepa_total: keepaVals.total };
+      /* v52.2 audit: two shifts started on the same day used to share one record id, so the
+         second submit silently REPLACED the first. The id is now per shift: same day AND same
+         start time = the same shift (an edit); a different start = its own record. */
+      var _rowId = await eodRecordId(rec);
+      var _row={ id: _rowId, va: rec.va, date: rec.date, submitted_at: new Date().toISOString(), data: rec, keepa_count: keepaVals.count, keepa_total: keepaVals.total };
       try{ shiftOutboxAdd(_row); }catch(e){}
       db_upsertShift(_row)
         .then(function(){
@@ -6223,7 +6317,7 @@ async function submitEOD() {
         });
       }catch(e){}
     }
-  } catch(e){ console.error('EOD save error:',e); eodSaveFailed(); }
+  } catch(e){ console.error('EOD save error:',e); throw e; }      // v52.1: never back on shift — the wrapper saves it anyway
 }
 /* The shift row is CONFIRMED in the database — only now is it safe to bin the draft,
    celebrate, and tell Jack. */
@@ -6254,7 +6348,7 @@ function startFreshAfterClose(){
 function eodSaved(rec, wasEdit){
   state._eodSubmitting=false;
   try{ if(window._closingOld) closeOldDonePaint(); }catch(e){}
-  try{ deleteDraft(rec.va); }catch(e){}
+  try{ deleteDraft(rec.va, rec.date); }catch(e){}     // v52.2: only this shift's draft, never every draft she has
   try{ lsDrop('bdl_draft_'+rec.va); }catch(e){}
   try{ fireConfetti(); setTimeout(fireConfetti,400); }catch(e){}
   // don't send Jack a second end-of-day summary just because she fixed a typo
@@ -6279,6 +6373,20 @@ function eodSaveFailed(){
    column that does not exist in this database, so it silently fell back to
    `id: Date.now()` every time — meaning the double-count fix was never actually
    live. This needs no schema change: it reuses the existing bigint primary key. */
+async function eodRecordId(rec){
+  var base=shiftKeyId(rec.va, rec.date);
+  try{
+    if(!DB_ENABLED) return base;
+    var myStart=+state._trueStart||+state.shiftStart||0;
+    var r=await fetchT(SUPABASE_URL+'/rest/v1/shifts?va=eq.'+encodeURIComponent(rec.va)+'&date=eq.'+encodeURIComponent(rec.date)+'&select=id,data',
+      {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
+    var rows=r.ok?await r.json():[];
+    if(!rows.length) return base;
+    var same=rows.filter(function(x){ var s=+((x.data||{}).trueStart||0); return !s || !myStart || Math.abs(s-myStart)<30*60000; });
+    if(same.length) return same[0].id;                                   // the same shift — update it
+    return shiftKeyId(rec.va, rec.date+'|'+new Date(myStart).toISOString().slice(11,16));   // a second shift that day — its own record
+  }catch(e){ return base; }
+}
 function shiftKeyId(va, date){
   var str=String(va||'')+'|'+String(date||'');
   var h=5381;
@@ -7089,6 +7197,11 @@ function mgr_flagBanner(log){
     var h=(Date.now()-new Date(r.updated_at).getTime())/3600000;
     if(h>=14) flags.push('<b>'+escHtml(vaDisp(va))+' has a shift still open</b> \u2014 last activity '+Math.round(h)+'h ago. She is asked to close it or carry on the moment she next opens the app.');
   }); }catch(e){}
+  try{ var _rb=String(window._readyBuild||''), _rv=_rb.split('|')[0].trim();
+    var _n=function(s){ var q=String(s).match(/^v?(\d+)(?:\.(\d+))?/); return q?(+q[1]*1000+(+q[2]||0)):0; };
+    if(_rv && _n(_rv)>_n(APP_VERSION)) flags.push('<b>'+escHtml(_rv)+' is waiting in your Downloads and is NOT live</b> \u2014 you are running '+escHtml(APP_VERSION)+'. '
+      +'Upload 1-PUSH-THIS-SHIFTTRACK-'+escHtml(_rv)+' to the shifttrack repo.'+(_rb.indexOf('|')>0?' It fixes: '+escHtml(_rb.split('|').slice(1).join('|').trim()):''));
+  }catch(e){}
   var liveKnown = !!window._liveCacheAt;
   if(!isWeekend && liveKnown){
     ['Mera','Suz'].forEach(function(va){
@@ -22847,6 +22960,10 @@ function selfTest(){
     ok('Draft age: fresh kept',   draftAgeMs({},{savedAt:Date.now()-6e4})<DRAFT_MAX_AGE_MS);
     ok('Draft age: 17h KEPT (never thrown away)', draftAgeMs({},{savedAt:Date.now()-17*36e5})<DRAFT_MAX_AGE_MS);
     ok('Draft age: a day and a half kept', draftAgeMs({},{savedAt:Date.now()-36*36e5})<DRAFT_MAX_AGE_MS);
+    ok('Submit always lands (wrapper + emergency save)', typeof _submitEODInner==='function' && typeof eodEmergencySave==='function' && /eodEmergencySave/.test(String(submitEOD)));
+    ok('Two shifts on one day get their own records', typeof eodRecordId==='function' && shiftKeyId('Mera','30/09/2026')!==shiftKeyId('Mera','30/09/2026|14:05'));
+    ok('Rescue link is wired', typeof eodManualSave==='function' && !!document.querySelector('.eod-rescue a'));
+    ok('No browser confirm() on the shift path', !/confirm\(msg\)/.test(String(selectVA)));
     ok('Shift outbox exists', typeof shiftOutboxAdd==='function' && typeof shiftOutboxFlush==='function' && Array.isArray(shiftOutbox()));
     ok('Draft age: no stamp dropped', draftAgeMs({},{})===Infinity);
   });
