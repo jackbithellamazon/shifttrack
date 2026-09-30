@@ -1,11 +1,11 @@
-HOW TO PUSH — BDL VA HQ (ShiftTrack) v51.6 · 28 Sep 2026
+HOW TO PUSH — BDL VA HQ (ShiftTrack) v52.0 · 28 Sep 2026
 
 1. Open github.com/jackbithellamazon/shifttrack
 2. Click "Add file" → "Upload files"
 3. Drag ALL of these from this folder onto the page, together: index.html, the css folder, the js folder
    (the tests folder and these txt files are optional)
 4. Click the green "Commit changes". Wait a minute.
-5. Open https://jackbithellamazon.github.io/shifttrack/ and hard-refresh (Cmd+Shift+R). The version label must say v51.6.
+5. Open https://jackbithellamazon.github.io/shifttrack/ and hard-refresh (Cmd+Shift+R). The version label must say v52.0.
 6. Tell Claude it is up — it sets the latest-build flag so the VAs get the update nudge.
 
 Nothing changes for the VAs: same address, same login. It is one app in several files now, like the Sourcing Suite and PrepHub.
