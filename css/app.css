@@ -5077,3 +5077,29 @@ select.dd-active{border-color:var(--accent,#8b5cf6)!important;}
 @media (max-width:520px){ .osc-card{padding:22px 16px 16px;} .osc-tile b{font-size:20px;} }
 
 .eod-rescue{font-size:11.5px;color:var(--muted-2,#8c94a8);margin-top:4px;} .eod-rescue a{color:#18c8f0;font-weight:700;text-decoration:none;} .eod-rescue a:hover{text-decoration:underline;}
+
+/* ── v52.4: EVERY LEAD ROW IS ONE HEIGHT ─────────────────────────────────────────
+   Jack, 03/10: "still super super super jumpy". The rows were NOT one height: at his 371px
+   list width a long source pill ("KPF STOREFRONT") or a dupe chip wrapped onto a second
+   line, so some rows were taller than others. Off-screen rows are laid out with a guessed
+   height (content-visibility), so every rebuild re-guessed everything above him and the
+   row he was reading moved. One line per strip, no wrapping anywhere: a long chip is cut
+   with "…" (its full text is in the tooltip), the row never grows. Status chip and score
+   never shrink. */
+#view-leads .litem-top,
+#view-leads .litem-foot,
+#view-leads .litem-method{flex-wrap:nowrap;white-space:nowrap;overflow:hidden;min-width:0}
+#view-leads .litem-top>*,
+#view-leads .litem-foot>*,
+#view-leads .litem-method>*{flex-shrink:0;white-space:nowrap}
+#view-leads .litem-top .dup-tag,
+#view-leads .litem-foot .litem-store,
+#view-leads .litem-method .litem-method-pill,
+#view-leads .litem-method .litem-note{flex-shrink:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+#view-leads .litem-method .litem-note{flex-shrink:3}
+
+/* ── v52.4: VARIATION chip (VA writes "VAR 12%" in her note) ───────────────────── */
+#view-leads .ld-var{display:inline-block;font-size:9.5px;font-weight:900;letter-spacing:.4px;padding:2px 7px;border-radius:5px;
+  white-space:nowrap;background:color-mix(in srgb,#ff9f1c 20%,transparent);color:#ffc266;border:1px solid color-mix(in srgb,#ff9f1c 55%,transparent);}
+#view-leads .ld-var.ld-var-q{background:rgba(255,255,255,.06);color:#c9cfdc;border-color:rgba(255,255,255,.18);}
+#view-leads .d-num-var{margin-top:2px;font-size:10px;font-weight:800;color:#ffc266;letter-spacing:.2px;white-space:nowrap;}

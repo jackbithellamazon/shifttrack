@@ -105,6 +105,7 @@ try{ setTimeout(lsHousekeep,2500); }catch(e){}
    bundle.py now refuses any later-file `var X = …` that an earlier file assigns. */
 var SPEND_API_KEY='';
 var LEAD_PULL_KEY='';
+var _pendingLeave=null;   // the decided lead held on screen (leads-list.js); declared here so no later file re-initialises it
 // ╔══════════════════════════════════════════════════════════╗
 // ║  SHIFTTRACK CONFIG — paste your values below            ║
 // ╚══════════════════════════════════════════════════════════╝
@@ -1387,7 +1388,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v52.3';
+var APP_VERSION='v52.4';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -1657,26 +1658,37 @@ applyWebhookSettings();
       }).catch(function(){});
   },1500);
 }catch(e){}})();
-// WEBHOOK SELF-HEAL — runs on EVERY load. For the protected keys (webhook URLs etc):
-// a device that still has a URL restores an empty cloud; a device missing one adopts the
-// cloud's. An empty side can never drain a full side again, in either direction.
+// SETTINGS SYNC — runs on EVERY load (v52.4). The cloud row is the source of truth.
+/* Until v52.4 a device copied the cloud settings ONCE, on its very first load, and then only
+   ever pushed its own copy back up. So a value set anywhere else never reached it, and its next
+   save replaced the cloud row with its stale copy: the OA target set on 30/09 was wiped that
+   way, and the eodRelax emergency lever could not have reached a VA laptop that had opened the
+   app before. Now every load adopts every key the cloud holds. Two exceptions: a device whose
+   last save never reached the cloud (st_settings_dirty) sends its copy up first instead, and a
+   protected key (webhooks, Sheets key) the cloud has blank never blanks a device that has it. */
 (function(){try{
   setTimeout(function(){
     fetchT(SUPABASE_URL+'/rest/v1/app_settings?id=eq.global&select=data',
       {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}})
-      .then(function(r){return r.ok?r.json():[];})
+      .then(function(r){return r.ok?r.json():null;})
       .then(function(rows){
-        var cloud=rows&&rows[0]&&rows[0].data; if(!cloud) return;
-        if(typeof SETTINGS_PROTECT==='undefined') return;
-        var st=getAppSettings(); var localFix=false, cloudFix=false;
-        SETTINGS_PROTECT.forEach(function(k){
-          var lv=String(st[k]||'').trim(), cv=String(cloud[k]||'').trim();
-          if(!lv&&cv){ st[k]=cloud[k]; localFix=true; }
-          else if(lv&&!cv){ cloudFix=true; }
+        var cloud=rows&&rows[0]&&rows[0].data; if(!cloud||typeof cloud!=='object') return;
+        if(lsGet('st_settings_dirty')==='1' && typeof pushSettingsCloud==='function'){ pushSettingsCloud(getAppSettings()); return; }
+        var PROT=(typeof SETTINGS_PROTECT!=='undefined')?SETTINGS_PROTECT:[];
+        var raw={}; try{ raw=JSON.parse(lsGet(APP_SETTINGS_KEY)||'{}')||{}; }catch(e){ raw={}; }
+        var changed=false, cloudFix=false;
+        Object.keys(cloud).forEach(function(k){
+          var cv=cloud[k], lv=raw[k];
+          if(PROT.indexOf(k)>=0 && !String(cv==null?'':cv).trim()){ if(String(lv==null?'':lv).trim()) cloudFix=true; return; }
+          if(JSON.stringify(cv)!==JSON.stringify(lv)){ raw[k]=cv; changed=true; }
         });
-        if(localFix){ saveAppSettings(st); applyWebhookSettings();
-          try{ if(typeof mgr_flagBanner==='function' && typeof mgr_getLog==='function' && document.getElementById('mgr-flag-banner')) mgr_flagBanner(mgr_getLog()); }catch(e){} }
-        if(cloudFix && typeof pushSettingsCloud==='function'){ pushSettingsCloud(st); }
+        PROT.forEach(function(k){ if(cloud[k]===undefined && String(raw[k]==null?'':raw[k]).trim()) cloudFix=true; });
+        if(changed){
+          saveAppSettings(raw); applyWebhookSettings();
+          try{applyVaColours();}catch(e){} try{applyVaLabels();}catch(e){}
+          try{ if(typeof mgr_flagBanner==='function' && typeof mgr_getLog==='function' && document.getElementById('mgr-flag-banner')) mgr_flagBanner(mgr_getLog()); }catch(e){}
+        }
+        if(cloudFix && typeof pushSettingsCloud==='function'){ pushSettingsCloud(getAppSettings()); }
       }).catch(function(){});
   },1200);
 }catch(e){}})();
@@ -10631,21 +10643,24 @@ function mgr_renderSettings(){
 var SETTINGS_PROTECT=['sheetsApiKey','whMain','whWeekly','whLeadsMera','whLeadsSuz','whTasks','whBreaks','whShiftStart','whPay','appUrl','leadMention','discordUserId','leadsStartDate','jbPresets','jbNoteSnips','payOtRate','payOtHours','payAdminMonthEnd','wbUrl','wbToken','sbHowText','sfLeadsPerDay'];
 async function pushSettingsCloud(s){
   if(IS_PREVIEW) return;
+  /* v52.4: MERGE onto the cloud row, never replace it. This device's copy only knows the keys
+     it has; a key set from another machine (the OA target, 30/09) used to vanish the moment
+     this device saved anything. If the cloud cannot be read, nothing is sent — a blind push is
+     exactly what wiped it — and the save is retried on the next load (st_settings_dirty). */
   try{
-    var merged=JSON.parse(JSON.stringify(s));
-    try{
-      var r=await dbWrite('Your settings', SUPABASE_URL+'/rest/v1/app_settings?id=eq.global&select=data',
-        {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
-      if(r.ok){ var rows=await r.json(); var cloud=(rows[0]&&rows[0].data)||{};
-        SETTINGS_PROTECT.forEach(function(k){
-          if(!(merged[k]&&String(merged[k]).trim()) && cloud[k]&&String(cloud[k]).trim()) merged[k]=cloud[k];
-        });
-      }
-    }catch(e){}
-    await fetch(SUPABASE_URL+'/rest/v1/app_settings',{method:'POST',
+    var r=await fetchT(SUPABASE_URL+'/rest/v1/app_settings?id=eq.global&select=data',
+      {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
+    if(!r.ok){ lsPut('st_settings_dirty','1'); return; }
+    var rows=await r.json(); var cloud=(rows&&rows[0]&&rows[0].data)||{};
+    var merged=Object.assign({}, cloud, JSON.parse(JSON.stringify(s)));
+    SETTINGS_PROTECT.forEach(function(k){
+      if(!(merged[k]&&String(merged[k]).trim()) && cloud[k]&&String(cloud[k]).trim()) merged[k]=cloud[k];
+    });
+    var w=await fetch(SUPABASE_URL+'/rest/v1/app_settings',{method:'POST',
       headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},
       body:JSON.stringify({id:'global',data:merged,updated_at:new Date().toISOString()})});
-  }catch(e){}
+    if(w.ok) lsDrop('st_settings_dirty'); else lsPut('st_settings_dirty','1');
+  }catch(e){ try{ lsPut('st_settings_dirty','1'); }catch(_){} }
 }
 // Save the leads start-date on its own (the card has no shared Save button) + reload leads immediately
 function saveLeadsStart(v){
@@ -12722,8 +12737,9 @@ var NOTE_METRICS=[
   {code:'roi',    metric:'roi',    label:'ROI',         unit:'%', dir:'below', say:'you call this low ROI'},
   {code:'profit', metric:'profit', label:'profit/unit', unit:'£', dir:'below', say:'you call this low profit'},
   {code:'comp',   metric:'fba',    label:'FBA sellers', unit:'',  dir:'above', say:'you call this too crowded'},
-  {code:'demand', metric:'spm',    label:'sales/month', unit:'',  dir:'below', say:'you call this too slow'},
-  {code:'margin', metric:'margin', label:'margin',      unit:'%', dir:'above', say:'you call this a great margin', good:true},
+  {code:'demand', metric:'spm',    label:'sales/month', unit:'',  dir:'below', say:'you say this won’t sell out in 90 days'},
+  {code:'margin', metric:'profit', label:'profit/unit', unit:'£', dir:'above', say:'you call this high ticket, high prof', good:true},
+  {code:'banger', metric:'profit', label:'profit/unit', unit:'£', dir:'above', say:'you call this a banger', good:true},
   {code:'fast',   metric:'spm',    label:'sales/month', unit:'',  dir:'above', say:'you call this fast-selling', good:true}
 ];
 function noteThresholds(){
@@ -14765,6 +14781,22 @@ function leadsEditing(){
     return !!(a.closest&&a.closest('#view-leads'));
   }catch(e){ return false; }
 }
+/* v52.4: A LEAD KEEPS ITS NUMBER FOR THE WHOLE SESSION. Leads were numbered by their position in
+   each reload (1, 2, 3 …), so one new lead arriving shifted every number by one. Anything that still
+   held an old number then pointed at the NEIGHBOURING lead — the note being written, the decided lead
+   held on screen, the Best-20 queue, and (while a repaint was held back because he was typing) every
+   row on screen: clicking a row, or its ✓/✕, could open or decide the lead next to it. A lead's number
+   is now fixed the first time its DB id is seen and reused on every reload. The first load numbers
+   them exactly as before (1..N in list order), so nothing else changes. */
+window._ldIdBySid=window._ldIdBySid||{}; window._ldIdNext=window._ldIdNext||0;
+function ldStableId(sid, fallback){
+  try{
+    if(sid==null) return 1000000+fallback;            // never happens (every DB row has an id); stays numeric
+    var m=window._ldIdBySid;
+    if(m[sid]==null){ window._ldIdNext=Math.max(window._ldIdNext+1, fallback); m[sid]=window._ldIdNext; }   // first load: 1..N exactly as before
+    return m[sid];
+  }catch(e){ return fallback; }
+}
 async function loadLeadsFromDB(){
   try{
     if(typeof SUPABASE_URL==='undefined'||typeof DB_ENABLED==='undefined'||!DB_ENABLED) return;
@@ -14774,19 +14806,37 @@ async function loadLeadsFromDB(){
     // sourced 11 July stores as "2026-11-07"). So we DON'T filter on it server-side; we repair each
     // date with normLeadISO() then filter client-side below. See also the source fix Jack needs.
     try{ await leadPullOnce(false); }catch(e){}   // read the sheets ourselves first
-    var res=await fetchT(SUPABASE_URL+'/rest/v1/leads?select=*&order=created_at.desc&limit=1500',
+    var res=await fetchT(SUPABASE_URL+'/rest/v1/leads?select=*&order=created_at.desc,id.asc&limit=1500',
       {headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}});
     if(!res.ok) return;
     var rows=await res.json();
     rows=rows.filter(function(r){ return !r.superseded; });   // ghosts stay stored, never shown
     var keepSel=(leads.find(function(x){return x.id===selId;})||{})._sid;
+    /* v52.4 — Jack, 03/10: "i said not lead and wanted to write a note and now it's gone".
+       Every reload renumbers the leads (id = position in the list), and a lead that has arrived
+       since shifts every number by one. selId was carried across by the lead's DB id (_sid), but
+       the note-in-progress (_noteFor), the decided-and-held lead (_pendingLeave) and the Best-20
+       queue (_focus) were carried by NUMBER — so after the minute refresh they pointed at the
+       wrong lead or none, and the lead and its note box vanished. All of them now follow the sid.
+       A decision made this sitting also wins over a reload that was fetched before its save
+       landed, so a lead never flips back to undecided on screen. */
+    var _oldById={}; try{ leads.forEach(function(x){ _oldById[x.id]=x; }); }catch(e){}
+    var _sidOf=function(id){ var o=(id==null)?null:_oldById[id]; return o?o._sid:null; };
+    var _noteSid=window._noteFor?_sidOf(window._noteFor.id):null;
+    var _pendSid=(typeof _pendingLeave!=='undefined'&&_pendingLeave!=null)?_sidOf(_pendingLeave):null;
+    var _focusSids=(window._focus&&window._focus.ids)?window._focus.ids.map(_sidOf):null;
+    var _localDec={};
+    try{ leads.forEach(function(x){
+      if(x&&x._sid&&(x.status||x.islead!==null)&&((typeof ldKept==='function'&&ldKept(x))||x._sid===_noteSid||x._sid===_pendSid))
+        _localDec[x._sid]={islead:x.islead,status:x.status,notes:x.notes};
+    }); }catch(e){}
     var n=1;
     leads=rows.map(function(r){
       var hrs=r.created_at?Math.max(0,Math.floor((Date.now()-new Date(r.created_at).getTime())/3600000)):99;
       var roi=parseFloat(r.roi)||0, profit=parseFloat(r.profit)||0, spm=parseSpm(r.spm), fba=parseInt(r.fba)||0, margin=parseFloat(r.margin)||0;
       if(roi>0 && roi<3) roi=roi*100;   // sheet stores ROI as a decimal ratio (0.2546) — show as a real % (25.46). Fixes display, scoring, badges & priority.
       roi=Math.round(roi*10)/10;         // clean 1-dp %
-      return { id:n++, _sid:r.id, va:r.va==='Mera'?'VA M':'VA S', date:fmtGB(leadDateFix(r.date,r.created_at,r.id)),
+      return { id:ldStableId(r.id,n++), _sid:r.id, va:r.va==='Mera'?'VA M':'VA S', date:fmtGB(leadDateFix(r.date,r.created_at,r.id)),
         store:r.store||'', title:r.title||'(untitled)', asin:r.asin||'', cat:r.category||'', src:r.source_method||'',
         sheetRow:r.row_index||null, sheetTab:r.tab||'',
         buy:parseFloat(r.buy)||0, sell:parseFloat(r.sell)||0, spm:spm, profit:profit, roi:roi, margin:margin, fba:fba,
@@ -14807,6 +14857,19 @@ async function loadLeadsFromDB(){
     if(_sd){ var cp=_sd.split('-'); var coN=(+cp[0])*10000+(+cp[1])*100+(+cp[2]); if(coN){ var _b4=leads.length; leads=leads.filter(function(l){ var p=(l.date||'').split('/'); if(p.length!==3) return true; var dN=(+p[2])*10000+(+p[1])*100+(+p[0]); return !dN||dN>=coN; }); window._ldHiddenByStart=_b4-leads.length; } }
     if(keepSel){ var again=leads.find(function(x){return x._sid===keepSel;}); selId=again?again.id:null; }
     else if(!leadsEditing()){ selId=null; }
+    try{
+      var _bySid={}; leads.forEach(function(x){ if(x&&x._sid) _bySid[x._sid]=x; });
+      Object.keys(_localDec).forEach(function(sid){
+        var x=_bySid[sid], d=_localDec[sid]; if(!x) return;
+        if(x.islead===null&&!x.status){ x.islead=d.islead; x.status=d.status; }   // save still in flight
+        if(d.notes&&!String(x.notes||'').trim()) x.notes=d.notes;
+      });
+      if(window._noteFor){ var _nx=_noteSid&&_bySid[_noteSid]; if(_nx) window._noteFor.id=_nx.id; else window._noteFor=null; }
+      if(typeof _pendingLeave!=='undefined'&&_pendingLeave!=null){ var _px=_pendSid&&_bySid[_pendSid]; _pendingLeave=_px?_px.id:null; }
+      if(window._focus&&_focusSids){ var _fi=[], _fs={};
+        _focusSids.forEach(function(sid){ var fx=sid&&_bySid[sid]; if(fx){ _fi.push(fx.id); _fs[fx.id]=1; } });
+        window._focus.ids=_fi; window._focus.set=_fs; }
+    }catch(e){}
     try{ window.leads=leads; }catch(e){}
     try{ populateMonthFilter(); }catch(e){}
     try{ populateLeadFilters(); }catch(e){}
@@ -15060,7 +15123,8 @@ function moPace(){
   }catch(e){ return {frac:1,done:0,total:0}; }
 }
 function ageTxt(h){if(h<1)return'just now';if(h<24)return h+'h ago';const d=Math.floor(h/24);return d+'d ago'}
-function isStale(l){return (l.islead===null&&!l.status)&&l.hrs>=36}
+/* STALE = undecided and 72h+ old (Jack, 3 Oct 2026; was 36h) */
+function isStale(l){return (l.islead===null&&!l.status)&&l.hrs>=72}
 function isFresh(l){return l.hrs<12}
 function scCol(s){return s>=7?'var(--green)':s>=5?'var(--amber)':'var(--red)'}
 function scGrade(s){return s>=9?'Banger':s>=7.5?'Strong':s>=6?'Decent':s>=4?'Weak':'Poor'}
@@ -15116,6 +15180,29 @@ function leadNoteText(l){
   var n=String((l&&l.notes)||'');
   n=n.replace(/^\[why:[a-z]+\]\s*/i,'').trim();
   return n;
+}
+/* ── VARIATIONS (Jack, 04/10) ────────────────────────────────────────────────
+   "VAs need to be putting in SPM and % of var if it is a var — I can't tell." On a variation
+   listing (shades, sizes, colours…) the SPM a VA copies from SAS is the WHOLE listing — Suz's two
+   L'Oréal shades both said "> 807" — so a single shade's sales were invisible and his 90-day
+   sell-out call was a guess. The VA now writes "VAR 12%" in her note (SAS → Variations, or Keepa),
+   with that variation's own sales in the SPM column. Read it here; show it beside SPM.
+   "VAR ?" = she checked and there is no split to see. "not a var" = she checked, it isn't one. */
+function leadVar(l){
+  var t=String((l&&l.vanote)||''); if(!t) return null;
+  if(/\b(no|not\s+an?|isn'?t\s+an?)\s*var(iation)?s?\b/i.test(t)) return null;
+  var m=t.match(/\bvar(?:iation)?s?\b[^0-9?%\n]{0,14}(\d{1,3}(?:\.\d+)?)\s*%/i)
+     || t.match(/(\d{1,3}(?:\.\d+)?)\s*%\s*(?:of\s*(?:the\s*)?)?var(?:iation)?s?\b/i);
+  if(m){ var p=parseFloat(m[1]); if(p>0&&p<=100) return {pct:p}; }
+  if(/\bvar(?:iation)?s?\b/i.test(t)) return {pct:null};
+  return null;
+}
+function leadVarChip(l){
+  var v=leadVar(l); if(!v) return '';
+  return '<span class="ld-var'+(v.pct==null?' ld-var-q':'')+'" title="'+(v.pct==null
+      ?'A variation — '+escHtml(vaDisp(l.va==='VA M'?'Mera':'Suz'))+' could not see its share of the listing'
+      :'A variation — '+v.pct+'% of the listing\u2019s sales (SPM should be this variation only)')+'">VAR '
+    +(v.pct==null?'?':(Math.round(v.pct*10)/10)+'%')+'</span>';
 }
 function noteChipHTML(l){
   var n=leadNoteText(l);
@@ -15395,7 +15482,13 @@ function getFNoFocus(){
   function _pGB(s){var p=String(s||'').split('/');return p.length===3?new Date(+p[2],+p[1]-1,+p[0]):null;}
   const _now=new Date(), _t0=new Date(_now.getFullYear(),_now.getMonth(),_now.getDate());
   return leads.filter(l=>{
-    if(view==='new'&&(l.status||l.islead!==null)&&l.id!==_pendingLeave)return false;   // New = undecided; a just-decided lead is HELD until he clicks off it
+    /* Jack, 04/10: "I want to stay on a lead until I click off it or move pages — stop moving it
+       automatically". The lead he has open, and every lead he decided this sitting, stays on the list
+       whatever the app learns about it in the meantime — a decision moving it to another tab, a
+       re-score under the score filter, the stale/archive/dup rules, midnight. Only HIS changes (tab,
+       filter, sort, search — ldQuerySig) let it go. */
+    if(window._ldSameView!==false && (l.id===selId || ldKept(l))) return true;
+    if(view==='new'&&(l.status||l.islead!==null)&&l.id!==_pendingLeave&&!ldKept(l))return false;   // New = undecided; a lead decided THIS sitting stays put (ldKept) until he changes the view
     if(window._staleFilter&&(view==='new'||view==='all')&&!isStale(l))return false;   // "Going stale" ribbon filter
     if(fd!=='all'){ var _d=_pGB(l.date); if(!_d)return false; var _dd=Math.round((_t0-_d)/86400000);
       /* THE SEARCH BUG. `return true` here means "keep this lead" and jumps out of the
@@ -15430,7 +15523,7 @@ function getFNoFocus(){
     if(fsrc!=='all'&&_lfKey(l.src)!==fsrc)return false;
     if(fsup!=='all'&&leadSupKey(l)!==fsup)return false;
     if(!_lfNumPass(l))return false;
-    if(scoreMin>0&&l._sc.total<scoreMin)return false;
+    if(scoreMin>0&&ldSortScore(l)<scoreMin)return false;   // the sitting's score — a re-score never drops rows (v52.4)
     if(q&&!(l.title.toLowerCase().includes(q)||_lfAsinMatch(l,q)))return false;
     // past the cut-off and never decided: off the board — but a search reaches straight
     // through, because "did we ever find this?" is the whole reason he keeps the history.
@@ -15444,13 +15537,28 @@ function getFNoFocus(){
        search looks like. Nothing in a sort comparator is worth an exception. */
     const sc=x=>(x&&x._sc&&typeof x._sc.total==='number')?x._sc.total:0;
     const num=x=>{ const n=parseFloat(x); return isNaN(n)?0:n; };
-    if(sortBy==='score')return sc(b)-sc(a);
+    if(sortBy==='score')return ldSortScore(b)-ldSortScore(a);
     if(sortBy==='roi')return num(b.roi)-num(a.roi);
     if(sortBy==='profit')return num(b.profit)-num(a.profit);
     if(sortBy==='spm')return num(b.spm)-num(a.spm);
     const p=d=>String(d||'').split('/').reverse().join('');
-    return p(b.date).localeCompare(p(a.date));
+    /* Jack, 03/10: "on date … go from score highest to lowest anyway". Newest day first; inside
+       each day, the best lead first. */
+    return p(b.date).localeCompare(p(a.date)) || (ldSortScore(b)-ldSortScore(a));
   });
+}
+/* The score a lead SORTS by is fixed for as long as he stays in the same view/sort/filter/search.
+   Scoring is in smart mode: every decision re-trains and re-scores the whole board, and sorting on
+   the live number made rows swap places after every decision — the list rearranging itself under
+   him. The number on the badge still updates; the ORDER only changes when he changes the view. */
+function ldSortScore(l){
+  try{
+    var live=(l&&l._sc&&typeof l._sc.total==='number')?l._sc.total:0;
+    if(!l||l._sid==null) return live;
+    var m=window._ldSortSc||(window._ldSortSc={});
+    if(m[l._sid]==null) m[l._sid]=live;
+    return m[l._sid];
+  }catch(e){ return 0; }
 }
 // does a lead pass the active CONTEXT filters (date/store/cat/source/score/search)? optionally also view/va
 function _leadCtx(l, useView, useVa){
@@ -15670,7 +15778,7 @@ function leadStillBelongs(l){
    and Jack couldn't record what he'd just decided. It now STAYS until he moves on: the
    row is marked decided, the list keeps it, and it only leaves when he selects a
    different lead. Nothing is lost between deciding and writing it up. */
-var _pendingLeave=null;
+/* _pendingLeave is declared in config.js (v52.4) — the minute reload in sheets.js re-maps it by sid */
 /* Repaint a single row in place. The list only needs a full rebuild when the SET of
    rows changes (filter, sort, search, reload) — a decision changes one lead. */
 function ldRowRefresh(id){
@@ -15693,6 +15801,7 @@ function afterDecision(id){
   try{
     var l=(window.leads||[]).find(function(x){ return x.id===id; });
     if(!l) return;
+    ldKeep(l);                       // stays where it is (greyed) until he changes the view — v52.4
     if(leadStillBelongs(l)){
       // one row, not 655 — a full renderList() here measured 175ms on his real load
       if(!ldRowRefresh(id)) renderList();
@@ -15954,8 +16063,70 @@ function ldPaintNotices(){
   }
   arm();
 })();
+/* ══════════ THE LIST HOLDS STILL (v52.4) ═══════════════════════════════════
+   Jack, 03/10: "this is still super super super jumpy". Measured in the sandbox on his
+   real 537-row New list at his 371px list width, before this fix:
+     · the 60-second sheet refresh rebuilt the whole list even when nothing had changed —
+       the row he was reading moved 151px (a row and a half), every minute;
+     · leads he decided stayed on screen, then ALL vanished at the next rebuild, so the
+       list lurched up by however many he had done that minute;
+     · rows were not all one height (a long source pill wrapped to two lines), so every
+       rebuild re-guessed the height of everything above him.
+   Now: (1) a rebuild that would produce the same list is skipped outright; (2) any rebuild
+   of the SAME view keeps the row he is looking at exactly where it was (anchored by the
+   lead's DB id, which survives the reload — the numeric ids do not); (3) a lead decided in
+   New stays in place, greyed and labelled, until he changes the view, a filter, the sort or
+   the search; (4) every row is one height (app.css). jump.ts measures all of it. */
+window._ldKeep=window._ldKeep||{};
+function ldKept(l){ try{ return !!(l && l._sid && window._ldKeep[l._sid]); }catch(e){ return false; } }
+function ldKeep(l){ try{ if(l && l._sid) window._ldKeep[l._sid]=1; }catch(e){} }
+function ldQuerySig(){
+  try{
+    var f=['f-store','f-cat','f-source','f-sup','f-roi','f-profit','f-fba','f-date','f-month'].map(function(id){
+      var e=document.getElementById(id); return e?e.value:''; }).join(',');
+    var q=document.getElementById('search');
+    return [view,va,scoreMin,sortBy,q?q.value:'',f,window._fDay||'',window._staleFilter?1:0,
+            window._focus?(window._focus.ids||[]).map(function(id){ var x=(window.leads||[]).find(function(y){ return y.id===id; }); return x?x._sid:id; }).join('.'):'',
+            window._ldStartOverride?1:0].join('|');   // focus by sid: the reload renumbers ids, that is not a new view
+  }catch(e){ return 'x'+Math.random(); }
+}
+/* the rows on screen right now, top to bottom, with where each one sits */
+function ldAnchorTake(el){
+  var out=[];
+  try{
+    var b=el.getBoundingClientRect(), rows=el.querySelectorAll('.litem');
+    for(var i=0;i<rows.length;i++){
+      var r=rows[i].getBoundingClientRect();
+      if(r.bottom<=b.top+1) continue;
+      if(r.top>=b.bottom) break;
+      out.push({sid:rows[i].getAttribute('data-sid')||'', off:r.top-b.top, sel:rows[i].classList.contains('sel')});
+    }
+  }catch(e){}
+  return out;
+}
+/* put the same lead back at the same pixel: the selected row if it was on screen, else the
+   first visible row that still exists. Checked again on the next two frames, because rows near
+   the edge are laid out a frame late (content-visibility). */
+function ldAnchorPut(el, anchors){
+  try{
+    if(!anchors||!anchors.length) return;
+    var order=anchors.filter(function(a){ return a.sel; }).concat(anchors);
+    var rowFor=function(sid){ if(!sid) return null; try{ return el.querySelector('.litem[data-sid="'+CSS.escape(sid)+'"]'); }catch(e){ return null; } };
+    for(var i=0;i<order.length;i++){
+      var a=order[i], row=rowFor(a.sid); if(!row) continue;
+      var fix=function(){ try{ var d=(row.getBoundingClientRect().top-el.getBoundingClientRect().top)-a.off;
+        if(Math.abs(d)>=0.5) el.scrollTop+=d; }catch(e){} };
+      fix(); requestAnimationFrame(function(){ fix(); requestAnimationFrame(fix); });
+      return;
+    }
+  }catch(e){}
+}
+function ldKeepSelected(){ try{ var l=(window.leads||[]).find(function(x){ return x.id===selId; }); if(l&&(l.status||l.islead!==null)) ldKeep(l); }catch(e){} }
 function renderList(){
   if(!document.getElementById('list-scroll'))return;
+  var _qs=ldQuerySig(), _sameView=(window._ldLastSig===_qs);
+  if(!_sameView){ window._ldKeep={}; window._ldSortSc={}; }   // he changed page: decided leads and the open one may go now
+  window._ldSameView=_sameView;
   /* buildDupeMap() walked all 735 leads on EVERY render, including every keystroke.
      It only changes when the lead set does, so key it on that. */
   try{
@@ -16072,7 +16243,15 @@ function renderList(){
     }
     bd[date].forEach(l=>{ shown.push(l); h+=litemH(l); });
   });
-  el.innerHTML=asinCheckHTML()+h;
+  var _full=asinCheckHTML()+h;
+  if(_sameView && window._ldLastHtml===_full && el.querySelector('.litem')){
+    /* nothing to change on screen — the minute refresh, nine times out of ten */
+  } else {
+    var _anc=_sameView?ldAnchorTake(el):null;
+    el.innerHTML=_full;
+    if(_anc) ldAnchorPut(el,_anc);
+  }
+  window._ldLastSig=_qs; window._ldLastHtml=_full; window._ldSameView=true;   // from here until he changes page, nothing leaves
   window._ldQueue=null;
   try{ ldSyncRowH(); setTimeout(ldSyncRowH,350); }catch(e){}   // again once fonts/images settle
   try{
@@ -16093,7 +16272,11 @@ function renderList(){
     }
   }catch(e){}
   const stillThere=selId!==null&&fl.find(l=>l.id===selId);
-  if(stillThere){ selectLead(selId,false); }
+  var _dp=document.getElementById('detail-pane');
+  if(stillThere && _dp && _dp.dataset.sid && _dp.dataset.sid===String(stillThere._sid||'')){
+    try{ renderDetail(); }catch(e){ selectLead(selId,false); }   // same lead on screen: repaint only if it changed
+  }
+  else if(stillThere){ selectLead(selId,false); }
   else if(!window._ldPainted){                   // FIRST paint only — open the top one
     window._ldPainted=true;
     selId=(shown[0]||fl[0]).id;                  // top of the screen, not top of the sort
@@ -16359,10 +16542,12 @@ function sigCheapestEver(l){
   try{
     var a=asinKey(l); if(!a) return null;
     var cur=parseFloat(l.buy); if(!cur) return null;
-    var prev=null;
+    var prev=null, mine=dupeKeyDate(l);
     (window.leads||[]).forEach(function(x){
       if(x.id===l.id) return;
       if(asinKey(x)!==a) return;
+      /* 30 days, earlier sends only (Jack 04/10: older than a month is not a duplicate, it is history) */
+      var xd=dupeKeyDate(x); if(mine&&xd&&(xd>mine||(mine-xd)>DUPE_WINDOW_DAYS*86400000)) return;
       var b=parseFloat(x.buy); if(!b) return;
       if(prev===null||b<prev) prev=b;
     });
@@ -16379,8 +16564,8 @@ function sigChips(l){
     var out=[], st=sigStats();
     // 1 — cheapest it has ever been (stronger than "cheaper than last time")
     var ce=sigCheapestEver(l);
-    if(ce) out.push('<span class="sig sig-good" title="Lowest buy price this ASIN has ever had on your board — previous best was \u00a3'
-      +ce.prev.toFixed(2)+'.">\u2b07 CHEAPEST YET \u00b7 \u00a3'+ce.saving.toFixed(2)+' under</span>');
+    if(ce) out.push('<span class="sig sig-good" title="Lowest buy price this ASIN has had on your board in the last 30 days — the best before this was \u00a3'
+      +ce.prev.toFixed(2)+'.">\u2b07 CHEAPEST IN 30 DAYS \u00b7 \u00a3'+ce.saving.toFixed(2)+' under</span>');
     // 2 — profit against the profit he actually buys at
     var pv=parseFloat(l.profit);
     if(st.hiProfit!==null && st.nBuys>=20 && !isNaN(pv) && pv>0){
@@ -16689,6 +16874,9 @@ function dupePrior(l){
     if(!(x.islead!==null||x.status)) return;          // only ones he actually decided
     var d=dupeKeyDate(x);
     if(mine&&d&&d>mine) return;                        // must be EARLIER than this one
+    /* Jack, 04/10: "2 months was ages ago — wtf is this there for". Same rule he set for the
+       CHEAPER chip: it only matters when it is a DUPLICATE, i.e. sent within the last 30 days. */
+    if(mine&&d&&(mine-d)>DUPE_WINDOW_DAYS*86400000) return;
     if(!best||d>dupeKeyDate(best)) best=x;
   });
   return best;
@@ -17056,7 +17244,7 @@ function litemH(l){
       </div>`:'';
   const dup=dupeOf(l);
   const dupCls=dup?(dup.sameVA?' dup-row-same':' dup-row-cross'):'';
-  return`<div class="litem ${vc}${l.id===selId?' sel':''}${stale?' stale':''}${(l.status||l.islead!==null)?' decided':''}${dupCls}" data-lid="${l.id}" onclick="selectLead(${l.id},true)">
+  return`<div class="litem ${vc}${l.id===selId?' sel':''}${stale?' stale':''}${(l.status||l.islead!==null)?' decided':''}${dupCls}" data-lid="${l.id}" data-sid="${escHtml(String(l._sid||''))}" onclick="selectLead(${l.id},true)">
     ${leadThumb(leadUseAsin(l),'litem-thumb',leadAsinConflict(l)?'':l.image)}
     <div class="litem-body">
     <div class="litem-top">
@@ -17075,6 +17263,7 @@ function litemH(l){
     <div class="litem-method">
       <span class="litem-method-pill">${l.src}</span>
       ${(typeof leadBandChip==='function')?leadBandChip(l):''}
+      ${(typeof leadVarChip==='function')?leadVarChip(l):''}
       <span class="litem-stat ${fbaC(l.fba)}" style="font-size:9.5px;color:var(--t3)"><span>Sellers</span>${l.fba}</span>
       ${noteChipHTML(l)}
       ${_wy?`<span class="litem-why k-${_wy.k}" title="${_wy.k==='score'?'the score could catch this':_wy.k==='data'?'the lead info was wrong':'nothing to do with the score'}">${_wy.l}</span>`:''}
@@ -17097,7 +17286,9 @@ function selectLead(id,scroll){
   if(!l.seen){l.seen=true;markSeen(l._sid);updateCounts();}
   applyVA(l);
   var _pane=document.getElementById('detail-pane');
-  _pane.innerHTML=detailH(l);
+  var _dh=detailH(l);
+  _pane.innerHTML=_dh; _pane._ldHtml=_dh;
+  _pane.dataset.lid=l.id; _pane.dataset.sid=String(l._sid||'');   // renderDetail() checks these to keep the pane still
   // moving to a NEW lead starts at the top; restyling the one you're on keeps your place
   _pane.scrollTop=_same?_keepScroll:0;
   if(scroll && window.innerWidth<=760) document.getElementById('view-leads').classList.add('show-detail');
@@ -17266,7 +17457,13 @@ function shotOpen(url,title){
 function renderDetail(){
   var host=document.getElementById('detail-pane'); if(!host) return;
   var l=(window.leads||[]).find(function(x){ return x.id===selId; });
-  var sameLead=(host.dataset.lid && l && String(host.dataset.lid)===String(l.id));
+  /* by sid: lead ids are renumbered on every reload, so "same id" stopped meaning "same lead"
+     after the minute refresh and the pane was treated as new — scroll to top, screenshot re-fetched. */
+  var sameLead=!!(l && ((host.dataset.sid && host.dataset.sid===String(l._sid||'')) || (!host.dataset.sid && host.dataset.lid && String(host.dataset.lid)===String(l.id))));
+  var _html = l ? detailH(l) : emptyDetail();
+  /* v52.4: nothing on the lead changed (the minute refresh, mostly) — leave the pane exactly
+     as it is: no repaint, no screenshot flash, no scroll reset, no lost caret. */
+  if(sameLead && host._ldHtml===_html){ host.dataset.lid=l.id; return; }
   var scroller=host, top=0;
   if(sameLead){
     // the scrollable element is the pane or an ancestor, depending on the layout
@@ -17287,8 +17484,8 @@ function renderDetail(){
     if(t && !keep) keep={id:id, val:t.value, s:t.selectionStart, e:t.selectionEnd,
                          had:(document.activeElement===t)};
   });
-  host.innerHTML = l ? detailH(l) : emptyDetail();
-  host.dataset.lid = l ? l.id : '';
+  host.innerHTML = _html; host._ldHtml = _html;
+  host.dataset.lid = l ? l.id : ''; host.dataset.sid = l ? String(l._sid||'') : '';
   try{ ldPaintNotices(); }catch(e){}   // fold/unfold the notices strip for this selection
   if(keep){
     var t2=host.querySelector('#'+keep.id);
@@ -17411,7 +17608,7 @@ function detailH(l){
   }else{
     const vaNm2=l.va==='VA M'?vaDisp('Mera'):vaDisp('Suz');
     const _why2=(typeof reasonOf==='function')?reasonOf(l.notes):null;
-    const _rs2=LEAD_REASONS.filter(function(r){ return r.for==='no'; });
+    const _rs2=LEAD_REASONS.filter(function(r){ return r.for==='no' && !r.hide; });
     decH=`<div class="d-actioned no">
         <div class="d-act-top">
           <span class="d-act-badge">Not a lead</span>
@@ -17535,7 +17732,8 @@ function detailH(l){
           <div class="d-num"><div class="d-num-l">Net Profit</div><div class="d-num-v ${profC(l.profit)}">£${f2(l.profit)}</div></div>
           <div class="d-num"><div class="d-num-l">ROI</div><div class="d-num-v ${roiC(l.roi)}">${l.roi}%</div></div>
           <div class="d-num"><div class="d-num-l">Margin</div><div class="d-num-v ${marC(l.margin)}">${l.margin}%</div></div>
-          <div class="d-num"><div class="d-num-l">SPM (sales/mo)</div><div class="d-num-v ${spmC(l.spm)}">${spml(l.spm)}</div></div>
+          <div class="d-num"><div class="d-num-l">SPM (sales/mo)</div><div class="d-num-v ${spmC(l.spm)}">${spml(l.spm)}</div>${(function(){ var _v=(typeof leadVar==='function')?leadVar(l):null;
+            return _v?'<div class="d-num-var">'+(_v.pct!=null?'VAR '+(Math.round(_v.pct*10)/10)+'% of listing':'VAR — share not shown')+'</div>':''; })()}</div>
           <div class="d-num"><div class="d-num-l">FBA Sellers</div><div class="d-num-v ${fbaC(l.fba)}">${l.fba}</div></div>
         </div>
       </div>
@@ -17555,7 +17753,9 @@ function detailH(l){
                  onerror="shotFix(this,'${String(l.screenshot).replace(/'/g,'')}')">`:''}
             <span>${_why}</span></a>`;
         })():''}
-      ${buyTogetherHTML(l)}
+      ${/* "Same order — <supplier>" card removed 03/10/2026 (Jack: "get rid of this"). buyTogetherHTML()
+          is kept in leads-list.js, unused, in case he wants it back. It also changed on every refresh,
+          which rebuilt this whole panel once a minute. */''}
       <div class="d-sec">
         <div class="d-sec-lbl">Why this score — ${s.total.toFixed(1)}/10${s.smart?' <span class="smart-badge">🧠 learned</span>':''}</div>
         ${recallHTML(l,s)}
@@ -17615,26 +17815,42 @@ function detailH(l){
    Stored as "[why:code] free text" in the note, so it survives into the sheet and
    into lead_decisions with no schema change. */
 var LEAD_REASONS=[
-  // why you BOUGHT
-  {c:'margin', l:'Great margin',        k:'score', for:'buy'},
-  {c:'fast',   l:'Sells fast',          k:'score', for:'buy'},
-  {c:'bulk',   l:'Bulk / stock deal',   k:'world', for:'buy'},
-  {c:'replen', l:'Replen',              k:'world', for:'buy'},
-  {c:'brand',  l:'Brand I trust',       k:'world', for:'buy'},
-  {c:'test',   l:'Testing 1–2 units',   k:'world', for:'buy'},
+  /* Rebuilt 04/10/2026 from Jack's own comments (140 since 1 Aug). Jack: "look at my most recent
+     comments and save me typing them". The old chips weren't his words, so he typed instead — of
+     1,000+ decisions only "Gated" was tapped more than three times. Labels are now the phrases he
+     actually types, in order of how often he types them, so keys 1-9 are his top nine.
+     Every OLD code stays defined (old tags must still read); the ones he never used since August
+     are hidden from the grid, not deleted. His 90-day rule is in here: he buys to SELL OUT WITHIN
+     90 DAYS, so "Down more than up" and "Won't sell out in 90 days" are first-class reasons. */
+  // why you BOUGHT  (counts = times he typed it since 1 Aug)
+  {c:'banger', l:'Banger',                    k:'score', for:'buy'},   // 25
+  {c:'disc',   l:'Use our discounts / codes', k:'world', for:'buy'},   // 6 — Bosch 10%, Argos, codes, free shipping
+  {c:'maxbuy', l:'Bought the max I could',    k:'world', for:'buy'},   // 3
+  {c:'eubasket',l:'Cheaper EU in basket',     k:'world', for:'buy'},   // 3
+  {c:'margin', l:'High ticket · high prof',   k:'score', for:'buy'},   // 2 (was "Great margin")
+  {c:'test',   l:'Testing a few',             k:'world', for:'buy'},   // 2 (was "Testing 1–2 units")
+  {c:'replen', l:'Replen',                    k:'world', for:'buy'},
+  {c:'fast',   l:'Sells fast',                k:'score', for:'buy'},
+  {c:'bulk',   l:'Bulk / stock deal',         k:'world', for:'buy', hide:1},
+  {c:'brand',  l:'Brand I trust',             k:'world', for:'buy', hide:1},
   // why you DIDN'T
-  {c:'oos',    l:'Out of stock',        k:'world', for:'no'},
-  {c:'wrong',  l:'Wrong item / no match',k:'data', for:'no'},
-  {c:'tanked', l:'Price tanked',        k:'data',  for:'no'},
-  {c:'badprice',l:'Price doesn’t match',k:'data',  for:'no'},
-  {c:'gated',  l:'Gated / restricted',  k:'world', for:'no'},
-  {c:'hazmat', l:'Hazmat / can’t ship', k:'world', for:'no'},
-  {c:'cash',   l:'Cash tied up',        k:'world', for:'no'},
-  {c:'roi',    l:'Low ROI',             k:'score', for:'no'},
-  {c:'profit', l:'Low profit',          k:'score', for:'no'},
-  {c:'comp',   l:'Too much competition',k:'score', for:'no'},
-  {c:'demand', l:'Too slow to sell',    k:'score', for:'no'},
-  {c:'listing',l:'Poor listing',        k:'data',  for:'no'},
+  {c:'gated',  l:'Gated / restricted',        k:'world', for:'no'},    // 15
+  {c:'tanked', l:'FBA tanked it',             k:'data',  for:'no'},    // 8 (was "Price tanked")
+  {c:'profit', l:'Not prof',                  k:'score', for:'no'},    // 8
+  {c:'stockleft',l:'Got stock left',          k:'world', for:'no'},    // 6
+  {c:'downup', l:'Down more than up',         k:'world', for:'no'},    // 5 — the 90-day rule
+  {c:'demand', l:'Won’t sell out in 90 days', k:'score', for:'no'},    // 4 (was "Too slow to sell")
+  {c:'oos',    l:'Out of stock',              k:'world', for:'no'},    // 4
+  {c:'waitdrop',l:'Wait for it to drop (Prime)',k:'world', for:'no'},  // 4
+  {c:'cheaper',l:'Can get it cheaper',        k:'world', for:'no'},    // 4 — discount / EU / OA
+  {c:'badprice',l:'Inflated / no buy link',   k:'data',  for:'no'},    // 4 (was "Price doesn’t match")
+  {c:'sellwrong',l:'Sell price is wrong',     k:'data',  for:'no'},    // 3
+  {c:'wrong',  l:'Wrong item / no match',     k:'data',  for:'no'},
+  {c:'hazmat', l:'Hazmat / can’t ship',       k:'world', for:'no', hide:1},
+  {c:'cash',   l:'Cash tied up',              k:'world', for:'no', hide:1},
+  {c:'roi',    l:'Low ROI',                   k:'score', for:'no', hide:1},
+  {c:'comp',   l:'Too much competition',      k:'score', for:'no', hide:1},
+  {c:'listing',l:'Poor listing',              k:'data',  for:'no', hide:1},
   // holding
   {c:'waitprice',l:'Waiting on price',  k:'world', for:'wait'},
   {c:'waitstock',l:'Waiting on stock',  k:'world', for:'wait'}
@@ -17649,33 +17865,35 @@ function reasonOf(note){ var m=String(note||'').match(/^\[why:([a-z]+)\]/); retu
    of starting from zero. A guessed reason is always shown as guessed, never silently
    treated as something Jack confirmed. */
 var REASON_KW=[
-  ['oos',     ['oos','out of stock','no stock','sold out','none left','stock gone']],
-  ['gated',   ['gated','restricted','ungate','not approved']],
-  ['hazmat',  ['hazmat','battery','flammable','aerosol']],
-  ['tanked',  ['down more than up','tanked','price dropped','price drop','will drop','drop lower','crashed']],
-  ['badprice',['where did you get that price','unsure where you got that price','price doesn\'t match','price does not match','wrong price']],
-  ['wrong',   ['wrong item','not the same','no match','different item','wrong asin']],
-  ['listing', ['listing','no buy box','suppressed','buybox']],
-  ['profit',  ['not prof','low profit','profit too','not enough profit','thin margin']],
-  ['roi',     ['low roi','roi too','roi is low']],
-  ['comp',    ['too many sellers','competition','amazon on the listing','amazon is on']],
-  ['demand',  ['too slow','no sales','doesn\'t sell','does not sell','slow seller','fast enough sales']],
-  ['test',    ['trying 1','only bought 1','only tried','test buy','tester','trying a few']],
-  ['bulk',    ['bulk','case of','pallet','loads of stock','loads left','got some left','plenty of stock']],
-  ['margin',  ['banger','great margin','lovely margin','strong margin']],
-  ['fast',    ['sells fast','fast seller','flies','quick seller']],
-  /* ── 03/09: phrases taken from the 19 reject notes the reader could not place.
-     Jack: "sometimes it should read my note on why i rejected it". These are his
-     actual words off the board, not invented examples — each one was sitting in a
-     note that was teaching the matrix nothing. */
-  ['badprice',['can\'t sell at that price','cant sell at that price','sell price is','sell rice is',
-               'needs to drop','needs to drop lower','dropped lower before','was cheaper',
-               'find it cheaper','no prof','not worth at that price']],
-  ['demand',  ['not selling','no movement','not moving','barely sells']],
-  ['comp',    ['fba sellers are there','too much comp','sellers on it']],
-  ['bulk',    ['moq','minimum order','can only buy']],
-  ['gated',   ['restriced','restrcited']],                       // his usual typos
-  ['wrong',   ['dup','duplicate']]
+  /* 04/10/2026: rebuilt on his 140 comments since 1 Aug. The old list filed "got loads left in
+     stock" as a BULK BUY reason, "down more than up" as "price tanked" and "banger" as "great
+     margin" — so the learning data was being told the wrong thing. Most specific phrases first:
+     the first match wins. */
+  ['downup',   ['down more than up','more down than up','down than up']],
+  ['stockleft',['stock left','left in stock','loads left','got some left','got loads','plenty of stock','still got some','still have stock']],
+  ['waitdrop', ['prime','drop further','drops further','drop futher','needs to drop','drop lower','will drop','hoping it drops','watch list','watchlist']],
+  ['sellwrong',['can\'t sell at that price','cant sell at that price','sell price is','sell rice is','sell price ','hasn\'t gone past','not worth at that price','put in wrong']],
+  ['badprice', ['inflated','buy link','buy price','where did you get that price','unsure where you got that price','price doesn\'t match','price doesn’t match','price does not match','wrong price']],
+  ['cheaper',  ['was cheaper','find it cheaper','can find it cheaper','cheaper at','cheaper uk','take it to oa','better with']],
+  ['tanked',   ['tanked','price dropped','price drop','crashed']],
+  ['gated',    ['gated','restricted','restriced','restrcited','ungate','not approved']],
+  ['oos',      ['out of stock','oos ','oos','no stock','sold out','none left','stock gone']],
+  ['profit',   ['not prof','no prof','low prof','not enough profit','profit too','thin margin']],
+  ['demand',   ['sell out','too slow','no sales','doesn\'t sell','does it sell','does not sell','unsure on sales','not selling','no movement','not moving','barely sells','slow seller']],
+  ['maxbuy',   ['max i could','as many as i can','could only buy','would have bought']],
+  ['eubasket', ['eu a2a','added to basket','eu was','open up eu','cheaper eu','check eu']],
+  ['disc',     ['discount','discoutn','promo','code','10%','% off','free shipping','bosch website']],
+  ['banger',   ['banger','great lead']],
+  ['margin',   ['high ticket','hight ticket','high prof','great margin','lovely margin','strong margin']],
+  ['test',     ['trying 1','only bought 1','only tried','tried a few','test buy','tester','trying a few']],
+  ['bulk',     ['bulk','case of','pallet','moq','minimum order','can only buy']],
+  ['fast',     ['sells fast','fast seller','flies','quick seller']],
+  ['hazmat',   ['hazmat','battery','flammable','aerosol']],
+  ['wrong',    ['wrong item','wrong pic','not the same','no match','different item','wrong asin','dup','duplicate']],
+  ['listing',  ['listing','no buy box','suppressed','buybox']],
+  ['roi',      ['low roi','roi too','roi is low']],
+  ['comp',     ['too many sellers','competition','too much comp','sellers on it','amazon on the listing','amazon is on']],
+  ['cash',     ['cash tied','no cash','cashflow','cash flow']]
 ];
 function reasonGuess(note){
   var s=String(note||'').toLowerCase(); if(!s.trim()) return null;
@@ -17776,7 +17994,7 @@ function reasonsFor(l){
   var isBuy=(l.status==='bought');
   var wait=(l.status==='atbq'||l.status==='atba2a'||l.status==='waiting');
   var want=isBuy?'buy':(wait?'wait':'no');
-  return LEAD_REASONS.filter(function(r){ return r.for===want; });
+  return LEAD_REASONS.filter(function(r){ return r.for===want && !r.hide; });
 }
 /* The Quick Reject chips wrote "Rejected: Low ROI" as prose and no [why:] tag, so the
    recall panel, the auto-tune and the Leads page could not read a single one of them —
@@ -19088,6 +19306,7 @@ function nbFocus(){ setTimeout(function(){
 },90); }
 function setL(id,v){
   const l=leads.find(x=>x.id===id);
+  try{ if(l) ldKeep(l); }catch(e){}   // ✓ Lead and ✕ Not a lead both stay where they are until he moves page (v52.4)
   if(l){l.islead=v;l.seen=true;markSeen(l._sid);
     if(v){db_leadPatch(l,{islead:'LEAD'});}
     else{l.status='passed';var patch={islead:'NOT LEAD',status:'NOT'};if(l.notes&&l.notes.trim())patch.jack_comment=l.notes.trim();db_leadPatch(l,patch);}}
@@ -19135,6 +19354,7 @@ function twinToast(nDone){
 }
 function setSt(id,st){
   const l=leads.find(x=>x.id===id);
+  try{ if(l) ldKeep(l); }catch(e){}
   if(l){l.status=st;l.seen=true;l.islead=true;markSeen(l._sid);
   var patch={status:sheetStatusOut(st),islead:'LEAD'};
   if(st==='passed'&&l.notes&&l.notes.trim())patch.jack_comment=l.notes.trim();
@@ -19244,7 +19464,8 @@ function ldNextUndecided(fromId){
     if(!nxt) for(var k2=0;k2<fl.length;k2++){ if(k2!==i&&fl[k2].islead===null&&!fl[k2].status){ nxt=fl[k2]; break; } }
     if(!nxt){ ldToast('Nothing else undecided in this view ✓'); return; }
     selectLead(nxt.id,true);
-    var row=document.querySelector('#view-leads .litem.sel'); if(row) row.scrollIntoView({block:'nearest'});
+    /* only moves if the next lead is partly off screen, and then as a glide, not a snap (v52.4) */
+    var row=document.querySelector('#view-leads .litem.sel'); if(row) row.scrollIntoView({block:'nearest',behavior:'smooth'});
   }catch(e){}
 }
 function advanceAfter(id){
@@ -19276,7 +19497,7 @@ document.addEventListener('keydown',e=>{
   if(!typing && /^[1-9]$/.test(e.key)){
     var _l=(window.leads||[]).find(function(x){ return x.id===selId; });
     if(_l && (_l.status||_l.islead===false)){
-      var _opts=(_l.islead===false && !_l.status) ? LEAD_REASONS.filter(function(r){return r.for==='no';}) : reasonsFor(_l);
+      var _opts=(_l.islead===false && !_l.status) ? LEAD_REASONS.filter(function(r){return r.for==='no' && !r.hide;}) : reasonsFor(_l);
       var _pick=_opts[parseInt(e.key,10)-1];
       if(_pick){ e.preventDefault(); reasonSet(_l.id,_pick.c); return; }
     }
@@ -24090,7 +24311,7 @@ function leadsSnapshotHTML(){
     var older=pendingAll.length-pending.length;   // shown, never silently dropped
     var un=pending.length;
     var unseen=pending.filter(function(l){return !l.seen;}).length;
-    /* "Going stale" was isStale() = 36h+. Inside a 30-day window that is now EVERY
+    /* "Going stale" was isStale() = 36h+ (72h since 3 Oct). Inside a 30-day window that is now EVERY
        pending lead — the freshest in the queue is 58h old, because a lead is already
        a day or two old by the time the sheet sync brings it in — so the tile showed
        437 next to a Waiting tile also showing 437. Two tiles, one number, no
