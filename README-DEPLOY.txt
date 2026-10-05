@@ -1,4 +1,4 @@
-BDL VA HQ (ShiftTrack) — folder build, since v52.4 (04 Oct 2026)
+BDL VA HQ (ShiftTrack) — folder build, since v52.5 (05 Oct 2026)
 Live: https://jackbithellamazon.github.io/shifttrack/  ·  repo jackbithellamazon/shifttrack  ·  Supabase (anon key in js/config.js, that is fine)
 Master lives in ~/Documents/Claude/bdl-shifttrack-harness/BDL-SHIFTTRACK/ — edit the 37 files in js/ there, then: bash gate.sh (checks + preview), python3 build.py push.
 SHIPS AS ONE FILE: build.py joins the 37 files into js/app.js in the order below (separate files raced on slow loads, v51.9).

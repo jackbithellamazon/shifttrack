@@ -5103,3 +5103,6 @@ select.dd-active{border-color:var(--accent,#8b5cf6)!important;}
   white-space:nowrap;background:color-mix(in srgb,#ff9f1c 20%,transparent);color:#ffc266;border:1px solid color-mix(in srgb,#ff9f1c 55%,transparent);}
 #view-leads .ld-var.ld-var-q{background:rgba(255,255,255,.06);color:#c9cfdc;border-color:rgba(255,255,255,.18);}
 #view-leads .d-num-var{margin-top:2px;font-size:10px;font-weight:800;color:#ffc266;letter-spacing:.2px;white-space:nowrap;}
+
+/* ── v52.4: STORE / SOURCING must-fill on the end-of-shift list ─────────────────── */
+.eod-lc-must{color:#ff5c6c;font-weight:800;}

@@ -1388,7 +1388,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v52.4';
+var APP_VERSION='v52.5';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -6092,7 +6092,10 @@ async function _submitEODInner() {
     if (state._eodChecking) return;
     state._eodChecking = true;
     try{
-      try{ await Promise.race([loadLeadsFromDB(), new Promise(function(r){ setTimeout(r,6000); })]); }catch(e){}
+      /* her sheet NOW (a STORE she typed a moment ago must count) — and whether that read worked */
+      var _fresh=false; try{ _fresh=await eodFreshSheet(); }catch(e){}
+      if(!_fresh){ try{ await Promise.race([loadLeadsFromDB(), new Promise(function(r){ setTimeout(r,6000); })]); }catch(e){} }
+      window._eodSheetFresh=_fresh;
       try{ eodRenderLeadCheck(); }catch(e){}
       /* she must solve it, not out-wait it: a second tap is no longer a way past.
          The only ways past are the two real ones — fix it, or acknowledge it. */
@@ -6100,17 +6103,19 @@ async function _submitEODInner() {
       try{ _open=eodOpenIssues(state.currentVA); }catch(e){}
       var _hard=_open.filter(function(x){ return x.hard; });
       /* only excuse a hard issue when the sheet itself could not be read */
-      if (window._eodSheetUnreadable){
-        /* we could not read her sheet. "We couldn't check" must never be served to her
-           as "you didn't do it" — drop the duplicates from the block entirely. */
+      if (window._eodSheetUnreadable || !window._eodSheetFresh){
+        /* we could not read her sheet just now. "We couldn't check" must never be served to her
+           as "you didn't do it" — drop the must-fills from the block entirely, and tell Jack. */
+        if(_hard.length){ try{ errLog('anomaly',{alert:'gate_skipped', msg:'end-of-shift sheet check skipped',
+          title:'End-of-shift sheet check skipped \u2014 '+state.currentVA,
+          body:'Her sheet could not be re-read at submit ('+(window._eodSheetUnreadable?'sheet unreadable':'the fresh read failed')+'), so she was let through rather than trapped. Not checked: '
+            +eodHardSummary(_hard)+'. Check her sheet.'}); }catch(e){} }
         _hard=[];
         _open=_open.filter(function(x){ return !x.hard; });
       }
       if (_hard.length) {
         eodBlock(document.getElementById('eod-leadcheck'),
-          '⚠️ '+_hard.length+' duplicate'+(_hard.length===1?'':'s')+' with no reason on your sheet. '
-          +'Add a VA NOTE saying why, or delete the row — then press “I’ve fixed it”. '
-          +'This one can’t be acknowledged away.');
+          '⚠️ Before you can finish: '+eodHardSummary(_hard)+'. Fix it on your sheet, then press Submit again — it re-reads your sheet. These can’t be acknowledged.');
         return;
       }
       if (_open.length) {
@@ -13492,7 +13497,7 @@ function eodLeadCheck(va){
        This shift = created since she clocked in. Falls back to the date when there is no
        shift running (Jack looking at it, or a resumed shift with no start time). */
     var today=ukDateShort();
-    var startMs=(window.state&&state.shiftStart)?+state.shiftStart:0;
+    var startMs=(window.state&&(state._trueStart||state.shiftStart))?+(state._trueStart||state.shiftStart):0;   // real clock-in, not the restore's timer base
     var sinceH=startMs?(((Date.now()-startMs)/3600000)+1.5):null;   // +1.5h covers sheet-sync lag
     var sheet=(window.leads||[]).filter(function(l){
       if(!l||l.va!==code) return false;
@@ -13570,9 +13575,12 @@ function eodMissingHTML(va){
   var m=eodMissingList(va);
   if(!m.length) return '';
   var li=m.map(function(x){
-    return '<li'+(eodIsAcked('miss:'+x.row)?' class="acked"':'')+'><b class="eod-lc-row">row '+(x.row||'?')+'</b>'+escHtml(x.title)
-      +' <span class="eod-lc-miss">\u2014 missing: '+escHtml(x.miss.join(', '))+'</span> '
-      +eodAckBtn('miss:'+x.row,'Row '+x.row+' missing '+x.miss.join(', '))+'</li>';
+    var ss=x.miss.filter(function(k){ return k==='store'||k==='source method'; });
+    var other=x.miss.filter(function(k){ return k!=='store'&&k!=='source method'; });
+    return '<li'+((!ss.length&&eodIsAcked('miss:'+x.row))?' class="acked"':'')+'><b class="eod-lc-row">row '+(x.row||'?')+'</b>'+escHtml(x.title)
+      +(ss.length?' <span class="eod-lc-must">\u2014 '+ss.map(function(k){ return k==='store'?'STORE':'SOURCING METHOD'; }).join(' + ')+' blank: fill on your sheet</span>':'')
+      +(other.length?' <span class="eod-lc-miss">\u2014 missing: '+escHtml(other.join(', '))+'</span> '+eodAckBtn('miss:'+x.row,'Row '+x.row+' missing '+other.join(', ')):'')
+      +'</li>';
   });
   var first=li.slice(0,6).join(''), rest=li.slice(6).join('');
   var list=first+(rest
@@ -13580,7 +13588,7 @@ function eodMissingHTML(va){
     : '');
   return '<div class="eod-lc warn">'
     +'<div class="eod-lc-h">\u26a0\ufe0f '+m.length+' of today\u2019s leads '+(m.length===1?'is':'are')+' missing details</div>'
-    +'<div class="eod-lc-b">Jack can\u2019t decide a lead he can\u2019t see the source or screenshot for \u2014 fill these in on your sheet before you submit.</div>'
+    +'<div class="eod-lc-b">Jack can\u2019t decide a lead he can\u2019t see the source or screenshot for \u2014 fill these in on your sheet before you submit. <b>STORE and SOURCING METHOD must be filled in before you can finish your shift.</b></div>'
     +'<div class="eod-lc-l"><ul>'+list+'</ul></div>'
     +'</div>';
 }
@@ -13617,11 +13625,32 @@ function eodUnack(id){ delete eodAckStore()[id]; try{ saveShiftDraft(false); }ca
    blocked, because "we couldn't check" must never read as "she didn't do it". */
 function eodIssues(va){
   var out=[];
-  try{ eodMissingList(va).forEach(function(m){ out.push({id:'miss:'+m.row, kind:'missing details', label:'Row '+m.row+' missing '+m.miss.join(', ')}); }); }catch(e){}
+  /* Jack, 05/10: "she shouldn't be able to end her shift without stores and sourcing being filled in".
+     From 3 Oct Mera left STORE and SOURCING METHOD blank on 23 rows and acknowledged them away. Those two
+     are now a must-fill: no Acknowledge, fixed on her sheet and proven by a fresh re-read. Supplier link
+     and screenshot stay acknowledgeable as before. Never a trap: if the sheet cannot be re-read right now
+     the block does not apply (eodFreshSheet), and the emergency lever and the rescue link still work. */
+  try{ eodMissingList(va).forEach(function(m){
+    var ss=m.miss.filter(function(x){ return x==='store'||x==='source method'; });
+    var other=m.miss.filter(function(x){ return x!=='store'&&x!=='source method'; });
+    if(ss.length) out.push({id:'ss:'+m.row, kind:'store / sourcing blank', hard:true,
+      label:'Row '+m.row+' \u2014 '+ss.map(function(x){ return x==='store'?'STORE':'SOURCING METHOD'; }).join(' + ')+' blank'});
+    if(other.length) out.push({id:'miss:'+m.row, kind:'missing details', label:'Row '+m.row+' missing '+other.join(', ')});
+  }); }catch(e){}
   /* Jack, 30/09: "they should be able to finish their shift, and they should be doing it before
      their shift starts anyway." Duplicates are a START-of-shift job: the list sits at the top of
      her shift from clock-in (#shift-dups) and the first task tells her to clear it. They are no
      longer an end-of-shift issue of any kind — shown at the end as a reminder, never a gate. */
+  /* Jack, 05/10: "without a note yeah it needs to have a note in". A RED repeat (same month, same
+     supplier, same price, no VA NOTE) in THIS month's tab now stops the submit until she adds the
+     note or deletes the row — proven by a fresh re-read, never applied when the sheet can't be read.
+     Older months stay a reminder (the box at the top of her shift). Same predicate as the KPIs and
+     Jack's board, so what she is made to fix is exactly what is being held back. */
+  try{ eodDupList(va).forEach(function(d){
+    if(!d.thisMonth) return;
+    out.push({id:'dup:'+(d.tab||'')+':'+d.row, kind:'repeat with no VA note', hard:true,
+      label:'Row '+d.row+' is a repeat with no VA NOTE'});
+  }); }catch(e){}
   try{ eodLossList(va).forEach(function(l){ out.push({id:'loss:'+l.row, kind:'loses money', label:'Row '+l.row+' loses money'}); }); }catch(e){}
   /* 30/09: both VAs went two days unable to close a shift. Due Sourcing runs were 23 separate
      acknowledge-with-a-typed-reason prompts. They are a reminder now (eodSourcingHTML), not a gate. */
@@ -13656,6 +13685,28 @@ function eodSourcingHTML(va){
     +'<div class="eod-lc-l"><ul>'+list+'</ul></div>'
     +'</div>';
 }
+/* Read her sheet NOW and say whether that worked. The lead pull normally runs at most every
+   3 minutes, so a STORE she typed 20 seconds ago would not be seen and she would stay blocked
+   for doing exactly what she was told. true = her sheet was read just now with no errors, so a
+   blank cell really is blank. false = could not confirm, so the must-fill does NOT apply (a sync
+   problem must never trap her) — and Jack is told it was skipped. */
+async function eodFreshSheet(){
+  try{
+    if(typeof leadPullOnce!=='function' || !eodSheetReadable()) return false;
+    var t0=Date.now();
+    var r=await Promise.race([
+      (async function(){
+        while(typeof _leadPullBusy!=='undefined' && _leadPullBusy && Date.now()-t0<8000) await new Promise(function(x){ setTimeout(x,250); });
+        return await leadPullOnce(true);
+      })(),
+      new Promise(function(x){ setTimeout(function(){ x('timeout'); }, 9000); })
+    ]);
+    if(r==='timeout' || !r || r.errors || !r.checked) return false;
+    await Promise.race([loadLeadsFromDB(), new Promise(function(x){ setTimeout(x,6000); })]);
+    try{ if(typeof buildDupUnexplainedMap==='function'){ buildDupUnexplainedMap(); _duxSig=null; } }catch(e){}
+    return true;
+  }catch(e){ return false; }
+}
 /* she fixed it on the sheet — go and look, rather than take her word for it */
 var _eodRechecking=false;
 function eodRecheck(){
@@ -13664,10 +13715,10 @@ function eodRecheck(){
   try{ showToast('Re-reading your sheet\u2026'); }catch(e){}
   var before=0; try{ before=eodOpenIssues(state.currentVA).length; }catch(e){}
   Promise.resolve()
-    .then(function(){ return (typeof loadLeadsFromDB==='function')?loadLeadsFromDB():null; })
-    .then(function(){ return (typeof oaLoad==='function')?oaLoad(true):null; })          // a run she just did in the Suite counts too
+    .then(function(){ return eodFreshSheet(); })                                         // her sheet NOW, not the 3-minute cache
+    .then(function(ok){ window._eodSheetFresh=!!ok; return (typeof oaLoad==='function')?oaLoad(true):null; })   // a run she just did in the Suite counts too
     .then(function(){
-      window._eodSheetUnreadable=false;
+      window._eodSheetUnreadable=!window._eodSheetFresh;
       /* _duxSig is (rows : first id) — a note added to an existing row changes neither,
          so the cached duplicate map has to be rebuilt by hand or she stays blocked
          after doing exactly what she was asked. */
@@ -13676,7 +13727,7 @@ function eodRecheck(){
       try{ eodRenderLeadCheck(); }catch(e){}
       if(after<before) showToast('\u2713 '+(before-after)+' sorted \u2014 '+(after?after+' left':'nothing left'));
       else if(!after)  showToast('\u2713 All clear');
-      else             showToast('Still showing '+after+' \u2014 add the note on your sheet, or delete the row',true);
+      else             showToast('Still showing '+after+' \u2014 fix '+(after===1?'it':'them')+' on your sheet, then re-check',true);
     })
     .catch(function(){
       /* could not read the sheet at all — that is our problem, not hers */
@@ -13686,7 +13737,20 @@ function eodRecheck(){
     })
     .then(function(){ _eodRechecking=false; });
 }
-function eodOpenIssues(va){ return eodIssues(va).filter(function(x){ return !eodIsAcked(x.id); }); }
+/* one line naming what is blocking her, by kind, with the row numbers */
+function eodHardSummary(list){
+  var ss=[], dd=[];
+  (list||[]).forEach(function(x){
+    var m=String(x.id||'').match(/(\d+)$/), r=m?m[1]:'?';
+    if(x.kind==='repeat with no VA note') dd.push(r); else ss.push(r);
+  });
+  function rows(a){ return 'row'+(a.length===1?' ':'s ')+a.slice(0,10).join(', ')+(a.length>10?'\u2026':''); }
+  var parts=[];
+  if(ss.length) parts.push(ss.length+' lead'+(ss.length===1?' has':'s have')+' STORE or SOURCING METHOD blank ('+rows(ss)+')');
+  if(dd.length) parts.push(dd.length+' repeat'+(dd.length===1?'':'s')+' with no VA NOTE ('+rows(dd)+') \u2014 add why in VA NOTE, or delete the row');
+  return parts.join(' \u00b7 ');
+}
+function eodOpenIssues(va){ return eodIssues(va).filter(function(x){ return x.hard || !eodIsAcked(x.id); }); }
 function eodAckBtn(id,label){
   var safe=String(label||'').replace(/['"\\]/g,'');
   return eodIsAcked(id)
@@ -13700,20 +13764,22 @@ function eodGateHTML(va){
       +(acked?' <span>'+acked+' acknowledged</span>':'')+'</div>';
   }
   var by={}; open.forEach(function(x){ by[x.kind]=(by[x.kind]||0)+1; });
-  var hard=open.filter(function(x){ return x.hard; }).length;
+  var hard=open.filter(function(x){ return x.hard; }).length, soft=open.length-hard;
   return '<div class="eod-gate">\u26a0\ufe0f <b>'+open.length+' thing'+(open.length===1?'':'s')+' to sort before you finish</b>'
     +'<span>'+Object.keys(by).map(function(k){ return by[k]+' '+k; }).join(' \u00b7 ')+'</span>'
     +'<em>'+(hard
-       ? '<b style="color:#f5a524">'+hard+' duplicate'+(hard===1?'':'s')+' must be sorted on your sheet</b> \u2014 a note saying why, or delete the row. The rest you can acknowledge.'
+       ? '<b style="color:#ff5c6c">'+eodHardSummary(open.filter(function(x){ return x.hard; }))+'</b> \u2014 fix on your sheet, then press Submit again (it re-reads your sheet). These can\u2019t be acknowledged.'
+         +(soft?' The other '+soft+' you can acknowledge.':'')
        : 'Fix it on your sheet, or acknowledge \u2014 one press each, or all at once:')+'</em>'
-     +' <button class="eod-ack" style="margin-top:6px" onclick="eodAckAll()">Acknowledge all \u2014 let me finish</button></div>';
+     +(soft?' <button class="eod-ack" style="margin-top:6px" onclick="eodAckAll()">Acknowledge '+(hard?'the other '+soft:'all \u2014 let me finish')+'</button>':'')
+     +(hard?' <button class="eod-ack" style="margin-top:6px" onclick="eodRecheck()">I\u2019ve filled them \u2014 re-check my sheet</button>':'')+'</div>';
 }
 /* one press clears the lot — what she waved through is still stamped into her shift for Jack */
 function eodAckAll(){
   try{
     var va=(state.currentVA==='Test'?state._previewAs:state.currentVA);
     var at=new Date().toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:false});
-    eodOpenIssues(va).forEach(function(x){ eodAckStore()[x.id]={at:at, why:'', what:String(x.label||x.id).slice(0,90)}; });
+    eodOpenIssues(va).forEach(function(x){ if(x.hard) return; eodAckStore()[x.id]={at:at, why:'', what:String(x.label||x.id).slice(0,90)}; });   // a must-fill is never acknowledged
     try{ saveShiftDraft(false); }catch(e){}
     try{ eodRenderLeadCheck(); }catch(e){}
     try{ showToast('All acknowledged \u2014 you can finish'); }catch(e){}
@@ -13796,10 +13862,12 @@ function eodDupList(va){
       if(l.va!==code) return;
       if(l.status||l.islead!==null) return;               // decided — Jack has seen it
       if(!ldDupUnexplained(l)) return;
+      var _mo=''; try{ _mo=String((typeof shiftDayKey==='function')?shiftDayKey():ukDateShort()).slice(3); }catch(e){}
       out.push({ row:l.sheetRow, tab:l.sheetTab,
                  title:String(l.title||'(untitled)').slice(0,46),
                  price:parseFloat(l.buy)||0,
-                 isToday:eodIsTodayLead(l) });
+                 isToday:eodIsTodayLead(l),
+                 thisMonth:!!(_mo && String(l.date||'').slice(3)===_mo) });
     });
   }catch(e){}
   out.sort(function(a,b){ return (b.row||0)-(a.row||0); });
@@ -13835,7 +13903,10 @@ function eodDupCheckHTML(va){
     +'\u2192 Put <b>why</b> in the <b>VA NOTE</b> column (back in stock, new promotion, better offer&hellip;). '
     +'The cell turns <b style="color:#e3c02b">YELLOW</b> and the lead counts again.<br>'
     +'\u2192 Or <b>delete the row</b> if there is no reason.<br>'
-    +'<b style="color:#f5a524">Do this at the START of your shift</b> \u2014 before you source anything. It does not stop you finishing today.<br>'
+    +'<b style="color:#f5a524">Do this at the START of your shift</b> \u2014 before you source anything. '
+    +(d.some(function(x){ return x.thisMonth; })
+       ? '<b style="color:#ff5c6c">You can\u2019t finish your shift until this month\u2019s red rows have a VA NOTE (or are deleted).</b><br>'
+       : 'Older months are a reminder only.<br>')
     +(_rd ? '<button class="eod-ack" style="margin:6px 0 2px" onclick="eodRecheck()">I\u2019ve fixed them \u2014 re-check my sheet</button><br>'
           : '<span style="color:var(--muted-2)">Your sheet can\u2019t be read from here right now, so this list may be out of date \u2014 add the note anyway; it clears itself once the sync is back.</span><br>')
     +'<span style="color:var(--muted-2)">(A <b style="color:#3ac478">GREEN</b> cell is already fine &mdash; '
