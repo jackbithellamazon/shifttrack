@@ -1388,7 +1388,7 @@ function ukHour() { return ukNow().getHours(); }
 /* Versioning: 0.1 per ship (Jack's convention across his webapps).
    Carried over from the old integer scheme by /10, so ordering and every historical
    file still line up — v205 -> v20.5, v172 -> v17.2. Next ship is v20.6. */
-var APP_VERSION='v52.5';
+var APP_VERSION='v52.6';
 document.addEventListener('DOMContentLoaded',function(){ var v=document.getElementById('app-ver'); if(v) v.textContent=APP_VERSION; });
 // EOD-based tick reconcile runs on EVERY load (any device) — so completed items are marked
 // done in the rollover bucket even if only one person opens the app that day.
@@ -6093,6 +6093,7 @@ async function _submitEODInner() {
     state._eodChecking = true;
     try{
       /* her sheet NOW (a STORE she typed a moment ago must count) — and whether that read worked */
+      try{ showToast('Checking your sheet\u2026'); }catch(e){}
       var _fresh=false; try{ _fresh=await eodFreshSheet(); }catch(e){}
       if(!_fresh){ try{ await Promise.race([loadLeadsFromDB(), new Promise(function(r){ setTimeout(r,6000); })]); }catch(e){} }
       window._eodSheetFresh=_fresh;
@@ -13500,7 +13501,7 @@ function eodLeadCheck(va){
     var startMs=(window.state&&(state._trueStart||state.shiftStart))?+(state._trueStart||state.shiftStart):0;   // real clock-in, not the restore's timer base
     var sinceH=startMs?(((Date.now()-startMs)/3600000)+1.5):null;   // +1.5h covers sheet-sync lag
     var sheet=(window.leads||[]).filter(function(l){
-      if(!l||l.va!==code) return false;
+      if(!l||l.va!==code||l._eodGone) return false;      // _eodGone: deleted from her sheet since the last sync (v52.6)
       if(sinceH!=null) return (typeof l.hrs==='number') && l.hrs<=sinceH;
       return String(l.date||'').slice(0,10)===today;
     });
@@ -13561,7 +13562,7 @@ function eodMissingList(va){
     if(!String(l.src||'').trim())   miss.push('source method');
     if(!String(l.store||'').trim()) miss.push('store');
     var amazonStore=/amazon/i.test(String(l.store||''));
-    if((!l.sup||l.sup==='#') && !amazonStore) miss.push('supplier link');
+    if(!supUrl(l.sup) && !supUrl(l.sup2) && !amazonStore) miss.push('supplier link');   // a link in the 2nd supplier column counts (v52.6)
     var sh=String(l.screenshot||'').trim();
     /* Jack, 21/09: "prnt.sc is fine — so n/a these errors". He can open them now, so a
        prnt.sc link is a screenshot like any other. Only a MISSING one is worth saying. */
@@ -13691,21 +13692,112 @@ function eodSourcingHTML(va){
    blank cell really is blank. false = could not confirm, so the must-fill does NOT apply (a sync
    problem must never trap her) — and Jack is told it was skipped. */
 async function eodFreshSheet(){
+  /* v52.6 — THE CHECK THAT NEVER RAN. This used to be the FULL lead pull: both VAs' sheets, every
+     month tab, a 1.9 MB read of the whole leads table and the database writes, all inside 9 seconds.
+     Timed from the UK it is ~5 s with nothing to write; from Manila it ran out of time on EVERY submit
+     from 6-7 Oct (Mera x3, Suz x1), so the STORE/SOURCING and repeat checks were skipped each time and
+     Jack got a "check skipped" note instead. It also gave up for the rest of the session after one
+     failed re-check (_eodSheetUnreadable stayed true). Now: only HER sheet, only the tab(s) holding
+     this month's or this shift's rows, read straight from Google and laid over the leads in memory.
+     Read-only — nothing is written to the database here; the normal pull is nudged to do that after. */
   try{
-    if(typeof leadPullOnce!=='function' || !eodSheetReadable()) return false;
-    var t0=Date.now();
-    var r=await Promise.race([
-      (async function(){
-        while(typeof _leadPullBusy!=='undefined' && _leadPullBusy && Date.now()-t0<8000) await new Promise(function(x){ setTimeout(x,250); });
-        return await leadPullOnce(true);
-      })(),
-      new Promise(function(x){ setTimeout(function(){ x('timeout'); }, 9000); })
-    ]);
-    if(r==='timeout' || !r || r.errors || !r.checked) return false;
-    await Promise.race([loadLeadsFromDB(), new Promise(function(x){ setTimeout(x,6000); })]);
+    if(typeof LEAD_PULL_KEY==='undefined' || !LEAD_PULL_KEY || typeof SHEET_NAMES==='undefined') return false;
+    var va=(state.currentVA==='Test'?state._previewAs:state.currentVA);
+    var code=(va==='Mera')?'VA M':(va==='Suz')?'VA S':null, sid=null;
+    for(var k in SHEET_NAMES) if(SHEET_NAMES[k]===va) sid=k;
+    if(!sid||!code) return false;
+    var got=await Promise.race([eodReadMine(sid,code), new Promise(function(x){ setTimeout(function(){ x(null); }, 15000); })]);
+    if(!got) return false;
+    eodOverlay(got, sid, code, va);
     try{ if(typeof buildDupUnexplainedMap==='function'){ buildDupUnexplainedMap(); _duxSig=null; } }catch(e){}
+    window._eodSheetUnreadable=false;
+    try{ setTimeout(function(){ try{ leadPullOnce(true); }catch(e){} }, 400); }catch(e){}   // carries it into the DB for Jack
     return true;
   }catch(e){ return false; }
+}
+/* her tabs that matter: any holding a lead from this month or this shift, plus the tab NAMED for this
+   month (a brand-new month tab has no leads in memory yet). null = could not read, so nothing may block. */
+async function eodReadMine(sid, code){
+  var H={headers:{apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+SUPABASE_ANON_KEY}};
+  var mo=''; try{ mo=String((typeof shiftDayKey==='function')?shiftDayKey():ukDateShort()).slice(3); }catch(e){}
+  var startMs=(window.state&&(state._trueStart||state.shiftStart))?+(state._trueStart||state.shiftStart):0;
+  var sinceH=startMs?(((Date.now()-startMs)/3600000)+1.5):24;
+  var want={}, curM=+(mo.split('/')[0])||0;
+  (window.leads||[]).forEach(function(l){
+    if(!l||l.va!==code||String(l._sid||'').indexOf(sid+'::')!==0) return;
+    if(String(l.date||'').slice(3)===mo || (typeof l.hrs==='number' && l.hrs<=sinceH)) want[l.sheetTab]=1;
+  });
+  var tres=await fetchT(SUPABASE_URL+'/rest/v1/sheet_tabs?select=tab,included&sheet_id=eq.'+encodeURIComponent(sid),H,8000);
+  if(!tres.ok) return null;
+  var tabs=(await tres.json()).filter(function(t){ return t.included && (want[t.tab] || (curM && leadTabMonth('x::'+t.tab+'::1')===curM)); })
+    .map(function(t){ return t.tab; }).slice(0,3);
+  var res=await Promise.all(tabs.map(function(tab){
+    var u='https://sheets.googleapis.com/v4/spreadsheets/'+sid+'/values/'+encodeURIComponent(tab+'!A2:AB1000')
+         +'?key='+LEAD_PULL_KEY+'&valueRenderOption=UNFORMATTED_VALUE';
+    return fetchT(u,{},10000).then(function(r){ return r.ok?r.json():null; }).catch(function(){ return null; });
+  }));
+  var out={tabs:tabs, data:{}};
+  for(var i=0;i<tabs.length;i++){ if(!res[i]) return null; out.data[tabs[i]]=res[i].values||[]; }
+  return out;
+}
+/* Lay what is on her sheet NOW over the leads in memory. A lead is found by its AA lead id (falls back to
+   row number + same ASIN for a row the stamper has not reached); a lead whose id is no longer on the sheet
+   was deleted and drops out of the check (_eodGone); a row on the sheet that is not in memory yet (synced in
+   the last few minutes) is added, so a blank STORE she typed seconds ago still counts. */
+function eodOverlay(got, sid, code, va){
+  var mo=''; try{ mo=String((typeof shiftDayKey==='function')?shiftDayKey():ukDateShort()).slice(3); }catch(e){}
+  var L=window.leads||[], known={};
+  L.forEach(function(l){ if(l&&l.lid) known[String(l.lid).toUpperCase()]=1; });
+  Object.keys(got.data).forEach(function(tab){
+    var byRow={}, byLid={}, hasLids=false, used={};
+    got.data[tab].forEach(function(r,i){
+      var x=r.slice(); while(x.length<28) x.push('');
+      byRow[i+2]=x;
+      var lid=String(x[26]||'').trim().toUpperCase();
+      if(/^BDL-[A-F0-9]{8,16}$/.test(lid)){ byLid[lid]=i+2; hasLids=true; }
+    });
+    var asinOf=function(x){ return String(x[7]||'').trim().toUpperCase(); };
+    L.forEach(function(l){
+      if(!l||l.va!==code||l.sheetTab!==tab||String(l._sid||'').indexOf(sid+'::')!==0) return;
+      var ri=null, lid=String(l.lid||'').toUpperCase();
+      if(lid && hasLids) ri=byLid[lid]||null;
+      else { var x0=byRow[l.sheetRow]; if(x0 && asinOf(x0)===String(l.asin||'').trim().toUpperCase()) ri=l.sheetRow; }
+      if(ri==null || used[ri]){ l._eodGone=true; return; }
+      used[ri]=1; l._eodGone=false;
+      var x=byRow[ri], n;
+      l.sheetRow=ri;
+      l.store=String(x[5]||''); l.src=String(x[11]||''); l.vanote=String(x[4]||''); l.screenshot=String(x[21]||'');
+      l.sup=String(x[8]||'').trim()||'#'; l.sup2=String(x[9]||'').trim();
+      if(asinOf(x)) l.asin=String(x[7]).trim();
+      if(String(x[13]||'').trim()) l.amz=String(x[13]).trim();
+      if(String(x[6]||'').trim()) l.title=String(x[6]);
+      n=pullNum(x[12]); if(n!==null) l.buy=n;
+      n=pullNum(x[16]); if(n!==null) l.profit=n;
+    });
+    Object.keys(byRow).forEach(function(k){
+      var ri=+k; if(used[ri]) return;
+      var x=byRow[ri], asin=String(x[7]||'').trim(), buy=pullNum(x[12]);
+      if(!asin||buy===null) return;
+      var iso=pullISOForTab(x[0],tab);
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return;
+      var dd=fmtGB(iso);
+      if(dd.slice(3)!==mo && !eodIsTodayLead({date:dd})) return;          // only this month's work
+      var lid=String(x[26]||'').trim(); if(!/^BDL-[A-F0-9]{8,16}$/i.test(lid)) lid='';
+      if(lid && known[lid.toUpperCase()]) return;                          // already in memory
+      var _sid=sid+'::'+tab+'::'+ri;
+      if(L.some(function(l){ return l&&l._sid===_sid; })) return;          // the row number is taken by a lead read above
+      var nl=leadFromDbRow({ id:_sid, sheet_id:sid, tab:tab, row_index:ri, va:va, date:iso,
+        store:String(x[5]||''), title:String(x[6]||''), asin:asin, category:String(x[10]||''), source_method:String(x[11]||''),
+        buy:buy, sell:pullNum(x[14]), spm:String(x[15]||''), profit:pullNum(x[16]), roi:pullNum(x[17]), margin:pullNum(x[18]),
+        fba:pullNum(x[19]), supplier_url:String(x[8]||''), supplier_url2:String(x[9]||''), amazon_url:String(x[13]||''),
+        va_note:String(x[4]||''), discount_code:String(x[20]||''), screenshot:String(x[21]||''),
+        islead:String(x[2]||'').trim()||null, status:String(x[1]||'').trim()||null, jack_comment:String(x[3]||'')||null,
+        lead_id:lid||null, created_at:new Date().toISOString() }, L.length+1);
+      nl._eodNew=true;
+      if(lid && !eodIsTodayLead({date:dd})) nl.hrs=99;   // stamped and not dated today = older than this shift
+      L.push(nl);
+    });
+  });
 }
 /* she fixed it on the sheet — go and look, rather than take her word for it */
 var _eodRechecking=false;
@@ -14868,6 +14960,28 @@ function ldStableId(sid, fallback){
     return m[sid];
   }catch(e){ return fallback; }
 }
+/* One DB row -> one lead as the app holds it. Lifted out of loadLeadsFromDB unchanged (v52.6) so the
+   end-of-shift re-read can build a lead for a row that is on her sheet but not synced yet. n = its place
+   in the list, exactly as before. lid = the permanent AA lead id, so a re-read can tell a deleted row. */
+function leadFromDbRow(r, n){
+  var hrs=r.created_at?Math.max(0,Math.floor((Date.now()-new Date(r.created_at).getTime())/3600000)):99;
+  var roi=parseFloat(r.roi)||0, profit=parseFloat(r.profit)||0, spm=parseSpm(r.spm), fba=parseInt(r.fba)||0, margin=parseFloat(r.margin)||0;
+  if(roi>0 && roi<3) roi=roi*100;   // sheet stores ROI as a decimal ratio (0.2546) — show as a real % (25.46). Fixes display, scoring, badges & priority.
+  roi=Math.round(roi*10)/10;         // clean 1-dp %
+  return { id:ldStableId(r.id,n), _sid:r.id, va:r.va==='Mera'?'VA M':'VA S', date:fmtGB(leadDateFix(r.date,r.created_at,r.id)),
+    store:r.store||'', title:r.title||'(untitled)', asin:r.asin||'', cat:r.category||'', src:r.source_method||'',
+    sheetRow:r.row_index||null, sheetTab:r.tab||'',
+    buy:parseFloat(r.buy)||0, sell:parseFloat(r.sell)||0, spm:spm, profit:profit, roi:roi, margin:margin, fba:fba,
+    sup:r.supplier_url||'#', sup2:r.supplier_url2||'', amz:r.amazon_url||'#', screenshot:r.screenshot||'', discount:r.discount_code||'',
+    notes:r.jack_comment||'', vanote:r.va_note||'',
+    status:mapStatusIn(r.status), islead:r.islead==='LEAD'?true:(r.islead==='NOT LEAD'?false:null),
+    seen:!!_seenIds[r.id], hrs:hrs,
+    _sc:calcScore({roi:roi,profit:profit,spm:spm,fba:fba,margin:margin}),
+    image:r.image||'',
+    _id:'LD-'+String(r.row_index||(n+1)).padStart(4,'0'),
+    lid:r.lead_id||'' };
+}
+
 async function loadLeadsFromDB(){
   try{
     if(typeof SUPABASE_URL==='undefined'||typeof DB_ENABLED==='undefined'||!DB_ENABLED) return;
@@ -14902,23 +15016,7 @@ async function loadLeadsFromDB(){
         _localDec[x._sid]={islead:x.islead,status:x.status,notes:x.notes};
     }); }catch(e){}
     var n=1;
-    leads=rows.map(function(r){
-      var hrs=r.created_at?Math.max(0,Math.floor((Date.now()-new Date(r.created_at).getTime())/3600000)):99;
-      var roi=parseFloat(r.roi)||0, profit=parseFloat(r.profit)||0, spm=parseSpm(r.spm), fba=parseInt(r.fba)||0, margin=parseFloat(r.margin)||0;
-      if(roi>0 && roi<3) roi=roi*100;   // sheet stores ROI as a decimal ratio (0.2546) — show as a real % (25.46). Fixes display, scoring, badges & priority.
-      roi=Math.round(roi*10)/10;         // clean 1-dp %
-      return { id:ldStableId(r.id,n++), _sid:r.id, va:r.va==='Mera'?'VA M':'VA S', date:fmtGB(leadDateFix(r.date,r.created_at,r.id)),
-        store:r.store||'', title:r.title||'(untitled)', asin:r.asin||'', cat:r.category||'', src:r.source_method||'',
-        sheetRow:r.row_index||null, sheetTab:r.tab||'',
-        buy:parseFloat(r.buy)||0, sell:parseFloat(r.sell)||0, spm:spm, profit:profit, roi:roi, margin:margin, fba:fba,
-        sup:r.supplier_url||'#', sup2:r.supplier_url2||'', amz:r.amazon_url||'#', screenshot:r.screenshot||'', discount:r.discount_code||'',
-        notes:r.jack_comment||'', vanote:r.va_note||'',
-        status:mapStatusIn(r.status), islead:r.islead==='LEAD'?true:(r.islead==='NOT LEAD'?false:null),
-        seen:!!_seenIds[r.id], hrs:hrs,
-        _sc:calcScore({roi:roi,profit:profit,spm:spm,fba:fba,margin:margin}),
-        image:r.image||'',
-        _id:'LD-'+String(r.row_index||n).padStart(4,'0') };
-    });
+    leads=rows.map(function(r){ return leadFromDbRow(r, n++); });
     // Jack's "show leads from" setting — hard cutoff on the REPAIRED date (integer compare, no timezone edge)
     /* Count what this cutoff removes. It was silently dropping 224 of 1024 leads — a
        third of the board gone with nothing on screen to say so, which is exactly what
@@ -15232,6 +15330,13 @@ function sourceType(srcOrLead){
   }
   var s=String(srcOrLead||'').toLowerCase();
   return (s.indexOf('a2a')>=0||s.indexOf('reverse')>=0||s.indexOf('arbi')>=0)?'A2A':'OA';
+}
+/* v52.6 — a supplier cell as a link you can click. 'amazon.fr/dp/…' typed without https:// opened as a
+   page on github.io and 404'd; '#' and blanks are not links. '' = no link. */
+function supUrl(u){
+  u=String(u||'').trim(); if(!u||u==='#') return '';
+  if(/^https?:\/\//i.test(u)) return u;
+  return /^(www\.)?[a-z0-9-]+(\.[a-z0-9-]+)+(\/|$)/i.test(u) ? 'https://'+u : '';
 }
 function supHost(u){ try{ var h=(String(u).match(/^https?:\/\/(www\.)?([^\/]+)/i)||[])[2]||String(u); return h.replace(/\.(com|co\.uk|net|org|de|fr)$/i,'').slice(0,22); }catch(e){ return 'Supplier'; } }
 /* The discount column is not always a discount code. Of the 98 leads that have anything
@@ -16849,6 +16954,7 @@ var _duxSig=null,_duxMap=null;
 function buildDupUnexplainedMap(){
   var map={}, by={};
   (window.leads||[]).forEach(function(l){
+    if(l&&l._eodGone) return;                            // deleted from her sheet (end-of-shift re-read, VA side only)
     var a=''; try{ a=asinKey(l); }catch(e){}
     if(!a) return;
     var p=String(l.date||'').split('/');
@@ -17769,7 +17875,9 @@ function detailH(l){
       <div class="d-tags">
         <span class="d-tag ${priCls(l)}">${priority(l)} priority</span>
         ${l.src&&l.src.trim()?`<span class="d-tag tag-src" title="${sourceType(l)} = where you buy it (${escHtml(String(l.store||'?').trim())}). ${escHtml(String(l.src))} = how it was found.">🔎 ${sourceType(l)} · found via ${l.src}</span>`:'<span class="d-tag tag-src tag-empty">🔎 source not set</span>'}
-        ${l.sup&&l.sup!=='#'?`<a class="d-tag tag-sup" href="${String(l.sup).replace(/"/g,'&quot;')}" target="_blank">🏭 ${supHost(l.sup)} ↗</a>`:''}
+        ${(function(){ var a=supUrl(l.sup), b=supUrl(l.sup2); if(b===a) b='';
+          return (a?`<a class="d-tag tag-sup" href="${a.replace(/"/g,'&quot;')}" target="_blank">🏭 ${supHost(a)} ↗</a>`:'')
+            +(b?`<a class="d-tag tag-sup" href="${b.replace(/"/g,'&quot;')}" target="_blank" title="2nd supplier link from the sheet">🏭 ${a?'also ':''}${supHost(b)} ↗</a>`:''); })()}
         ${l.store&&l.store.trim()?`<span class="d-tag tag-store">${l.store}</span>`:''}
         ${l.cat&&l.cat.trim()?`<span class="d-tag tag-cat">${l.cat}</span>`:''}
         ${discountChipHTML(l)}
@@ -17785,7 +17893,16 @@ function detailH(l){
           <a class="d-link" href="${l.amz&&l.amz!=='#'?l.amz:('https://www.amazon.co.uk/dp/'+encodeURIComponent(leadUseAsin(l)))}" target="_blank">${ICO.ext} Amazon</a>
           <a class="d-link" href="https://sas.selleramp.com/sas/lookup?asin=${leadUseAsin(l)}" target="_blank">${ICO.ext} SAS</a>
           <a class="d-link" href="https://keepa.com/#!product/2-${leadUseAsin(l)}" target="_blank">${ICO.ext} Keepa</a>
-          ${l.sup&&l.sup!=='#'?`<a class="d-link" href="${l.sup}" target="_blank">${ICO.ext} Supplier</a>`:`<span class="d-link d-link-off" title="No supplier link on the sheet for this lead">${ICO.ext} No supplier link</span>`}
+          ${(function(){
+            /* Jack, 07/10: "is 2nd supplier link working in the app too?" It was read from the sheet (column J)
+               and never shown — and on 20 of the 50 leads that have one it is the ONLY link, so the panel said
+               "No supplier link". Both now show; a link in J alone is the Supplier button. (v52.6) */
+            var a=supUrl(l.sup), b=supUrl(l.sup2); if(b===a) b='';
+            if(!a&&!b) return `<span class="d-link d-link-off" title="No supplier link on the sheet for this lead">${ICO.ext} No supplier link</span>`;
+            if(!a) return `<a class="d-link" href="${b.replace(/"/g,'&quot;')}" target="_blank" title="From the 2nd supplier column">${ICO.ext} Supplier</a>`;
+            return `<a class="d-link" href="${a.replace(/"/g,'&quot;')}" target="_blank">${ICO.ext} Supplier</a>`
+              +(b?`<a class="d-link d-link-sup2" href="${b.replace(/"/g,'&quot;')}" target="_blank" title="2nd supplier link from the sheet">${ICO.ext} 2nd · ${supHost(b)}</a>`:'');
+          })()}
           ${l.screenshot?`<a class="d-link d-link-shot" href="${String(l.screenshot).replace(/"/g,'&quot;')}" target="_blank">${ICO.ext} 📸 Screenshot</a>`
                         :`<span class="d-link d-link-off" title="The VA didn't put a screenshot on this row">${ICO.ext} No screenshot</span>`}
         </div>

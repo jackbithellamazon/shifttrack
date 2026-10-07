@@ -5106,3 +5106,6 @@ select.dd-active{border-color:var(--accent,#8b5cf6)!important;}
 
 /* ── v52.4: STORE / SOURCING must-fill on the end-of-shift list ─────────────────── */
 .eod-lc-must{color:#ff5c6c;font-weight:800;}
+/* v52.6 — the 2nd supplier button: same as Supplier, a cyan edge so it reads as the alternative */
+#view-leads .d-link-sup2{color:#3ad6f5;border-color:color-mix(in srgb,#3ad6f5 34%,var(--b2))}
+#view-leads .d-link-sup2:hover{border-color:#3ad6f5;color:#8eeaff}
